@@ -1,4 +1,4 @@
-import Shape from './graph.shape.js'
+import Shape from './graph.shape.js';
 
 /**
  *  Displays a cross
@@ -33,11 +33,11 @@ class ShapeCross extends Shape {
   createHandles() {
 
     this._createHandles( this.nbHandles, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white",
+      stroke: 'black',
+      fill: 'white',
       cursor: 'nwse-resize'
     } );
 
@@ -103,11 +103,11 @@ class ShapeCross extends Shape {
   createHandles() {
 
     this._createHandles( 1, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white",
+      stroke: 'black',
+      fill: 'white',
       cursor: 'nwse-resize'
     } );
   }

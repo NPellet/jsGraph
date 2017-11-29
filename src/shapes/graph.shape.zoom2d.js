@@ -67,12 +67,12 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
     setHandleNeg: function( value, max ) {
 
-      this.handleNeg.setAttribute( 'y', ( value ) * 45 + 55 )
+      this.handleNeg.setAttribute( 'y', ( value ) * 45 + 55 );
     },
 
     setHandlePos: function( value, max ) {
 
-      this.handlePos.setAttribute( 'y', ( 1 - value ) * 45 )
+      this.handlePos.setAttribute( 'y', ( 1 - value ) * 45 );
     },
 
     redrawImpl: function() {
@@ -109,7 +109,7 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
       var cY = e.pageY - o.top;
       //console.log( this.selected );
 
-      if ( this.selected == "negative" ) {
+      if ( this.selected == 'negative' ) {
 
         if ( cY > 100 ) {
           cY = 100;
@@ -127,7 +127,7 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
       }
 
-      if ( this.selected == "positive" ) {
+      if ( this.selected == 'positive' ) {
 
         if ( cY < 0 ) {
           cY = 0;

@@ -1,6 +1,6 @@
-import Graph from './graph.core.js'
-import EventEmitter from './dependencies/eventEmitter/EventEmitter.js'
-import * as util from './graph.util.js'
+import Graph from './graph.core.js';
+import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
+import * as util from './graph.util.js';
 
 /**
  * Default graph parameters
@@ -37,8 +37,8 @@ const defaults = {
   primaryGrid: true,
   secondaryGrid: true,
 
-  primaryGridColor: "#f0f0f0",
-  secondaryGridColor: "#f0f0f0",
+  primaryGridColor: '#f0f0f0',
+  secondaryGridColor: '#f0f0f0',
 
   primaryGridWidth: 1,
   secondaryGridWidth: 1,
@@ -132,7 +132,7 @@ class Axis extends EventEmitter {
     this.label = document.createElementNS( this.graph.ns, 'text' );
 
     this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the main label
-    this.preunit = ""; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
+    this.preunit = ''; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
     this.unitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the unit
     this.expTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent (x10)
     this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent value
@@ -145,19 +145,19 @@ class Axis extends EventEmitter {
 
     this.expTspan.setAttribute( 'dx', 6 );
     this.expTspanExp.setAttribute( 'dy', -5 );
-    this.expTspanExp.setAttribute( 'font-size', "0.8em" );
+    this.expTspanExp.setAttribute( 'font-size', '0.8em' );
 
     this.label.setAttribute( 'text-anchor', 'middle' );
 
     this.setTickPosition( this.options.tickPosition );
 
     this.gridLinePath = {
-      primary: "",
-      secondary: ""
+      primary: '',
+      secondary: ''
     };
 
-    this.gridPrimary = document.createElementNS( this.graph.ns, "path" );
-    this.gridSecondary = document.createElementNS( this.graph.ns, "path" );
+    this.gridPrimary = document.createElementNS( this.graph.ns, 'path' );
+    this.gridSecondary = document.createElementNS( this.graph.ns, 'path' );
 
     this.graph.groupPrimaryGrids.appendChild( this.gridPrimary );
     this.graph.groupSecondaryGrids.appendChild( this.gridSecondary );
@@ -261,7 +261,7 @@ class Axis extends EventEmitter {
     }
 
     return this.graph.getSeriesFromAxis( this ).reduce( ( accumulator, serie ) => {
-      return accumulator || serie.isShown()
+      return accumulator || serie.isShown();
     }, false );
   }
 
@@ -350,11 +350,11 @@ class Axis extends EventEmitter {
       current = this.options.adaptTo.thisValue,
       foreign = this.options.adaptTo.foreignValue;
 
-    if ( axis.currentAxisMin === undefined ||  axis.currentAxisMax === undefined ) {
+    if ( axis.currentAxisMin === undefined || axis.currentAxisMax === undefined ) {
       axis.setMinMaxToFitSeries();
     }
 
-    if ( ( this.options.forcedMin !== false && this.options.forcedMax == false ) ||  ( this.options.adaptTo.preference !== "max" ) ) {
+    if ( ( this.options.forcedMin !== false && this.options.forcedMax == false ) || ( this.options.adaptTo.preference !== 'max' ) ) {
 
       if ( this.options.forcedMin !== false ) {
         this.currentAxisMin = this.options.forcedMin;
@@ -429,7 +429,7 @@ class Axis extends EventEmitter {
    * @memberof Axis
    * @see AxisOptionsDefault
    * @param {Number} min - The spacing at the axis min value
-   * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
+   * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
    * @return {Axis} The current axis
    */
   setAxisDataSpacing( val1, val2 ) {
@@ -646,9 +646,9 @@ class Axis extends EventEmitter {
 
     delta = Math.min( 0.2, Math.max( -0.2, delta ) );
 
-    if ( baseline == "min" ) {
+    if ( baseline == 'min' ) {
       baseline = this.getMinValue();
-    } else if ( baseline == "max" ) {
+    } else if ( baseline == 'max' ) {
       baseline = this.getMaxValue();
     } else if ( !baseline ) {
       baseline = 0;
@@ -668,7 +668,7 @@ class Axis extends EventEmitter {
   }
 
   get zoomLock() {
-    return this._zoomLocked ||  false;
+    return this._zoomLocked || false;
   }
 
   /**
@@ -721,7 +721,7 @@ class Axis extends EventEmitter {
 
     // New method
     if ( !mute ) {
-      this.emit( "zoom", [ this.currentAxisMin, this.currentAxisMax, this ] );
+      this.emit( 'zoom', [ this.currentAxisMin, this.currentAxisMax, this ] );
     }
 
     return this;
@@ -890,7 +890,7 @@ class Axis extends EventEmitter {
       this.graph._axisHasChanged( this );
     }
 
-    this.emit( "zoomOutFull", [ this.currentAxisMin, this.currentAxisMax, this ] );
+    this.emit( 'zoomOutFull', [ this.currentAxisMin, this.currentAxisMax, this ] );
 
     return this;
   }
@@ -900,7 +900,7 @@ class Axis extends EventEmitter {
    * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
    */
   getInterval() {
-    return this.getMaxValue() - this.getMinValue()
+    return this.getMaxValue() - this.getMinValue();
   }
 
   /**
@@ -965,7 +965,7 @@ class Axis extends EventEmitter {
    */
   setCurrentMin( val ) {
 
-    if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() ||  val === undefined ) ) ) {
+    if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() || val === undefined ) ) ) {
       val = this.getMinValue();
     }
 
@@ -989,7 +989,7 @@ class Axis extends EventEmitter {
    */
   setCurrentMax( val ) {
 
-    if ( val === undefined || ( this.getForcedMax() !== false && ( val > this.getForcedMax() ||  val === undefined ) ) ) {
+    if ( val === undefined || ( this.getForcedMax() !== false && ( val > this.getForcedMax() || val === undefined ) ) ) {
       val = this.getMaxValue();
     }
 
@@ -1089,8 +1089,8 @@ class Axis extends EventEmitter {
     /*** DRAWING LABEL ******************/
     /************************************/
 
-    this.gridLinePath.primary = "";
-    this.gridLinePath.secondary = "";
+    this.gridLinePath.primary = '';
+    this.gridLinePath.secondary = '';
 
     /*
     var label;
@@ -1100,7 +1100,7 @@ class Axis extends EventEmitter {
     }
 */
     let letter;
-    if ( !this.options.useKatexForLabel ||  !this.graph.hasKatexRenderer() ) {
+    if ( !this.options.useKatexForLabel || !this.graph.hasKatexRenderer() ) {
 
       if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
 
@@ -1113,12 +1113,12 @@ class Axis extends EventEmitter {
           this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
         }
 
-        this.preunit = "";
+        this.preunit = '';
 
         this.expTspan.setAttribute( 'display', 'visible' );
         this.expTspanExp.setAttribute( 'display', 'visible' );
 
-        this.expTspan.textContent = "x10";
+        this.expTspan.textContent = 'x10';
         this.expTspanExp.textContent = this.scientificExponent;
 
       } else {
@@ -1127,7 +1127,7 @@ class Axis extends EventEmitter {
           this.unitTspan.setAttribute( 'display', 'none' );
         }
 
-        this.preunit = "";
+        this.preunit = '';
         this.expTspan.setAttribute( 'display', 'none' );
         this.expTspanExp.setAttribute( 'display', 'none' );
       }
@@ -1146,14 +1146,14 @@ class Axis extends EventEmitter {
         this.preunitTspan.setAttribute( 'display', 'visible' );
         this.unitTspan.setAttribute( 'dx', 0 );
 
-        string += " " + letter + " " + this.options.unit;
+        string += ' ' + letter + ' ' + this.options.unit;
 
       } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
         if ( this.options.engineeringScale ) {
           this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
         }
-        string += " \\cdot 10^" + this.scientificExponent + " " + this.options.unit;
+        string += ' \\cdot 10^' + this.scientificExponent + ' ' + this.options.unit;
 
       }
 
@@ -1222,7 +1222,7 @@ class Axis extends EventEmitter {
 
           this._lines[ index ] = this._drawLine( val, this._lines[ index ] );
 
-        } else  {
+        } else {
           this._hideLine( this._lines[ index ] );
         }
 
@@ -1251,11 +1251,11 @@ class Axis extends EventEmitter {
     switch ( val ) {
 
       case 3:
-        return "k";
+        return 'k';
         break;
 
       case 6:
-        return "M";
+        return 'M';
         break;
 
       case 9:
@@ -1263,19 +1263,19 @@ class Axis extends EventEmitter {
         break;
 
       case 12:
-        return "T";
+        return 'T';
         break;
 
       case 15:
-        return "E";
+        return 'E';
         break;
 
       case -3:
-        return "m";
+        return 'm';
         break;
 
       case -6:
-        return "&mu;";
+        return '&mu;';
         break;
 
       case -9:
@@ -1415,7 +1415,7 @@ class Axis extends EventEmitter {
 
     this.ticks[ level ] = this.ticks[ level ] || [];
     this.lastCurrentTick[ level ] = this.lastCurrentTick[ level ] || 0;
-    this.currentTick[ level ] = this.currentTick[ level ] ||  0;
+    this.currentTick[ level ] = this.currentTick[ level ] || 0;
 
     if ( this.currentTick[ level ] >= this.ticks[ level ].length ) {
       var tick = document.createElementNS( this.graph.ns, 'line' );
@@ -1497,7 +1497,7 @@ class Axis extends EventEmitter {
       return;
     }
 
-    this.gridLinePath[ primary ? "primary" : "secondary" ] += "M " + x1 + " " + y1 + " L " + x2 + " " + y2;
+    this.gridLinePath[ primary ? 'primary' : 'secondary' ] += 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
   }
 
   setGridLineStyle( gridLine, primary ) {
@@ -1564,7 +1564,7 @@ class Axis extends EventEmitter {
         if ( incr != 1 && val > min ) {
 
           this.drawTickWrapper( val, false, 2, {
-            overwrite: "",
+            overwrite: '',
             fontSize: '0.6em'
           } );
 
@@ -1605,7 +1605,7 @@ class Axis extends EventEmitter {
     this.linkedToAxis = {
       axis: axis,
       scalingFunction: scalingFunction,
-      decimals: decimals ||  1
+      decimals: decimals || 1
     };
 
   }
@@ -1639,7 +1639,7 @@ class Axis extends EventEmitter {
 
       if ( !t ) {
         console.log( val, px, this.getMinPx() );
-        throw "Unable to draw tick. Please report the test-case";
+        throw 'Unable to draw tick. Please report the test-case';
       }
 
       l = String( t[ 1 ].textContent ).length * 8;
@@ -1722,7 +1722,7 @@ class Axis extends EventEmitter {
 
     } else {
 
-      return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) + Math.log( this.getCurrentMin() ) )
+      return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) + Math.log( this.getCurrentMin() ) );
     }
   }
 
@@ -1772,7 +1772,7 @@ class Axis extends EventEmitter {
       var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
 
       if ( isNaN( value ) ) {
-        return "";
+        return '';
       }
 
       if ( dec > 0 ) {
@@ -1782,12 +1782,12 @@ class Axis extends EventEmitter {
       }
 
       if ( this.options.unitInTicks && this.options.unit ) {
-        value += " " + this.options.unit;
+        value += ' ' + this.options.unit;
       }
 
       return value;
     }
-  };
+  }
 
   /**
    *  Computes a value and returns it in HTML formatting
@@ -1810,13 +1810,13 @@ class Axis extends EventEmitter {
       text += letter;
 
     } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) && !noScaling ) {
-      text += "x10";
+      text += 'x10';
       text += '<sup>' + this.scientificExponent + '</sup>';
     }
 
     if ( this.options.unit && !noUnits ) {
 
-      text += this.options.unit.replace( /\^([-+0-9]*)/g, "<sup>$1</sup>" );
+      text += this.options.unit.replace( /\^([-+0-9]*)/g, '<sup>$1</sup>' );
     }
 
     return text;
@@ -1836,7 +1836,7 @@ class Axis extends EventEmitter {
 
   modifyUnit( value, mode ) {
 
-    var text = "";
+    var text = '';
     var incr = this.incrTick;
 
     switch ( mode ) {
@@ -1873,7 +1873,7 @@ class Axis extends EventEmitter {
           first = false;
           value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
           valueRounded = Math.round( value );
-          text += " " + valueRounded + units[ umin ][ 1 ];
+          text += ' ' + valueRounded + units[ umin ][ 1 ];
           umin--;
         }
 
@@ -1882,9 +1882,9 @@ class Axis extends EventEmitter {
       case 'time:min.sec':
         value = value / 60;
         var valueRounded = Math.floor( value );
-        var s = ( Math.round( ( value - valueRounded ) * 60 ) + "" );
+        var s = ( Math.round( ( value - valueRounded ) * 60 ) + '' );
         s = s.length == 1 ? '0' + s : s;
-        text = valueRounded + "." + s;
+        text = valueRounded + '.' + s;
         break;
     }
 
@@ -2189,7 +2189,7 @@ class Axis extends EventEmitter {
     this.options.ticksLabelColor = color;
     if ( Array.isArray( this.ticksLabels ) ) {
       this.ticksLabels.forEach( ( tick ) => {
-        tick.setAttribute( "fill", color )
+        tick.setAttribute( 'fill', color );
       } );
     }
     return this;
@@ -2410,7 +2410,7 @@ class Axis extends EventEmitter {
   setTickContent( dom, val, options ) {
     if ( !options ) options = {};
 
-    if ( options.overwrite ||  !options.exponential ) {
+    if ( options.overwrite || !options.exponential ) {
 
       dom.textContent = options.overwrite || this.valueToText( val );
 
@@ -2418,7 +2418,7 @@ class Axis extends EventEmitter {
       var log = Math.round( Math.log( val ) / Math.log( 10 ) );
       var unit = Math.floor( val * Math.pow( 10, -log ) );
 
-      dom.textContent = ( unit != 1 ) ? unit + "x10" : "10";
+      dom.textContent = ( unit != 1 ) ? unit + 'x10' : '10';
       var tspan = document.createElementNS( this.graph.ns, 'tspan' );
       tspan.textContent = log;
       tspan.setAttribute( 'font-size', '0.7em' );
@@ -2553,7 +2553,7 @@ class Axis extends EventEmitter {
       scientificExponent -= ( 3 - ( -scientificExponent ) % 3 ) % 3;
     }
 
-    return scientificExponent
+    return scientificExponent;
   }
 
   /**

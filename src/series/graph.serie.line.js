@@ -1,9 +1,9 @@
-import Graph from '../graph.core.js'
-import Serie from './graph.serie.js'
+import Graph from '../graph.core.js';
+import Serie from './graph.serie.js';
 
-import * as util from '../graph.util.js'
-import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js'
-import Waveform from '../util/waveform.js'
+import * as util from '../graph.util.js';
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
+import Waveform from '../util/waveform.js';
 
 /**
  * Serie line
@@ -26,7 +26,7 @@ class SerieLine extends Serie {
       lineColor: 'black',
       lineStyle: 1,
       flip: false,
-      label: "",
+      label: '',
       lineWidth: 1,
       markers: false,
       trackMouse: false,
@@ -44,7 +44,7 @@ class SerieLine extends Serie {
 
     super( ...arguments );
 
-    this.selectionType = "unselected";
+    this.selectionType = 'unselected';
     this.markerFamilies = {};
 
     util.mapEventEmission( this.options, this ); // Register events
@@ -142,7 +142,7 @@ class SerieLine extends Serie {
     } );
 
     if ( this.options.markers ) {
-      this.setMarkers( this.options.markers, "unselected" );
+      this.setMarkers( this.options.markers, 'unselected' );
     }
 
   }
@@ -150,7 +150,7 @@ class SerieLine extends Serie {
   setWaveform( waveform ) {
 
     if ( !( waveform instanceof Waveform ) ) {
-      throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+      throw 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance';
     }
 
     this.waveform = waveform;
@@ -194,7 +194,7 @@ class SerieLine extends Serie {
 
       this.options.onMouseOverMarker(
         index,
-        this.infos ? ( this.infos[ index ] ||  false ) : false, [ this.waveform.getX( index ), this.waveform.getY( index ) ] );
+        this.infos ? ( this.infos[ index ] || false ) : false, [ this.waveform.getX( index ), this.waveform.getY( index ) ] );
     }
   }
 
@@ -204,7 +204,7 @@ class SerieLine extends Serie {
     if ( this.options.onMouseOutMarker ) {
       this.options.onMouseOutMarker(
         index,
-        this.infos ? ( this.infos[ index ] ||  false ) : false, [ this.waveform.getX( index ), this.waveform.getY( index ) ]
+        this.infos ? ( this.infos[ index ] || false ) : false, [ this.waveform.getX( index ), this.waveform.getY( index ) ]
       );
     }
   }
@@ -244,7 +244,7 @@ class SerieLine extends Serie {
       let x = this.getX( this.waveform.getX( i ) ),
         y = this.getY( this.waveform.getY( i ) );
 
-      dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
+      dom.setAttribute( 'd', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
 
       if ( hover ) {
         this.markerHovered++;
@@ -302,15 +302,15 @@ class SerieLine extends Serie {
     var toggledOn = this.toggleMarker( index );
 
     if ( toggledOn && this.options.onSelectMarker ) {
-      this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+      this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] || false ) : false );
     }
 
     if ( !toggledOn && this.options.onUnselectMarker ) {
-      this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+      this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] || false ) : false );
     }
 
     if ( this.options.onToggleMarker ) {
-      this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, toggledOn );
+      this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] || false ) : false, toggledOn );
     }
   }
 
@@ -347,9 +347,9 @@ class SerieLine extends Serie {
    */
   select( selectionType ) {
 
-    selectionType = selectionType ||  "selected";
+    selectionType = selectionType || 'selected';
 
-    this.selected = selectionType !== "unselected";
+    this.selected = selectionType !== 'unselected';
 
     if ( this.areMarkersShown() || this.areMarkersShown( selectionType ) ) {
       this.selectionType = selectionType;
@@ -375,7 +375,7 @@ class SerieLine extends Serie {
 
     this.selected = false;
 
-    return this.select( "unselected" );
+    return this.select( 'unselected' );
   }
 
   /**
@@ -407,7 +407,7 @@ class SerieLine extends Serie {
     this.currentLineId = 0;
     this.counter = 0;
     this._drawn = true;
-    this.currentLine = "";
+    this.currentLine = '';
 
     // Degradation
 
@@ -472,7 +472,7 @@ class SerieLine extends Serie {
   insertLinesGroup() {
 
     if ( !this._afterLinesGroup ) {
-      throw "Could not find group after lines to insertion."
+      throw 'Could not find group after lines to insertion.';
     }
 
     this.groupMain.insertBefore( this.groupLines, this._afterLinesGroup );
@@ -500,8 +500,8 @@ class SerieLine extends Serie {
 
     super.draw( ...arguments );
 
-    if ( !this.getXAxis() ||  !this.getYAxis() ) {
-      throw "No axes were defined for this serie";
+    if ( !this.getXAxis() || !this.getYAxis() ) {
+      throw 'No axes were defined for this serie';
     }
 
     if ( force || this.hasDataChanged() ) {
@@ -520,7 +520,7 @@ class SerieLine extends Serie {
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
-      this.markerFamily = this.markerFamilies[ this.selectionType || "unselected" ];
+      this.markerFamily = this.markerFamilies[ this.selectionType || 'unselected' ];
 
       this.pos0 = this.getYAxis().getPos( 0 );
 
@@ -610,7 +610,7 @@ class SerieLine extends Serie {
     let i = 0,
       l = waveform.getLength();
 
-    this.currentLine = "";
+    this.currentLine = '';
 
     if ( waveform.isXMonotoneous() ) {
 
@@ -684,7 +684,7 @@ class SerieLine extends Serie {
         pointOutside = ( !this.options.overflowX && ( x < xMin || x > xMax ) ) || ( !this.options.overflowY && ( y < yMin || y > yMax ) );
 
       } else {
-        pointOutside = !this.options.overflowY && ( y < yMin ||  y > yMax );
+        pointOutside = !this.options.overflowY && ( y < yMin || y > yMax );
       }
 
       if ( this.options.lineToZero ) {
@@ -740,7 +740,7 @@ class SerieLine extends Serie {
               if ( !pointOutside ) { // We were outside and now go inside
 
                 if ( pointOnAxis.length > 1 ) {
-                  console.error( "Programmation error. Please e-mail me." );
+                  console.error( 'Programmation error. Please e-mail me.' );
                   console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                 }
 
@@ -751,7 +751,7 @@ class SerieLine extends Serie {
               } else if ( !lastPointOutside ) { // We were inside and now go outside
 
                 if ( pointOnAxis.length > 1 ) {
-                  console.error( "Programmation error. Please e-mail me." );
+                  console.error( 'Programmation error. Please e-mail me.' );
                   console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                 }
 
@@ -834,14 +834,14 @@ class SerieLine extends Serie {
 
       this._trackerDom = cloned;
 
-      this.groupMain.addEventListener( "mousemove", ( e ) => {
+      this.groupMain.addEventListener( 'mousemove', ( e ) => {
         var coords = this.graph._getXY( e ),
           ret = this.handleMouseMove( false, false );
 
         this._trackingCallback( this, ret, coords.x, coords.y );
       } );
 
-      this.groupMain.addEventListener( "mouseleave", ( e ) => {
+      this.groupMain.addEventListener( 'mouseleave', ( e ) => {
         this._trackingOutCallback( this );
       } );
     }
@@ -867,7 +867,7 @@ class SerieLine extends Serie {
     var family;
 
     for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
-      if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
+      if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k ) { // This one is a possibility !
         if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
           this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
           family = this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ];
@@ -886,14 +886,14 @@ class SerieLine extends Serie {
 
   setMarkerStyleTo( dom, family ) {
 
-    if ( !dom ||  !family ) {
+    if ( !dom || !family ) {
       console.trace();
-      throw "Cannot set marker style. DOM does not exist.";
+      throw 'Cannot set marker style. DOM does not exist.';
     }
 
-    dom.setAttribute( 'fill', family.fillColor ||  'transparent' );
+    dom.setAttribute( 'fill', family.fillColor || 'transparent' );
     dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
-    dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
+    dom.setAttribute( 'stroke-width', family.strokeWidth || 1 );
   }
 
   /**
@@ -924,22 +924,22 @@ class SerieLine extends Serie {
       if ( this.options.lineToZero || move ) {
         this.currentLine += 'M ';
       } else {
-        this.currentLine += "L ";
+        this.currentLine += 'L ';
       }
     }
 
     this.currentLine += xpx;
-    this.currentLine += " ";
+    this.currentLine += ' ';
     this.currentLine += ypx;
-    this.currentLine += " ";
+    this.currentLine += ' ';
 
     if ( this.options.lineToZero && this.pos0 !== undefined ) {
 
-      this.currentLine += "L ";
+      this.currentLine += 'L ';
       this.currentLine += xpx;
-      this.currentLine += " ";
+      this.currentLine += ' ';
       this.currentLine += this.pos0;
-      this.currentLine += " ";
+      this.currentLine += ' ';
 
     }
 
@@ -959,7 +959,7 @@ class SerieLine extends Serie {
         this.markerFamily[ this.markerCurrentFamily ],
         xpx,
         ypx,
-        this.markersDom.get( this.markerFamily[  this.markerCurrentFamily ] )
+        this.markersDom.get( this.markerFamily[ this.markerCurrentFamily ] )
       );
     }
 
@@ -990,7 +990,7 @@ class SerieLine extends Serie {
       line.setAttribute( 'd', this.currentLine );
     }
 
-    this.currentLine = "M ";
+    this.currentLine = 'M ';
     this.counter = 0;
 
     return line;
@@ -1043,7 +1043,7 @@ class SerieLine extends Serie {
   // Revised August 2014. Ok
   getMarkerPath( family, add ) {
 
-    var z = family.zoom  ||  1,
+    var z = family.zoom || 1,
       add = add || 0,
       el = [];
 
@@ -1068,11 +1068,11 @@ class SerieLine extends Serie {
 
     }
 
-    if ( ( z == 1 ||  !z ) && !add ) {
-      return el.join( " " );
+    if ( ( z == 1 || !z ) && !add ) {
+      return el.join( ' ' );
     }
 
-    var num = "number";
+    var num = 'number';
 
     if ( !el ) {
       return;
@@ -1086,12 +1086,12 @@ class SerieLine extends Serie {
       }
     }
 
-    return el.join( " " );
+    return el.join( ' ' );
 
   }
 
   // Revised August 2014. Ok
-  getMarkerDom( family )  {
+  getMarkerDom( family ) {
 
     var self = this;
 
@@ -1101,7 +1101,7 @@ class SerieLine extends Serie {
       this.setMarkerStyleTo( dom, family );
       this.markersDom.set( family, {
         dom: dom,
-        path: ""
+        path: ''
       } );
 
       dom.addEventListener( 'mouseover', function( e ) {
@@ -1229,7 +1229,7 @@ class SerieLine extends Serie {
           xMax: this.waveform.getX( indexX ),
           yMin: this.waveform.getY( indexX ),
           yMax: this.waveform.getY( indexX )
-        }
+        };
       }
 
       return returnObj;
@@ -1346,7 +1346,7 @@ class SerieLine extends Serie {
       v2 = this.searchClosestValue( end2 );
     }
 
-    if ( !v1 ||  !v2 ) {
+    if ( !v1 || !v2 ) {
       return -Infinity;
     }
 
@@ -1388,7 +1388,7 @@ class SerieLine extends Serie {
       v2 = this.searchClosestValue( end2 );
     }
 
-    if ( !v1 ||  !v2 ) {
+    if ( !v1 || !v2 ) {
       return Infinity;
     }
 
@@ -1407,20 +1407,20 @@ class SerieLine extends Serie {
   /* LINE STYLE * @memberof SerieLine
    */
 
-  setStyle( style, selectionType = "unselected" ) {
+  setStyle( style, selectionType = 'unselected' ) {
 
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
 
   }
 
-  setLineStyle( number, selectionType = "unselected", applyToSelected ) {
+  setLineStyle( number, selectionType = 'unselected', applyToSelected ) {
 
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineStyle = number;
 
     if ( applyToSelected ) {
-      this.setLineStyle( number, "selected" );
+      this.setLineStyle( number, 'selected' );
     }
 
     this.styleHasChanged( selectionType );
@@ -1432,44 +1432,44 @@ class SerieLine extends Serie {
     return this.getStyle( selectionType ).lineStyle;
   }
 
-  getLineDashArray( selectionType =  this.selectionType || "unselected" ) {
+  getLineDashArray( selectionType = this.selectionType || 'unselected' ) {
 
     switch ( this.getStyle( selectionType ).lineStyle ) {
 
       case 2:
-        return "1, 1";
+        return '1, 1';
         break;
       case 3:
-        return "2, 2";
+        return '2, 2';
         break;
       case 4:
-        return "3, 3";
+        return '3, 3';
         break;
       case 5:
-        return "4, 4";
+        return '4, 4';
         break;
       case 6:
-        return "5, 5";
+        return '5, 5';
         break;
 
       case 7:
-        return "5 2";
+        return '5 2';
         break;
       case 8:
-        return "2 5";
+        return '2 5';
         break;
 
       case 9:
-        return "4 2 4 4";
+        return '4 2 4 4';
         break;
       case 10:
-        return "1,3,1";
+        return '1,3,1';
         break;
       case 11:
-        return "9 2";
+        return '9 2';
         break;
       case 12:
-        return "2 9";
+        return '2 9';
         break;
 
       case 1:
@@ -1486,7 +1486,7 @@ class SerieLine extends Serie {
 
   }
 
-  getStyle( selectionType = this.selectionType ||  "unselected" ) {
+  getStyle( selectionType = this.selectionType || 'unselected' ) {
     return this.styles[ selectionType ];
   }
 
@@ -1503,11 +1503,11 @@ class SerieLine extends Serie {
   extendStyle( styleTarget, styleOrigin ) {
     var s = this.styles[ styleTarget ];
 
-    this.styles[ styleTarget ] = util.extend( true, {}, this.styles[ styleOrigin || "unselected" ], s || {} );
+    this.styles[ styleTarget ] = util.extend( true, {}, this.styles[ styleOrigin || 'unselected' ], s || {} );
 
     this.styles[ styleTarget ].markers.map( function( marker ) {
       if ( marker.dom ) {
-        marker.dom = "";
+        marker.dom = '';
       }
     } );
 
@@ -1520,12 +1520,12 @@ class SerieLine extends Serie {
 
   setLineWidth( width, selectionType, applyToSelected ) {
 
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType || 'unselected';
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineWidth = width;
 
     if ( applyToSelected ) {
-      this.setLineWidth( width, "selected" );
+      this.setLineWidth( width, 'selected' );
     }
 
     this.styleHasChanged( selectionType );
@@ -1542,12 +1542,12 @@ class SerieLine extends Serie {
    */
   setLineColor( color, selectionType, applyToSelected ) {
 
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType || 'unselected';
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineColor = color;
 
     if ( applyToSelected ) {
-      this.setLineColor( color, "selected" );
+      this.setLineColor( color, 'selected' );
     }
 
     this.styleHasChanged( selectionType );
@@ -1557,7 +1557,7 @@ class SerieLine extends Serie {
 
   getLineColor( selectionType ) {
 
-    return this.getStyle( selectionType ).lineColor || "black";
+    return this.getStyle( selectionType ).lineColor || 'black';
   }
 
   /* * @memberof SerieLine
@@ -1566,7 +1566,7 @@ class SerieLine extends Serie {
   /* MARKERS * @memberof SerieLine
    */
   showMarkers( selectionType, redraw ) {
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType || 'unselected';
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].showMarkers = true;
 
@@ -1581,7 +1581,7 @@ class SerieLine extends Serie {
 
   hideMarkers( selectionType, redraw ) {
 
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType || 'unselected';
     this.styles[ selectionType ].showMarkers = false;
 
     if ( redraw && this._drawn ) {
@@ -1620,12 +1620,12 @@ class SerieLine extends Serie {
 			* @memberof SerieLine
 */
 
-    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
+    this.styles[ selectionType || 'unselected' ] = this.styles[ selectionType || 'unselected' ] || {};
 
     this.showMarkers( selectionType, false );
 
     if ( !Array.isArray( families ) && typeof families == 'object' ) {
-      families = [  families ];
+      families = [ families ];
     } else if ( !families ) {
 
       families = [ {
@@ -1635,10 +1635,10 @@ class SerieLine extends Serie {
       } ];
     }
 
-    this.styles[ selectionType || "unselected" ].markers = families;
+    this.styles[ selectionType || 'unselected' ].markers = families;
 
     if ( applyToSelected ) {
-      this.styles[ "selected" ].markers = util.extend( true, {}, families );
+      this.styles.selected.markers = util.extend( true, {}, families );
     }
 
     this._recalculateMarkerPoints( selectionType, families );
@@ -1648,43 +1648,43 @@ class SerieLine extends Serie {
   }
 
   setMarkersPoints( points, family, selectionType ) {
-    this._extendMarkers( "points", points, family, selectionType, true );
+    this._extendMarkers( 'points', points, family, selectionType, true );
   }
 
   setMarkersColor( color, family, selectionType ) {
-    this._extendMarkers( "color", color, family, selectionType );
+    this._extendMarkers( 'color', color, family, selectionType );
   }
 
   setMarkersType( type, family, selectionType ) {
-    this._extendMarkers( "type", type, family, selectionType );
+    this._extendMarkers( 'type', type, family, selectionType );
   }
 
   setMarkersZoom( zoom, family, selectionType ) {
-    this._extendMarkers( "zoom", zoom, family, selectionType );
+    this._extendMarkers( 'zoom', zoom, family, selectionType );
   }
 
   setMarkersStrokeColor( strokeColor, family, selectionType ) {
-    this._extendMarkers( "strokeColor", strokeColor, family, selectionType );
+    this._extendMarkers( 'strokeColor', strokeColor, family, selectionType );
   }
 
   setMarkersStrokeWidth( strokeWidth, family, selectionType ) {
-    this._extendMarkers( "strokeWidth", strokeWidth, family, selectionType );
+    this._extendMarkers( 'strokeWidth', strokeWidth, family, selectionType );
   }
 
   setMarkersFillColor( fillColor, family, selectionType ) {
-    this._extendMarkers( "fillColor", fillColor, family, selectionType );
+    this._extendMarkers( 'fillColor', fillColor, family, selectionType );
   }
 
   _extendMarkers( type, value, family, selectionType, recalculatePoints ) {
 
-    family = family ||  0;
-    selectionType = selectionType ||  "unselected";
+    family = family || 0;
+    selectionType = selectionType || 'unselected';
 
-    if ( !this.styles[ selectionType ] ||  !this.styles[ selectionType ].markers ) {
+    if ( !this.styles[ selectionType ] || !this.styles[ selectionType ].markers ) {
       return;
     }
 
-    this.styles[ selectionType ].markers[ family ][ type ] = value
+    this.styles[ selectionType ].markers[ family ][ type ] = value;
 
     if ( recalculatePoints ) {
       this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
@@ -1734,14 +1734,14 @@ class SerieLine extends Serie {
       }
     }
 
-    this.markerFamilies[ selectionType || "unselected" ] = families;
+    this.markerFamilies[ selectionType || 'unselected' ] = families;
 
     // Let's sort if by the first index.
     markerPoints.sort( function( a, b ) {
-      return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
+      return ( a[ 0 ] - b[ 0 ] ) || ( a[ 2 ] == null ? -1 : 1 );
     } );
 
-    this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+    this.markerPoints[ selectionType || 'unselected' ] = markerPoints;
   }
 
   insertMarkers( selectionType ) {
@@ -1759,7 +1759,7 @@ class SerieLine extends Serie {
       let dom =
         this
         .markersDom
-        .get(  this.markerFamilies[ selectionType || this.selectionType ][ i ] );
+        .get( this.markerFamilies[ selectionType || this.selectionType ][ i ] );
 
       dom.dom
         .setAttribute(
@@ -1782,7 +1782,7 @@ class SerieLine extends Serie {
       var marker = document.createElementNS( this.graph.ns, 'path' );
       this.setMarkerStyleTo( marker, this.markerFamilies[ this.selectionType ][ 0 ] );
 
-      marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
+      marker.setAttribute( 'd', 'M 14 0 ' + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
 
       this.markerForLegend = marker;
     }
@@ -1815,7 +1815,7 @@ class SerieLine extends Serie {
         }
 
         self.groupMarkers.removeChild( el.dom );
-        el.path = "";
+        el.path = '';
       } );
 
       this.currentMarkersSelectionType = false;
@@ -1856,11 +1856,11 @@ function drawMarkerXY( graph, family, x, y, markerDom ) {
     dom.setAttribute( 'd', p );
   }
 
-  markerDom.path = markerDom.path || "";
+  markerDom.path = markerDom.path || '';
   markerDom.path += 'M ' + x + ' ' + y + ' ';
   markerDom.path += family.markerPath + ' ';
 }
 
 util.mix( SerieLine, ErrorBarMixin );
 
-export default SerieLine
+export default SerieLine;

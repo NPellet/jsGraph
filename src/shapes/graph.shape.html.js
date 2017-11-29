@@ -1,7 +1,7 @@
 import {
   isNumeric
-} from '../graph.util.js'
-import GraphShape from './graph.shape.js'
+} from '../graph.util.js';
+import GraphShape from './graph.shape.js';
 
 /**
  * Represents a line
@@ -21,11 +21,11 @@ class ShapeHTML extends GraphShape {
    */
   createDom() {
 
-    this._dom = document.createElement( "div" );
+    this._dom = document.createElement( 'div' );
     //  this._dom.setAttribute( "requiredExtensions", "http://www.w3.org/1999/xhtml" );
 
     this._dom.setAttribute( 'style', 'position: absolute' );
-    let div = document.createElement( "div" );
+    let div = document.createElement( 'div' );
     this._dom.appendChild( div );
     this.div = div;
   }
@@ -78,8 +78,8 @@ class ShapeHTML extends GraphShape {
     if ( !position || !isNumeric( position.x ) || !isNumeric( position.y ) ) {
       return;
     }
-    this._dom.style.left = position.x + "px";
-    this._dom.style.top = position.y + "px";
+    this._dom.style.left = position.x + 'px';
+    this._dom.style.top = position.y + 'px';
 
     this.currentPosX = position.x;
     this.currentPosY = position.y;
@@ -116,4 +116,4 @@ class ShapeHTML extends GraphShape {
   }
 }
 
-export default ShapeHTML
+export default ShapeHTML;

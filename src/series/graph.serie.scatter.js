@@ -1,10 +1,10 @@
-import Serie from './graph.serie.js'
-import * as util from '../graph.util.js'
-import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js'
+import Serie from './graph.serie.js';
+import * as util from '../graph.util.js';
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 
 const defaults = {};
 
-var type = "scatter";
+var type = 'scatter';
 
 /**
  * @static
@@ -50,12 +50,12 @@ class SerieScatter extends Serie {
 
     this.groupPoints.addEventListener( 'mouseover', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      this.emit( "mouseover", id, this.waveform.getX( id ), this.waveform.getY( id ) );
+      this.emit( 'mouseover', id, this.waveform.getX( id ), this.waveform.getY( id ) );
     } );
 
     this.groupPoints.addEventListener( 'mouseout', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      this.emit( "mouseout", id, this.waveform.getX( id ), this.waveform.getY( id ) );
+      this.emit( 'mouseout', id, this.waveform.getX( id ), this.waveform.getY( id ) );
     } );
 
     this.minX = Number.MAX_VALUE;
@@ -80,7 +80,7 @@ class SerieScatter extends Serie {
       cy: 0,
       r: 3,
       stroke: 'transparent',
-      fill: "black"
+      fill: 'black'
     };
 
     this.styles.selected.default = {
@@ -89,7 +89,7 @@ class SerieScatter extends Serie {
       cy: 0,
       r: 4,
       stroke: 'transparent',
-      fill: "black"
+      fill: 'black'
     };
 
   }
@@ -135,12 +135,12 @@ class SerieScatter extends Serie {
 
     var g = document.createElementNS( this.graph.ns, 'g' );
     g.setAttribute( 'data-shapeid', -1 );
-    var shape = this.doShape( g, this.styles[ "unselected" ].default );
+    var shape = this.doShape( g, this.styles.unselected.default );
 
-    var style = this.getStyle( "unselected", -1, true );
+    var style = this.getStyle( 'unselected', -1, true );
 
     for ( var i in style[ -1 ] ) {
-      if ( i == "shape" ) {
+      if ( i == 'shape' ) {
         continue;
       }
       shape.setAttribute( i, style[ -1 ][ i ] );
@@ -166,9 +166,9 @@ class SerieScatter extends Serie {
    * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
    *
    */
-  setStyle( all, modifiers, mode = "unselected" ) {
+  setStyle( all, modifiers, mode = 'unselected' ) {
 
-    if ( typeof modifiers == "string" ) {
+    if ( typeof modifiers == 'string' ) {
       mode = modifiers;
       modifiers = false;
     }
@@ -183,7 +183,7 @@ class SerieScatter extends Serie {
     }
 */
 
-    this.styles[ mode ] = this.styles[ mode ] ||  {};
+    this.styles[ mode ] = this.styles[ mode ] || {};
     this.styles[ mode ].all = all;
     this.styles[ mode ].modifiers = modifiers;
 
@@ -292,7 +292,7 @@ class SerieScatter extends Serie {
         this.shapesDetails[ j ][ 1 ] = ypx;
         keys.push( j );
 
-        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
+        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
       }
     }
 
@@ -301,7 +301,7 @@ class SerieScatter extends Serie {
     }
 
     // This will automatically create the shapes
-    this.applyStyle( "unselected", keys );
+    this.applyStyle( 'unselected', keys );
 
     this.groupMain.appendChild( this.groupPoints );
   }
@@ -342,7 +342,7 @@ class SerieScatter extends Serie {
 
     var styles = {};
 
-    if ( typeof index == "number" ) {
+    if ( typeof index == 'number' ) {
       indices = [ index ];
     } else if ( Array.isArray( index ) ) {
       indices = index;
@@ -355,7 +355,7 @@ class SerieScatter extends Serie {
 
       styleAll = this.styles[ selection ].all;
 
-      if ( typeof styleAll == "function" ) {
+      if ( typeof styleAll == 'function' ) {
 
         styleAll = styleAll();
 
@@ -374,13 +374,13 @@ class SerieScatter extends Serie {
       index = indices[ i ];
       shape = this.shapes[ index ];
 
-      if ( ( modifier = this.styles[ selection ].modifiers ) && ( typeof modifier == "function" || modifier[  index ] ) ) {
+      if ( ( modifier = this.styles[ selection ].modifiers ) && ( typeof modifier == 'function' || modifier[ index ] ) ) {
 
-        if ( typeof modifier == "function" ) {
+        if ( typeof modifier == 'function' ) {
 
           style = modifier( index, shape );
 
-        } else if ( modifier[  index ] ) {
+        } else if ( modifier[ index ] ) {
 
           style = modifier[ index ];
 
@@ -406,7 +406,7 @@ class SerieScatter extends Serie {
 
         if ( !styles[ index ].shape ) {
           console.error( style );
-          throw "No shape was defined with this style."
+          throw 'No shape was defined with this style.';
         }
 
         var g = document.createElementNS( this.graph.ns, 'g' );
@@ -434,7 +434,7 @@ class SerieScatter extends Serie {
 
       for ( j in styles[ i ] ) {
 
-        if ( j !== "shape" ) {
+        if ( j !== 'shape' ) {
 
           if ( styles[ i ][ j ] ) {
 
@@ -464,7 +464,7 @@ class SerieScatter extends Serie {
       return;
     }
 
-    if ( typeof setOn == "string" ) {
+    if ( typeof setOn == 'string' ) {
       selectionType = setOn;
       setOn = undefined;
     }
@@ -485,11 +485,11 @@ class SerieScatter extends Serie {
           this.shapes[ index ].removeAttribute( i );
         }
 
-        this.applyStyle( "unselected", index, true );
+        this.applyStyle( 'unselected', index, true );
 
       } else {
 
-        selectionType = selectionType ||  "selected";
+        selectionType = selectionType || 'selected';
         this.shapesDetails[ index ][ 2 ] = selectionType;
 
         this.applyStyle( selectionType, index, true );

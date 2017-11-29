@@ -1,4 +1,4 @@
-import Plugin from './graph.plugin.js'
+import Plugin from './graph.plugin.js';
 
 /**
  * @class PluginSerieLineDifference
@@ -29,7 +29,7 @@ class PluginSerieLineDifference extends Plugin {
 
       from: 0,
       to: 0
-    }
+    };
   }
 
   /**
@@ -299,10 +299,10 @@ class PluginSerieLineDifference extends Plugin {
       s2 = false;
     }
 
-    var d = this.pathsPositive.reduce( makePaths, "" );
+    var d = this.pathsPositive.reduce( makePaths, '' );
     this.positivePolyline.setPointsPx( d ).redraw();
 
-    var d = this.pathsNegative.reduce( makePaths, "" );
+    var d = this.pathsNegative.reduce( makePaths, '' );
     this.negativePolyline.setPointsPx( d ).redraw();
 
     //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
@@ -311,18 +311,18 @@ class PluginSerieLineDifference extends Plugin {
 
       for ( var i = 0; i < path[ 0 ].length; i += 2 ) {
         if ( i == 0 ) {
-          d += "M ";
+          d += 'M ';
         }
-        d += " " + Math.round( self.serie1.getXAxis().getPx( path[ 0 ][ i ] ) ) + ", " + Math.round( self.serie1.getYAxis().getPx( path[ 0 ][ i + 1 ] ) );
+        d += ' ' + Math.round( self.serie1.getXAxis().getPx( path[ 0 ][ i ] ) ) + ', ' + Math.round( self.serie1.getYAxis().getPx( path[ 0 ][ i + 1 ] ) );
         if ( i < path[ 0 ].length - 2 ) {
-          d += " L ";
+          d += ' L ';
         }
       }
 
       for ( var i = path[ 1 ].length - 2; i >= 0; i -= 2 ) {
-        d += " L " + Math.round( self.serie2.getXAxis().getPx( path[ 1 ][ i ] ) ) + ", " + Math.round( self.serie2.getYAxis().getPx( path[ 1 ][ i + 1 ] ) );
+        d += ' L ' + Math.round( self.serie2.getXAxis().getPx( path[ 1 ][ i ] ) ) + ', ' + Math.round( self.serie2.getYAxis().getPx( path[ 1 ][ i + 1 ] ) );
         if ( i == 0 ) {
-          d += " z ";
+          d += ' z ';
         }
       }
       return d;
@@ -375,7 +375,7 @@ class PluginSerieLineDifference extends Plugin {
     var b1 = y12 - a1 * x12;
     var b2 = y22 - a2 * x22;
 
-    if ( x11 == x12 ||  x21 == x22 ) {
+    if ( x11 == x12 || x21 == x22 ) {
 
       return false;
     }
@@ -388,9 +388,9 @@ class PluginSerieLineDifference extends Plugin {
       };
     }
 
-    var x = ( b1 - b2 ) / ( a2 - a1 )
+    var x = ( b1 - b2 ) / ( a2 - a1 );
 
-    if ( x > x12 ||  x < x11 || x < x21 ||  x > x22 ) {
+    if ( x > x12 || x < x11 || x < x21 || x > x22 ) {
       return false;
     }
 

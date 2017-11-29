@@ -1,5 +1,5 @@
-import * as util from '../graph.util.js'
-import Plugin from './graph.plugin.js'
+import * as util from '../graph.util.js';
+import Plugin from './graph.plugin.js';
 
 /**
  * The intent of this plugin is to provide methods for the user to make the traces on the graph automatically different
@@ -66,7 +66,7 @@ class PluginMakeTracesDifferent extends Plugin {
   }
 
   buildHSLString( hsl ) {
-    return "hsl( " + Math.round( hsl.h ) + ", " + Math.round( hsl.s * 100 ) + "%, " + Math.round( hsl.l * 100 ) + "%)";
+    return 'hsl( ' + Math.round( hsl.h ) + ', ' + Math.round( hsl.s * 100 ) + '%, ' + Math.round( hsl.l * 100 ) + '%)';
   }
 
   colorizeAll( options ) {
@@ -92,14 +92,14 @@ class PluginMakeTracesDifferent extends Plugin {
       if ( options.colorHSL ) {
         options.startingColorHSL = this.checkHSL( options.colorHSL );
       } else {
-        throw "No starting color was provided. There must exist either options.colorHSL or options.startingColorHSL";
+        throw 'No starting color was provided. There must exist either options.colorHSL or options.startingColorHSL';
       }
     }
 
     if ( !options.endingColorHSL ) {
 
-      if ( !options.affect || ![ "h", "s", "l", "hue", "saturation", "lightness" ].include( options.affect ) ) {
-        options.affect = "h";
+      if ( !options.affect || ![ 'h', 's', 'l', 'hue', 'saturation', 'lightness' ].include( options.affect ) ) {
+        options.affect = 'h';
       }
 
       switch ( options.affect ) {
@@ -154,7 +154,7 @@ class PluginMakeTracesDifferent extends Plugin {
     return series.map( ( serie, index ) => {
 
       if ( !serie.setLineColor ) {
-        throw "The serie " + serie.getName() + " does not implement the method `startingColor`"
+        throw 'The serie ' + serie.getName() + ' does not implement the method `startingColor`';
       }
 
       const colorString = this.buildHSLString( {

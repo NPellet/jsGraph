@@ -1,4 +1,4 @@
-import Shape from './graph.shape.js'
+import Shape from './graph.shape.js';
 
 /**
  * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
@@ -58,7 +58,7 @@ class ShapePolyline extends Shape {
 
     if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
 
-      pxPoints = " M " + pos.x + " " + pos.y + " " + pxPoints;
+      pxPoints = ' M ' + pos.x + ' ' + pos.y + ' ' + pxPoints;
       this.setDom( 'd', pxPoints );
 
     } else if ( this.points ) {
@@ -77,8 +77,8 @@ class ShapePolyline extends Shape {
       }
 
       this.setDom( 'd', 'M ' + this.points.map( function( p ) {
-        return xAxis.getPx( p[ 0 ] ) + ", " + yAxis.getPx( p[ 1 ] );
-      } ).join( " L " ) );
+        return xAxis.getPx( p[ 0 ] ) + ', ' + yAxis.getPx( p[ 1 ] );
+      } ).join( ' L ' ) );
     }
 
     this.changed();

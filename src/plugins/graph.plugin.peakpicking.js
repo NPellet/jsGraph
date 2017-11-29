@@ -1,5 +1,5 @@
-import * as util from '../graph.util.js'
-import Plugin from './graph.plugin.js'
+import * as util from '../graph.util.js';
+import Plugin from './graph.plugin.js';
 
 /**
  * @extends Plugin
@@ -32,7 +32,7 @@ class PluginPeakPicking extends Plugin {
       var shape = this.graph.newShape( {
         type: 'label',
         label: {
-          text: "",
+          text: '',
           position: {
             x: 0
           },
@@ -83,7 +83,7 @@ class PluginPeakPicking extends Plugin {
     let waveform = this.serie.getWaveform();
 
     if ( !waveform ) {
-      throw "The serie must have a waveform for the peak picking to work";
+      throw 'The serie must have a waveform for the peak picking to work';
     }
 
     let length = waveform.getLength(),
@@ -194,7 +194,7 @@ class PluginPeakPicking extends Plugin {
 
         this.picks[ m ].setLabelPosition( {
           x: x,
-          y: "5px",
+          y: '5px',
         } );
 
         this.picks[ m ].setLabelBaseline( 'hanging' );
@@ -206,7 +206,7 @@ class PluginPeakPicking extends Plugin {
         this.picks[ m ].setLabelPosition( {
           x: x,
           y: ys[ i ][ 1 ],
-          dy: "-15px"
+          dy: '-15px'
         } );
 
       }
@@ -280,4 +280,4 @@ class PluginPeakPicking extends Plugin {
   }
 }
 
-export default PluginPeakPicking
+export default PluginPeakPicking;

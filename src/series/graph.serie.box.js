@@ -1,11 +1,11 @@
-import Serie from './graph.serie.js'
+import Serie from './graph.serie.js';
 import {
   extend,
   guid,
   throwError,
   emptyDom
 }
-from '../graph.util.js'
+from '../graph.util.js';
 
 /**
  * @static
@@ -45,7 +45,7 @@ class SerieBox extends Serie {
         outlierFillColor: 'rgb( 0, 0, 0 )',
         outlierFillOpacity: 1
       }
-    }
+    };
   }
 
   constructor( graph, name, options ) {
@@ -112,8 +112,8 @@ class SerieBox extends Serie {
       methodval = function() {};
     }
 
-    if ( !axisref ||  !axisval ) {
-      throwError( "Error in setting data of the box serie. The X and Y axes must be set beforehand" );
+    if ( !axisref || !axisval ) {
+      throwError( 'Error in setting data of the box serie. The X and Y axes must be set beforehand' );
     }
 
     for ( var i in this.data ) {
@@ -170,12 +170,12 @@ class SerieBox extends Serie {
     return this;
   }
 
-  _style( type, styleValue, selectionType = "unselected", applyToSelected = false ) {
+  _style( type, styleValue, selectionType = 'unselected', applyToSelected = false ) {
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ][ type ] = styleValue;
 
     if ( applyToSelected ) {
-      this._set( type, styleValue, "selected" );
+      this._set( type, styleValue, 'selected' );
     }
 
     this.styleHasChanged( selectionType );
@@ -191,7 +191,7 @@ class SerieBox extends Serie {
    *  @param {String} [ selectionType = "unselected" ] - The selection type
    *  @returns {Object} The selection object
    */
-  getStyle( selectionType = "unselected" ) {
+  getStyle( selectionType = 'unselected' ) {
 
     return this.styles[ selectionType ] || {};
   }
@@ -213,7 +213,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'meanLineColor', ...arguments );
   }
 
-  setStyle( style, selectionType = "unselected" ) {
+  setStyle( style, selectionType = 'unselected' ) {
     //console.log( style, selectionType );
     this.styles[ selectionType ] = extend( {}, defaults.defaultStyle, this.styles.unselected, style );
     this.styleHasChanged( selectionType );
@@ -566,7 +566,7 @@ class SerieBox extends Serie {
 
       if ( axis2.getType() == 'category' ) {
 
-        let cat = this.options.orientation == 'y' ? this.data[ i ].x : this.data[  i ].y;
+        let cat = this.options.orientation == 'y' ? this.data[ i ].x : this.data[ i ].y;
 
         if ( !this.categoryIndices.hasOwnProperty( cat ) ) {
 
@@ -790,7 +790,7 @@ class SerieBox extends Serie {
   getCategoryIndex( name ) {
 
     if ( !this.categories ) {
-      throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
+      throw new Error( 'No categories were defined. Probably axis.setSeries was not called' );
     }
 
     for ( var i = 0; i < this.categories.length; i++ ) {

@@ -1,10 +1,10 @@
-import * as util from '../graph.util.js'
+import * as util from '../graph.util.js';
 
 var ErrorBarMixin = {
   /*
     doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
 
-      if ( !( error instanceof Array ) )  {
+      if ( !( error instanceof Array ) ) {
         error = [ error ];
       }
 
@@ -12,7 +12,7 @@ var ErrorBarMixin = {
       var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
       var j;
 
-      if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
+      if ( isNaN( xpx ) || isNaN( ypx ) ) {
         return;
       }
 
@@ -65,14 +65,14 @@ var ErrorBarMixin = {
       return;
     }
     var width = !util.isNumeric( style.width ) ? 10 : style.width;
-    return " V " + coordY + " m -" + ( width / 2 ) + " 0 h " + ( width ) + " m -" + ( width / 2 ) + " 0 V " + origin + " ";
+    return ' V ' + coordY + ' m -' + ( width / 2 ) + ' 0 h ' + ( width ) + ' m -' + ( width / 2 ) + ' 0 V ' + origin + ' ';
   },
 
   makeBoxY: function( coordY, origin, style ) {
     if ( !coordY || style === undefined ) {
       return;
     }
-    return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
+    return ' m 5 0 V ' + coordY + ' h -10 V ' + origin + ' m 5 0 ';
   },
 
   makeBarX: function( coordX, origin, style ) {
@@ -80,23 +80,23 @@ var ErrorBarMixin = {
       return;
     }
     var height = !util.isNumeric( style.width ) ? 10 : style.width;
-    return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
+    return ' H ' + coordX + ' m 0 -' + ( height / 2 ) + ' v ' + ( height ) + ' m 0 -' + ( height / 2 ) + ' H ' + origin + ' ';
   },
 
   makeBoxX: function( coordX, origin, style ) {
     if ( !coordX || style === undefined ) {
       return;
     }
-    return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
+    return ' v 5 H ' + coordX + ' v -10 H ' + origin + ' v 5 ';
   },
   /*
     check: function( index, valY, valX ) {
 
       var dx, dy;
 
-      if ( ( this.getType() == Graph.SERIE_LINE ||  this.getType() == Graph.SERIE_SCATTER ) ) {
+      if ( ( this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER ) ) {
 
-        if ( !( dx = this.data[ index * 2 ] ) ||  !( dy = this.data[ index * 2 + 1 ] ) ) { //
+        if ( !( dx = this.data[ index * 2 ] ) || !( dy = this.data[ index * 2 + 1 ] ) ) { //
           return;
         }
       }
@@ -184,12 +184,12 @@ var ErrorBarMixin = {
       style.dom.setAttribute( 'stroke-width', style.strokeWidth || 1 );
 
       this.groupMain.appendChild( style.dom );
-    }
+    };
     // i is bar or box
 
     var styles = {};
 
-    if ( typeof errorstyles == "string" ) {
+    if ( typeof errorstyles == 'string' ) {
       errorstyles = {};
     }
 
@@ -229,20 +229,20 @@ var ErrorBarMixin = {
     if ( this.errorboxStyle ) {
 
       this.errorboxStyle.paths = {
-        top: "",
-        bottom: "",
-        left: "",
-        right: ""
+        top: '',
+        bottom: '',
+        left: '',
+        right: ''
       };
     }
 
     if ( this.errorbarStyle ) {
 
       this.errorbarStyle.paths = {
-        top: "",
-        bottom: "",
-        left: "",
-        right: ""
+        top: '',
+        bottom: '',
+        left: '',
+        right: ''
       };
     }
   },
@@ -252,43 +252,43 @@ var ErrorBarMixin = {
     /* eslint-disable no-cond-assign */
     let error;
     if ( error = this.waveform.getErrorBarXBelow( index ) ) {
-      this.errorbarStyle.paths.left += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
       this.errorbarStyle.paths.left += this.makeBarX( this.getX( dataX - error ), xpx, this.errorbarStyle.left );
     }
 
     if ( error = this.waveform.getErrorBarXAbove( index ) ) {
-      this.errorbarStyle.paths.right += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
       this.errorbarStyle.paths.right += this.makeBarX( this.getX( dataX + error ), xpx, this.errorbarStyle.right );
     }
 
     if ( error = this.waveform.getErrorBarYBelow( index ) ) {
-      this.errorbarStyle.paths.bottom += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
       this.errorbarStyle.paths.bottom += this.makeBarY( this.getY( dataY - error ), ypx, this.errorbarStyle.bottom );
     }
 
     if ( error = this.waveform.getErrorBarYAbove( index ) ) {
-      this.errorbarStyle.paths.top += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
       this.errorbarStyle.paths.top += this.makeBarY( this.getY( dataY + error ), ypx, this.errorbarStyle.top );
     }
 
     if ( error = this.waveform.getErrorBoxXBelow( index ) ) {
-      this.errorboxStyle.paths.left += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
       this.errorboxStyle.paths.left += this.makeBoxX( this.getX( dataX - error ), xpx, this.errorboxStyle.left );
     }
 
     if ( error = this.waveform.getErrorBoxXAbove( index ) ) {
-      this.errorboxStyle.paths.right += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
 
       this.errorboxStyle.paths.right += this.makeBoxX( this.getX( dataX + error ), xpx, this.errorboxStyle.right );
     }
 
     if ( error = this.waveform.getErrorBoxYBelow( index ) ) {
-      this.errorboxStyle.paths.bottom += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
       this.errorboxStyle.paths.bottom += this.makeBoxY( this.getY( dataY - error ), ypx, this.errorboxStyle.bottom );
     }
 
     if ( error = this.waveform.getErrorBoxYAbove( index ) ) {
-      this.errorboxStyle.paths.top += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
       this.errorboxStyle.paths.top += this.makeBoxY( this.getY( dataY + error ), ypx, this.errorboxStyle.top );
     }
     /* eslint-enable */
@@ -302,7 +302,7 @@ var ErrorBarMixin = {
     }
   },
 
-  errorDraw: function()  {
+  errorDraw: function() {
 
     if ( this.errorbarStyle ) {
 

@@ -1,6 +1,6 @@
-import GraphPosition from '../graph.position.js'
-import * as util from '../graph.util.js'
-import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
+import GraphPosition from '../graph.position.js';
+import * as util from '../graph.util.js';
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
 
 /**
  * Shape class that should be extended
@@ -104,7 +104,7 @@ class Shape extends EventEmitter {
 
     this.initImpl();
 
-    this.graph.emit( "shapeNew", this );
+    this.graph.emit( 'shapeNew', this );
     return this;
   }
 
@@ -141,8 +141,8 @@ class Shape extends EventEmitter {
     }
 
     this.graph.stopElementMoving( this );
-    this.graph.emit( "shapeRemoved", this );
-    this.emit( "removed", this );
+    this.graph.emit( 'shapeRemoved', this );
+    this.emit( 'removed', this );
 
     this._inDom = false;
   }
@@ -237,7 +237,7 @@ class Shape extends EventEmitter {
   makeClasses() {
 
     if ( this._dom ) {
-      this._dom.setAttribute( 'class', this.classes.join( " " ) );
+      this._dom.setAttribute( 'class', this.classes.join( ' ' ) );
     }
 
     return this;
@@ -254,7 +254,7 @@ class Shape extends EventEmitter {
       this.emit( event, this, parameters );
     }
 
-    this.emit( "changed", this, parameters );
+    this.emit( 'changed', this, parameters );
     this.graph.emit( 'shapeChanged', this, parameters );
     return this;
   }
@@ -294,9 +294,9 @@ class Shape extends EventEmitter {
 
     this.serie = serie;
 
-    if ( !serie.getXAxis ||  !serie.getYAxis ) {
+    if ( !serie.getXAxis || !serie.getYAxis ) {
       console.error( serie );
-      throw "Serie does not implement the getXAxis or getYAxis method";
+      throw 'Serie does not implement the getXAxis or getYAxis method';
     }
     this.xAxis = serie.getXAxis();
     this.yAxis = serie.getYAxis();
@@ -472,7 +472,7 @@ class Shape extends EventEmitter {
       this.properties.position[ i ] = pos;
     }
 
-    this.emit( "propertiesChanged" );
+    this.emit( 'propertiesChanged' );
     return this;
   }
 
@@ -506,7 +506,7 @@ class Shape extends EventEmitter {
     this.properties = this.properties || {};
     this.properties[ prop ] = this.properties[ prop ] || [];
     this.properties[ prop ][ index || 0 ] = val;
-    this.emit( "propertyChanged", prop );
+    this.emit( 'propertyChanged', prop );
     return this;
   }
 
@@ -516,7 +516,7 @@ class Shape extends EventEmitter {
    * @param [ index = 0 ] - The index of the property array
    */
   getProp( prop, index ) {
-    return ( this.properties[ prop ] || [] )[ index ||  0 ];
+    return ( this.properties[ prop ] || [] )[ index || 0 ];
   }
 
   /**
@@ -659,7 +659,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setAttributes( attributes ) {
-    this.setProp( "attributes", attributes );
+    this.setProp( 'attributes', attributes );
     return this;
   }
 
@@ -676,7 +676,7 @@ class Shape extends EventEmitter {
   addAttribute( attributeName, attributeValue ) {
     var added = {};
     added[ attributeName ] = attributeValue;
-    this.addProp( "attributes", added );
+    this.addProp( 'attributes', added );
     return this;
   }
 
@@ -897,17 +897,17 @@ class Shape extends EventEmitter {
    */
   applyGenericStyle() {
 
-    this.setDom( "fill", this.getProp( "fillColor" ), true );
-    this.setDom( "fill-opacity", this.getProp( "fillOpacity" ), true );
-    this.setDom( "stroke", this.getProp( "strokeColor" ), true );
-    this.setDom( "stroke-width", this.getProp( "strokeWidth" ), true );
-    this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ), true );
+    this.setDom( 'fill', this.getProp( 'fillColor' ), true );
+    this.setDom( 'fill-opacity', this.getProp( 'fillOpacity' ), true );
+    this.setDom( 'stroke', this.getProp( 'strokeColor' ), true );
+    this.setDom( 'stroke-width', this.getProp( 'strokeWidth' ), true );
+    this.setDom( 'stroke-dasharray', this.getProp( 'strokeDasharray' ), true );
 
-    var attributes = this.getProps( "attributes" );
+    var attributes = this.getProps( 'attributes' );
     for ( var j = 0, l = attributes.length; j < l; j++ ) {
 
       for ( var i in attributes[ j ] ) {
-        this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ], true );
+        this.setDom( i, typeof attributes[ j ][ i ] == 'function' ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ], true );
       }
 
     }
@@ -994,7 +994,7 @@ class Shape extends EventEmitter {
   _applyTransforms() {
 
     var transforms = this.getProp( 'transforms' ),
-      transformString = "";
+      transformString = '';
 
     if ( !transforms ) {
       return;
@@ -1007,7 +1007,7 @@ class Shape extends EventEmitter {
 
     for ( var i = 0; i < transforms.length; i++ ) {
 
-      transformString += transforms[ i ].type + "(";
+      transformString += transforms[ i ].type + '(';
 
       switch ( transforms[ i ].type ) {
 
@@ -1016,31 +1016,31 @@ class Shape extends EventEmitter {
           let transform = transforms[ i ].arguments[ 0 ].compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie() );
 
           transformString += transform.x;
-          transformString += ", ";
+          transformString += ', ';
           transformString += transform.y;
           break;
 
         case 'rotate':
 
           transformString += transforms[ i ].arguments[ 0 ];
-          transformString += ", ";
+          transformString += ', ';
 
           if ( transforms[ i ].arguments.length == 1 ) {
             var p = this.computePosition( 0 );
             console.log( p, this.getPosition( 0 ), this.computePosition( 0 ) );
-            transformString += p.x + ", " + p.y;
+            transformString += p.x + ', ' + p.y;
 
           } else {
 
             transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
-            transformString += ", ";
+            transformString += ', ';
             transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
           }
 
           break;
       }
 
-      transformString += ") ";
+      transformString += ') ';
     }
 
     this.setDomGroup( 'transform', transformString );
@@ -1070,7 +1070,7 @@ class Shape extends EventEmitter {
 
     var i = 0;
 
-    while ( this.getProp( "labelText", i ) !== undefined ) {
+    while ( this.getProp( 'labelText', i ) !== undefined ) {
 
       if ( !this._labels[ i ] ) {
 
@@ -1148,17 +1148,17 @@ class Shape extends EventEmitter {
     var visible = this.getProp( 'labelVisible', labelIndex );
 
     if ( visible === false ) {
-      this._labels[  labelIndex ].setAttribute( 'display', 'none' );
-      this._labelsBackground[  labelIndex ].setAttribute( 'display', 'none' );
+      this._labels[ labelIndex ].setAttribute( 'display', 'none' );
+      this._labelsBackground[ labelIndex ].setAttribute( 'display', 'none' );
       return;
     } else {
-      this._labels[  labelIndex ].setAttribute( 'display', 'initial' );
-      this._labelsBackground[  labelIndex ].setAttribute( 'display', 'initial' );
+      this._labels[ labelIndex ].setAttribute( 'display', 'initial' );
+      this._labelsBackground[ labelIndex ].setAttribute( 'display', 'initial' );
     }
 
-    var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
+    var position = this.calculatePosition( GraphPosition.check( this.getProp( 'labelPosition', labelIndex ) ) );
 
-    if ( isNaN( position.x ) || isNaN( position.y ) || position.y === false ||  position.x === false ) {
+    if ( isNaN( position.x ) || isNaN( position.y ) || position.y === false || position.x === false ) {
       /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
       console.log( this, this._labels );
       console.trace();*/
@@ -1166,7 +1166,7 @@ class Shape extends EventEmitter {
 
     }
 
-    if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" && position.x !== false ) {
+    if ( position.x != 'NaNpx' && !isNaN( position.x ) && position.x !== 'NaN' && position.x !== false ) {
 
       this._labels[ labelIndex ].setAttribute( 'x', position.x );
       this._labels[ labelIndex ].setAttribute( 'y', position.y );
@@ -1192,25 +1192,25 @@ class Shape extends EventEmitter {
     }
 
     /** Sets the baseline */
-    this._labels[ labelIndex ].setAttribute( 'dominant-baseline', this.getProp( 'labelBaseline', labelIndex ) ||  'no-change' );
+    this._labels[ labelIndex ].setAttribute( 'dominant-baseline', this.getProp( 'labelBaseline', labelIndex ) || 'no-change' );
 
     /** Sets the text */
     this._labels[ labelIndex ].textContent = this.getProp( 'labelText', labelIndex );
 
     /** Sets the color */
-    this._labels[ labelIndex ].setAttribute( "fill", this.getProp( 'labelColor', labelIndex ) ||  'black' );
+    this._labels[ labelIndex ].setAttribute( 'fill', this.getProp( 'labelColor', labelIndex ) || 'black' );
 
     /** Sets the size */
-    this._labels[ labelIndex ].setAttribute( "font-size", this.getProp( 'labelSize', labelIndex ) + "px" ||  "12px" );
+    this._labels[ labelIndex ].setAttribute( 'font-size', this.getProp( 'labelSize', labelIndex ) + 'px' || '12px' );
 
     /** Sets the anchor */
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) ||  "black" );
+    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) || 'black' );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || 0 + "px" );
+    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || 0 + 'px' );
 
     this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
 
@@ -1236,7 +1236,7 @@ class Shape extends EventEmitter {
 
     for ( var i = 0, l = this._labels.length; i < l; i++ ) {
       /** Sets the baseline */
-      this._labels[ i ].textContent = "";
+      this._labels[ i ].textContent = '';
     }
 
     return this;
@@ -1276,7 +1276,7 @@ class Shape extends EventEmitter {
    * @returns {Boolean} true is the shape is selected, false otherwise
    */
   isSelected() {
-    return this._selectStatus ||  false;
+    return this._selectStatus || false;
   }
 
   /**
@@ -1388,7 +1388,7 @@ class Shape extends EventEmitter {
     }
 
     if ( !mute ) {
-      this.graph.emit( "shapeSelected", this );
+      this.graph.emit( 'shapeSelected', this );
     }
   }
 
@@ -1401,10 +1401,10 @@ class Shape extends EventEmitter {
     var style = this.getSelectStyle();
     var style2 = {};
     for ( var i in style ) {
-      if ( typeof style[ i ] == "function" ) {
+      if ( typeof style[ i ] == 'function' ) {
         style2[ i ] = style[ i ].call( this );
       } else {
-        style2[ i ] = style[  i ];
+        style2[ i ] = style[ i ];
       }
     }
 
@@ -1428,7 +1428,7 @@ class Shape extends EventEmitter {
     }
 
     if ( !mute ) {
-      this.graph.emit( "shapeUnselected", this );
+      this.graph.emit( 'shapeUnselected', this );
     }
   }
 
@@ -1509,8 +1509,8 @@ class Shape extends EventEmitter {
               e.preventDefault();
               e.stopPropagation();
 
-              self.graph.emit( "beforeShapeResize", self );
-              this.emit( "beforeShapeResize" );
+              self.graph.emit( 'beforeShapeResize', self );
+              this.emit( 'beforeShapeResize' );
 
               if ( !self.graph.prevent( false ) ) {
 
@@ -1526,7 +1526,7 @@ class Shape extends EventEmitter {
           callbackEach( self.handles[ j ] );
         }
 
-        self.handles[  j ] = handle;
+        self.handles[ j ] = handle;
 
       } ).call( this, i );
 
@@ -1595,7 +1595,7 @@ class Shape extends EventEmitter {
     if ( this.isMovable() ) {
       if ( !this.resizing ) {
 
-        this.graph.emit( "beforeShapeMove", self );
+        this.graph.emit( 'beforeShapeMove', self );
 
         if ( !this.graph.prevent( false ) ) {
 
@@ -1616,8 +1616,8 @@ class Shape extends EventEmitter {
    */
   handleClick( e ) {
 
-    this.graph.emit( "shapeClicked", this );
-    this.emit( "shapeClicked" );
+    this.graph.emit( 'shapeClicked', this );
+    this.emit( 'shapeClicked' );
 
     if ( !this.isSelectable() ) {
       return false;
@@ -1641,12 +1641,12 @@ class Shape extends EventEmitter {
    */
   handleMouseMove( e ) {
     //console.log( this.resizinh, this.moving, this.isSelected(), this._mouseCoords );
-    if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
+    if ( ( this.resizing || this.moving ) && !this.isSelected() ) {
       this.graph.selectShape( this );
     }
 
-    this.graph.emit( "beforeShapeMouseMove", this );
-    this.emit( "beforeShapeMouseMove" );
+    this.graph.emit( 'beforeShapeMouseMove', this );
+    this.emit( 'beforeShapeMouseMove' );
 
     if ( this.graph.prevent( false ) || !this._mouseCoords ) {
       return false;
@@ -1657,7 +1657,7 @@ class Shape extends EventEmitter {
       deltaX = this.getXAxis().getRelVal( coords.x - this._mouseCoords.x ),
       deltaY = this.getYAxis().getRelVal( coords.y - this._mouseCoords.y );
 
-    if ( deltaX != 0 ||  deltaY !== 0 ) {
+    if ( deltaX != 0 || deltaY !== 0 ) {
       this.preventUnselect = true;
     }
 
@@ -1679,15 +1679,15 @@ class Shape extends EventEmitter {
 
     if ( this.moving ) {
 
-      this.graph.emit( "shapeMoved", this );
-      this.emit( "shapeMoved" );
+      this.graph.emit( 'shapeMoved', this );
+      this.emit( 'shapeMoved' );
 
     }
 
     if ( this.handleSelected || this.resize ) {
 
-      this.graph.emit( "shapeResized", this );
-      this.emit( "shapeResized" );
+      this.graph.emit( 'shapeResized', this );
+      this.emit( 'shapeResized' );
 
     }
 
@@ -1717,14 +1717,14 @@ class Shape extends EventEmitter {
    */
   handleMouseOver() {
 
-    if ( this.getProp( "highlightOnMouseOver" ) ) {
+    if ( this.getProp( 'highlightOnMouseOver' ) ) {
 
       if ( !this.moving && !this.resizing ) {
         this.highlight();
       }
     }
 
-    this.graph.emit( "shapeMouseOver", this );
+    this.graph.emit( 'shapeMouseOver', this );
   }
 
   /**
@@ -1735,11 +1735,11 @@ class Shape extends EventEmitter {
    */
   handleMouseOut() {
 
-    if ( this.getProp( "highlightOnMouseOver" ) ) {
+    if ( this.getProp( 'highlightOnMouseOver' ) ) {
       this.unHighlight();
     }
 
-    this.graph.emit( "shapeMouseOut", this );
+    this.graph.emit( 'shapeMouseOut', this );
   }
 
   /*
@@ -1857,7 +1857,7 @@ class Shape extends EventEmitter {
     }
 
     if ( !saveDomName ) {
-      saveDomName = "highlight";
+      saveDomName = 'highlight';
     }
 
     util.saveDomAttributes( this._dom, attributes, saveDomName );
@@ -1874,7 +1874,7 @@ class Shape extends EventEmitter {
   unHighlight( saveDomName ) {
 
     if ( !saveDomName ) {
-      saveDomName = "highlight";
+      saveDomName = 'highlight';
     }
 
     util.restoreDomAttributes( this._dom, saveDomName );
@@ -2015,7 +2015,7 @@ class Shape extends EventEmitter {
       shapeLabel.removeEventListener( 'blur', blurEvent );
       shapeLabel = false;
 
-      self.changed( "shapeLabelChanged", {
+      self.changed( 'shapeLabelChanged', {
         previousValue: previousValue,
         nextValue: nextValue
       } );

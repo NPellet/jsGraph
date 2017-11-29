@@ -1,3 +1,5 @@
+extends: cheminfo
+
 env:
   browser: true
   es6: true
@@ -7,19 +9,32 @@ parserOptions:
   sourceType: module
 
 rules:
-  # http://eslint.org/docs/rules/#possible-errors
-  no-cond-assign: error
-  no-control-regex: error
-  no-debugger: error
-  no-dupe-args: error
-  no-dupe-keys: error
-  no-duplicate-case: error
-  no-empty-character-class: error
-  no-empty: error
-
-  func-call-spacing: error
-  no-trailing-spaces: error
-  space-before-blocks: error
-  # conflicts with beautifier
-  # space-before-function-paren: [error, never]
+  array-bracket-spacing: [error, always]
+  array-callback-return: warn
+  brace-style: off
+  camelcase: off
+  consistent-return: off
+  curly: off
+  default-case: warn
+  eqeqeq: off
+  indent: off
+  no-compare-neg-zero: warn
+  no-console: off
+  no-redeclare: off
+  no-undef: warn
+  no-unreachable: warn
+  no-unused-expressions: warn
+  no-unused-vars: warn
+  one-var: off
   space-in-parens: [error, always]
+  space-before-function-paren: off # conflicts with beautifier
+  valid-jsdoc: off
+  space-unary-ops: off
+  one-var-declaration-per-line: off
+  no-empty-function: off
+  dot-location: off
+  quote-props: off
+  no-prototype-builtins: off
+  no-dupe-class-members: warn
+  no-case-declarations: warn
+  eol-last: off

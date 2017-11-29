@@ -1,6 +1,5 @@
 define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
 
-  "use strict";
 
   function GraphPeakInterval( graph ) {
 
@@ -13,13 +12,13 @@ define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
       this._dom.setAttribute( 'marker-start', 'url(#verticalline' + this.graph._creation + ')' );
     },
 
-    setLabelPosition: function( labelIndex )  {
+    setLabelPosition: function( labelIndex ) {
       var pos1 = this._getPosition( this.getFromData( 'pos' ) );
       var pos2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) );
 
       this._setLabelPosition( labelIndex, this._getPosition( this.get( 'labelPosition', labelIndex ), {
-        x: ( pos1.x + pos2.x ) / 2 + "px",
-        y: ( pos1.y + pos2.y ) / 2 + "px"
+        x: ( pos1.x + pos2.x ) / 2 + 'px',
+        y: ( pos1.y + pos2.y ) / 2 + 'px'
       } ) );
 
     },

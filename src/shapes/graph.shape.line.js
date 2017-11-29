@@ -1,4 +1,4 @@
-import GraphShape from './graph.shape.js'
+import GraphShape from './graph.shape.js';
 
 /**
  * Represents a line
@@ -32,11 +32,11 @@ class ShapeLine extends GraphShape {
   createHandles() {
 
     this._createHandles( 2, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white",
+      stroke: 'black',
+      fill: 'white',
       cursor: 'nwse-resize'
     } );
   }
@@ -130,7 +130,7 @@ class ShapeLine extends GraphShape {
 
       if ( forced.y !== undefined ) {
 
-        if ( typeof forced.y == "function" ) {
+        if ( typeof forced.y == 'function' ) {
           pos2.y = pos.y = forced.y( this );
         } else {
           pos2.y = forced.y;
@@ -140,7 +140,7 @@ class ShapeLine extends GraphShape {
 
       if ( forced.x !== undefined ) {
 
-        if ( typeof forced.x == "function" ) {
+        if ( typeof forced.x == 'function' ) {
           pos2.x = pos.x = forced.x( this );
         } else {
           pos2.x = forced.x;
@@ -203,8 +203,8 @@ class ShapeLine extends GraphShape {
     this.rectEvent.setAttribute( 'y1', this.currentPos1y );
     this.rectEvent.setAttribute( 'x2', this.currentPos2x );
     this.rectEvent.setAttribute( 'y2', this.currentPos2y );
-    this.rectEvent.setAttribute( "stroke-width", this.getProp( "strokeWidth" ) + 2 );
+    this.rectEvent.setAttribute( 'stroke-width', this.getProp( 'strokeWidth' ) + 2 );
   }
 }
 
-export default ShapeLine
+export default ShapeLine;

@@ -1,4 +1,4 @@
-import ShapeRect from './graph.shape.rect.js'
+import ShapeRect from './graph.shape.rect.js';
 
 class ShapePeakIntegration2D extends ShapeRect {
 
@@ -14,11 +14,11 @@ class ShapePeakIntegration2D extends ShapeRect {
     this._dom.element = this;
 
     this.createHandles( this.nbHandles, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white",
+      stroke: 'black',
+      fill: 'white',
       cursor: 'nwse-resize'
     } );
   }

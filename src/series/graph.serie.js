@@ -1,7 +1,7 @@
-import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
-import * as util from '../graph.util.js'
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
+import * as util from '../graph.util.js';
 
-import Waveform from '../util/waveform.js'
+import Waveform from '../util/waveform.js';
 
 /**
  * Serie class to be extended
@@ -42,7 +42,7 @@ class Serie extends EventEmitter {
       } );
     }
 
-    this.emit( "draw" );
+    this.emit( 'draw' );
   }
 
   /**
@@ -50,7 +50,7 @@ class Serie extends EventEmitter {
    * @memberof Serie
    * @param {(Object|Array|Array[])} data - The data of the serie
    * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
-   * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
+   * @param{String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
    * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
    * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
    * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
@@ -62,7 +62,7 @@ class Serie extends EventEmitter {
       return this.setWaveform( data );
     }
 
-    throw "Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class."
+    throw 'Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class.';
   }
 
   _addData( type, howmany ) {
@@ -93,7 +93,7 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   setOptions( options ) {
-    this.options = options ||  {};
+    this.options = options || {};
   }
 
   /**
@@ -149,7 +149,7 @@ class Serie extends EventEmitter {
       }
     }
 
-    this.emit( "hide" );
+    this.emit( 'hide' );
 
     if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
       this.graph.draw( true );
@@ -183,7 +183,7 @@ class Serie extends EventEmitter {
       }
     }
 
-    this.emit( "show" );
+    this.emit( 'show' );
 
     if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
       this.graph.draw( true );
@@ -226,8 +226,8 @@ class Serie extends EventEmitter {
    */
   axisCheck() {
 
-    if ( !this.getXAxis() ||  !this.getYAxis() ) {
-      throw "No axis exist for this serie. Check that they were properly assigned";
+    if ( !this.getXAxis() || !this.getYAxis() ) {
+      throw 'No axis exist for this serie. Check that they were properly assigned';
     }
 
     if (
@@ -236,7 +236,7 @@ class Serie extends EventEmitter {
       isNaN( this.getYAxis().getCurrentMin() ) ||
       isNaN( this.getYAxis().getCurrentMax() )
     ) {
-      throw "Axis min and max values are not defined. Try autoscaling"
+      throw 'Axis min and max values are not defined. Try autoscaling';
     }
   }
   /**
@@ -265,7 +265,7 @@ class Serie extends EventEmitter {
    * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
    */
   isSelected() {
-    return this.selected || ( this.selectionType !== "unselected" );
+    return this.selected || ( this.selectionType !== 'unselected' );
   }
 
   _checkX( val ) {
@@ -325,7 +325,7 @@ class Serie extends EventEmitter {
    */
   setXAxis( axis ) {
 
-    if ( typeof axis == "number" ) {
+    if ( typeof axis == 'number' ) {
       this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
     } else {
       this.xaxis = axis;
@@ -344,7 +344,7 @@ class Serie extends EventEmitter {
    * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
    */
   setYAxis( axis ) {
-    if ( typeof axis == "number" ) {
+    if ( typeof axis == 'number' ) {
       this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
     } else {
       this.yaxis = axis;
@@ -439,7 +439,7 @@ class Serie extends EventEmitter {
   setWaveform( waveform ) {
 
     if ( !( waveform instanceof Waveform ) ) {
-      throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+      throw 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance';
     }
 
     this.waveform = waveform;
@@ -589,7 +589,7 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   setLayer( layerIndex ) {
-    let newLayer = parseInt( layerIndex ) ||  1;
+    let newLayer = parseInt( layerIndex ) || 1;
 
     if ( newLayer !== this.options.layer ) {
       this.options.layer = newLayer;
@@ -605,10 +605,10 @@ class Serie extends EventEmitter {
    * @returns {Nunber} The index of the layer into which the serie will be drawn
    */
   getLayer() {
-    return this.options.layer ||  1;
+    return this.options.layer || 1;
   }
 
-  setStyle( style, selectionType = "unselected" ) {
+  setStyle( style, selectionType = 'unselected' ) {
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
 
@@ -620,7 +620,7 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  styleHasChanged( selectionType = "unselected" ) {
+  styleHasChanged( selectionType = 'unselected' ) {
     this._changedStyles = this._changedStyles || {};
 
     if ( selectionType === false ) {
@@ -629,7 +629,7 @@ class Serie extends EventEmitter {
       }
 
     } else {
-      this._changedStyles[ selectionType ||  "unselected" ] = true;
+      this._changedStyles[ selectionType || 'unselected' ] = true;
     }
 
     this.graph.requireLegendUpdate();
@@ -645,7 +645,7 @@ class Serie extends EventEmitter {
    */
   hasStyleChanged( selectionType ) {
     this._changedStyles = this._changedStyles || {};
-    return this._changedStyles[ selectionType ||  "unselected" ];
+    return this._changedStyles[ selectionType || 'unselected' ];
   }
 
   /**
@@ -781,7 +781,7 @@ class Serie extends EventEmitter {
   }
 
   get type() {
-    return this._type
+    return this._type;
   }
 
   getType() {

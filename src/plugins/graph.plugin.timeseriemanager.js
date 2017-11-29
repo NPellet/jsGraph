@@ -1,7 +1,7 @@
-import Graph from '../graph.core.js'
-import LRU from '../graph.lru.js'
-import Plugin from './graph.plugin.js'
-import * as util from '../graph.util.js'
+import Graph from '../graph.core.js';
+import LRU from '../graph.lru.js';
+import Plugin from './graph.plugin.js';
+import * as util from '../graph.util.js';
 
 /**
  * @class PluginTimeSerieManager
@@ -29,7 +29,7 @@ class PluginTimeSerieManager extends Plugin {
       if ( !noRecalculate ) {
         this.recalculateSeries( force );
       }
-    }
+    };
 
   }
 
@@ -38,12 +38,12 @@ class PluginTimeSerieManager extends Plugin {
 
     return {
 
-      LRUName: "PluginTimeSerieManager",
+      LRUName: 'PluginTimeSerieManager',
       intervals: [ 1000, 15000, 60000, 900000, 3600000, 8640000 ],
       maxParallelRequests: 3,
       optimalPxPerPoint: 2,
       nbPoints: 1000,
-      url: ""
+      url: ''
     };
   }
 
@@ -77,7 +77,7 @@ class PluginTimeSerieManager extends Plugin {
       interval: 0
     };
 
-    s.on( "hide", function() {
+    s.on( 'hide', function() {
 
       if ( s._zoneSerie ) {
 
@@ -85,17 +85,17 @@ class PluginTimeSerieManager extends Plugin {
       }
     } );
 
-    s.on( "show", function() {
+    s.on( 'show', function() {
 
       if ( s._zoneSerie ) {
         s._zoneSerie.show();
       }
     } );
 
-    s.setInfo( "timeSerieManagerDBElements", dbElements );
+    s.setInfo( 'timeSerieManagerDBElements', dbElements );
 
     if ( !noZoneSerie ) {
-      s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, Graph.SERIE_ZONE );
+      s._zoneSerie = this.graph.newSerie( serieName + '_zone', {}, Graph.SERIE_ZONE );
     }
 
     this.series.push( s );
@@ -108,12 +108,12 @@ class PluginTimeSerieManager extends Plugin {
     if ( ( index = this.plugins.indexOf( plugin ) ) > -1 ) {
 
       for ( var i = 1; i < arguments.length; i++ ) {
-        plugin.removeListener( arguments[  i ], this.update );
+        plugin.removeListener( arguments[ i ], this.update );
       }
     }
 
     for ( var i = 1; i < arguments.length; i++ ) {
-      plugin.on( arguments[  i ], this.update );
+      plugin.on( arguments[ i ], this.update );
     }
   }
 
@@ -308,15 +308,15 @@ class PluginTimeSerieManager extends Plugin {
   getURL( requestElements ) {
 
     var url = this.options.url
-      .replace( "<measurementid>", requestElements[  2 ] )
-      .replace( '<from>', this.computeTimeMin( requestElements[  3 ], requestElements[ 4 ] ) )
-      .replace( '<to>', this.computeTimeMax( requestElements[  3 ], requestElements[ 4 ] ) )
-      .replace( '<interval>', requestElements[  4 ] );
+      .replace( '<measurementid>', requestElements[ 2 ] )
+      .replace( '<from>', this.computeTimeMin( requestElements[ 3 ], requestElements[ 4 ] ) )
+      .replace( '<to>', this.computeTimeMax( requestElements[ 3 ], requestElements[ 4 ] ) )
+      .replace( '<interval>', requestElements[ 4 ] );
 
     var dbElements = requestElements[ 6 ] || {};
 
     for ( var i in dbElements ) {
-      url = url.replace( "<" + i + ">", dbElements[ i ] );
+      url = url.replace( '<' + i + '>', dbElements[ i ] );
     }
 
     return url;
@@ -324,7 +324,7 @@ class PluginTimeSerieManager extends Plugin {
 
   getOptimalInterval( totalspan ) {
 
-    var optimalInterval = ( this.options.optimalPxPerPoint ||  1 ) * totalspan / this.graph.getDrawingWidth(),
+    var optimalInterval = ( this.options.optimalPxPerPoint || 1 ) * totalspan / this.graph.getDrawingWidth(),
       diff = Infinity,
       optimalIntervalAmongAvailable;
 
@@ -338,17 +338,17 @@ class PluginTimeSerieManager extends Plugin {
       }
     } );
 
-    return optimalIntervalAmongAvailable ||  1000;
+    return optimalIntervalAmongAvailable || 1000;
   }
 
   computeUniqueID( serie, slotId, interval ) {
-    var extra = "";
+    var extra = '';
     var info = serie.getInfo( 'timeSerieManagerDBElements' );
     for ( var i in info ) {
-      extra += ";" + i + ":" + info[ i ];
+      extra += ';' + i + ':' + info[ i ];
     }
 
-    return serie.getName() + ";" + slotId + ";" + interval + extra;
+    return serie.getName() + ';' + slotId + ';' + interval + extra;
   }
 
   computeSlotID( time, interval ) {
@@ -442,7 +442,7 @@ class PluginTimeSerieManager extends Plugin {
 
       } else {
 
-        this.recalculateSerieUpwards( serie, slotId, interval, data, dataMinMax )
+        this.recalculateSerieUpwards( serie, slotId, interval, data, dataMinMax );
       }
 
       slotId++;
@@ -460,7 +460,7 @@ class PluginTimeSerieManager extends Plugin {
   setIntervalCheck( interval ) {
 
     if ( this.interval ) {
-      clearInterval( this.interval )
+      clearInterval( this.interval );
     }
 
     this.update( true, true );
@@ -474,7 +474,7 @@ class PluginTimeSerieManager extends Plugin {
     var intervals = this.options.intervals.slice( 0 );
     intervals.sort();
 
-    var nextInterval = intervals[ intervals.indexOf( downInterval ) + 1 ] ||  -1;
+    var nextInterval = intervals[ intervals.indexOf( downInterval ) + 1 ] || -1;
     if ( nextInterval < 0 ) {
       return [];
     }
@@ -496,7 +496,7 @@ class PluginTimeSerieManager extends Plugin {
           start = i;
         }
 
-        if ( lruData.data.mean[  i ] >= newSlotTimeEnd ) {
+        if ( lruData.data.mean[ i ] >= newSlotTimeEnd ) {
 
           data = data.concat( lruData.data.mean.slice( start, i ) );
           dataMinMax = data.concat( lruData.data.minmax.slice( start, i ) );

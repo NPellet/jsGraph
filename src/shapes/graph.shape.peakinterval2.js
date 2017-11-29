@@ -1,6 +1,6 @@
 define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
 
-  "use strict";
+
   var lineHeight = 5;
 
   function GraphPeakInterval2( graph, options ) {
@@ -22,11 +22,11 @@ define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
       this.line2.setAttribute( 'stroke', 'black' );
 
       this.createHandles( this.nbHandles, 'rect', {
-        transform: "translate(-3 -3)",
+        transform: 'translate(-3 -3)',
         width: 6,
         height: 6,
-        stroke: "black",
-        fill: "white",
+        stroke: 'black',
+        fill: 'white',
         cursor: 'nwse-resize'
       } );
 
@@ -102,7 +102,7 @@ define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
         y,
         firstX,
         firstY,
-        currentLine = "",
+        currentLine = '',
         maxY = 0,
         minY = Number.MAX_VALUE;
 

@@ -1,5 +1,5 @@
-import Shape from './graph.shape.js'
-import GraphPosition from '../graph.position.js'
+import Shape from './graph.shape.js';
+import GraphPosition from '../graph.position.js';
 
 /**
  * Displays an integral with NMR style
@@ -27,11 +27,11 @@ class ShapeNMRIntegral extends Shape {
   createHandles() {
 
     this._createHandles( 2, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white"
+      stroke: 'black',
+      fill: 'white'
     } );
 
     this.handles[ 1 ].setAttribute( 'fill', 'red' );
@@ -51,13 +51,13 @@ class ShapeNMRIntegral extends Shape {
       axis = this.getAxis(),
       points = [];
 
-    let currentLine = "",
+    let currentLine = '',
       baseLine = this.getProp( 'baseLine', 0 ) || 300,
       ratio;
 
     if ( !this.serie ) {
-      throw "No serie exists for this shape";
-    };
+      throw 'No serie exists for this shape';
+    }
     /*
         this.sortPositions( ( a, b ) => {
           return a.x - b.x;
@@ -90,7 +90,7 @@ class ShapeNMRIntegral extends Shape {
       flipped = false;
 
     if ( index1 == index2 ) { // At least one px please !
-      if ( waveform.getReductionType() == "aggregate" ) {
+      if ( waveform.getReductionType() == 'aggregate' ) {
         index2 += 4; // Aggregated state
       } else {
         index2++; // Non aggregated state
@@ -110,7 +110,7 @@ class ShapeNMRIntegral extends Shape {
     let condition, incrementation;
 
     let normalSums = true;
-    if ( waveform.getReductionType() == "aggregate" ) {
+    if ( waveform.getReductionType() == 'aggregate' ) {
       normalSums = false;
     }
 
@@ -128,7 +128,7 @@ class ShapeNMRIntegral extends Shape {
     } else {
 
       j = index1;
-      condition = false
+      condition = false;
       incrementation = 1;
     }
 
@@ -213,15 +213,15 @@ class ShapeNMRIntegral extends Shape {
         let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2 * ratio;
 
         this.setPosition( {
-          x: points[ i ][ 0 ] + "px",
-          y: pos + "px"
+          x: points[ i ][ 0 ] + 'px',
+          y: pos + 'px'
 
         }, 3 );
 
         this.setLabelPosition( this.getPosition( 3 ), 0 );
       }
 
-      currentLine += " L " + points[ i ][ 0 ] + ", " + py + " ";
+      currentLine += ' L ' + points[ i ][ 0 ] + ', ' + py + ' ';
 
       this.lastPointX = points[ i ][ 0 ];
       this.lastPointY = py;
@@ -231,9 +231,9 @@ class ShapeNMRIntegral extends Shape {
     this._sum = sum;
 
     if ( this.serie.isFlipped() ) {
-      currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
+      currentLine = ' M ' + baseLine + ', ' + firstX + ' ' + currentLine;
     } else {
-      currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
+      currentLine = ' M ' + firstX + ', ' + baseLine + ' ' + currentLine;
     }
 
     this.firstPointX = firstX;
@@ -253,7 +253,7 @@ class ShapeNMRIntegral extends Shape {
     ( this.ratioLabel && this.updateIntegralValue( this.ratioLabel ) ) || this.updateLabels();
 
     this.changed();
-    this.handleCondition = !this.xor( incrementation == -1, flipped )
+    this.handleCondition = !this.xor( incrementation == -1, flipped );
     this.setHandles();
 
     this.updateIntegralValue();
@@ -266,12 +266,12 @@ class ShapeNMRIntegral extends Shape {
     if ( ratioLabel ) {
       this.ratioLabel = ratioLabel;
     }
-    this.setLabelText( ratioLabel ? ( Math.round( 100 * this.sumVal * ratioLabel ) / 100 ).toPrecision( 3 ) : "N/A", 0 );
+    this.setLabelText( ratioLabel ? ( Math.round( 100 * this.sumVal * ratioLabel ) / 100 ).toPrecision( 3 ) : 'N/A', 0 );
     this.updateLabels();
   }
 
   getAxis() {
-    return this._data.axis ||  'x';
+    return this._data.axis || 'x';
   }
 
   /**

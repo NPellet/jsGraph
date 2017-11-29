@@ -1,5 +1,5 @@
-import SerieLine from './graph.serie.line.js'
-import * as util from '../graph.util.js'
+import SerieLine from './graph.serie.line.js';
+import * as util from '../graph.util.js';
 
 /**
  * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method
@@ -38,7 +38,7 @@ class SerieContour extends SerieLine {
   setData( data, arg, type ) {
 
     var z = 0;
-    var x, dx, arg = arg || "2D",
+    var x, dx, arg = arg || '2D',
       type = type || 'float',
       i, l = data.length,
       j, k,
@@ -122,7 +122,7 @@ class SerieContour extends SerieLine {
       this.currentLineId = 0;
 
       for ( ; i < l; i++ ) {
-        this.currentLine = "";
+        this.currentLine = '';
         j = 0;
         k = 0;
 
@@ -130,7 +130,7 @@ class SerieContour extends SerieLine {
 
           var lastxpx, lastypx;
 
-          if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
+          if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) || ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) || ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
             continue;
           }
 
@@ -151,14 +151,14 @@ class SerieContour extends SerieLine {
   					}
   */
 
-          this.currentLine += "M ";
+          this.currentLine += 'M ';
           this.currentLine += xpx2;
-          this.currentLine += " ";
+          this.currentLine += ' ';
           this.currentLine += ypx2;
 
-          this.currentLine += "L ";
+          this.currentLine += 'L ';
           this.currentLine += xpx;
-          this.currentLine += " ";
+          this.currentLine += ' ';
           this.currentLine += ypx;
 
           this.counter++;
@@ -169,7 +169,7 @@ class SerieContour extends SerieLine {
           k++;
         }
 
-        this.currentLine += " z";
+        this.currentLine += ' z';
 
         domLine = this._createLine();
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
@@ -228,7 +228,7 @@ class SerieContour extends SerieLine {
 
     } else {
 
-      if ( ( !e.shiftKey ) ||  !this.options.hasNegative ) {
+      if ( ( !e.shiftKey ) || !this.options.hasNegative ) {
 
         this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
         this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
@@ -252,7 +252,7 @@ class SerieContour extends SerieLine {
 
     for ( var i in this.zValues ) {
 
-      this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) ||  ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
+      this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) || ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
 
     }
 

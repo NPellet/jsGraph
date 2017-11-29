@@ -1,11 +1,11 @@
-import Graph from "../graph.core.js"
-import AxisX from "../graph.axis.x.js"
-import AxisY from "../graph.axis.y.js"
-import * as util from "../graph.util.js"
-import SerieLine from '../series/graph.serie.line.js'
-import SerieScatter from '../series/graph.serie.scatter.js'
-import Plugin from './graph.plugin.js'
-import Axis from "../graph.axis.js"
+import Graph from '../graph.core.js';
+import AxisX from '../graph.axis.x.js';
+import AxisY from '../graph.axis.y.js';
+import * as util from '../graph.util.js';
+import SerieLine from '../series/graph.serie.line.js';
+import SerieScatter from '../series/graph.serie.scatter.js';
+import Plugin from './graph.plugin.js';
+import Axis from '../graph.axis.js';
 
 class SerieLineExtended extends SerieLine {
 
@@ -32,7 +32,7 @@ class SerieLineExtended extends SerieLine {
       return false;
     }
 
-    return this.subSeries[  0 ].getSymbolForLegend();
+    return this.subSeries[ 0 ].getSymbolForLegend();
   }
 
   getMarkerForLegend() {
@@ -40,7 +40,7 @@ class SerieLineExtended extends SerieLine {
       return false;
     }
 
-    return this.subSeries[  0 ].getMarkerForLegend();
+    return this.subSeries[ 0 ].getMarkerForLegend();
   }
 }
 
@@ -68,7 +68,7 @@ class SerieScatterExtended extends SerieScatter {
       return false;
     }
 
-    return this.subSeries[  0 ].getSymbolForLegend();
+    return this.subSeries[ 0 ].getSymbolForLegend();
   }
 
   getMarkerForLegend() {
@@ -76,7 +76,7 @@ class SerieScatterExtended extends SerieScatter {
       return false;
     }
 
-    return this.subSeries[  0 ].getMarkerForLegend();
+    return this.subSeries[ 0 ].getMarkerForLegend();
   }
 }
 
@@ -99,7 +99,7 @@ var excludingMethods = [
   'eraseMarkers',
   '_recalculateMarkerPoints'
 ];
-var addMethods = [  ];
+var addMethods = [];
 
 Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( function( i ) {
 
@@ -115,7 +115,7 @@ Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( func
       this.subSeries.map( ( subSerie ) => {
         subSerie[ j ]( ...args );
       } );
-    }
+    };
 
   } )( i );
 } );
@@ -172,7 +172,7 @@ class PluginAxisSplitting extends Plugin {
    */
   newTopAxis( options ) {
     options = this.getOptions( options );
-    return new SplitXAxis( this.graph, "top", options );
+    return new SplitXAxis( this.graph, 'top', options );
   }
 
   /**
@@ -182,7 +182,7 @@ class PluginAxisSplitting extends Plugin {
    */
   newBottomAxis( options ) {
     options = this.getOptions( options );
-    return new SplitXAxis( this.graph, "bottom", options );
+    return new SplitXAxis( this.graph, 'bottom', options );
   }
 
   /**
@@ -192,7 +192,7 @@ class PluginAxisSplitting extends Plugin {
    */
   newLeftAxis( options ) {
     options = this.getOptions( options );
-    return new SplitYAxis( this.graph, "left", options );
+    return new SplitYAxis( this.graph, 'left', options );
   }
 
   /**
@@ -202,7 +202,7 @@ class PluginAxisSplitting extends Plugin {
    */
   newRightAxis( options ) {
     options = this.getOptions( options );
-    return new SplitYAxis( this.graph, "right", options );
+    return new SplitYAxis( this.graph, 'right', options );
   }
 
   getOptions( options ) {
@@ -237,7 +237,7 @@ class PluginAxisSplitting extends Plugin {
 
       while ( serie.subSeries.length < splits ) {
 
-        const name = serie.getName() + "_" + serie.subSeries.length;
+        const name = serie.getName() + '_' + serie.subSeries.length;
 
         const s = this.graph.newSerie( name, {}, serie.getType() || Graph.SERIE_LINE );
 
@@ -255,7 +255,7 @@ class PluginAxisSplitting extends Plugin {
 
       while ( serie.subSeries.length > splits ) {
 
-        let subserie = this.graph.getSerie( serie.getName() + "_" + ( serie.subSeries.length - 1 ) );
+        let subserie = this.graph.getSerie( serie.getName() + '_' + ( serie.subSeries.length - 1 ) );
 
         if ( subserie && subserie.kill ) {
           subserie.kill();
@@ -326,7 +326,7 @@ class PluginAxisSplitting extends Plugin {
         break;
     }
 
-    throw "Cannot create a split serie of type " + type;
+    throw 'Cannot create a split serie of type ' + type;
   }
 
   /**
@@ -337,9 +337,9 @@ class PluginAxisSplitting extends Plugin {
    */
   newLineSerie( name, options ) {
     var serieObj = {
-      type: "lineSerie",
-      serie: new SerieLineExtended( name, options, "line" )
-    }
+      type: 'lineSerie',
+      serie: new SerieLineExtended( name, options, 'line' )
+    };
     this.series.set( name, serieObj );
     serieObj.serie.init( this.graph, name, options );
     this.graph.series.push( serieObj.serie );
@@ -354,8 +354,8 @@ class PluginAxisSplitting extends Plugin {
    */
   newScatterSerie( name, options ) {
     var serieObj = {
-      type: "scatterSerie",
-      serie: new SerieScatterExtended( name, options, "scatter" )
+      type: 'scatterSerie',
+      serie: new SerieScatterExtended( name, options, 'scatter' )
     };
     this.series.set( name, serieObj );
     serieObj.serie.init( this.graph, options );
@@ -420,7 +420,7 @@ var SplitAxis = function( mixin ) {
    * @name SplitAxis
    * @static
    */
-  var cl = class SplitAxis extends( mixin ) {
+  var cl = class SplitAxis extends mixin {
 
     constructor( graph, position, options = {} ) {
 
@@ -439,7 +439,7 @@ var SplitAxis = function( mixin ) {
      */
     all( callback ) {
 
-      if ( !( typeof callback == "function" ) ) {
+      if ( !( typeof callback == 'function' ) ) {
         return;
       }
 
@@ -469,7 +469,7 @@ var SplitAxis = function( mixin ) {
         axis.init( this.graph, this.constructorOptions );
       }
 
-      let from = 0
+      let from = 0;
       let i = 0;
       for ( let axis of this.axes ) {
 
@@ -484,7 +484,7 @@ var SplitAxis = function( mixin ) {
           axis.options.marginMax = 0;
         }
 
-        axis.setSpan( from, ( from = splits[ i ] ) )
+        axis.setSpan( from, ( from = splits[ i ] ) );
         axis.setMinMaxFlipped();
         i++;
       }
@@ -559,7 +559,7 @@ var SplitAxis = function( mixin ) {
           baseWidthIndex = index;
         }
 
-        if ( values[ index ].length == 1 ||  !Array.isArray( values[ index ] ) ) {
+        if ( values[ index ].length == 1 || !Array.isArray( values[ index ] ) ) {
           axis._mean = values[ index ];
 
           if ( Array.isArray( axis._mean ) ) {
@@ -619,7 +619,7 @@ var SplitAxis = function( mixin ) {
       if ( this.fixGridFor >= 0 && ( subAxis = this.getSubAxis( this.fixGridFor ) ) ) {
 
         if ( subAxis._mean !== undefined ) {
-          let width = ( subAxis.getSpan()[ 1 ] - subAxis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[  0 ] ) * this._baseWidthVal;
+          let width = ( subAxis.getSpan()[ 1 ] - subAxis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[ 0 ] ) * this._baseWidthVal;
           subAxis.forceMin( subAxis._mean - width / 2 );
           subAxis.forceMax( subAxis._mean + width / 2 );
         }
@@ -635,7 +635,7 @@ var SplitAxis = function( mixin ) {
         }
 
         if ( axis._mean !== undefined ) {
-          let width = ( axis.getSpan()[ 1 ] - axis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[  0 ] ) * this._baseWidthVal;
+          let width = ( axis.getSpan()[ 1 ] - axis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[ 0 ] ) * this._baseWidthVal;
           axis.forceMin( axis._mean - width / 2 );
           axis.forceMax( axis._mean + width / 2 );
         }
@@ -698,7 +698,7 @@ var SplitAxis = function( mixin ) {
     getSubAxis( index ) {
 
       if ( this.axes.length <= index ) {
-        throw "Impossible to reach axis. Index " + index + " is out of range";
+        throw 'Impossible to reach axis. Index ' + index + ' is out of range';
       }
 
       return this.axes[ index ];
@@ -707,7 +707,7 @@ var SplitAxis = function( mixin ) {
     get splitNumber() {
       return this._splits.length;
     }
-  }
+  };
 
   delegateMethods.map( ( methodName ) => {
 
@@ -717,16 +717,16 @@ var SplitAxis = function( mixin ) {
         //super[ method ]( ...arguments )
 
         this.axes.map( ( axis ) => {
-          axis[ method ]( ...arguments )
+          axis[ method ]( ...arguments );
         } );
         return this;
-      }
+      };
 
     } )( methodName );
   } );
 
   return cl;
-}
+};
 
 class SplitXAxis extends SplitAxis( AxisX ) {
 

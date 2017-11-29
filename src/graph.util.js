@@ -16,7 +16,7 @@ export function setAttributeTo( to, params, ns ) {
       to.setAttribute( i, params[ i ] );
     }
   }
-};
+}
 
 /**
  * Maps old-style events defined within the creation (i.e. <code>{ onMouseOver: function() }</code>) to modern event listening <code>.on("mouseover")</code>
@@ -36,7 +36,7 @@ export function mapEventEmission( options, source ) {
   for ( var i in options ) {
 
     // Starts with onXXX
-    if ( i.indexOf( "on" ) == 0 && typeof options[ i ] == "function" ) {
+    if ( i.indexOf( 'on' ) == 0 && typeof options[ i ] == 'function' ) {
       eventName = i.substring( 2 );
       eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
 
@@ -48,12 +48,12 @@ export function mapEventEmission( options, source ) {
             options[ j ].apply( source, arguments );
           } );
 
-        } )( i )
+        } )( i );
 
       }
     }
   }
-};
+}
 
 /**
  * @link http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -67,15 +67,15 @@ export function guid() {
     return v.toString( 16 );
   } );
 
-};
+}
 
 export function throwError( message ) {
   console.error( message );
-};
+}
 
 export function warn( message ) {
   console.warn( message );
-};
+}
 
 /**
  * Checks if a variable is a numeric or not
@@ -83,7 +83,7 @@ export function warn( message ) {
  */
 export function isNumeric( obj ) {
   return !Array.isArray( obj ) && ( obj - parseFloat( obj ) + 1 ) >= 0;
-};
+}
 
 /**
  * @see http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
@@ -104,7 +104,7 @@ export function hue2rgb( p, q, t ) {
   if ( t < 1 / 2 ) return q;
   if ( t < 2 / 3 ) return p + ( q - p ) * ( 2 / 3 - t ) * 6;
   return p;
-};
+}
 
 export function hslToRgb( h, s, l ) {
   var r, g, b;
@@ -121,7 +121,7 @@ export function hslToRgb( h, s, l ) {
   }
 
   return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
-};
+}
 
 export function saveDomAttributes( to, attributes, identification ) {
 
@@ -148,7 +148,7 @@ export function saveDomAttributes( to, attributes, identification ) {
     to.setAttribute( i, attributes[ i ] );
   }
 
-};
+}
 
 export function hasSavedAttribute( dom, attr ) {
   return dom._savedAttributes && dom._savedAttributes[ attr ] !== undefined;
@@ -167,13 +167,13 @@ export function restoreDomAttributes( to, identification ) {
   }
 
   to._savedAttributesIds.splice( to._savedAttributesIds.indexOf( identification ), 1 );
-  delete to._attributes[  identification ];
+  delete to._attributes[ identification ];
 
   var attrs = {};
 
   for ( var i in to._savedAttributes ) {
     attrs[ i ] = to._savedAttributes[ i ];
-  };
+  }
 
   for ( var i = 0, l = to._savedAttributesIds.length; i < l; i++ ) {
 
@@ -186,7 +186,7 @@ export function restoreDomAttributes( to, identification ) {
     to.setAttribute( j, attrs[ j ] );
   }
 
-};
+}
 
 // https://davidwalsh.name/function-debounce
 export function debounce( func, wait, immediate ) {
@@ -203,17 +203,17 @@ export function debounce( func, wait, immediate ) {
     timeout = setTimeout( later, wait );
     if ( callNow ) func.apply( context, args );
   };
-};
+}
 
 export function SVGParser( svgString ) {
 
   var parser = new DOMParser();
-  var doc = parser.parseFromString( svgString, "image/svg+xml" );
+  var doc = parser.parseFromString( svgString, 'image/svg+xml' );
   // returns a SVGDocument, which also is a Document.
 
   return doc;
 
-};
+}
 
 // http://stackoverflow.com/questions/5276953/what-is-the-most-efficient-way-to-reverse-an-array-in-javascript
 export function reverseArray( array ) {
@@ -226,7 +226,7 @@ export function reverseArray( array ) {
     array[ right ] = temporary;
   }
   return array;
-};
+}
 
 // jQuery.fn.offset
 export function getOffset( el ) {
@@ -235,7 +235,7 @@ export function getOffset( el ) {
     top: rect.top,
     left: rect.left
   };
-};
+}
 
 // jQuery.fn.css
 export function setCSS( element, values ) {
@@ -243,7 +243,7 @@ export function setCSS( element, values ) {
   for ( var i in values ) {
     style[ i ] = values[ i ];
   }
-};
+}
 
 export function ajaxGet( options ) {
   return new Promise( function( resolve, reject ) {
@@ -264,7 +264,7 @@ export function ajaxGet( options ) {
     };
     request.send();
   } );
-};
+}
 
 // https://raw.githubusercontent.com/justmoon/node-extend/888f153645115d1c6aa9a7e346e8e9cd9a83de9b/index.js
 // Copyright (c) 2014 Stefan Thomas
@@ -350,9 +350,9 @@ export function extend() {
 
   // Return the modified object
   return target;
-};
+}
 
-export default {}
+export default {};
 
 export {
   isArray

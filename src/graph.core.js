@@ -1,7 +1,7 @@
-import GraphPosition from './graph.position.js'
-import * as util from './graph.util.js'
-import EventEmitter from './dependencies/eventEmitter/EventEmitter.js'
-import Waveform from './util/waveform.js'
+import GraphPosition from './graph.position.js';
+import * as util from './graph.util.js';
+import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
+import Waveform from './util/waveform.js';
 
 /**
  * Default graph parameters
@@ -57,12 +57,12 @@ const GraphOptionsDefault = {
 
   shapesUnselectOnClick: true,
   shapesUniqueSelection: true
-}
+};
 
 const defaultScatterStyle = {
   shape: 'circle',
   r: 4
-}
+};
 
 var _constructors = new Map();
 
@@ -75,7 +75,7 @@ class Graph extends EventEmitter {
 
   /**
    * Graph constructor
-   * @param {(HTMLElement|String)} [ wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
+   * @param {(HTMLElement|String)} [wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
    * @param {GraphOptions} [ options ] - The options of the graph
    * @param {Object} [ axis ] - The list of axes
    * @param {Array} axis.left - The list of left axes
@@ -101,9 +101,9 @@ class Graph extends EventEmitter {
       axis = options;
       options = wrapper;
       wrapper = null;
-    } else if ( typeof wrapper == "string" ) {
+    } else if ( typeof wrapper == 'string' ) {
       wrapper = document.getElementById( wrapper );
-    } else if ( typeof wrapper.length == "number" ) {
+    } else if ( typeof wrapper.length == 'number' ) {
       wrapper = wrapper[ 0 ];
     }
 
@@ -190,11 +190,11 @@ class Graph extends EventEmitter {
   setWrapper( wrapper ) {
 
     if ( !wrapper ) {
-      throw "The wrapper DOM element was not found.";
+      throw 'The wrapper DOM element was not found.';
     }
 
     if ( !wrapper.appendChild ) {
-      throw "The wrapper appears to be an invalid HTMLElement";
+      throw 'The wrapper appears to be an invalid HTMLElement';
     }
 
     wrapper.style[ '-webkit-user-select' ] = 'none';
@@ -204,7 +204,7 @@ class Graph extends EventEmitter {
     wrapper.style[ 'user-select' ] = 'none';
 
     wrapper.style.position = 'relative';
-    wrapper.style.outline = "none";
+    wrapper.style.outline = 'none';
 
     // Why would that be necessary ?
     // wrapper.setAttribute( 'tabindex', 1 );
@@ -213,7 +213,7 @@ class Graph extends EventEmitter {
 
     // DOM
 
-    if ( !this.height ||  !this.width ) {
+    if ( !this.height || !this.width ) {
       var wrapperStyle = getComputedStyle( wrapper );
       var w = parseInt( wrapperStyle.width );
       var h = parseInt( wrapperStyle.height );
@@ -287,14 +287,14 @@ class Graph extends EventEmitter {
   }
 
   hide() {
-    if ( this.dom.style.display !== "none" ) {
-      this.dom.style.display = "none";
+    if ( this.dom.style.display !== 'none' ) {
+      this.dom.style.display = 'none';
     }
   }
 
   show() {
-    if ( this.dom.style.display == "none" ) {
-      this.dom.style.display = "initial";
+    if ( this.dom.style.display == 'none' ) {
+      this.dom.style.display = 'initial';
     }
   }
 
@@ -329,7 +329,7 @@ class Graph extends EventEmitter {
   }
 
   executeRedrawSlaves( noLegend ) {
-    this._pluginsExecute( "preDraw" );
+    this._pluginsExecute( 'preDraw' );
 
   }
 
@@ -342,7 +342,7 @@ class Graph extends EventEmitter {
     this.updateLegend( true );
     this.drawSeries( this.redraw( true, force ) );
 
-    this._pluginsExecute( "postDraw" );
+    this._pluginsExecute( 'postDraw' );
 
   }
 
@@ -762,7 +762,7 @@ class Graph extends EventEmitter {
    * @param {Axis} axis - The axis instance to check
    */
   hasXAxis( axis ) {
-    return this.hasTopAxis( axis ) ||  this.hasBottomAxis( axis );
+    return this.hasTopAxis( axis ) || this.hasBottomAxis( axis );
   }
 
   /**
@@ -770,7 +770,7 @@ class Graph extends EventEmitter {
    * @param {Axis} axis - The axis instance to check
    */
   hasYAxis( axis ) {
-    return this.hasLeftAxis( axis ) ||  this.hasRightAxis( axis );
+    return this.hasLeftAxis( axis ) || this.hasRightAxis( axis );
   }
 
   /**
@@ -832,7 +832,7 @@ class Graph extends EventEmitter {
    */
   autoscaleAxes() {
 
-    this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
+    this._applyToAxes( 'setMinMaxToFitSeries', null, true, true );
 
     //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
     // X is not always ascending...
@@ -953,7 +953,7 @@ class Graph extends EventEmitter {
           for ( var i = 0; i < this.axis[ type ].length; i++ ) {
             func.call( this, this.axis[ type ][ i ], type, params );
           }
-        }
+        };
         break;
     }
   }
@@ -1124,7 +1124,7 @@ class Graph extends EventEmitter {
       if ( a.linkedToAxis && a.linkedToAxis.axis == axis ) {
         axes.push( a );
       }
-    }, {}, axis instanceof this.getConstructor( "graph.axis.x" ), axis instanceof this.getConstructor( "graph.axis.y" ) );
+    }, {}, axis instanceof this.getConstructor( 'graph.axis.x' ), axis instanceof this.getConstructor( 'graph.axis.y' ) );
 
     return axes;
   }
@@ -1146,7 +1146,7 @@ class Graph extends EventEmitter {
 
     let serie;
 
-    if ( typeof options !== "object" && !type ) {
+    if ( typeof options !== 'object' && !type ) {
       type = options;
       options = {};
     }
@@ -1164,7 +1164,7 @@ class Graph extends EventEmitter {
     }
 
     this.series.push( serie );
-    this.emit( "newSerie", serie );
+    this.emit( 'newSerie', serie );
     return serie;
   }
 
@@ -1177,7 +1177,7 @@ class Graph extends EventEmitter {
   getSerie( name ) {
 
     if ( typeof name == 'number' ) {
-      return this.series[ name ] ||  false;
+      return this.series[ name ] || false;
     }
 
     if ( typeof name == 'function' ) {
@@ -1196,7 +1196,7 @@ class Graph extends EventEmitter {
       }
     }
 
-    return false
+    return false;
   }
 
   /**
@@ -1228,7 +1228,7 @@ class Graph extends EventEmitter {
   drawSerie( serie, force ) {
 
     if ( !serie.draw ) {
-      throw "Serie has no method draw";
+      throw 'Serie has no method draw';
     }
 
     serie.draw( force );
@@ -1256,7 +1256,7 @@ class Graph extends EventEmitter {
    * @alias Graph#removeSeries
    */
   resetSeries() {
-    this.removeSeries()
+    this.removeSeries();
   }
 
   /**
@@ -1288,7 +1288,7 @@ class Graph extends EventEmitter {
    */
   selectSerie( serie, selectName ) {
 
-    if ( !( typeof serie == "object" ) ) {
+    if ( !( typeof serie == 'object' ) ) {
       serie = this.getSerie( serie );
     }
 
@@ -1303,7 +1303,7 @@ class Graph extends EventEmitter {
     this.selectedSerie = serie;
     this.triggerEvent( 'onSelectSerie', serie );
 
-    serie.select( selectName || "selected" );
+    serie.select( selectName || 'selected' );
   }
 
   /**
@@ -1350,11 +1350,11 @@ class Graph extends EventEmitter {
   }
   makeToolbar( toolbarData ) {
 
-    var constructor = this.getConstructor( "graph.toolbar" );
+    var constructor = this.getConstructor( 'graph.toolbar' );
     if ( constructor ) {
       return this.toolbar = new constructor( this, toolbarData );
     } else {
-      return util.throwError( "No constructor exists for toolbar" );
+      return util.throwError( 'No constructor exists for toolbar' );
     }
   }
 
@@ -1362,7 +1362,7 @@ class Graph extends EventEmitter {
    *  Returns all shapes from the graph
    */
   getShapes() {
-    return this.shapes ||  [];
+    return this.shapes || [];
   }
 
   /**
@@ -1391,7 +1391,7 @@ class Graph extends EventEmitter {
     }
 
     // Backward compatibility
-    if ( typeof shapeType == "object" ) {
+    if ( typeof shapeType == 'object' ) {
       mute = shapeData;
       shapeData = shapeType;
       shapeType = shapeData.type;
@@ -1401,20 +1401,20 @@ class Graph extends EventEmitter {
     shapeData._id = util.guid();
 
     var constructor;
-    if ( typeof shapeType == "function" ) {
+    if ( typeof shapeType == 'function' ) {
       constructor = shapeType;
     } else {
-      constructor = this.getConstructor( "graph.shape." + shapeType );
+      constructor = this.getConstructor( 'graph.shape.' + shapeType );
     }
 
     if ( !constructor ) {
-      return util.throwError( "No constructor for this shape" );
+      return util.throwError( 'No constructor for this shape' );
     }
 
     var shape = new constructor( this, shapeData );
 
     if ( !shape ) {
-      return util.throwError( "Failed to construct shape." );
+      return util.throwError( 'Failed to construct shape.' );
     }
 
     shape.type = shapeType;
@@ -1478,7 +1478,7 @@ class Graph extends EventEmitter {
     }
 
     if ( shapeData.attributes !== undefined ) {
-      shape.setProp( "attributes", shapeData.attributes );
+      shape.setProp( 'attributes', shapeData.attributes );
     }
 
     if ( shapeData.handles !== undefined ) {
@@ -1486,11 +1486,11 @@ class Graph extends EventEmitter {
     }
 
     if ( shapeData.selectOnMouseDown !== undefined ) {
-      shape.setProp( "selectOnMouseDown", true );
+      shape.setProp( 'selectOnMouseDown', true );
     }
 
     if ( shapeData.selectOnClick !== undefined ) {
-      shape.setProp( "selectOnClick", true );
+      shape.setProp( 'selectOnClick', true );
     }
 
     if ( shapeData.transforms !== undefined && Array.isArray( shapeData.transforms ) ) {
@@ -1508,11 +1508,11 @@ class Graph extends EventEmitter {
     }
 
     if ( shapeData.highlightOnMouseOver !== undefined ) {
-      shape.setProp( "highlightOnMouseOver", true );
+      shape.setProp( 'highlightOnMouseOver', true );
     }
 
     if ( shapeData.labelEditable ) {
-      shape.setProp( "labelEditable", shapeData.labelEditable );
+      shape.setProp( 'labelEditable', shapeData.labelEditable );
     }
 
     if ( shapeData.labels && !shapeData.label ) {
@@ -1522,7 +1522,7 @@ class Graph extends EventEmitter {
     if ( shapeData.label !== undefined ) {
 
       if ( !Array.isArray( shapeData.label ) ) {
-        shapeData.label = [  shapeData.label ];
+        shapeData.label = [ shapeData.label ];
       }
 
       for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
@@ -1566,7 +1566,7 @@ class Graph extends EventEmitter {
 
     // 18 September 2016 Norman: What is that ?
     Array.prototype.unshift.call( arguments, null );
-    return new( Function.prototype.bind.apply( GraphPosition, arguments ) );
+    return new( Function.prototype.bind.apply( GraphPosition, arguments ) )();
   }
 
   /**
@@ -1615,14 +1615,14 @@ class Graph extends EventEmitter {
     }
 
     if ( !mute ) {
-      this.emit( "beforeShapeSelect", shape );
+      this.emit( 'beforeShapeSelect', shape );
     }
 
     if ( this.prevent( false ) ) {
       return;
     }
 
-    if ( this.selectedShapes.length > 0 && this.options.shapesUniqueSelection )  { // Only one selected shape at the time
+    if ( this.selectedShapes.length > 0 && this.options.shapesUniqueSelection ) { // Only one selected shape at the time
 
       this.unselectShapes( mute );
     }
@@ -1631,7 +1631,7 @@ class Graph extends EventEmitter {
     this.selectedShapes.push( shape );
 
     if ( !mute ) {
-      this.emit( "shapeSelect", shape );
+      this.emit( 'shapeSelect', shape );
     }
   }
 
@@ -1651,7 +1651,7 @@ class Graph extends EventEmitter {
     }
 
     if ( !mute ) {
-      this.emit( "beforeShapeUnselect", shape );
+      this.emit( 'beforeShapeUnselect', shape );
     }
 
     if ( this.cancelUnselectShape ) {
@@ -1664,7 +1664,7 @@ class Graph extends EventEmitter {
     this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
 
     if ( !mute ) {
-      this.emit( "shapeUnselect", shape );
+      this.emit( 'shapeUnselect', shape );
     }
 
   }
@@ -1677,7 +1677,7 @@ class Graph extends EventEmitter {
   unselectShapes( mute ) {
 
     while ( this.selectedShapes[ 0 ] ) {
-      this.unselectShape( this.selectedShapes[  0 ], mute );
+      this.unselectShape( this.selectedShapes[ 0 ], mute );
     }
 
     return this;
@@ -1752,7 +1752,7 @@ class Graph extends EventEmitter {
     return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
 
   }
-  focus()  {
+  focus() {
     this.wrapper.focus();
   }
   elementMoving( movingElement ) {
@@ -1785,11 +1785,11 @@ class Graph extends EventEmitter {
 
   isActionAllowed( e, action ) {
 
-    if ( action.type !== e.type &&  ( action.type !== undefined || e.type !== "mousedown" ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
+    if ( action.type !== e.type && ( action.type !== undefined || e.type !== 'mousedown' ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
     }
 
-    if ( action.enabled && ( typeof action.enabled == "function" ? !action.enabled( this ) : !actions.enabled ) ) {
+    if ( action.enabled && ( typeof action.enabled == 'function' ? !action.enabled( this ) : !actions.enabled ) ) {
       return;
     }
 
@@ -1810,7 +1810,7 @@ class Graph extends EventEmitter {
           'down': 34,
           'left': 37,
           'right': 39
-        }
+        };
 
         if ( keyCheck[ action.key ] !== e.keyCode ) {
           return;
@@ -1894,18 +1894,18 @@ class Graph extends EventEmitter {
       pluginName = i;
       pluginOptions = this.options.plugins[ i ];
 
-      constructor = this.getConstructor( "graph.plugin." + pluginName );
+      constructor = this.getConstructor( 'graph.plugin.' + pluginName );
 
       if ( constructor ) {
 
         //var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
         this.plugins[ pluginName ] = new constructor( pluginOptions );
 
-        util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
+        util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[ pluginName ] );
         this.plugins[ pluginName ].init( this, pluginOptions );
 
       } else {
-        util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
+        util.throwError( 'Plugin "' + pluginName + '" has not been registered' );
       }
     }
   }
@@ -1919,7 +1919,7 @@ class Graph extends EventEmitter {
     var plugin = this.plugins[ pluginName ];
 
     if ( !plugin ) {
-      return util.throwError( "Plugin \"" + pluginName + "\" has not been loaded or properly registered" );
+      return util.throwError( 'Plugin "' + pluginName + '" has not been loaded or properly registered' );
     }
 
     return plugin;
@@ -1928,7 +1928,7 @@ class Graph extends EventEmitter {
     var func = arguments[ 0 ],
       args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
 
-    if ( typeof this.options[ func ] == "function" ) {
+    if ( typeof this.options[ func ] == 'function' ) {
       return this.options[ func ].apply( this, arguments );
     }
 
@@ -1945,11 +1945,11 @@ class Graph extends EventEmitter {
       return this.legend;
     }
 
-    var constructor = this.getConstructor( "graph.legend" );
+    var constructor = this.getConstructor( 'graph.legend' );
     if ( constructor ) {
       this.legend = new constructor( this, options );
     } else {
-      return util.throwError( "Graph legend is not available as it has not been registered" );
+      return util.throwError( 'Graph legend is not available as it has not been registered' );
     }
 
     //    this.legend.update();
@@ -2009,9 +2009,9 @@ class Graph extends EventEmitter {
 
     if ( !this.zAxis ) {
       this.zAxis = {
-        g: document.createElementNS( Graph.ns, "g" ),
-        l: document.createElementNS( Graph.ns, "line" )
-      }
+        g: document.createElementNS( Graph.ns, 'g' ),
+        l: document.createElementNS( Graph.ns, 'line' )
+      };
 
       this.zAxis.g.appendChild( this.zAxis.l );
       this.groupGrids.appendChild( this.zAxis.g );
@@ -2035,7 +2035,7 @@ class Graph extends EventEmitter {
     this.updateDataMinMaxAxes( true );
 
     var sort = this.series.map( ( serie ) => {
-      return [ serie.getZPos(), serie ]
+      return [ serie.getZPos(), serie ];
     } );
 
     sort.sort( ( sa, sb ) => {
@@ -2096,8 +2096,8 @@ class Graph extends EventEmitter {
 
     var pos = this.offsetCached || util.getOffset( this.wrapper );
 
-    x -= pos.left /* - document.body.scrollLeft*/ ;
-    y -= pos.top /* - document.body.scrollTop*/ ;
+    x -= pos.left;
+    y -= pos.top;
 
     return {
       x: x,
@@ -2184,16 +2184,16 @@ class Graph extends EventEmitter {
     options.enable = options.enable === undefined ? true : !!options.enable;
 
     // Individual tracking
-    if ( options.mode == "individual" ) {
+    if ( options.mode == 'individual' ) {
 
       if ( options.series ) {
 
         if ( !Array.isArray( options.series ) ) {
 
-          if ( options.series == "all" ) {
+          if ( options.series == 'all' ) {
 
             options.series = this.series.map( ( serie ) => {
-              serie: serie
+              serie;
             } );
 
           } else {
@@ -2204,10 +2204,10 @@ class Graph extends EventEmitter {
 
         options.series.forEach( ( sOptions ) => {
 
-          if ( typeof sOptions.serie !== "object" ) {
+          if ( typeof sOptions.serie !== 'object' ) {
 
-            if ( typeof sOptions !== "object" ) {
-              throw "Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";
+            if ( typeof sOptions !== 'object' ) {
+              throw 'Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }';
             }
 
             sOptions.serie = this.getSerie( sOptions.serie );
@@ -2285,14 +2285,14 @@ class Graph extends EventEmitter {
 
             for ( var i in output ) {
 
-              return output[ i ].serie.serie.getName() + ": " + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )
+              return output[ i ].serie.serie.getName() + ': ' + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue );
               break;
             }
 
           }, index.trueX );
 
           if ( serie._trackingLegend ) {
-            serie._trackingLegend.style.display = "block";
+            serie._trackingLegend.style.display = 'block';
           }
         }
       }
@@ -2307,7 +2307,7 @@ class Graph extends EventEmitter {
       }
 
       if ( serie._trackingLegend ) {
-        serie._trackingLegend.style.display = "none";
+        serie._trackingLegend.style.display = 'none';
       }
 
       serie._trackingLegend = _trackingLegendSerie( this, {
@@ -2343,7 +2343,7 @@ class Graph extends EventEmitter {
         katexElement = document.createElementNS( Graph.ns, 'foreignObject' );
       }
 
-      let div = document.createElement( "div" );
+      let div = document.createElement( 'div' );
 
       katexElement.appendChild( div );
       this._katexRenderer( katexValue, div );
@@ -2382,7 +2382,7 @@ class Graph extends EventEmitter {
       schema.axis.map( function( schemaAxis ) {
 
         if ( !schemaAxis.type ) {
-          util.throwError( "Axis type is required (top, bottom, left or right)" );
+          util.throwError( 'Axis type is required (top, bottom, left or right)' );
         }
 
         var axisOptions = {};
@@ -2446,7 +2446,7 @@ class Graph extends EventEmitter {
         switch ( schemaSerie.type ) {
 
           case 'bar':
-            util.throwError( "Bar charts not supported" );
+            util.throwError( 'Bar charts not supported' );
             serieType = false;
             break;
 
@@ -2461,7 +2461,7 @@ class Graph extends EventEmitter {
           case 'box':
             serieType = Graph.SERIE_BOX;
 
-            if ( schemaSerie.orientation == 'x' ||  schemaSerie.orientation == 'y' ) {
+            if ( schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y' ) {
               serieOptions.orientation = schemaSerie.orientation;
             }
             break;
@@ -2476,7 +2476,7 @@ class Graph extends EventEmitter {
         }
 
         if ( !serieType ) {
-          util.throwError( "No valid serie type was found" );
+          util.throwError( 'No valid serie type was found' );
           return;
         }
 
@@ -2598,7 +2598,7 @@ class Graph extends EventEmitter {
 
               case Graph.SERIE_BOX:
 
-                serie.setStyle( styles[ 0 ], styleName ||  "unselected" );
+                serie.setStyle( styles[ 0 ], styleName || 'unselected' );
                 break;
             }
           } );
@@ -2642,7 +2642,7 @@ class Graph extends EventEmitter {
               }
             }
 
-          } else if ( schemaSerie.errorBarX ||  schemaSerie.errorBoxX ) {
+          } else if ( schemaSerie.errorBarX || schemaSerie.errorBoxX ) {
 
             if ( schemaSerie.errorBarX ) {
 
@@ -2688,7 +2688,7 @@ class Graph extends EventEmitter {
                 errorBarsYBelow.push( schemaSerie.errorY[ i ] );
               }
             }
-          } else if ( schemaSerie.errorBarY ||  schemaSerie.errorBoxY ) {
+          } else if ( schemaSerie.errorBarY || schemaSerie.errorBoxY ) {
 
             if ( schemaSerie.errorBarY ) {
 
@@ -2764,8 +2764,8 @@ class Graph extends EventEmitter {
         if ( schema.axis ) {
           serieAxis = schema.axis[ schemaSerie.xAxis ];
 
-          if ( !serieAxis || (  serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) ) {
-            util.warn( "No x axis found. Setting automatically" );
+          if ( !serieAxis || ( serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) ) {
+            util.warn( 'No x axis found. Setting automatically' );
             serie.setXAxis( graph.getXAxis( 0 ) );
           } else {
             if ( serieAxis.type == 'top' ) {
@@ -2777,8 +2777,8 @@ class Graph extends EventEmitter {
 
           serieAxis = schema.axis[ schemaSerie.yAxis ];
 
-          if ( !serieAxis || (  serieAxis.type !== 'left' && serieAxis.type !== 'right' ) ) {
-            util.warn( "No y axis found. Setting automatically" );
+          if ( !serieAxis || ( serieAxis.type !== 'left' && serieAxis.type !== 'right' ) ) {
+            util.warn( 'No y axis found. Setting automatically' );
             serie.setYAxis( graph.getYAxis( 0 ) );
           } else {
             if ( serieAxis.type == 'left' ) {
@@ -2789,7 +2789,7 @@ class Graph extends EventEmitter {
           }
 
         } else {
-          util.warn( "No axes found. Setting automatically" );
+          util.warn( 'No axes found. Setting automatically' );
           serie.autoAxis();
         }
 
@@ -2852,7 +2852,7 @@ class Graph extends EventEmitter {
           max: axis.options.forcedMax,
           flip: axis.options.flipped
 
-        }
+        };
       } ) );
 
       if ( axisPosition == 'top' || axisPosition == 'bottom' ) {
@@ -2885,7 +2885,7 @@ class Graph extends EventEmitter {
           return 'scatter';
           break;
       }
-    }
+    };
 
     let exportData = ( serie, x ) => {
 
@@ -2899,7 +2899,7 @@ class Graph extends EventEmitter {
 
             for ( var j = 0; j < serie.data[ i ].length - 1; j += 2 ) {
 
-              data.push( serie.data[ i ][ j + ( ( x && serie.isFlipped() ||  !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
+              data.push( serie.data[ i ][ j + ( ( x && serie.isFlipped() || !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
             }
           }
           break;
@@ -2908,14 +2908,14 @@ class Graph extends EventEmitter {
 
           for ( var j = 0; j < serie.data.length - 1; j += 2 ) {
 
-            data.push( serie.data[ i + ( ( x && serie.isFlipped() ||  !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
+            data.push( serie.data[ i + ( ( x && serie.isFlipped() || !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
           }
 
           break;
       }
 
       return data;
-    }
+    };
 
     schema.data = seriesExport.concat( this.series.map( ( serie ) => {
 
@@ -2946,7 +2946,7 @@ class Graph extends EventEmitter {
               lineColor: markers.strokeColor,
               color: markers.fillColor,
               points: markers.points
-            }
+            };
           } ) );
 
         }
@@ -2962,7 +2962,7 @@ class Graph extends EventEmitter {
         yAxis: allaxes.y.indexOf( serie.getYAxis() ),
         style: style,
         lineStyle: linestyle
-      }
+      };
     } ) );
 
     return schema;
@@ -2978,7 +2978,7 @@ class Graph extends EventEmitter {
   static registerConstructor( constructorName, constructor ) {
 
     if ( _constructors.has( constructorName ) ) {
-      return util.throwError( "Constructor " + constructor + " already exists." );
+      return util.throwError( 'Constructor ' + constructor + ' already exists.' );
     }
 
     _constructors.set( constructorName, constructor );
@@ -2987,7 +2987,7 @@ class Graph extends EventEmitter {
   /**
    * Returns a registered constructor
    * @param {String} constructorName - The constructor name to look for
-   * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
+   * @param {Boolean} [softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
    * @returns {Function} The registered constructor
    * @throws Error
    * @see Graph.registerConstructor
@@ -3001,7 +3001,7 @@ class Graph extends EventEmitter {
         return false;
       }
 
-      return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
+      return util.throwError( 'Constructor "' + constructorName + "\" doesn't exist" );
     }
 
     return _constructors.get( constructorName );
@@ -3022,8 +3022,8 @@ Graph.prototype.getConstructor = Graph.getConstructor;
 function makeSerie( graph, name, options, type ) {
 
   var constructor = graph.getConstructor( type, true );
-  if ( !constructor && typeof type == "string" ) {
-    constructor = graph.getConstructor( "graph.serie." + type, true );
+  if ( !constructor && typeof type == 'string' ) {
+    constructor = graph.getConstructor( 'graph.serie.' + type, true );
   }
 
   if ( constructor ) {
@@ -3034,12 +3034,12 @@ function makeSerie( graph, name, options, type ) {
 
   } else {
 
-    return util.throwError( "No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series" );
+    return util.throwError( 'No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series' );
 
   }
 
   return serie;
-};
+}
 
 function getAxisLevelFromSpan( span, level ) {
 
@@ -3124,7 +3124,7 @@ function refreshDrawingZone( graph ) {
   // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
 
-    if ( !axis.isShown() ||  axis.floating ) {
+    if ( !axis.isShown() || axis.floating ) {
       return;
     }
 
@@ -3171,7 +3171,7 @@ function refreshDrawingZone( graph ) {
   // Applied to left and right
   graph._applyToAxes( function( axis, position ) {
 
-    if ( !axis.isShown() ||  axis.floating ) {
+    if ( !axis.isShown() || axis.floating ) {
       return;
     }
 
@@ -3201,7 +3201,7 @@ function refreshDrawingZone( graph ) {
   // Apply to left and right
   graph._applyToAxes( ( axis, position ) => {
 
-    if ( !axis.isShown() ||  axis.floating ) {
+    if ( !axis.isShown() || axis.floating ) {
       return;
     }
     axis.setShift( shift[ position ][ axis.getLevel() ] );
@@ -3360,7 +3360,7 @@ function checkKeyActions( graph, e, parameters, methodName ) {
       }
 
       if ( !Array.isArray( keyComb[ i ].series ) ) {
-        series = [  series ];
+        series = [ series ];
       }
 
       if ( keyComb[ i ].options ) {
@@ -3368,7 +3368,7 @@ function checkKeyActions( graph, e, parameters, methodName ) {
       }
 
       for ( var j = 0; j < series.length; i++ ) {
-        graph._serieExecute( series[  i ], methodName, parameters );
+        graph._serieExecute( series[ i ], methodName, parameters );
       }
       return true;
     }*/
@@ -3377,19 +3377,19 @@ function checkKeyActions( graph, e, parameters, methodName ) {
 
   return false;
 
-};
+}
 
 function doDom() {
 
   // Create SVG element, set the NS
   this.dom = document.createElementNS( Graph.ns, 'svg' );
-  this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  this.dom.setAttributeNS( 'http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink' );
   //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
   util.setAttributeTo( this.dom, {
     'xmlns': Graph.ns,
     'font-family': this.options.fontFamily,
     'font-size': this.options.fontSize,
-    'data-jsgraph-version': __VERSION__ ||  'head'
+    'data-jsgraph-version': __VERSION__ || 'head'
   } );
 
   this.defs = document.createElementNS( Graph.ns, 'defs' );
@@ -3556,7 +3556,7 @@ function _registerEvents( graph ) {
   var self = graph;
 
   if ( !graph.wrapper ) {
-    throw "No wrapper exists. Cannot register the events."
+    throw 'No wrapper exists. Cannot register the events.';
   }
 
   graph.wrapper.addEventListener( 'keydown', e => {
@@ -3605,7 +3605,7 @@ function _registerEvents( graph ) {
 
   graph.dom.addEventListener( 'mouseup', function( e ) {
 
-    graph.emit( "mouseUp", e );
+    graph.emit( 'mouseUp', e );
     var coords = graph._getXY( e );
 
     _handleMouseUp( graph, coords.x, coords.y, e );
@@ -3618,7 +3618,7 @@ function _registerEvents( graph ) {
 
   graph.dom.addEventListener( 'dblclick', function( e ) {
 
-    graph.emit( "dblClick", e );
+    graph.emit( 'dblClick', e );
     var coords = graph._getXY( e );
 
     _handleDblClick( graph, coords.x, coords.y, e );
@@ -3687,7 +3687,7 @@ function _handleMouseMove( graph, x, y, e ) {
 
   if ( graph.activePlugin && graph._pluginExecute( graph.activePlugin, 'onMouseMove', [ graph, x, y, e ] ) ) {
     return;
-  };
+  }
 
   //			return;
 
@@ -3700,7 +3700,7 @@ function _handleMouseMove( graph, x, y, e ) {
     // Takes care of the tracking line
     if ( graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie ) {
 
-      if ( graph.options.trackingLine.mode == "common" ) {
+      if ( graph.options.trackingLine.mode == 'common' ) {
 
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove( false, true );
@@ -3755,7 +3755,7 @@ function _handleMouseMove( graph, x, y, e ) {
     graph.options.onMouseMoveData.call( graph, e, results );
   }
 
-  checkMouseActions( graph, e, [  graph, x, y, e ], 'onMouseMove' );
+  checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseMove' );
 
   return;
 
@@ -3778,7 +3778,7 @@ function checkMouseActions( graph, e, parameters, methodName ) {
 
         // Lease the mouse action to the current action
         // 25.10.2017: Except for mousewheel. See #111
-        if ( e.type !== "wheel" && e.type !== "mousewheel" ) {
+        if ( e.type !== 'wheel' && e.type !== 'mousewheel' ) {
           graph.activePlugin = keyComb[ i ].plugin;
         }
 
@@ -3805,7 +3805,7 @@ function checkMouseActions( graph, e, parameters, methodName ) {
       }
 
       if ( !Array.isArray( keyComb[ i ].series ) ) {
-        series = [  series ];
+        series = [ series ];
       }
 
       if ( keyComb[ i ].options ) {
@@ -3813,7 +3813,7 @@ function checkMouseActions( graph, e, parameters, methodName ) {
       }
 
       for ( var j = 0; j < series.length; i++ ) {
-        graph._serieExecute( series[  i ], methodName, parameters );
+        graph._serieExecute( series[ i ], methodName, parameters );
       }
       executed = true;
       continue;
@@ -3821,7 +3821,7 @@ function checkMouseActions( graph, e, parameters, methodName ) {
   }
 
   return executed;
-};
+}
 
 var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xValue ) {
 
@@ -3876,9 +3876,9 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
         serie.serie.trackingShape = graph.newShape(
 
-            graph.options.trackingLine.serieShape.shape ||  'ellipse', {
+            graph.options.trackingLine.serieShape.shape || 'ellipse', {
               fillColor: serie.serie.getLineColor(),
-              strokeColor: "White",
+              strokeColor: 'White',
               strokeWidth: serie.serie.getLineWidth()
             },
             true,
@@ -3893,11 +3893,11 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
         ( graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated( serie.serie.trackingShape ) );
 
-        serie.serie.trackingShape.on( "changed", () => {
+        serie.serie.trackingShape.on( 'changed', () => {
 
           ( graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged( serie.serie.trackingShape ) );
 
-        } )
+        } );
       }
 
       serie.serie.trackingShape.show();
@@ -3928,18 +3928,18 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
     return;
   }
 
-  if ( Object.keys( output ).length == 0 ||  !textMethod ) {
-    legend.style.display = "none";
+  if ( Object.keys( output ).length == 0 || !textMethod ) {
+    legend.style.display = 'none';
   } else {
 
-    if ( legend.style.display == "none" ||  justCreated ) {
+    if ( legend.style.display == 'none' || justCreated ) {
 
       forceTrackingLegendMode( graph, legend, x, y, true );
     } else {
       _trackingLegendMove( graph, legend, x, y );
     }
 
-    legend.style.display = "block";
+    legend.style.display = 'block';
     var txt = textMethod( output, xValue, x, y );
 
     legend.innerHTML = txt;
@@ -3957,15 +3957,15 @@ var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
   var ratio = 0,
     start = Date.now(),
     h = legend.offsetHeight,
-    startX = parseInt( legend.style.marginLeft.replace( "px", "" ) ||  0 ),
-    startY = parseInt( legend.style.marginTop.replace( "px", "" ) ||  0 );
+    startX = parseInt( legend.style.marginLeft.replace( 'px', '' ) || 0 ),
+    startY = parseInt( legend.style.marginTop.replace( 'px', '' ) || 0 );
 
   toX = ( toX > graph.getWidth() / 2 ) ? ( ( toX - toX % 10 - 20 ) - legend.offsetWidth ) : ( toX - toX % 10 + 30 );
   toY = ( toY - toY % 10 + h / 2 );
 
   if ( skip ) {
-    legend.style.marginLeft = ( toX ) + "px";
-    legend.style.marginTop = ( toY ) + "px";
+    legend.style.marginLeft = ( toX ) + 'px';
+    legend.style.marginTop = ( toY ) + 'px';
     return;
   }
 
@@ -3976,8 +3976,8 @@ var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
       progress = 1;
     }
 
-    legend.style.marginLeft = ( ( toX - startX ) * progress + startX ) + "px";
-    legend.style.marginTop = ( ( toY - startY ) * progress + startY ) + "px";
+    legend.style.marginLeft = ( ( toX - startX ) * progress + startX ) + 'px';
+    legend.style.marginTop = ( ( toY - startY ) * progress + startY ) + 'px';
 
     if ( progress < 1 ) {
       window.requestAnimationFrame( next );
@@ -3995,14 +3995,14 @@ function _makeTrackingLegend( graph ) {
   group.setAttribute( 'class', 'trackingLegend' );
   group.style.position = 'absolute';
   group.style.borderRadius = '4px';
-  group.style.boxShadow = "1px 1px 3px 0px rgba(100,100,100,0.6)";
-  group.style.border = "2px solid #333333";
-  group.style.backgroundColor = "rgba(255, 255, 255, 0.5 )";
-  group.style.pointerEvents = "none";
-  group.style.paddingTop = "5px";
-  group.style.paddingBottom = "5px";
-  group.style.paddingLeft = "10px";
-  group.style.paddingRight = "10px";
+  group.style.boxShadow = '1px 1px 3px 0px rgba(100,100,100,0.6)';
+  group.style.border = '2px solid #333333';
+  group.style.backgroundColor = 'rgba(255, 255, 255, 0.5 )';
+  group.style.pointerEvents = 'none';
+  group.style.paddingTop = '5px';
+  group.style.paddingBottom = '5px';
+  group.style.paddingLeft = '10px';
+  group.style.paddingRight = '10px';
 
   graph.getWrapper().insertBefore( group, graph.getDom() );
 
@@ -4015,7 +4015,7 @@ function _handleDblClick( graph, x, y, e ) {
   var pref = graph.options.dblclick;
   checkMouseActions( graph, e, [ x, y, e ], 'onDblClick' );
   /*
-      if ( !pref ||  !pref.type ) {
+      if ( !pref || !pref.type ) {
         return;
       }
 
@@ -4067,16 +4067,16 @@ function _getAxis( graph, num, options, pos ) {
   var _availableAxes = {
 
     def: {
-      x: graph.getConstructor( "graph.axis.x" ),
-      y: graph.getConstructor( "graph.axis.y" )
+      x: graph.getConstructor( 'graph.axis.x' ),
+      y: graph.getConstructor( 'graph.axis.y' )
     },
 
     time: {
-      x: graph.getConstructor( "graph.axis.x.time" )
+      x: graph.getConstructor( 'graph.axis.x.time' )
     },
 
     bar: {
-      x: graph.getConstructor( "graph.axis.x.bar" )
+      x: graph.getConstructor( 'graph.axis.x.bar' )
     }
   };
 
@@ -4114,7 +4114,7 @@ function _getAxis( graph, num, options, pos ) {
 
   num = num || 0;
 
-  if ( typeof num == "object" ) {
+  if ( typeof num == 'object' ) {
     options = num;
     num = 0;
   }
@@ -4200,6 +4200,6 @@ Graph.TICKS_INSIDE = Symbol();
 Graph.TICKS_CENTERED = Symbol();
 
 Graph.ns = 'http://www.w3.org/2000/svg';
-Graph.nsxlink = "http://www.w3.org/1999/xlink";
+Graph.nsxlink = 'http://www.w3.org/1999/xlink';
 
-export default Graph
+export default Graph;

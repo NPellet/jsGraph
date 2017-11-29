@@ -1,5 +1,5 @@
-import * as util from '../graph.util.js'
-import Shape from './graph.shape.js'
+import * as util from '../graph.util.js';
+import Shape from './graph.shape.js';
 
 /**
  * Displays an ellipse
@@ -19,13 +19,13 @@ class ShapeEllipse extends Shape {
 
     var pos = this.computePosition( 0 );
 
-    this.setDom( 'cx', pos.x ||  0 );
-    this.setDom( 'cy', pos.y ||  0 );
+    this.setDom( 'cx', pos.x || 0 );
+    this.setDom( 'cy', pos.y || 0 );
 
     let posR = this.graph.newPosition( {
 
       dx: this.getProp( 'rx' ),
-      dy: this.getProp( 'ry' ) ||  this.getProp( 'rx' )
+      dy: this.getProp( 'ry' ) || this.getProp( 'rx' )
 
     } );
 

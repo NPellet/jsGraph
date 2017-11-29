@@ -1,4 +1,4 @@
-import Axis from './graph.axis.js'
+import Axis from './graph.axis.js';
 
 /**
  * Generic constructor of a y axis
@@ -22,7 +22,7 @@ class AxisY extends Axis {
   }
 
   getAxisPosition( shift ) {
-    return this.shiftPosition ||  0;
+    return this.shiftPosition || 0;
   }
 
   getAdditionalWidth() {
@@ -190,8 +190,8 @@ class AxisY extends Axis {
     this.line.setAttribute( 'stroke', this.getAxisColor() );
 
     var span = this.getSpan();
-    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks ||  span[ 0 ] == 0 ? "" : "url(#verticalsplit_" + this.graph.getId() + ")" ) );
-    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks ||  span[ 1 ] == 1 ? "" : "url(#verticalsplit_" + this.graph.getId() + ")" ) );
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')' ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')' ) );
   }
 
   /**
@@ -201,7 +201,7 @@ class AxisY extends Axis {
 
     this.shift = shift;
 
-    if ( !this.shift ||  !this.graph.getWidth() ) {
+    if ( !this.shift || !this.graph.getWidth() ) {
       return;
     }
 
@@ -285,7 +285,7 @@ class AxisY extends Axis {
    */
   scaleToFitAxis( axis, excludeSerie, start, end, min, max ) {
     //console.log( axis instanceof GraphAxis );
-    if ( !axis ||  !axis.isX() ) {
+    if ( !axis || !axis.isX() ) {
       axis = this.graph.getXAxis();
     }
 
@@ -305,7 +305,7 @@ class AxisY extends Axis {
       max = true;
     }
 
-    if ( typeof excludeSerie == "number" ) {
+    if ( typeof excludeSerie == 'number' ) {
       end = start;
       start = excludeSerie;
       excludeSerie = false;

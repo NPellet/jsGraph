@@ -1,4 +1,4 @@
-import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
 
 /**
  * Represents a plugin
@@ -22,7 +22,7 @@ class Plugin extends EventEmitter {
    */
   init( graph ) {
     this.graph = graph;
-  };
+  }
 
   /**
    * Handles the mousedown event from jsGraph
@@ -32,7 +32,7 @@ class Plugin extends EventEmitter {
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
    */
-  onMouseDown() {};
+  onMouseDown() {}
 
   /**
    * Handles the mouseup event from jsGraph
@@ -42,7 +42,7 @@ class Plugin extends EventEmitter {
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
    */
-  onMouseUp() {};
+  onMouseUp() {}
 
   /**
    * Handles the mousemove event from jsGraph

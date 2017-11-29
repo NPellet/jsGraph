@@ -1,4 +1,4 @@
-import AxisX from './graph.axis.x.js'
+import AxisX from './graph.axis.x.js';
 
 /**
  * Generic constructor of a y axis
@@ -101,7 +101,7 @@ class AxisXBar extends AxisX {
 
     Array.prototype.map.call( this.series, function( serie, index ) {
 
-      if ( !( typeof serie == "object" ) ) {
+      if ( !( typeof serie == 'object' ) ) {
         serie = self.graph.getSerie( serie );
       }
 

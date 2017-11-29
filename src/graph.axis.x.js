@@ -1,4 +1,4 @@
-import Axis from './graph.axis.js'
+import Axis from './graph.axis.js';
 
 /**
  * Generic constructor of a y axis
@@ -41,7 +41,7 @@ class AxisX extends Axis {
   /**
    *  @returns {Boolean} always ```true```
    */
-  isX()  {
+  isX() {
     return true;
   }
 
@@ -63,7 +63,7 @@ class AxisX extends Axis {
       return;
     }
 
-    this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' )
+    this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' );
   }
 
   /**
@@ -71,7 +71,7 @@ class AxisX extends Axis {
    *  @return {Number} The maximum tick height
    */
   getMaxSizeTick() {
-    return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
+    return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 );
   }
 
   /**
@@ -186,8 +186,8 @@ class AxisX extends Axis {
     }
 
     var span = this.getSpan();
-    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks ||  span[ 0 ] == 0 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
-    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks ||  span[ 1 ] == 1 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')' ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')' ) );
 
   }
 

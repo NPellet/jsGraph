@@ -1,4 +1,4 @@
-import ShapeLine from './graph.shape.line.js'
+import ShapeLine from './graph.shape.line.js';
 
 /**
  *  Displays an arrow
@@ -18,11 +18,11 @@ class ShapeArrow extends ShapeLine {
     this._dom.setAttribute( 'marker-end', 'url(#arrow' + this.graph._creation + ')' );
 
     this.createHandles( this.nbHandles, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white",
+      stroke: 'black',
+      fill: 'white',
       cursor: 'nwse-resize'
     } );
 

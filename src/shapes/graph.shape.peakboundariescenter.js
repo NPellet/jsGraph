@@ -1,4 +1,4 @@
-import ShapeLine from './graph.shape.line.js'
+import ShapeLine from './graph.shape.line.js';
 
 /**
  *  Shows a horizontal line with three little vertical bars. Very useful to demonstrate a peak start, end and middle value
@@ -35,11 +35,11 @@ class ShapePeakBoundaries extends ShapeLine {
 
   createHandles() {
     this._createHandles( 3, 'rect', {
-      transform: "translate(-3 -3)",
+      transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
-      stroke: "black",
-      fill: "white",
+      stroke: 'black',
+      fill: 'white',
       cursor: 'nwse-resize'
     } );
   }
@@ -73,7 +73,7 @@ class ShapePeakBoundaries extends ShapeLine {
     if ( posLeft.x && posRight.x && posCenter.x && this.posYPx ) {
 
       var height = this.lineHeight;
-      this.rectBoundary.setAttribute( 'd', 'M ' + posLeft.x + ' ' + ( this.posYPx - height ) + ' v ' + ( 2 * height ) + ' H ' + posRight.x + " v " + ( -2 * height ) + "z" );
+      this.rectBoundary.setAttribute( 'd', 'M ' + posLeft.x + ' ' + ( this.posYPx - height ) + ' v ' + ( 2 * height ) + ' H ' + posRight.x + ' v ' + ( -2 * height ) + 'z' );
       this.line1.setAttribute( 'x1', posLeft.x );
       this.line1.setAttribute( 'x2', posLeft.x );
 

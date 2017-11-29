@@ -35,12 +35,12 @@ if (
       if ( e.data.xdata ) {
 
         getX = function getX( index ) {
-          return e.data.xdata[  index ];
-        }
+          return e.data.xdata[ index ];
+        };
       } else {
         getX = function getX( index ) {
           return index * e.data.xScale + e.data.xOffset;
-        }
+        };
       }
 
       let aggregations = {};
@@ -145,7 +145,7 @@ if (
             newAggregationX[ k + 2 ] = newAggregationX[ k ];
             newAggregationX[ k + 3 ] = newAggregationX[ k ];
 
-            newAggregation[ k ] = lastAggregation[ i ]
+            newAggregation[ k ] = lastAggregation[ i ];
             newAggregation[ k + 1 ] = Math.min( lastAggregation[ i + 1 ], lastAggregation[ i + 5 ] );
             newAggregation[ k + 2 ] = Math.max( lastAggregation[ i + 2 ], lastAggregation[ i + 6 ] );
             newAggregation[ k + 3 ] = lastAggregation[ i + 7 ];
@@ -163,7 +163,7 @@ if (
             newAggregation[ k + 2 ] = newAggregation[ k ];
             newAggregation[ k + 3 ] = newAggregation[ k ];
 
-            newAggregationX[ k ] = lastAggregationX[ i ]
+            newAggregationX[ k ] = lastAggregationX[ i ];
             newAggregationX[ k + 1 ] = Math.min( lastAggregationX[ i + 1 ], lastAggregationX[ i + 5 ] );
             newAggregationX[ k + 2 ] = Math.max( lastAggregationX[ i + 2 ], lastAggregationX[ i + 6 ] );
             newAggregationX[ k + 3 ] = lastAggregationX[ i + 7 ];
@@ -216,7 +216,7 @@ if (
     delete e.data._queueId;
     queue[ id ]( e.data );
     delete queue[ id ];
-  }
+  };
 
   dataAggregator = function( toOptimize ) {
 

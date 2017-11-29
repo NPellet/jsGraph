@@ -1,5 +1,5 @@
-import GraphPosition from './graph.position.js'
-import * as util from "./graph.util.js"
+import GraphPosition from './graph.position.js';
+import * as util from './graph.util.js';
 
 /**
  * Default legend configuration
@@ -133,7 +133,7 @@ class Legend {
 
     this.position = position;
     this.alignToX = alignToX || 'left';
-    this.alignToY = alignToY ||  'top';
+    this.alignToY = alignToY || 'top';
 
   }
 
@@ -171,7 +171,7 @@ class Legend {
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
-      if ( series[  i ].excludedFromLegend && !this.series ) {
+      if ( series[ i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
@@ -185,9 +185,9 @@ class Legend {
         }
       }
 
-      this.groups[ i ].setAttribute( 'transform', "translate( " + posX + ", " + posY + ")" );
+      this.groups[ i ].setAttribute( 'transform', 'translate( ' + posX + ', ' + posY + ')' );
 
-      if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+      if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
 
         posX += bbox.width + 10;
         posY += 0;
@@ -213,7 +213,7 @@ class Legend {
     this.rect.setAttribute( 'display', 'none' );
 
     if ( this.options.movable ) {
-      this.rectBottom.style.cursor = "move";
+      this.rectBottom.style.cursor = 'move';
     }
 
     this.rectBottom.setAttribute( 'width', this.width );
@@ -228,31 +228,31 @@ class Legend {
     switch ( this.autoPosition ) {
 
       case 'bottom':
-        this.position.y = this.graph.getHeight() + "px";
+        this.position.y = this.graph.getHeight() + 'px';
         // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
-        this.position.x = ( ( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX ) + "px";
-        this.alignToY = "bottom";
+        this.position.x = ( ( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX ) + 'px';
+        this.alignToY = 'bottom';
         this.alignToX = false;
         break;
 
       case 'left':
-        this.position.x = "6px";
-        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
-        this.alignToX = "left";
+        this.position.x = '6px';
+        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + 'px';
+        this.alignToX = 'left';
         this.alignToY = false;
         break;
 
       case 'right':
-        this.position.x = this.graph.getWidth() + "px";
-        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
-        this.alignToX = "right";
+        this.position.x = this.graph.getWidth() + 'px';
+        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + 'px';
+        this.alignToX = 'right';
         this.alignToY = false;
         break;
 
       case 'top':
-        this.position.x = ( ( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX ) + "px";
-        this.position.y = "10px";
-        this.alignToY = "top";
+        this.position.x = ( ( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX ) + 'px';
+        this.position.y = '10px';
+        this.alignToY = 'top';
         this.alignToX = false;
         break;
     }
@@ -304,7 +304,7 @@ class Legend {
       poscoords.x -= this.graph.getPaddingRight();
     }
 
-    if ( this.alignToX == "right" ) {
+    if ( this.alignToX == 'right' ) {
       poscoords.x -= this.width;
       poscoords.x -= this.bbox.x;
 
@@ -312,7 +312,7 @@ class Legend {
       //poscoords.x -= this.bbox.x;
     }
 
-    if ( this.alignToY == "bottom" ) {
+    if ( this.alignToY == 'bottom' ) {
       poscoords.y -= this.height;
       poscoords.y -= this.bbox.y;
 
@@ -333,7 +333,7 @@ class Legend {
    */
   update( onlyIfRequired ) {
 
-    if ( this.graph.isDelayedUpdate() ||  ( !this._requiredUpdate && onlyIfRequired ) ) {
+    if ( this.graph.isDelayedUpdate() || ( !this._requiredUpdate && onlyIfRequired ) ) {
       return;
     }
 
@@ -354,13 +354,13 @@ class Legend {
       text,
       g;
 
-    if ( series.length > 0 )  {
+    if ( series.length > 0 ) {
       this.svg.setAttribute( 'display', 'block' );
     } else {
       return;
     }
 
-    if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+    if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
       var fullWidth = this.graph.getDrawingWidth();
     }
 
@@ -368,7 +368,7 @@ class Legend {
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
-      if ( series[  i ].excludedFromLegend && !this.series ) {
+      if ( series[ i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
@@ -376,7 +376,7 @@ class Legend {
 
         var g, line, text, xPadding = 0;
 
-        if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+        if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
           var fullWidth = this.graph.getDrawingWidth();
         }
 
@@ -396,14 +396,14 @@ class Legend {
         if ( this.isHideable() ) {
           dx += 20;
 
-          var eyeUse = document.createElementNS( self.graph.ns, "use" );
-          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + ( series[ i ].isShown() ? this.eyeId : this.eyeCrossedId ) );
-          eyeUse.setAttribute( "width", 15 );
-          eyeUse.setAttribute( "height", 15 );
-          eyeUse.setAttribute( "x", 35 );
-          eyeUse.setAttribute( "y", -8 );
+          var eyeUse = document.createElementNS( self.graph.ns, 'use' );
+          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', 'xlink:href', '#' + ( series[ i ].isShown() ? this.eyeId : this.eyeCrossedId ) );
+          eyeUse.setAttribute( 'width', 15 );
+          eyeUse.setAttribute( 'height', 15 );
+          eyeUse.setAttribute( 'x', 35 );
+          eyeUse.setAttribute( 'y', -8 );
 
-          eyeUse.addEventListener( "click", function( e ) {
+          eyeUse.addEventListener( 'click', function( e ) {
             e.stopPropagation();
 
             var id;
@@ -415,7 +415,7 @@ class Legend {
               id = self.eyeId;
             }
 
-            eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + id );
+            eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', 'xlink:href', '#' + id );
 
           } );
 
@@ -429,7 +429,7 @@ class Legend {
           g.appendChild( line );
         }
 
-        if ( series[ j ].getType() == "scatter" ) {
+        if ( series[ j ].getType() == 'scatter' ) {
           line.setAttribute( 'transform', 'translate( 20, 0 )' );
         }
 
@@ -541,7 +541,7 @@ class Legend {
     var mousedown = function( e ) {
 
       e.stopPropagation();
-      console.log( "down" );
+      console.log( 'down' );
       if ( self.options.movable ) {
         pos.x = e.clientX;
         pos.y = e.clientY;
@@ -616,7 +616,7 @@ class Legend {
 
     if ( this.options.frame ) {
       this.rectBottom.setAttribute( 'stroke', this.options.frameColor );
-      this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + "px" );
+      this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + 'px' );
       this.rectBottom.setAttribute( 'rx', this.options.frameRounding );
       this.rectBottom.setAttribute( 'ry', this.options.frameRounding );
     }
@@ -639,10 +639,10 @@ class Legend {
     }
 
     for ( var i = 0, l = arguments.length; i < l; i++ ) {
-      if ( Array.isArray( arguments[  i ] ) ) {
-        series = series.concat( arguments[  i ] );
+      if ( Array.isArray( arguments[ i ] ) ) {
+        series = series.concat( arguments[ i ] );
       } else {
-        series.push( arguments[  i ] );
+        series.push( arguments[ i ] );
       }
     }
 

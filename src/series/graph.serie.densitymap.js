@@ -1,5 +1,5 @@
-import Serie from './graph.serie.js'
-import * as util from '../graph.util.js'
+import Serie from './graph.serie.js';
+import * as util from '../graph.util.js';
 
 /**
  * Density map serie
@@ -80,12 +80,12 @@ class SerieDensityMap extends Serie {
       indexX = ~~( ( this.data[ i ][ 0 ] - fromX ) / deltaX );
       indexY = ~~( ( this.data[ i ][ 1 ] - fromY ) / deltaY );
 
-      if ( indexX > numX || indexY > numY ||  indexX < 0 ||  indexY < 0 ) {
+      if ( indexX > numX || indexY > numY || indexX < 0 || indexY < 0 ) {
         continue;
       }
 
       densitymap[ indexX ] = densitymap[ indexX ] || [];
-      densitymap[ indexX ][ indexY ] = densitymap[ indexX ][ indexY ] + 1 ||  1;
+      densitymap[ indexX ][ indexY ] = densitymap[ indexX ][ indexY ] + 1 || 1;
 
       binMin = densitymap[ indexX ][ indexY ] < binMin ? densitymap[ indexX ][ indexY ] : binMin;
       binMax = densitymap[ indexX ][ indexY ] > binMax ? densitymap[ indexX ][ indexY ] : binMax;
@@ -158,17 +158,17 @@ class SerieDensityMap extends Serie {
 
       //console.log( exactY, indexY );
       //console.log( compY, indexYLow, indexYHigh );
-      if ( indexX > numX || indexY > numY ||  indexX < 0 ||  indexY < 0 ) {
+      if ( indexX > numX || indexY > numY || indexX < 0 || indexY < 0 ) {
         continue;
       }
 
       densitymap[ indexXLow ] = densitymap[ indexXLow ] || [];
       densitymap[ indexXHigh ] = densitymap[ indexXHigh ] || [];
 
-      densitymap[ indexXLow ][ indexYLow ] = densitymap[ indexXLow ][ indexYLow ] ||  0;
-      densitymap[ indexXHigh ][ indexYLow ] = densitymap[ indexXHigh ][ indexYLow ] ||  0;
-      densitymap[ indexXLow ][ indexYHigh ] = densitymap[ indexXLow ][ indexYHigh ] ||  0;
-      densitymap[ indexXHigh ][ indexYHigh ] = densitymap[ indexXHigh ][ indexYHigh ] ||  0;
+      densitymap[ indexXLow ][ indexYLow ] = densitymap[ indexXLow ][ indexYLow ] || 0;
+      densitymap[ indexXHigh ][ indexYLow ] = densitymap[ indexXHigh ][ indexYLow ] || 0;
+      densitymap[ indexXLow ][ indexYHigh ] = densitymap[ indexXLow ][ indexYHigh ] || 0;
+      densitymap[ indexXHigh ][ indexYHigh ] = densitymap[ indexXHigh ][ indexYHigh ] || 0;
 
       densitymap[ indexXLow ][ indexYLow ] += compX * compY;
       densitymap[ indexXHigh ][ indexYLow ] += ( 1 - compX ) * compY;
@@ -218,7 +218,7 @@ class SerieDensityMap extends Serie {
   autoBins( numX, numY ) {
 
     this.numX = numX || 400;
-    this.numY = numY ||  this.numX;
+    this.numY = numY || this.numX;
 
     this.calculateDensity(
       this.minX, ( this.maxX - this.minX ) / numX, numX,
@@ -289,7 +289,7 @@ class SerieDensityMap extends Serie {
   calculationDensityMap( x, y ) {
 
     this.method = this.calculateDensityAdvanced;
-    this.densityMapCalculation = this.densityMapCalculation ||  {};
+    this.densityMapCalculation = this.densityMapCalculation || {};
 
     if ( x ) {
       this.densityMapCalculation.x = x;
@@ -345,17 +345,17 @@ class SerieDensityMap extends Serie {
 
         // In px
         var dimension = Math.abs( axisGetter[ i ].call( this ).getRelPx( to - from ) );
-        results[  i ].num = Math.ceil( widthValues[ i ] / this.densityMapCalculation[ i ].pxPerBin );
+        results[ i ].num = Math.ceil( widthValues[ i ] / this.densityMapCalculation[ i ].pxPerBin );
 
-        //console.log( from, from - axisGetter[ i ].call( this ).getRelVal( ( results[ i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ), ( results[ i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 );
-        results[  i ].from = from - Math.abs( axisGetter[ i ].call( this ).getRelVal( ( ( results[  i ].num ) * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ) );
+        //console.log( from, from - axisGetter[ i ].call( this ).getRelVal( ( results[i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ), ( results[i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 );
+        results[ i ].from = from - Math.abs( axisGetter[ i ].call( this ).getRelVal( ( ( results[ i ].num ) * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ) );
         results[ i ].delta = Math.abs( axisGetter[ i ].call( this ).getRelVal( this.densityMapCalculation[ i ].pxPerBin ) );
 
       } else {
 
         results[ i ].num = this.densityMapCalculation[ i ].numBins || 400;
-        results[  i ].from = ( this.densityMapCalculation[ i ].from == 'min' ) ? axisGetter[ i ].call( this ).getCurrentMin() : this.densityMapCalculation[ i ].from;
-        results[  i ].delta = ( this.densityMapCalculation[ i ].to ) ? ( ( this.densityMapCalculation[ i ].to == 'max' ? axisGetter[ i ].call( this ).getCurrentMax() : this.densityMapCalculation[ i ].to ) - results[  i ].from ) / ( results[  i ].num ) : this.densityMapCalculate[ i ].delta;
+        results[ i ].from = ( this.densityMapCalculation[ i ].from == 'min' ) ? axisGetter[ i ].call( this ).getCurrentMin() : this.densityMapCalculation[ i ].from;
+        results[ i ].delta = ( this.densityMapCalculation[ i ].to ) ? ( ( this.densityMapCalculation[ i ].to == 'max' ? axisGetter[ i ].call( this ).getCurrentMax() : this.densityMapCalculation[ i ].to ) - results[ i ].from ) / ( results[ i ].num ) : this.densityMapCalculate[ i ].delta;
 
       }
 
@@ -369,7 +369,7 @@ class SerieDensityMap extends Serie {
       results.x.from, results.x.delta, results.x.num,
       results.y.from, results.y.delta, results.y.num
     );
-  };
+  }
 
   /**
    * Selects a subrange of bins for the color mapping. There is no need to recalculate the color map after calling this method
@@ -408,7 +408,7 @@ class SerieDensityMap extends Serie {
   onRedrawColorMapBinBoundaries( callback ) {
     this.callbackColorMapMinMax = callback;
     return this;
-  };
+  }
 
   /**
    * Generates a color map based on a serie of HSL(A) values.
@@ -423,19 +423,19 @@ class SerieDensityMap extends Serie {
    */
   colorMapHSL( colorStops, numColors, method ) {
 
-    method = method || "linear";
+    method = method || 'linear';
 
     var methods = {
-      "exp": function( value ) {
+      'exp': function( value ) {
         return ( Math.exp( value / numColors * 1 ) - Math.exp( 0 ) ) / ( Math.exp( 1 ) - Math.exp( 0 ) );
       },
-      "log": function( value ) {
+      'log': function( value ) {
         return ( Math.log( value + 1 ) - Math.log( 1 ) ) / ( Math.log( numColors + 1 ) - Math.log( 1 ) );
       },
-      "linear": function( value ) {
+      'linear': function( value ) {
         return ( value - 0 ) / ( numColors - 0 );
       }
-    }
+    };
 
     var k = 0,
       colorMap = [],
@@ -468,7 +468,7 @@ class SerieDensityMap extends Serie {
         color[ j ] = ( colorStops[ first + 1 ][ j ] - colorStops[ first ][ j ] ) * ratio + colorStops[ first ][ j ];
       }
 
-      colorMap[ k ] = "hsl(" + color.h + ", " + Math.round( color.s * 100 ) + "%, " + Math.round( color.l * 100 ) + "%)"; //this.HSVtoRGB( color.h, color.s, color.v );
+      colorMap[ k ] = 'hsl(' + color.h + ', ' + Math.round( color.s * 100 ) + '%, ' + Math.round( color.l * 100 ) + '%)'; //this.HSVtoRGB( color.h, color.s, color.v );
       opacities[ k ] = color.a;
       k++;
     }
@@ -487,7 +487,7 @@ class SerieDensityMap extends Serie {
    * @return {SerieDensityMap} The current instance
    */
   autoColorMapHSL( colorStops, method ) {
-    this.colorMapHSV( colorStops, 100, method || "linear" );
+    this.colorMapHSV( colorStops, 100, method || 'linear' );
     return this;
   }
 
@@ -567,7 +567,7 @@ class SerieDensityMap extends Serie {
       deltaYPx = this.getYAxis().getRelPx( this.deltaY );
 
     for ( var i = 0; i < this.paths.length; i++ ) {
-      this.paths[ i ] = "";
+      this.paths[ i ] = '';
     }
 
     for ( var i = 0; i < this.maxIndexX; i++ ) {
@@ -580,12 +580,11 @@ class SerieDensityMap extends Serie {
 
         colorIndex = this.getColorIndex( this.densitymap[ i ][ j ] );
         if ( !this.paths[ colorIndex ] ) {
-          this.paths[ colorIndex ] = "";
+          this.paths[ colorIndex ] = '';
         }
 
-        this.paths[ colorIndex ] += " M " + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
+        this.paths[ colorIndex ] += ' M ' + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + ' ' + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + ' h ' + deltaXPx + ' v ' + deltaYPx + ' h -' + deltaXPx + ' z';
 
-        ;
       }
     }
     /*
@@ -605,13 +604,13 @@ class SerieDensityMap extends Serie {
     for ( var i = 0; i < this.paths.length; i++ ) {
 
       if ( !this.rects[ i ] ) {
-        this.rects[ i ] = document.createElementNS( this.graph.ns, "path" );
+        this.rects[ i ] = document.createElementNS( this.graph.ns, 'path' );
         this.rects[ i ].setAttribute( 'shape-rendering', 'crispEdges' );
 
       }
 
       if ( this.paths[ i ] !== undefined ) {
-        this.rects[ i ].setAttribute( 'd', this.paths[  i ] );
+        this.rects[ i ].setAttribute( 'd', this.paths[ i ] );
         this.rects[ i ].setAttribute( 'fill', this.colorMap[ i ] );
         this.rects[ i ].setAttribute( 'fill-opacity', this.opacities[ i ] );
       }

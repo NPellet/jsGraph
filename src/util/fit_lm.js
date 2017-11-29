@@ -42,7 +42,7 @@ class FitHost {
 
     this.parms = this.parms.map( ( el ) => {
       if ( typeof el == 'function' ) {
-        return el( this.data, this.dataX )
+        return el( this.data, this.dataX );
       } else {
         return el;
       }
@@ -61,7 +61,7 @@ class FitHost {
     this._hookIteration = ( params ) => {
       let data = this.buildFit( params, 200 );
       f( data );
-    }
+    };
   }
 
   setFunction( func ) {
@@ -74,17 +74,17 @@ class FitHost {
     if ( this._from !== undefined && this._to !== undefined ) {
 
       if ( this._from >= this._to ) {
-        throw "Impossible to fit negative subranges. The starting index must be lower than the ending index";
+        throw 'Impossible to fit negative subranges. The starting index must be lower than the ending index';
       }
 
       this.NPTS = this._to - this._from + 1;
 
       if ( this.data && this.data.getLength() <= this._to ) {
-        throw "Wave Y has not enough point to be fitted to subrange [" + this._from + ", " + this._to + "]";
+        throw 'Wave Y has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
       }
 
       if ( this._from < 0 ) {
-        throw "Impossible to fit a subrange with negative indices";
+        throw 'Impossible to fit a subrange with negative indices';
       }
 
     } else {
@@ -95,7 +95,7 @@ class FitHost {
     }
 
     if ( this.dataX && this.dataX.getLength() <= this._to ) {
-      throw "Wave X has not enough point to be fitted to subrange [" + this._from + ", " + this._to + "]";
+      throw 'Wave X has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
     }
 
     this.arrY = this.data.getDataY();
@@ -113,9 +113,9 @@ class FitHost {
 
   fit() {
 
-    this.log( "Starting the fit with initial parameter list {" + this.parms.join() + "};" );
+    this.log( 'Starting the fit with initial parameter list {' + this.parms.join() + '};' );
     new LM( this, this.NPARMS, this.NPTS, this._hookIteration );
-    this.log( "Fit successful. Output parameters {" + this.parms.join() + "};" );
+    this.log( 'Fit successful. Output parameters {' + this.parms.join() + '};' );
 
     this._result = this.buildFit( this.parms, 200 );
 
@@ -169,7 +169,7 @@ class FitHost {
 
       d = this.nudge( delta ); // resid at pplus
       if ( d == this.BIGVAL ) {
-        throw "Bad dBuildJacobian() exit 2";
+        throw 'Bad dBuildJacobian() exit 2';
       }
 
       for ( var i = 0; i < this.NPTS; i++ ) {
@@ -182,7 +182,7 @@ class FitHost {
 
       d = this.nudge( delta ); // resid at pminus
       if ( d == this.BIGVAL ) {
-        throw "Bad dBuildJacobian(). exit 3";
+        throw 'Bad dBuildJacobian(). exit 3';
       }
 
       for ( var i = 0; i < this.NPTS; i++ )
@@ -196,7 +196,7 @@ class FitHost {
 
       d = this.nudge( delta );
       if ( d == this.BIGVAL ) {
-        throw "Bad dBuildJacobian(). exit 4";
+        throw 'Bad dBuildJacobian(). exit 4';
       }
     }
     return true;
@@ -302,14 +302,14 @@ class LM {
       this.delta[ k ] = 0.0;
     this.sos = this.myH.nudge( this.delta );
     if ( this.sos == this.BIGVAL ) {
-      console.error( "  bLMiter finds faulty initial nudge()" );
+      console.error( '  bLMiter finds faulty initial nudge()' );
       return false;
     }
     this.sosprev = this.sos;
 
-    this.myH.log( "  bLMiter..SumOfSquares= " + this.sos );
+    this.myH.log( '  bLMiter..SumOfSquares= ' + this.sos );
     if ( !this.myH.buildJacobian() ) {
-      console.error( "  bLMiter finds buildJacobian()=false" );
+      console.error( '  bLMiter finds buildJacobian()=false' );
       return false;
     }
 
@@ -347,7 +347,7 @@ class LM {
       }
       this.sos = this.myH.nudge( this.delta ); // try it out.
       if ( this.sos == this.BIGVAL ) {
-        console.error( "  LMinner failed SOS step" );
+        console.error( '  LMinner failed SOS step' );
         return false;
       }
       rrise = ( this.sos - this.sosprev ) / ( 1 + this.sos );

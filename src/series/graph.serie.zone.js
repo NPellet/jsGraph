@@ -1,9 +1,9 @@
-import Serie from './graph.serie.js'
-import Waveform from '../util/waveform.js'
+import Serie from './graph.serie.js';
+import Waveform from '../util/waveform.js';
 import {
   extend,
   guid
-} from '../graph.util.js'
+} from '../graph.util.js';
 
 /**
  * @static
@@ -24,7 +24,7 @@ class SerieZone extends Serie {
   constructor( graph, name, options ) {
     super( ...arguments );
 
-    this.selectionType = "unselected";
+    this.selectionType = 'unselected';
     this.id = guid();
 
     this.groupZones = document.createElementNS( this.graph.ns, 'g' );
@@ -127,7 +127,7 @@ class SerieZone extends Serie {
         xpx = 0,
         ypx = 0,
         j = 0,
-        line = "",
+        line = '',
         buffer,
         move = false;
 
@@ -172,7 +172,7 @@ class SerieZone extends Serie {
               continue;
             }
 
-            line += "L " + xpx + ", " + this.getY( waveform.getMinY() );
+            line += 'L ' + xpx + ', ' + this.getY( waveform.getMinY() );
             move = true;
             continue;
           }
@@ -186,27 +186,27 @@ class SerieZone extends Serie {
           }
 
           if ( move ) {
-            line += " M " + xpx + ", " + this.getY( waveform.getMinY() ) + " ";
+            line += ' M ' + xpx + ', ' + this.getY( waveform.getMinY() ) + ' ';
             move = false;
           }
 
           if ( line.length > 0 ) {
-            line += " L ";
+            line += ' L ';
           }
 
           if ( buffer ) {
-            line += buffer[ 2 ] + "," + buffer[ 3 ] + " ";
+            line += buffer[ 2 ] + ',' + buffer[ 3 ] + ' ';
             buffer = false;
           } else {
-            line += xpx + "," + ypx + " ";
+            line += xpx + ',' + ypx + ' ';
           }
         }
       }
 
-      if ( line !== "" ) {
-        this.lineZone.setAttribute( 'd', "M " + line + " z" );
+      if ( line !== '' ) {
+        this.lineZone.setAttribute( 'd', 'M ' + line + ' z' );
       } else {
-        this.lineZone.setAttribute( 'd', "" );
+        this.lineZone.setAttribute( 'd', '' );
       }
       this.groupMain.appendChild( this.groupZones );
     }
@@ -340,4 +340,4 @@ class SerieZone extends Serie {
 
 }
 
-export default SerieZone
+export default SerieZone;

@@ -1,5 +1,5 @@
-import Plugin from './graph.plugin.js'
-import * as util from '../graph.util.js'
+import Plugin from './graph.plugin.js';
+import * as util from '../graph.util.js';
 
 /**
  * @class PluginShape
@@ -13,7 +13,7 @@ class PluginShape extends Plugin {
 
   static
   default () {
-    return {}
+    return {};
   }
 
   /**
@@ -80,7 +80,7 @@ class PluginShape extends Plugin {
 
     util.extend( true, shapeInfo, this.options );
 
-    this.emit( "beforeNewShape", e, shapeInfo );
+    this.emit( 'beforeNewShape', e, shapeInfo );
 
     if ( this.graph.prevent( false ) ) {
       return;
@@ -88,19 +88,19 @@ class PluginShape extends Plugin {
 
     var shape = graph.newShape( shapeInfo.type, shapeInfo, false, shapeProperties );
 
-    this.emit( "createdShape", e, shape );
+    this.emit( 'createdShape', e, shape );
 
     if ( shape ) {
       self.currentShape = shape;
       self.currentShapeEvent = e;
     }
 
-    graph.once( "mouseUp", () => {
+    graph.once( 'mouseUp', () => {
       console.log( this.currentShape );
       if ( !this.currentShape ) { // The mouse has moved
-        self.emit( "newShape", e, shape );
+        self.emit( 'newShape', e, shape );
       }
-    } )
+    } );
   }
 
   /**
@@ -151,4 +151,4 @@ class PluginShape extends Plugin {
 
 }
 
-export default PluginShape
+export default PluginShape;

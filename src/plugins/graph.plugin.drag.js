@@ -1,4 +1,4 @@
-import Plugin from './graph.plugin.js'
+import Plugin from './graph.plugin.js';
 
 /**
  * Constructor for the drag plugin. Do not use this constructor directly.
@@ -80,7 +80,7 @@ class PluginDrag extends Plugin {
 
     this.time = Date.now();
 
-    this.emit( "dragging" );
+    this.emit( 'dragging' );
 
     graph.draw( true );
 
@@ -90,10 +90,10 @@ class PluginDrag extends Plugin {
 
     var dt = ( Date.now() - this.time );
 
-    if ( x == this._lastDraggingX ||  y == this._lastDraggingY ) {
+    if ( x == this._lastDraggingX || y == this._lastDraggingY ) {
 
       if ( this.moved ) {
-        this.emit( "dragged" );
+        this.emit( 'dragged' );
       }
 
       return;
@@ -102,8 +102,8 @@ class PluginDrag extends Plugin {
     this.speedX = ( x - this._lastDraggingX ) / dt;
     this.speedY = ( y - this._lastDraggingY ) / dt;
 
-    if ( isNaN( this.speedX ) ||  isNaN( this.speedY ) ) {
-      this.emit( "dragged" );
+    if ( isNaN( this.speedX ) || isNaN( this.speedY ) ) {
+      this.emit( 'dragged' );
       return;
     }
 
@@ -116,13 +116,13 @@ class PluginDrag extends Plugin {
     this.accelerationX = -this.speedX / this.totaltime;
     this.accelerationY = -this.speedY / this.totaltime;
 
-    if ( this.options.persistanceX ||  this.options.persistanceY ) {
+    if ( this.options.persistanceX || this.options.persistanceY ) {
 
       this._persistanceMove( graph );
 
     } else {
 
-      this.emit( "dragged" );
+      this.emit( 'dragged' );
     }
 
   }
@@ -132,7 +132,7 @@ class PluginDrag extends Plugin {
     var self = this;
 
     if ( self.stopAnimation ) {
-      self.emit( "dragged" );
+      self.emit( 'dragged' );
       return;
     }
 
@@ -173,10 +173,10 @@ class PluginDrag extends Plugin {
       graph.draw();
 
       if ( dt < self.totaltime ) {
-        self.emit( "dragging" );
+        self.emit( 'dragging' );
         self._persistanceMove( graph );
       } else {
-        self.emit( "dragged" );
+        self.emit( 'dragged' );
       }
 
     } );

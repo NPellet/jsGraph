@@ -1,5 +1,5 @@
-import * as util from '../graph.util.js'
-import Plugin from './graph.plugin.js'
+import * as util from '../graph.util.js';
+import Plugin from './graph.plugin.js';
 
 /**
  * @class PluginZoom
@@ -15,7 +15,7 @@ class PluginZoom extends Plugin {
   default () {
 
     return {
-      "axes": "all"
+      'axes': 'all'
     };
   }
 
@@ -162,7 +162,7 @@ class PluginZoom extends Plugin {
     var _x = x - graph.options.paddingLeft;
     var _y = y - graph.options.paddingTop;
 
-    this.emit( "beforeZoom", {
+    this.emit( 'beforeZoom', {
       graph: graph,
       x: x,
       y: y,
@@ -186,7 +186,7 @@ class PluginZoom extends Plugin {
       let modeX = false,
         modeY = false;
 
-      if ( this._zoomingMode == 'x' ||  this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
+      if ( this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
 
         this.fullX = false;
         this.toAxes( function( axis ) {
@@ -202,7 +202,7 @@ class PluginZoom extends Plugin {
 
       }
 
-      if ( this._zoomingMode == 'y' ||  this._zoomingMode == 'xy' ) {
+      if ( this._zoomingMode == 'y' || this._zoomingMode == 'xy' ) {
 
         this.fullY = false;
         this.toAxes( function( axis ) {
@@ -234,7 +234,7 @@ class PluginZoom extends Plugin {
         modeY = true;
       }
 
-      this.transition( modeX, modeY, "zoomEnd" );
+      this.transition( modeX, modeY, 'zoomEnd' );
 
     } else {
 
@@ -272,7 +272,7 @@ class PluginZoom extends Plugin {
         this._zoomingMode = this._backedUpZoomMode;
       }
 
-      this.emit( "zoomed" );
+      this.emit( 'zoomed' );
 
       graph.pluginYieldActiveState();
 
@@ -331,7 +331,7 @@ class PluginZoom extends Plugin {
   onDblClick( x, y, e, pref, mute ) {
 
     var graph = this.graph;
-    this.emit( "beforeDblClick", {
+    this.emit( 'beforeDblClick', {
       graph: graph,
       x: x,
       y: y,
@@ -344,12 +344,12 @@ class PluginZoom extends Plugin {
       return;
     }
 
-    if ( this.options.transition ||  this.options.smooth ) {
+    if ( this.options.transition || this.options.smooth ) {
 
       var modeX = false,
         modeY = false;
 
-      if ( pref.mode == 'xtotal' ||  pref.mode == 'total' ) {
+      if ( pref.mode == 'xtotal' || pref.mode == 'total' ) {
 
         this.toAxes( function( axis ) {
           axis._pluginZoomMin = axis.getCurrentMin();
@@ -364,7 +364,7 @@ class PluginZoom extends Plugin {
 
       }
 
-      if ( pref.mode == 'ytotal' ||  pref.mode == 'total' ) {
+      if ( pref.mode == 'ytotal' || pref.mode == 'total' ) {
 
         this.toAxes( function( axis ) {
 
@@ -382,17 +382,17 @@ class PluginZoom extends Plugin {
 
       let x, y;
 
-      if ( pref.mode == 'gradualX' || pref.mode == 'gradualY' ||  pref.mode == 'gradual' ||  pref.mode == 'gradualXY' ) {
+      if ( pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY' ) {
 
         x = false,
           y = false;
 
-        if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ||  pref.mode == 'gradualXY' ) {
+        if ( pref.mode == 'gradualX' || pref.mode == 'gradual' || pref.mode == 'gradualXY' ) {
           x = true;
           modeX = true;
         }
 
-        if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ||  pref.mode == 'gradualXY' ) {
+        if ( pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY' ) {
           y = true;
           modeY = true;
         }
@@ -409,7 +409,7 @@ class PluginZoom extends Plugin {
 
       }
 
-      this.transition( modeX, modeY, "dblClick" );
+      this.transition( modeX, modeY, 'dblClick' );
       return;
     }
 
@@ -418,19 +418,19 @@ class PluginZoom extends Plugin {
 
     if ( pref.mode == 'xtotal' ) {
 
-      this.toAxes( "setMinMaxToFitSeries", null, true, false );
+      this.toAxes( 'setMinMaxToFitSeries', null, true, false );
       this.fullX = true;
       this.fullY = false;
 
     } else if ( pref.mode == 'ytotal' ) {
 
-      this.toAxes( "setMinMaxToFitSeries", null, false, true );
+      this.toAxes( 'setMinMaxToFitSeries', null, false, true );
       this.fullX = false;
       this.fullY = true;
 
     } else if ( pref.mode == 'total' ) {
 
-      this.toAxes( "setMinMaxToFitSeries", null, true, true );
+      this.toAxes( 'setMinMaxToFitSeries', null, true, true );
 
       this.fullX = true;
       this.fullY = true;
@@ -548,15 +548,15 @@ class PluginZoom extends Plugin {
       if ( dt < maxTime ) {
 
         self.transition( modeX, modeY, eventName );
-        self.emit( "zooming" );
+        self.emit( 'zooming' );
 
       } else {
 
-        self.emit( "zoomed" );
+        self.emit( 'zoomed' );
         self.graph.pluginYieldActiveState();
 
         if ( eventName ) {
-          self.emit( eventName )
+          self.emit( eventName );
         }
         self.gradualUnzoomStart = 0;
 
@@ -594,8 +594,8 @@ class PluginZoom extends Plugin {
 
           if ( tb ) {
 
-            if ( typeof func == "string" ) {
-              serie.getXAxis()[ func ].apply( serie.getXAxis(), params )
+            if ( typeof func == 'string' ) {
+              serie.getXAxis()[ func ].apply( serie.getXAxis(), params );
             } else {
               func.apply( serie.getXAxis(), params );
             }
@@ -603,8 +603,8 @@ class PluginZoom extends Plugin {
 
           if ( lr ) {
 
-            if ( typeof func == "string" ) {
-              serie.getYAxis()[ func ].apply( serie.getYAxis(), params )
+            if ( typeof func == 'string' ) {
+              serie.getYAxis()[ func ].apply( serie.getYAxis(), params );
             } else {
               func.apply( serie.getYAxis(), params );
             }
@@ -624,16 +624,16 @@ class PluginZoom extends Plugin {
 
           if ( axis.isX() && tb ) { // Not the best check
 
-            if ( typeof func == "string" ) {
-              axis[ func ].apply( axis, params )
+            if ( typeof func == 'string' ) {
+              axis[ func ].apply( axis, params );
             } else {
               func.apply( axis, params );
             }
 
           } else if ( axis.isY() && lr ) { // Not the best check
 
-            if ( typeof func == "string" ) {
-              axis[ func ].apply( axis, params )
+            if ( typeof func == 'string' ) {
+              axis[ func ].apply( axis, params );
             } else {
               func.apply( axis, params );
             }

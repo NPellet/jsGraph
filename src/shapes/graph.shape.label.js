@@ -1,4 +1,4 @@
-import GraphShape from './graph.shape.js'
+import GraphShape from './graph.shape.js';
 
 /**
  * Blank shape used to display label
@@ -13,7 +13,7 @@ class ShapeLabel extends GraphShape {
   }
 
   createDom() {
-    return false
+    return false;
   }
 
   applyPosition() {

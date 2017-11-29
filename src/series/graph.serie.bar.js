@@ -1,6 +1,6 @@
-import * as util from '../graph.util.js'
-import Serie from './graph.serie.line.js'
-import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js'
+import * as util from '../graph.util.js';
+import Serie from './graph.serie.line.js';
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 
 /**
  * Represents a bar serie.
@@ -59,12 +59,12 @@ class SerieBar extends Serie {
    */
   setFillColor( fillColor, selectionType, applyToSelected ) {
 
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType || 'unselected';
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].fillColor = fillColor;
 
     if ( applyToSelected ) {
-      this.setFillColor( fillColor, "selected" );
+      this.setFillColor( fillColor, 'selected' );
     }
 
     this.styleHasChanged( selectionType );
@@ -84,12 +84,12 @@ class SerieBar extends Serie {
    */
   setFillOpacity( opacity, selectionType, applyToSelected ) {
 
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType || 'unselected';
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].fillOpacity = opacity;
 
     if ( applyToSelected ) {
-      this.setLineWidth( opacity, "selected" );
+      this.setLineWidth( opacity, 'selected' );
     }
 
     this.styleHasChanged( selectionType );
@@ -128,7 +128,7 @@ class SerieBar extends Serie {
 
   draw() {
 
-    var path = "";
+    var path = '';
     var categoryNumber,
       position;
 
@@ -142,15 +142,15 @@ class SerieBar extends Serie {
         continue;
       }
 
-      path += "M " +
+      path += 'M ' +
         this.getXAxis().getPos( this.categoryIndices[ i ] ) +
-        " " +
+        ' ' +
         this.getYAxis().getPos( 0 ) +
-        " V " +
+        ' V ' +
         this.getYAxis().getPos( this.data[ i ] ) +
-        " h " +
+        ' h ' +
         this.getXAxis().getDeltaPx( 1 / this.nbCategories ) +
-        " V " +
+        ' V ' +
         this.getYAxis().getPos( 0 );
 
       if ( this.error ) {

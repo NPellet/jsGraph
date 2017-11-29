@@ -1,5 +1,5 @@
-import * as util from '../graph.util.js'
-import Plugin from './graph.plugin.js'
+import * as util from '../graph.util.js';
+import Plugin from './graph.plugin.js';
 
 /**
  * @extends Plugin
@@ -12,7 +12,7 @@ class PluginSelectScatter extends Plugin {
 
   static
   default () {
-    return {}
+    return {};
   }
   /**
    * Init method
@@ -75,14 +75,14 @@ class PluginSelectScatter extends Plugin {
 
     if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
 
-      this.path += " L " + x + " " + y + " ";
+      this.path += ' L ' + x + ' ' + y + ' ';
       this.currentX = x;
       this.currentY = y;
 
       this.xs.push( this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
       this.ys.push( this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
 
-      this._path.setAttribute( 'd', this.path + " z" );
+      this._path.setAttribute( 'd', this.path + ' z' );
 
       this.findPoints();
     }
@@ -118,7 +118,7 @@ class PluginSelectScatter extends Plugin {
 
       if ( counter % 2 == 1 ) {
         selected.push( i );
-        this.serie.selectPoint( i, true, "selected" );
+        this.serie.selectPoint( i, true, 'selected' );
       } else {
         this.serie.unselectPoint( i );
       }
@@ -126,7 +126,7 @@ class PluginSelectScatter extends Plugin {
     }
 
     this.selected = selected;
-    this.emit( "selectionProcess", selected );
+    this.emit( 'selectionProcess', selected );
   }
 
   /**
@@ -134,9 +134,9 @@ class PluginSelectScatter extends Plugin {
    */
   onMouseUp( graph, x, y, e ) {
     this._path.setAttribute( 'display', 'none' );
-    this.emit( "selectionEnd", this.selected );
+    this.emit( 'selectionEnd', this.selected );
   }
 
 }
 
-export default PluginSelectScatter
+export default PluginSelectScatter;

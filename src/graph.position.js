@@ -3,7 +3,7 @@ function _parsePx( px ) {
     return parseInt( px.replace( 'px', '' ) );
   }
   return false;
-};
+}
 
 function isNumeric( n ) {
   return !isNaN( parseFloat( n ) ) && isFinite( n );
@@ -17,7 +17,7 @@ class Position {
 
   constructor( x, y, dx, dy ) {
 
-    if ( typeof x == "object" ) {
+    if ( typeof x == 'object' ) {
       this.x = x.x;
       this.y = x.y;
       this.dx = x.dx;
@@ -49,11 +49,11 @@ class Position {
     }
 
     if ( !graph.hasXAxis( xAxis ) ) {
-      throw ( "Graph does not contain the x axis that was used as a parameter" )
+      throw ( 'Graph does not contain the x axis that was used as a parameter' );
     }
 
     if ( !graph.hasYAxis( yAxis ) ) {
-      throw ( "Graph does not contain the x axis that was used as a parameter" )
+      throw ( 'Graph does not contain the x axis that was used as a parameter' );
     }
 
     return this._compute( graph, xAxis, yAxis, serie );
@@ -84,7 +84,7 @@ class Position {
 
       var axis = i == 'x' ? xAxis : yAxis;
       var val = this[ i ];
-      var dval = this[ "d" + i ];
+      var dval = this[ 'd' + i ];
 
       if ( val === undefined && ( ( dval !== undefined && relativeTo === undefined ) || relativeTo === undefined ) ) {
 
@@ -99,14 +99,14 @@ class Position {
         } else if ( this.x !== undefined && serie ) {
 
           if ( _parsePx( this.x ) !== false ) {
-            console.warn( "You have defined x in px and not y. Makes no sense. Returning 0 for y" );
+            console.warn( 'You have defined x in px and not y. Makes no sense. Returning 0 for y' );
             pos[ i ] = 0;
           } else {
 
             var closest = serie.searchClosestValue( this.x );
 
             if ( !closest ) {
-              console.warn( "Could not find y position for x = " + ( this.x ) + " on serie \"" + serie.getName() + "\". Returning 0 for y." );
+              console.warn( 'Could not find y position for x = ' + ( this.x ) + ' on serie "' + serie.getName() + '". Returning 0 for y.' );
               pos[ i ] = 0;
             } else {
               pos[ i ] = serie.getY( closest.yMin );
@@ -126,7 +126,7 @@ class Position {
         if ( i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined ) {
 
           if ( !serie ) {
-            throw "Error. No serie exists. Cannot find y value";
+            throw 'Error. No serie exists. Cannot find y value';
             return;
           }
 
@@ -192,18 +192,18 @@ class Position {
   getDeltaPx( value, axis ) {
     var v;
     if ( ( v = _parsePx( value ) ) !== false ) {
-      return ( v ) + "px";
+      return ( v ) + 'px';
     } else {
 
-      return ( axis.getRelPx( value ) ) + "px";
+      return ( axis.getRelPx( value ) ) + 'px';
     }
-  };
+  }
 
   deltaPosition( mode, delta, axis ) {
 
     mode = mode == 'y' ? 'y' : 'x';
     var ref = this[ mode ],
-      refd = this[  'd' + mode ],
+      refd = this[ 'd' + mode ],
       refPx,
       deltaPx;
 
@@ -211,9 +211,9 @@ class Position {
       if ( ( refPx = _parsePx( ref ) ) !== false ) {
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ mode ] = ( refPx + deltaPx ) + "px";
+          this[ mode ] = ( refPx + deltaPx ) + 'px';
         } else {
-          this[ mode ] = ( refPx + axis.getRelPx( delta ) ) + "px";
+          this[ mode ] = ( refPx + axis.getRelPx( delta ) ) + 'px';
         }
       } else {
 
@@ -235,9 +235,9 @@ class Position {
       if ( ( refPx = _parsePx( refd ) ) !== false ) {
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ 'd' + mode ] = ( refPx + deltaPx ) + "px";
+          this[ 'd' + mode ] = ( refPx + deltaPx ) + 'px';
         } else {
-          this[ 'd' + mode ] = ( refPx + axis.getRelPx( delta ) ) + "px";
+          this[ 'd' + mode ] = ( refPx + axis.getRelPx( delta ) ) + 'px';
         }
       } else {
 
@@ -277,7 +277,7 @@ class Position {
 
     var parsed;
 
-    if ( typeof value == "function" ) {
+    if ( typeof value == 'function' ) {
 
       return value( axis, rel );
 
@@ -291,11 +291,11 @@ class Position {
 
     } else if ( axis ) {
 
-      if ( value == "min" ) {
+      if ( value == 'min' ) {
 
         return axis.getMinPx();
 
-      } else if ( value == "max" ) {
+      } else if ( value == 'max' ) {
 
         return axis.getMaxPx();
 
@@ -308,11 +308,11 @@ class Position {
         return axis.getPos( value );
       }
     }
-  };
+  }
 
   getPxRel( value, axis ) {
     return this.getPx( value, axis, true );
-  };
+  }
 
   /**
    *  Assigns the current position as relative to another. This is used when a position is used with "dx" or "dy" and not "x" or "y"

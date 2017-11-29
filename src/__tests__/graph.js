@@ -10,7 +10,7 @@ describe( 'Simple graph creation tests', function() {
         var graph = new Graph( div );
         var serie = graph.newSerie( 'serie1' );
         var waveForm = Graph.newWaveform();
-        waveForm.setData( [1, 100, 2, 80, 3, 55, 4, 65] );
+        waveForm.setData( [ 1, 100, 2, 80, 3, 55, 4, 65 ] );
         serie.setWaveform( waveForm );
         graph.draw();
     } );

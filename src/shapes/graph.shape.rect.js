@@ -1,5 +1,5 @@
-import GraphShape from './graph.shape.js'
-import * as util from '../graph.util.js'
+import GraphShape from './graph.shape.js';
+import * as util from '../graph.util.js';
 
 /**
  * Represents a rectangle that extends the Shape class
@@ -40,18 +40,18 @@ class ShapeRectangle extends GraphShape {
     }
 
     /*
-          this._data.handles = this._data.handles ||  {
+          this._data.handles = this._data.handles || {
             type: 'corners'
           };
     */
     var handles = this.getProp( 'handles' );
 
-    if ( typeof handles != "object" ) {
+    if ( typeof handles != 'object' ) {
       handles = {};
     }
 
     if ( !handles.type ) {
-      handles.type = "corners";
+      handles.type = 'corners';
     }
 
     switch ( handles.type ) {
@@ -103,11 +103,11 @@ class ShapeRectangle extends GraphShape {
 
       case 'corners':
         this._createHandles( 4, 'rect', {
-          transform: "translate(-3 -3)",
+          transform: 'translate(-3 -3)',
           width: 6,
           height: 6,
-          stroke: "black",
-          fill: "white"
+          stroke: 'black',
+          fill: 'white'
         } );
 
         if ( this.handles ) {
@@ -281,7 +281,7 @@ class ShapeRectangle extends GraphShape {
    */
   setHandles() {
 
-    if ( this.isLocked() ||  ( !this.isSelectable() && !this._staticHandles ) ) {
+    if ( this.isLocked() || ( !this.isSelectable() && !this._staticHandles ) ) {
       return;
     }
 
@@ -339,4 +339,4 @@ class ShapeRectangle extends GraphShape {
 
 }
 
-export default ShapeRectangle
+export default ShapeRectangle;
