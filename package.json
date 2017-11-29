@@ -17,11 +17,12 @@
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-loader": "^6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-inline-replace-variables": "^1.3.1",
     "babel-plugin-transform-exponentiation-operator": "^6.24.1",
     "babel-polyfill": "^6.16.0",
-    "babel-preset-babili": "0.0.8",
-    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-minify": "^0.2.0",
     "babel-preset-stage-1": "^6.5.0",
     "babel-preset-stage-2": "^6.11.0",
     "babel-preset-stage-3": "^6.11.0",
@@ -49,10 +50,7 @@
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
-  "dependencies": {
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "npm": "^5.5.1"
-  },
+  "dependencies": {},
   "repository": "NPellet/jsGraph",
   "license": "MIT"
 }

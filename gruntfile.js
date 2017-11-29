@@ -1,9 +1,9 @@
 
-module.exports = function(grunt) {
+module.exports = function( grunt ) {
 
-    grunt.initConfig({
+    grunt.initConfig( {
 
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON( 'package.json' ),
 
         bump: {
             options: {
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
            'graphs': {
                 files: {
                     './src/': [ '**.js' ],
-                   
+
                 }
             }
         },
@@ -79,7 +79,7 @@ module.exports = function(grunt) {
           },
         },
 
-      
+
 
         exec: {
             npm_publish: 'npm publish'
@@ -108,10 +108,10 @@ module.exports = function(grunt) {
                          loader: 'babel',
                           query: {
                             presets: [
-                              'babel-preset-es2015',
+                              'babel-preset-env',
                               'babel-preset-stage-1',
                               'babel-polyfill'
-                              ].map(require.resolve),
+                              ].map( require.resolve ),
 
                               plugins: [
                                 'add-module-exports',
@@ -149,7 +149,7 @@ module.exports = function(grunt) {
                          exclude: /node_modules/,
                          loader: 'babel',
                          query: {
-                            plugins: [ 
+                            plugins: [
                               'add-module-exports',
                               'transform-es2015-modules-umd',
                               'transform-exponentiation-operator',
@@ -168,7 +168,7 @@ module.exports = function(grunt) {
             options: {
               sourceMap: true,
               comments: false,
-              presets: ['babili']
+              presets: ['minify']
             },
             files: {
               'dist/jsgraph-es6.min.js': 'dist/jsgraph-es6.js'
@@ -176,70 +176,70 @@ module.exports = function(grunt) {
           }
         }
 
-    });
+    } );
 
 
-    var fs = require('fs');
-    var beautify = require('js-beautify').js_beautify;
-    var exec = require('child_process').exec;
+    var fs = require( 'fs' );
+    var beautify = require( 'js-beautify' ).js_beautify;
+    var exec = require( 'child_process' ).exec;
 
-    grunt.loadNpmTasks('grunt-sloc');
-    grunt.loadNpmTasks('grunt-bump');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-jsdoc');
-    grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-webpack');
-    grunt.loadNpmTasks('grunt-babel');
+    grunt.loadNpmTasks( 'grunt-sloc' );
+    grunt.loadNpmTasks( 'grunt-bump' );
+    grunt.loadNpmTasks( 'grunt-contrib-copy' );
+    grunt.loadNpmTasks( 'grunt-contrib-uglify' );
+    grunt.loadNpmTasks( 'grunt-contrib-watch' );
+    grunt.loadNpmTasks( 'grunt-jsdoc' );
+    grunt.loadNpmTasks( 'grunt-exec' );
+    grunt.loadNpmTasks( 'grunt-webpack' );
+    grunt.loadNpmTasks( 'grunt-babel' );
 
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
 
-    grunt.registerTask( "minify", "Minifying distribution file", [ 'uglify', 'babel:es6_min' ]);
+    grunt.registerTask( "minify", "Minifying distribution file", [ 'uglify', 'babel:es6_min' ] );
 
     grunt.registerTask( "release", "Make a new release", function() {
 
-        grunt.task.run("bump:prerelease:bump-only");
-        grunt.task.run("default");
-        grunt.task.run("bump:prerelease:commit-only");
-        grunt.task.run("exec:npm_publish");
-    });
+        grunt.task.run( "bump:prerelease:bump-only" );
+        grunt.task.run( "default" );
+        grunt.task.run( "bump:prerelease:commit-only" );
+        grunt.task.run( "exec:npm_publish" );
+    } );
 
     grunt.registerTask( "patch", "Make a new patch", function() {
 
-        grunt.task.run("bump:patch:bump-only");
-        grunt.task.run("default");
-        grunt.task.run("bump:patch:commit-only");
-        grunt.task.run("exec:npm_publish");
-    });
+        grunt.task.run( "bump:patch:bump-only" );
+        grunt.task.run( "default" );
+        grunt.task.run( "bump:patch:commit-only" );
+        grunt.task.run( "exec:npm_publish" );
+    } );
 
 
     grunt.registerTask( "minor", "Make a minor release", function() {
 
-        grunt.task.run("bump:minor:bump-only");
-        grunt.task.run("default");
-        grunt.task.run("bump:minor:commit-only");
-        grunt.task.run("exec:npm_publish");
-    });
+        grunt.task.run( "bump:minor:bump-only" );
+        grunt.task.run( "default" );
+        grunt.task.run( "bump:minor:commit-only" );
+        grunt.task.run( "exec:npm_publish" );
+    } );
 
     grunt.registerTask( "major", "Make a new release", function() {
 
-        grunt.task.run("bump:major:bump-only");
-        grunt.task.run("default");
-        grunt.task.run("bump:major:commit-only");
-        grunt.task.run("exec:npm_publish");
-    });
+        grunt.task.run( "bump:major:bump-only" );
+        grunt.task.run( "default" );
+        grunt.task.run( "bump:major:commit-only" );
+        grunt.task.run( "exec:npm_publish" );
+    } );
 
 
 
     grunt.registerTask( "buildExamples", "Builds new examples", function() {
 
         var examples = [];
-        var list = JSON.parse( fs.readFileSync("examples/list.json", 'utf8') );
-        
+        var list = JSON.parse( fs.readFileSync( "examples/list.json", 'utf8' ) );
+
         for( var i = 0, l = list.length; i < l; i ++ ) {
-            var code = fs.readFileSync("examples/v2/" + list[ i ].file + ".js", 'utf8' );
+            var code = fs.readFileSync( "examples/v2/" + list[ i ].file + ".js", 'utf8' );
             var example = {};
             example.id = list[ i ].file;
             example.title = list[ i ].title;
@@ -247,27 +247,27 @@ module.exports = function(grunt) {
 
             example.description = list[ i ].description;
 
-            example.codeShown = code.replace(/\/\* START IGNORE \*\/([\s\S]*)\/\* END IGNORE \*\//, function( ) { return ""; } );
+            example.codeShown = code.replace( /\/\* START IGNORE \*\/([\s\S]*)\/\* END IGNORE \*\//, function( ) { return ""; } );
             example.codeShown = beautify( example.codeShown, { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } )
 
             examples.push( example );
         }
-        
+
 
         fs.writeFileSync( "web/sources/_data/examples.json", JSON.stringify( examples, undefined, "\t" ) );
-    });
+    } );
 
 
     grunt.registerTask( "tutorials", "Builds tutorials", function() {
 
-        exec("./node_modules/.bin/jsdoc -c jsdoc.json", ( err, out ) => {
+        exec( "./node_modules/.bin/jsdoc -c jsdoc.json", ( err, out ) => {
             if( err ) {
                 console.error( err );
                 return;
             }
-            console.log('DONE');
-        });
-    });
+            console.log( 'DONE' );
+        } );
+    } );
 
 
 
@@ -276,29 +276,29 @@ module.exports = function(grunt) {
     grunt.registerTask( 'visualizer', [ 'webpack:dist_es6', 'copy:visualizer' ] );
 
 
-    function WebpackBeautifier(options) {
+    function WebpackBeautifier( options ) {
         this._options = options;
     }
 
-    WebpackBeautifier.prototype.apply = function(compiler) {
+    WebpackBeautifier.prototype.apply = function( compiler ) {
 
         var self = this;
-      compiler.plugin('done', function( stats ) {
-        var json = stats.toJson({assets: false, chunks: false, modules: true }).modules;
+      compiler.plugin( 'done', function( stats ) {
+        var json = stats.toJson( {assets: false, chunks: false, modules: true } ).modules;
         json.map( function( el ) {
             //console.log( el );
 
-            if( el.name == 'multi main' || el.name.indexOf('~') > -1) {
+            if( el.name == 'multi main' || el.name.indexOf( '~' ) > -1 ) {
                 return;
             }
-            
+
             grunt.file.write( el.name, beautify( grunt.file.read( el.name ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
-        });
+        } );
 
         if( ! self._options.jsdoc ) {
             return;
         }
-        console.log('Parsing documentation...');
+        console.log( 'Parsing documentation...' );
         grunt.file.write( "jsdoc.json", JSON.stringify( {
             opts: {
                 "destination": "./web/doc/",
@@ -307,27 +307,27 @@ module.exports = function(grunt) {
             },
 
             "source": {
-                "include": json.map( ( el ) => { 
+                "include": json.map( ( el ) => {
 
-                     if( el.name == 'multi main' || el.name.indexOf('~') > -1) {
+                     if( el.name == 'multi main' || el.name.indexOf( '~' ) > -1 ) {
                         return;
                     }
-                   
+
                    return el.name;
                 } ),
             }
-            
+
         }, false, "\t" ) );
 
-        exec("./node_modules/.bin/jsdoc -c jsdoc.json", ( err, out ) => {
+        exec( "./node_modules/.bin/jsdoc -c jsdoc.json", ( err, out ) => {
             if( err ) {
                 console.error( err );
                 return;
             }
 
-            console.log('DONE');
-        });
-      });
+            console.log( 'DONE' );
+        } );
+      } );
     };
 };
 
