@@ -13,7 +13,7 @@ import * as util from '../graph.util.js'
 class SerieZone3D extends Serie {
 
   static
-  default () {
+  default() {
     return {
       zpos: 0
     };

@@ -10,7 +10,7 @@ import Waveform from '../util/waveform.js'
 class Serie extends EventEmitter {
 
   static
-  default () {
+  default() {
 
     return {
       redrawShapesAfterDraw: false

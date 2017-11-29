@@ -17,7 +17,7 @@ class PluginMakeTracesDifferent extends Plugin {
   }
   // Load this with defaults
   static
-  default () {
+  default() {
 
     return {
 
@@ -29,7 +29,7 @@ class PluginMakeTracesDifferent extends Plugin {
     let result = {},
       hue, saturation, lightness;
 
-    if ( hue = ( color.h || color.hue ) ) {
+    if ( ( hue = ( color.h || color.hue ) ) ) {
 
       if ( hue < 1 ) {
         hue = Math.round( hue * 360 );
@@ -40,7 +40,7 @@ class PluginMakeTracesDifferent extends Plugin {
       result.h = 0;
     }
 
-    if ( saturation = ( color.s || color.saturation ) ) {
+    if ( ( saturation = ( color.s || color.saturation ) ) ) {
 
       if ( saturation > 1 ) {
         saturation /= 100;
@@ -51,7 +51,7 @@ class PluginMakeTracesDifferent extends Plugin {
       result.saturation = .75;
     }
 
-    if ( lightness = ( color.lightness || color.l ) ) {
+    if ( ( lightness = ( color.lightness || color.l ) ) ) {
 
       if ( lightness > 1 ) {
         lightness /= 100;
@@ -106,7 +106,7 @@ class PluginMakeTracesDifferent extends Plugin {
 
         case 'h':
         case 'hue':
-          options.endingColorHSL = { 
+          options.endingColorHSL = {
             h: options.startingColorHSL.h + 300,
             s: options.startingColorHSL.s,
             l: options.startingColorHSL.l
@@ -140,7 +140,7 @@ class PluginMakeTracesDifferent extends Plugin {
             endL = 0.75;
           }
 
-          options.endingColorHSL = { 
+          options.endingColorHSL = {
             h: options.startingColorHSL.h,
             s: options.startingColorHSL.s,
             l: endL

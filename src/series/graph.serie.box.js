@@ -16,7 +16,7 @@ from '../graph.util.js'
 class SerieBox extends Serie {
 
   static
-  default () {
+  default() {
     return {
       orientation: 'y',
       maxBoxWidth: 20,

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "grunt webpack",
     "doc": "git subtree push --prefix doc origin gh-pages",
-    "eslint": "eslint src --cache",
+    "eslint": "eslint src test/node --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "test": "grunt webpack && npm run test-mocha",
     "test-mocha": "mocha test/node --require should --reporter mocha-better-spec-reporter"

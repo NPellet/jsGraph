@@ -56,7 +56,7 @@ class ShapePolyline extends Shape {
     let pxPoints;
     let pos = this.computePosition( 0 );
 
-    if ( pxPoints = this.getProp( 'pxPoints' ) ) {
+    if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
 
       pxPoints = " M " + pos.x + " " + pos.y + " " + pxPoints;
       this.setDom( 'd', pxPoints );

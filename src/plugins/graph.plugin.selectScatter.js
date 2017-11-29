@@ -11,8 +11,8 @@ class PluginSelectScatter extends Plugin {
   }
 
   static
-  default () {
-    return {} 
+  default() {
+    return {}
   }
   /**
    * Init method

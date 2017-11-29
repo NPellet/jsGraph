@@ -7,7 +7,7 @@ import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
 class Plugin extends EventEmitter {
 
   static
-  default () {
+  default() {
     return {};
   }
 

@@ -249,6 +249,7 @@ var ErrorBarMixin = {
 
   errorAddPoint: function( index, dataX, dataY, xpx, ypx ) {
 
+    /* eslint-disable no-cond-assign */
     let error;
     if ( error = this.waveform.getErrorBarXBelow( index ) ) {
       this.errorbarStyle.paths.left += " M " + xpx + " " + ypx;
@@ -290,6 +291,7 @@ var ErrorBarMixin = {
       this.errorboxStyle.paths.top += " M " + xpx + " " + ypx;
       this.errorboxStyle.paths.top += this.makeBoxY( this.getY( dataY + error ), ypx, this.errorboxStyle.top );
     }
+    /* eslint-enable */
 
   },
 

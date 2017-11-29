@@ -1,5 +1,5 @@
-import { 
-  isNumeric 
+import {
+  isNumeric
 } from '../graph.util.js'
 import GraphShape from './graph.shape.js'
 

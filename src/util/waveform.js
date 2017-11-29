@@ -21,7 +21,7 @@ class Waveform {
       boxes: {
         above: null,
         below: null
-      } 
+      }
     };
 
     this.setData( data );
@@ -1348,9 +1348,9 @@ class Waveform {
     var indices = [];
     var i = 0;
 
-    while ( lvlIndex = this.findLevel( level, Object.assign( {}, options, {
+    while ( ( lvlIndex = this.findLevel( level, Object.assign( {}, options, {
         rangeP: [ lastLvlIndex, options.rangeP[ 1 ] ]
-      } ) ) ) {
+      } ) ) ) ) {
       indices.push( lvlIndex );
       lastLvlIndex = Math.ceil( lvlIndex );
 
@@ -1797,7 +1797,7 @@ class Waveform {
     }
 
     let wave;
-    if ( wave = ( side == Waveform.ABOVE ? errors.above : errors.below ) ) {
+    if ( ( wave = ( side == Waveform.ABOVE ? errors.above : errors.below ) ) ) {
 
       if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
         wave = errors.above;

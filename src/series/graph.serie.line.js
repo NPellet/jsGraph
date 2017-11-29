@@ -14,7 +14,7 @@ import Waveform from '../util/waveform.js'
 class SerieLine extends Serie {
 
   static
-  default () {
+  default() {
     /**
      * @name SerieLineDefaultOptions
      * @object

@@ -3913,7 +3913,7 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
           val = serie.serie.getXAxis().getRelVal( magnetOptions.withinPx );
         }
 
-        if ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) {
+        if ( ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) ) {
 
           serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;
         }
