@@ -1,23 +1,17 @@
-'use strict';
+import path from 'path';
+import assert from 'assert';
 
-var jsdom = require( 'mocha-jsdom' );
-var path = require( 'path' );
-var assert = require( 'assert' )
-
-var jsgraph = path.resolve( __dirname + '/../../dist/jsgraph_es6.js' );
+import Graph from '../src/graph';
 
 describe( 'Simple graph creation tests', function() {
 
-    jsdom( {
-        scripts: [jsgraph]
-    } );
-
     it( 'Basic creation', function() {
-
         var div = document.createElement( 'div' );
-        var graph = new window.Graph( div );
+        var graph = new Graph( div );
         var serie = graph.newSerie( 'serie1' );
-        serie.setData( [1, 100, 2, 80, 3, 55, 4, 65] );
+        var waveForm = Graph.newWaveform();
+        waveForm.setData( [1, 100, 2, 80, 3, 55, 4, 65] );
+        serie.setWaveform( waveForm );
         graph.draw();
     } );
 
@@ -25,13 +19,13 @@ describe( 'Simple graph creation tests', function() {
         var div = document.createElement( 'div' );
         div.id = 'graphId';
         document.getElementsByTagName( 'body' )[0].appendChild( div );
-        var graph = new window.Graph( 'graphId' );
+        var graph = new Graph( 'graphId' );
         assert.equal( graph.getWrapper(), div );
     } );
 
     it( 'Uniqueness of series', function() {
         var div = document.createElement( 'div' );
-        var graph = new window.Graph( div );
+        var graph = new Graph( div );
         var serie = graph.newSerie( 'serie1' );
         var serie2 = graph.getSerie( 'serie1' );
         assert.equal( serie, serie2 );
