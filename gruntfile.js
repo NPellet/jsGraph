@@ -1,3 +1,6 @@
+const path = require( 'path' );
+
+const distPath = path.resolve( __dirname, './dist/' );
 
 module.exports = function( grunt ) {
 
@@ -90,22 +93,17 @@ module.exports = function( grunt ) {
 
                  entry: [ 'babel-polyfill', './src/graph.js' ],
                  output: {
-                     path: './dist/',
+                     path: distPath,
                      filename: 'jsgraph.js',
-
                      library: "Graph",
                      libraryTarget: 'umd'
                  },
-
-                 plugins: [
-                    new WebpackBeautifier( { options: true } )
-                 ],
 
                  module: {
                      loaders: [{
                          test: /\.js$/,
                          exclude: /node_modules/,
-                         loader: 'babel',
+                         loader: 'babel-loader',
                           query: {
                             presets: [
                               'babel-preset-env',
@@ -132,9 +130,8 @@ module.exports = function( grunt ) {
 
                  entry: './src/graph.js',
                  output: {
-                     path: './dist/',
+                     path: distPath,
                      filename: 'jsgraph-es6.js',
-
                      library: "Graph",
                      libraryTarget: 'umd'
                  },
@@ -147,7 +144,7 @@ module.exports = function( grunt ) {
                      loaders: [{
                          test: /\.js$/,
                          exclude: /node_modules/,
-                         loader: 'babel',
+                         loader: 'babel-loader',
                          query: {
                             plugins: [
                               'add-module-exports',
