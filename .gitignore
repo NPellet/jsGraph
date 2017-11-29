@@ -6,3 +6,4 @@ examples/src
 examples/workingplace
 examples/DD/
 .eslintcache
+/coverage/

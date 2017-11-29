@@ -8,6 +8,7 @@
     "eslint": "eslint src __tests__ --cache",
     "eslint-fix": "npm run eslint -- --fix",
     "test": "npm run test-only && npm run eslint",
+    "test-coverage": "jest --coverage",
     "test-only": "jest"
   },
   "main": "dist/jsgraph.js",
