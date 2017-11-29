@@ -185,9 +185,8 @@ let string = function() {
 
 }.toString();
 
-string = string.split( "\n" );
-string.pop();
-string.shift();
+string = string.replace( /^\s*function\s+\(\s*\)\s*\{/, '' );
+string = string.replace( /}\s*$/, '' );
 /*
 if ( typeof URL == "undefined" ) {
   module.exports = function() {};
@@ -195,7 +194,7 @@ if ( typeof URL == "undefined" ) {
 } else {
 */
 var workerUrl = URL.createObjectURL( new Blob(
-  [ string.join( "\n" ) ], {
+  [ string ], {
     type: 'application/javascript'
   } ) );
 

@@ -41,7 +41,7 @@ import GraphPluginTimeSerieManager from './plugins/graph.plugin.timeseriemanager
 import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinedifference.js'
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting.js'
 import GraphPluginMakeTracesDifferent from './plugins/graph.plugin.makeTracesDifferent.js'
-import GraphPluginPeakPicking from './plugins/graph.plugin.peakPicking.js'
+import GraphPluginPeakPicking from './plugins/graph.plugin.peakpicking.js'
 
 import Waveform from './util/waveform.js'
 import FitLM from './util/fit_lm.js'
