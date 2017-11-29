@@ -14,7 +14,7 @@ import {
 class SerieZone extends Serie {
 
   static
-  default() {
+  default () {
     return {
       fillColor: 'rgba( 0, 0, 0, 0.1 )',
       lineColor: 'rgba( 0, 0, 0, 1 )',

@@ -12,7 +12,7 @@ class PluginShape extends Plugin {
   }
 
   static
-  default() {
+  default () {
     return {}
   }
 

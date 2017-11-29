@@ -11,7 +11,7 @@ class PluginPeakPicking extends Plugin {
   }
 
   static
-  default() {
+  default () {
 
     return {
       autoPeakPicking: false,

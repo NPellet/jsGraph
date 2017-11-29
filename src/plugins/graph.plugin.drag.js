@@ -8,7 +8,7 @@ import Plugin from './graph.plugin.js'
 class PluginDrag extends Plugin {
 
   static
-  default() {
+  default () {
     return {
 
       dragX: true,

@@ -12,7 +12,7 @@ class PluginZoom extends Plugin {
   }
 
   static
-  default() {
+  default () {
 
     return {
       "axes": "all"

@@ -17,7 +17,7 @@ class PluginMakeTracesDifferent extends Plugin {
   }
   // Load this with defaults
   static
-  default() {
+  default () {
 
     return {
 
