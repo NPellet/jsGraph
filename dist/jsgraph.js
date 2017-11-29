@@ -6842,7 +6842,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       'xmlns': Graph.ns,
       'font-family': this.options.fontFamily,
       'font-size': this.options.fontSize,
-      'data-jsgraph-version': 'v2.0.60' || 'head'
+      'data-jsgraph-version': 'v2.0.61' || 'head'
     });
 
     this.defs = document.createElementNS(Graph.ns, 'defs');
