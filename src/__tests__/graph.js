@@ -1,7 +1,7 @@
 import path from 'path';
 import assert from 'assert';
 
-import Graph from '../src/graph';
+import Graph from './graph';
 
 describe( 'Simple graph creation tests', function() {
 
