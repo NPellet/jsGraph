@@ -142,7 +142,8 @@ module.exports = function ( grunt ) {
                                     'inline-replace-variables', {
                                         '__VERSION__': 'v<%= pkg.version %>'
                                     } ]
-                            ]
+                            ],
+                            babelrc: false
                         }
                     } ]
                 }
@@ -176,7 +177,8 @@ module.exports = function ( grunt ) {
                                 [ 'inline-replace-variables', {
                                     '__VERSION__': 'v<%= pkg.version %>'
                                 } ]
-                            ]
+                            ],
+                            babelrc: false
                         }
                     } ]
                 }
@@ -188,7 +190,8 @@ module.exports = function ( grunt ) {
                 options: {
                     sourceMap: true,
                     comments: false,
-                    presets: [ 'minify' ]
+                    presets: [ 'minify' ],
+                    babelrc: false
                 },
                 files: {
                     'dist/jsgraph-es6.min.js': 'dist/jsgraph-es6.js',
@@ -216,7 +219,7 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks( 'grunt-rollup' );
 
 
-    grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
+    grunt.registerTask( 'default', [ 'build', 'minify', 'copy:examples' ] );
 
     grunt.registerTask( 'minify', 'Minifying distribution file', [ 'uglify', 'babel:minify' ] );
 
@@ -291,7 +294,7 @@ module.exports = function ( grunt ) {
     } );
 
 
-    grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'rollup: distModule' ] );
+    grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'rollup:distModule' ] );
 
     grunt.registerTask( 'visualizer', [ 'webpack:dist_es6', 'copy:visualizer' ] );
 
