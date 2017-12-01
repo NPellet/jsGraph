@@ -14970,6 +14970,8 @@ class SerieLine extends Serie {
       if (this.waveform.isXMonotoneous()) {
 
         returnObj = {
+          indexMin: indexX,
+          indexMax: indexX + 1,
           xMin: this.waveform.getX(indexX),
           xMax: this.waveform.getX(indexX + 1),
           yMin: this.waveform.getY(indexX),
@@ -14987,6 +14989,7 @@ class SerieLine extends Serie {
       } else {
 
         returnObj = {
+          indexMin: indexX,
           xExact: this.waveform.getX(indexX),
           xMin: this.waveform.getX(indexX),
           xMax: this.waveform.getX(indexX),

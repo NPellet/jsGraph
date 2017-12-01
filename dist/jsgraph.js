@@ -6762,7 +6762,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.62'
+        'data-jsgraph-version': 'v2.0.63'
       });
     } catch (e) {}
 
@@ -11074,6 +11074,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           if (this.waveform.isXMonotoneous()) {
 
             returnObj = {
+              indexMin: indexX,
+              indexMax: indexX + 1,
               xMin: this.waveform.getX(indexX),
               xMax: this.waveform.getX(indexX + 1),
               yMin: this.waveform.getY(indexX),
@@ -11091,6 +11093,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           } else {
 
             returnObj = {
+              indexMin: indexX,
               xExact: this.waveform.getX(indexX),
               xMin: this.waveform.getX(indexX),
               xMax: this.waveform.getX(indexX),
