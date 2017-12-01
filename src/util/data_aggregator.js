@@ -195,7 +195,7 @@ if (
 
   }.toString();
 
-  string = string.replace( /^\s*function\s+\(\s*\)\s*\{/, '' );
+  string = string.replace( /^\s*function\s*\(\s*\)\s*\{/, '' );
   string = string.replace( /}\s*$/, '' );
   /*
   if ( typeof URL == "undefined" ) {
@@ -203,6 +203,7 @@ if (
 
   } else {
   */
+
   var workerUrl = URL.createObjectURL( new Blob(
     [ string ], {
       type: 'application/javascript'

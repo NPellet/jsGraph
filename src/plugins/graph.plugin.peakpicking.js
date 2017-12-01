@@ -1,6 +1,28 @@
 import * as util from '../graph.util.js';
 import Plugin from './graph.plugin.js';
 
+/*
+  What is it ?
+    It is a plugin for automatic peak detection on a line serie
+
+  How to use ?
+    Basic usage:
+    
+    let graph = new Graph("dom", { 
+      plugins: {
+        'peakPicking': {}
+      }
+      }
+    );
+
+    let wv = Graph.newWaveform();
+    wv.setData( [ 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 ] );
+    let s = graph.newSerie("serie").setWaveform( wv ).autoAxis();
+
+    graph.getPlugin('peakPicking').setSerie( s ); 
+    graph.draw();
+*/
+
 /**
  * @extends Plugin
  */
@@ -58,6 +80,15 @@ class PluginPeakPicking extends Plugin {
 
   setSerie( serie ) {
     this.serie = serie;
+  }
+
+  serieRemoved( serie ) {
+
+    if ( this.serie == serie ) {
+      this.picks.map( ( pick ) => {
+        pick.kill();
+      } )
+    }
   }
 
   preDraw() {

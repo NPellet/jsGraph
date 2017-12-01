@@ -1843,7 +1843,7 @@ class Graph extends EventEmitter {
   unforcePlugin() {
     this.forcedPlugin = false;
   }
-  _pluginsExecute( funcName, args ) {
+  _pluginsExecute( funcName, ...args ) {
 
     //			Array.prototype.splice.apply(args, [0, 0, this]);
 
@@ -2060,6 +2060,7 @@ class Graph extends EventEmitter {
   }
   _removeSerie( serie ) {
     this.series.splice( this.series.indexOf( serie ), 1 );
+    this._pluginsExecute( 'serieRemoved', serie );
   }
   contextListen( target, menuElements, callback ) {
 
@@ -3394,8 +3395,8 @@ function doDom() {
   try {
     util.setAttributeTo( this.dom, {
       'data-jsgraph-version': __VERSION__
-    });
-  } catch( e ) {}
+    } );
+  } catch ( e ) {}
 
   this.defs = document.createElementNS( Graph.ns, 'defs' );
   this.dom.appendChild( this.defs );
@@ -3877,30 +3878,38 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       };
 
+      let serieShape;
+      if ( graph.options.trackingLine && graph.options.trackingLine.serieShape ) {
+        serieShape = graph.options.trackingLine.serieShape;
+      } else {
+        serieShape = {
+          shape: 'ellipse',
+          properties: {
+            rx: [ serie.serie.getLineWidth() * 3 + "px" ],
+            ry: [ serie.serie.getLineWidth() * 3 + "px" ]
+          }
+        }
+      }
+
       if ( !serie.serie.trackingShape ) {
 
-        serie.serie.trackingShape = graph.newShape(
-
-            graph.options.trackingLine.serieShape.shape || 'ellipse', {
+        serie.serie.trackingShape = graph.newShape( serieShape.shape, {
               fillColor: serie.serie.getLineColor(),
               strokeColor: 'White',
               strokeWidth: serie.serie.getLineWidth()
             },
             true,
-            graph.options.trackingLine.serieShape.properties || {
-              rx: [ serie.serie.getLineWidth() * 3 ],
-              ry: [ serie.serie.getLineWidth() * 3 ]
-            }
+            serieShape.properties
           )
           .setSerie( serie.serie )
           .forceParentDom( serie.serie.groupMain )
           .draw();
 
-        ( graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated( serie.serie.trackingShape ) );
+        ( serieShape.onCreated && serieShape.onCreated( serie.serie.trackingShape ) );
 
         serie.serie.trackingShape.on( 'changed', () => {
 
-          ( graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged( serie.serie.trackingShape ) );
+          ( serieShape.onChanged && serieShape.onChanged( serie.serie.trackingShape ) );
 
         } );
       }
@@ -3908,9 +3917,9 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
       serie.serie.trackingShape.show();
       serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
 
-      if ( graph.options.trackingLine.serieShape.magnet ) {
+      if ( serieShape.magnet ) {
 
-        let magnetOptions = graph.options.trackingLine.serieShape.magnet,
+        let magnetOptions = serieShape.magnet,
           val = magnetOptions.within,
           minmaxpos;
 

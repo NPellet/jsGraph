@@ -537,7 +537,7 @@ class SerieDensityMap extends Serie {
    * @param {String} [ method = "linear" ] - The method to use to calculate the density map: <code>linear</code>, <code>exp</code> or <code>log</code>
    * @return {SerieDensityMap} The current instance
    */
-  autoColorMapHSL( colorStops, method = 'linear') {
+  autoColorMapHSL( colorStops, method = 'linear' ) {
     this.colorMapHSV( colorStops, 100, method );
     return this;
   }
