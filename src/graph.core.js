@@ -3388,9 +3388,14 @@ function doDom() {
   util.setAttributeTo( this.dom, {
     'xmlns': Graph.ns,
     'font-family': this.options.fontFamily,
-    'font-size': this.options.fontSize,
-    'data-jsgraph-version': __VERSION__ || 'head'
+    'font-size': this.options.fontSize
   } );
+
+  try {
+    util.setAttributeTo( this.dom, {
+      'data-jsgraph-version': __VERSION__
+    });
+  } catch( e ) {}
 
   this.defs = document.createElementNS( Graph.ns, 'defs' );
   this.dom.appendChild( this.defs );

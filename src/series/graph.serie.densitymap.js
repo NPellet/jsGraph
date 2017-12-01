@@ -112,6 +112,57 @@ class SerieDensityMap extends Serie {
   }
 
   /**
+   * Sets the density map from a precalculated data set
+   * @memberof SerieDensityMap
+   * @param {Array} densitymap - A 2D-array containing the map
+   * @param {Number} fromX - The first x element to consider
+   * @param {Number} deltaX - The x spacing between two bins
+   * @param {Number} fromY - The first y element to consider
+   * @param {Number} deltaY - The y spacing between two bins
+   * @return {Array} The generated density map
+   * @see SerieDensityMap#autoBins
+   * @see SerieDensityMap#autoColorMapBinBoundaries
+   * @see SerieDensityMap#setPxPerBin
+   */
+  setDensityMap( densitymap, fromX, deltaX, numX, fromY, deltaY, numY ) {
+
+    var i,
+      j,
+      l = this.data.length,
+      indexX, indexY;
+
+    var binMin = Number.POSITIVE_INFINITY;
+    var binMax = Number.NEGATIVE_INFINITY;
+
+    for ( i = 0; i < densitymap.length; i++ ) {
+
+      for ( j = 0; j < densitymap[ i ].length; j++ ) {
+        binMin = densitymap[ i ][ j ] < binMin ? densitymap[ i ][ j ] : binMin;
+        binMax = densitymap[ i ][ j ] > binMax ? densitymap[ i ][ j ] : binMax;
+      }
+      //binMax = Math.max( binMax, densitymap[ indexX ][ indexY ] );
+    }
+
+    this.maxIndexX = densitymap.length;
+    this.maxIndexY = densitymap[ 0 ].length;
+
+    this.binMin = binMin;
+    this.binMax = binMax;
+
+    this.deltaX = deltaX;
+    this.deltaY = deltaY;
+
+    this.fromX = fromX;
+    this.fromY = fromY;
+
+    this.numX = maxIndexX;
+    this.numY = maxIndexY;
+
+    this.densitymap = densitymap;
+    return densitymap;
+  }
+
+  /**
    * Calculates the bins from the (x,y) dataset using bin weighing
    * Will assign a set of (x,y) to the 4 neighbouring bins according to its exact position
    * @memberof SerieDensityMap
@@ -486,8 +537,8 @@ class SerieDensityMap extends Serie {
    * @param {String} [ method = "linear" ] - The method to use to calculate the density map: <code>linear</code>, <code>exp</code> or <code>log</code>
    * @return {SerieDensityMap} The current instance
    */
-  autoColorMapHSL( colorStops, method ) {
-    this.colorMapHSV( colorStops, 100, method || 'linear' );
+  autoColorMapHSL( colorStops, method = 'linear') {
+    this.colorMapHSV( colorStops, 100, method );
     return this;
   }
 
