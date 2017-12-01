@@ -6762,7 +6762,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.63'
+        'data-jsgraph-version': 'v2.0.64'
       });
     } catch (e) {}
 
@@ -11076,6 +11076,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             returnObj = {
               indexMin: indexX,
               indexMax: indexX + 1,
+              indexClosest: indexX,
               xMin: this.waveform.getX(indexX),
               xMax: this.waveform.getX(indexX + 1),
               yMin: this.waveform.getY(indexX),
@@ -11094,6 +11095,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             returnObj = {
               indexMin: indexX,
+              indexClosest: indexX,
               xExact: this.waveform.getX(indexX),
               xMin: this.waveform.getX(indexX),
               xMax: this.waveform.getX(indexX),
