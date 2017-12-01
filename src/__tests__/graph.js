@@ -1,4 +1,3 @@
-import path from 'path';
 import assert from 'assert';
 
 import Graph from '../graph';

@@ -284,7 +284,7 @@ module.exports = function ( grunt ) {
 
     grunt.registerTask( 'tutorials', 'Builds tutorials', function () {
 
-        exec( './node_modules/.bin/jsdoc -c jsdoc.json', ( err, out ) => {
+        exec( './node_modules/.bin/jsdoc -c jsdoc.json', ( err ) => {
             if ( err ) {
                 console.error( err );
                 return;
@@ -342,7 +342,7 @@ module.exports = function ( grunt ) {
 
             }, false, '\t' ) );
 
-            exec( './node_modules/.bin/jsdoc -c jsdoc.json', ( err, out ) => {
+            exec( './node_modules/.bin/jsdoc -c jsdoc.json', ( err ) => {
                 if ( err ) {
                     console.error( err );
                     return;
