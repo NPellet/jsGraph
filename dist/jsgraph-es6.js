@@ -6102,7 +6102,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.64'
+        'data-jsgraph-version': 'v2.0.65'
       });
     } catch (e) {}
 
@@ -10179,6 +10179,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         yBefore: value.yMin,
         yAfter: value.yMax,
         trueX: value.xExact,
+        indexClosest: value.indexClosest,
         interpolatedY: intY,
 
         xClosest: value.xClosest,

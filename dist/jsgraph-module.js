@@ -15071,6 +15071,7 @@ class SerieLine extends Serie {
       yBefore: value.yMin,
       yAfter: value.yMax,
       trueX: value.xExact,
+      indexClosest: value.indexClosest,
       interpolatedY: intY,
 
       xClosest: value.xClosest,
