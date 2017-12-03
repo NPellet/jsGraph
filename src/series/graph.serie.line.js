@@ -1202,41 +1202,26 @@ class SerieLine extends Serie {
 
     if ( this.waveform ) {
       const indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
-      let returnObj;
+      let returnObj = {};
 
-      if ( this.waveform.isXMonotoneous() ) {
-
-        returnObj = {
-          indexMin: indexX,
-          indexMax: indexX + 1,
-          indexClosest: indexX,
-          xMin: this.waveform.getX( indexX ),
-          xMax: this.waveform.getX( indexX + 1 ),
-          yMin: this.waveform.getY( indexX ),
-          yMax: this.waveform.getY( indexX + 1 ),
-          xExact: valX
-        };
-
-        if ( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
-          returnObj.xClosest = returnObj.xMin;
-          returnObj.yClosest = returnObj.yMin;
-        } else {
-          returnObj.xClosest = returnObj.xMax;
-          returnObj.yClosest = returnObj.yMax;
-        }
+      if ( valX > this.waveform.getX( indexX ) ) {
+        direction = -1;
       } else {
-
-        returnObj = {
-          indexMin: indexX,
-          indexClosest: indexX,
-          xExact: this.waveform.getX( indexX ),
-          xMin: this.waveform.getX( indexX ),
-          xMax: this.waveform.getX( indexX ),
-          yMin: this.waveform.getY( indexX ),
-          yMax: this.waveform.getY( indexX )
-        };
+        direction = 0;
       }
 
+      Object.assign( returnObj, {
+        indexMin: indexX + direction,
+        indexMax: indexX + direction + 1,
+        indexClosest: indexX,
+        xMin: this.waveform.getX( indexX + direction ),
+        xMax: this.waveform.getX( indexX + direction + 1 ),
+        yMin: this.waveform.getY( indexX + direction ),
+        yMax: this.waveform.getY( indexX + direction + 1 ),
+        xClosest: this.waveform.getX( indexX ),
+        yClosest: this.waveform.getY( indexX ),
+        xExact: valX
+      } );
       return returnObj;
     }
 

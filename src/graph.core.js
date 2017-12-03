@@ -1374,7 +1374,7 @@ class Graph extends EventEmitter {
    * @returns {Shape} The created shape
    * @see Graph#getConstructor
    */
-  newShape( shapeType, shapeData, mute, shapeProperties ) {
+  newShape( shapeType, shapeData, mute = false, shapeProperties ) {
 
     var self = this,
       response;
@@ -1545,6 +1545,7 @@ class Graph extends EventEmitter {
       shape.setSerie( this.getSerie( shapeData.serie ) );
     }
     shape.createHandles();
+    shape.applyStyle();
 
     this.shapes.push( shape );
 

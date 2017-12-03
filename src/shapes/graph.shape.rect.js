@@ -11,6 +11,7 @@ class ShapeRectangle extends GraphShape {
 
   constructor( graph, options ) {
     super( graph, options );
+
   }
 
   /**
@@ -22,9 +23,17 @@ class ShapeRectangle extends GraphShape {
     var self = this;
     this._dom = document.createElementNS( this.graph.ns, 'rect' );
 
-    this.setStrokeColor( 'black' );
-    this.setStrokeWidth( 1 );
-    this.setFillColor( 'transparent' );
+    if ( !this.getStrokeColor() ) {
+      this.setStrokeColor( 'black' );
+    }
+
+    if ( !this.getStrokeWidth() ) {
+      this.setStrokeWidth( 1 );
+    }
+
+    if ( !this.getFillColor() ) {
+      this.setFillColor( 'transparent' );
+    }
 
     return this;
   }

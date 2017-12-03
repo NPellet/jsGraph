@@ -1471,6 +1471,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setFillColor',
       value: function setFillColor(color) {
+
         this.setProp('fillColor', color);
         this.overwriteSavedProp('fill', color);
         this.applySelectedStyle();
@@ -1675,6 +1676,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'applyStyle',
       value: function applyStyle() {
+
         return this.applyGenericStyle();
       }
     }, {
@@ -1758,7 +1760,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
               if (transforms[i].arguments.length == 1) {
                 var p = this.computePosition(0);
-                console.log(p, this.getPosition(0), this.computePosition(0));
                 transformString += p.x + ', ' + p.y;
               } else {
 
@@ -4743,7 +4744,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'newShape',
-      value: function newShape(shapeType, shapeData, mute, shapeProperties) {
+      value: function newShape(shapeType, shapeData) {
+        var mute = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var shapeProperties = arguments[3];
+
 
         var self = this,
             response;
@@ -4910,6 +4914,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           shape.setSerie(this.getSerie(shapeData.serie));
         }
         shape.createHandles();
+        shape.applyStyle();
 
         this.shapes.push(shape);
 
@@ -6762,7 +6767,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.65'
+        'data-jsgraph-version': 'v2.0.66'
       });
     } catch (e) {}
 
@@ -11069,41 +11074,26 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (this.waveform) {
           var indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
-          var returnObj = void 0;
+          var returnObj = {};
 
-          if (this.waveform.isXMonotoneous()) {
-
-            returnObj = {
-              indexMin: indexX,
-              indexMax: indexX + 1,
-              indexClosest: indexX,
-              xMin: this.waveform.getX(indexX),
-              xMax: this.waveform.getX(indexX + 1),
-              yMin: this.waveform.getY(indexX),
-              yMax: this.waveform.getY(indexX + 1),
-              xExact: valX
-            };
-
-            if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
-              returnObj.xClosest = returnObj.xMin;
-              returnObj.yClosest = returnObj.yMin;
-            } else {
-              returnObj.xClosest = returnObj.xMax;
-              returnObj.yClosest = returnObj.yMax;
-            }
+          if (valX > this.waveform.getX(indexX)) {
+            direction = -1;
           } else {
-
-            returnObj = {
-              indexMin: indexX,
-              indexClosest: indexX,
-              xExact: this.waveform.getX(indexX),
-              xMin: this.waveform.getX(indexX),
-              xMax: this.waveform.getX(indexX),
-              yMin: this.waveform.getY(indexX),
-              yMax: this.waveform.getY(indexX)
-            };
+            direction = 0;
           }
 
+          Object.assign(returnObj, {
+            indexMin: indexX + direction,
+            indexMax: indexX + direction + 1,
+            indexClosest: indexX,
+            xMin: this.waveform.getX(indexX + direction),
+            xMax: this.waveform.getX(indexX + direction + 1),
+            yMin: this.waveform.getY(indexX + direction),
+            yMax: this.waveform.getY(indexX + direction + 1),
+            xClosest: this.waveform.getX(indexX),
+            yClosest: this.waveform.getY(indexX),
+            xExact: valX
+          });
           return returnObj;
         }
 
@@ -12856,6 +12846,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'hide',
       value: function hide(hideShapes) {
+        var mute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
 
         this.hidden = true;
         this.groupMain.setAttribute('display', 'none');
@@ -12872,7 +12864,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         }
 
-        this.emit('hide');
+        if (!mute) {
+          this.emit('hide');
+        }
 
         if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
           this.graph.draw(true);
@@ -12883,6 +12877,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'show',
       value: function show(showShapes) {
+        var mute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
 
         this.hidden = false;
         this.groupMain.setAttribute('display', 'block');
@@ -12901,7 +12897,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         }
 
-        this.emit('show');
+        if (!mute) {
+          this.emit('show');
+        }
 
         if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
           this.graph.draw(true);
@@ -20805,9 +20803,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var self = this;
         this._dom = document.createElementNS(this.graph.ns, 'rect');
 
-        this.setStrokeColor('black');
-        this.setStrokeWidth(1);
-        this.setFillColor('transparent');
+        if (!this.getStrokeColor()) {
+          this.setStrokeColor('black');
+        }
+
+        if (!this.getStrokeWidth()) {
+          this.setStrokeWidth(1);
+        }
+
+        if (!this.getFillColor()) {
+          this.setFillColor('transparent');
+        }
 
         return this;
       }

@@ -132,7 +132,7 @@ class Serie extends EventEmitter {
    * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  hide( hideShapes ) {
+  hide( hideShapes, mute = false ) {
 
     this.hidden = true;
     this.groupMain.setAttribute( 'display', 'none' );
@@ -149,7 +149,9 @@ class Serie extends EventEmitter {
       }
     }
 
-    this.emit( 'hide' );
+    if ( !mute ) {
+      this.emit( 'hide' );
+    }
 
     if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
       this.graph.draw( true );
@@ -164,7 +166,7 @@ class Serie extends EventEmitter {
    * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  show( showShapes ) {
+  show( showShapes, mute = false ) {
 
     this.hidden = false;
     this.groupMain.setAttribute( 'display', 'block' );
@@ -183,7 +185,9 @@ class Serie extends EventEmitter {
       }
     }
 
-    this.emit( 'show' );
+    if ( !mute ) {
+      this.emit( 'show' );
+    }
 
     if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
       this.graph.draw( true );

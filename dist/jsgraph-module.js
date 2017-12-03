@@ -5046,7 +5046,7 @@ class Graph$1 extends EventEmitter {
    * @returns {Shape} The created shape
    * @see Graph#getConstructor
    */
-  newShape(shapeType, shapeData, mute, shapeProperties) {
+  newShape(shapeType, shapeData, mute = false, shapeProperties) {
 
     this.prevent(false);
 
@@ -5212,6 +5212,7 @@ class Graph$1 extends EventEmitter {
       shape.setSerie(this.getSerie(shapeData.serie));
     }
     shape.createHandles();
+    shape.applyStyle();
 
     this.shapes.push(shape);
 
@@ -12846,7 +12847,7 @@ class Serie extends EventEmitter {
    * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  hide(hideShapes) {
+  hide(hideShapes, mute = false) {
 
     this.hidden = true;
     this.groupMain.setAttribute('display', 'none');
@@ -12863,7 +12864,9 @@ class Serie extends EventEmitter {
       }
     }
 
-    this.emit('hide');
+    if (!mute) {
+      this.emit('hide');
+    }
 
     if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
       this.graph.draw(true);
@@ -12878,7 +12881,7 @@ class Serie extends EventEmitter {
    * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  show(showShapes) {
+  show(showShapes, mute = false) {
 
     this.hidden = false;
     this.groupMain.setAttribute('display', 'block');
@@ -12897,7 +12900,9 @@ class Serie extends EventEmitter {
       }
     }
 
-    this.emit('show');
+    if (!mute) {
+      this.emit('show');
+    }
 
     if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
       this.graph.draw(true);
@@ -14965,41 +14970,26 @@ class SerieLine extends Serie {
 
     if (this.waveform) {
       const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
-      let returnObj;
+      let returnObj = {};
 
-      if (this.waveform.isXMonotoneous()) {
-
-        returnObj = {
-          indexMin: indexX,
-          indexMax: indexX + 1,
-          indexClosest: indexX,
-          xMin: this.waveform.getX(indexX),
-          xMax: this.waveform.getX(indexX + 1),
-          yMin: this.waveform.getY(indexX),
-          yMax: this.waveform.getY(indexX + 1),
-          xExact: valX
-        };
-
-        if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
-          returnObj.xClosest = returnObj.xMin;
-          returnObj.yClosest = returnObj.yMin;
-        } else {
-          returnObj.xClosest = returnObj.xMax;
-          returnObj.yClosest = returnObj.yMax;
-        }
+      if (valX > this.waveform.getX(indexX)) {
+        direction = -1;
       } else {
-
-        returnObj = {
-          indexMin: indexX,
-          indexClosest: indexX,
-          xExact: this.waveform.getX(indexX),
-          xMin: this.waveform.getX(indexX),
-          xMax: this.waveform.getX(indexX),
-          yMin: this.waveform.getY(indexX),
-          yMax: this.waveform.getY(indexX)
-        };
+        direction = 0;
       }
 
+      Object.assign(returnObj, {
+        indexMin: indexX + direction,
+        indexMax: indexX + direction + 1,
+        indexClosest: indexX,
+        xMin: this.waveform.getX(indexX + direction),
+        xMax: this.waveform.getX(indexX + direction + 1),
+        yMin: this.waveform.getY(indexX + direction),
+        yMax: this.waveform.getY(indexX + direction + 1),
+        xClosest: this.waveform.getX(indexX),
+        yClosest: this.waveform.getY(indexX),
+        xExact: valX
+      });
       return returnObj;
     }
 
@@ -19414,6 +19404,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setFillColor(color) {
+
     this.setProp('fillColor', color);
     this.overwriteSavedProp('fill', color);
     this.applySelectedStyle();
@@ -19744,6 +19735,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   applyStyle() {
+
     return this.applyGenericStyle();
   }
 
@@ -19849,7 +19841,6 @@ class Shape extends EventEmitter {
 
           if (transforms[i].arguments.length == 1) {
             var p = this.computePosition(0);
-            console.log(p, this.getPosition(0), this.computePosition(0));
             transformString += p.x + ', ' + p.y;
           } else {
 
@@ -21852,9 +21843,17 @@ class ShapeRectangle extends Shape {
   createDom() {
     this._dom = document.createElementNS(this.graph.ns, 'rect');
 
-    this.setStrokeColor('black');
-    this.setStrokeWidth(1);
-    this.setFillColor('transparent');
+    if (!this.getStrokeColor()) {
+      this.setStrokeColor('black');
+    }
+
+    if (!this.getStrokeWidth()) {
+      this.setStrokeWidth(1);
+    }
+
+    if (!this.getFillColor()) {
+      this.setFillColor('transparent');
+    }
 
     return this;
   }

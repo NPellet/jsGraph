@@ -591,6 +591,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setFillColor( color ) {
+
     this.setProp( 'fillColor', color );
     this.overwriteSavedProp( 'fill', color );
     this.applySelectedStyle();
@@ -922,6 +923,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   applyStyle() {
+
     return this.applyGenericStyle();
   }
 
@@ -1027,7 +1029,6 @@ class Shape extends EventEmitter {
 
           if ( transforms[ i ].arguments.length == 1 ) {
             var p = this.computePosition( 0 );
-            console.log( p, this.getPosition( 0 ), this.computePosition( 0 ) );
             transformString += p.x + ', ' + p.y;
 
           } else {
