@@ -643,6 +643,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.initImpl();
 
       this.graph.emit('shapeNew', this);
+
       return this;
     }
 
@@ -1824,7 +1825,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.setProp('handles', setter);
       }
 
-      return !!this.getProp('handles') || !!this.getProp('statichandles');
+      return !!this.getProp('handles') || !!this.getProp('staticHandles');
     }
 
     /**
@@ -2065,7 +2066,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /**
      * Creates the handles for the shape. Should be implemented by the children shapes classes.
      */
-    createHandles() {}
+    createHandles() {
+
+      if (this.hasStaticHandles()) {
+        this.addHandles();
+        this.setHandles();
+      }
+    }
 
     /**
      * Handles mouse down event
@@ -6104,7 +6111,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.66'
+        'data-jsgraph-version': 'v2.0.67'
       });
     } catch (e) {}
 
@@ -17919,6 +17926,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               type: 'corners'
             };
       */
+
       var handles = this.getProp('handles');
 
       if (typeof handles != 'object') {
@@ -17994,7 +18002,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           break;
 
+        case 'seamlessX':
+
+          this._createHandles(2, 'rect', {
+            transform: 'translate(-3 -3)',
+            stroke: 'transparent',
+            fill: 'transparent',
+            width: "20px",
+            cursor: "ew-resize"
+          });
+
+          break;
       }
+
+      super.createHandles();
+
       return this;
     }
 
@@ -18084,6 +18106,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         switch (handles.type) {
 
+          case 'seamlessX':
+            // Do nothing for now
+
+            switch (this.handleSelected) {
+
+              case 1:
+                pos.deltaPosition('x', deltaX, this.getXAxis());
+                break;
+
+              case 2:
+                pos2.deltaPosition('x', deltaX, this.getXAxis());
+                break;
+            }
+
+            break;
+
           case 'sides':
             // Do nothing for now
 
@@ -18163,6 +18201,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var handles = this.getProp('handles');
 
       switch (handles.type) {
+
+        case 'seamlessX':
+
+          if (this.handles[1]) {
+            this.handles[1].setAttribute('transform', 'translate(-10) translate(' + pos.x + ')');
+            this.handles[1].setAttribute('height', Math.abs(pos2.y - pos.y));
+            this.handles[1].setAttribute('y', Math.min(pos2.y, pos.y));
+          }
+
+          if (this.handles[2]) {
+            this.handles[2].setAttribute('transform', 'translate(-10)  translate(' + pos2.x + ')');
+            this.handles[2].setAttribute('height', Math.abs(pos2.y - pos.y));
+            this.handles[2].setAttribute('y', Math.min(pos2.y, pos.y));
+          }
+
+          break;
 
         case 'sides':
 

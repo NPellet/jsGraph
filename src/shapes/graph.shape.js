@@ -105,6 +105,7 @@ class Shape extends EventEmitter {
     this.initImpl();
 
     this.graph.emit( 'shapeNew', this );
+
     return this;
   }
 
@@ -1294,7 +1295,7 @@ class Shape extends EventEmitter {
       this.setProp( 'handles', setter );
     }
 
-    return !!this.getProp( 'handles' ) || !!this.getProp( 'statichandles' );
+    return !!this.getProp( 'handles' ) || !!this.getProp( 'staticHandles' );
   }
 
   /**
@@ -1540,6 +1541,11 @@ class Shape extends EventEmitter {
    * Creates the handles for the shape. Should be implemented by the children shapes classes.
    */
   createHandles() {
+
+    if ( this.hasStaticHandles() ) {
+      this.addHandles();
+      this.setHandles();
+    }
 
   }
 
