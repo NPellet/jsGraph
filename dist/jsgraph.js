@@ -6774,7 +6774,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.67'
+        'data-jsgraph-version': 'v2.0.68'
       });
     } catch (e) {}
 
@@ -11083,10 +11083,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           var indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
           var returnObj = {};
 
+          var direction = void 0;
+
           if (valX > this.waveform.getX(indexX)) {
-            direction = -1;
-          } else {
             direction = 0;
+          } else {
+            direction = 1;
           }
 
           Object.assign(returnObj, {
@@ -11130,8 +11132,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           intY = value.yMin;
         } else {
 
-          ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-          intY = (1 - ratio) * value.yMin + ratio * value.yMax;
+          //ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+          //intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
         }
 
         if (doMarker && this.options.trackMouse) {
@@ -11141,8 +11143,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             return false;
           } else {
 
-            var x = this.getX(this.getFlip() ? intY : value.xExact);
-            var y = this.getY(this.getFlip() ? value.xExact : intY);
+            if (!this.marker) {
+              return;
+            }
+
+            var x = this.getX(this.getFlip() ? value.yClosest : value.xClosest);
+            var y = this.getY(this.getFlip() ? value.xClosest : value.yClosest);
+
+            if (isNaN(x) || isNaN(y)) {
+              return;
+            }
 
             this.marker.setAttribute('display', 'block');
             this.marker.setAttribute('cx', x);
