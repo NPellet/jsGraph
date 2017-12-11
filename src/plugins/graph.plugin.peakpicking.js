@@ -7,8 +7,8 @@ import Plugin from './graph.plugin.js';
 
   How to use ?
     Basic usage:
-    
-    let graph = new Graph("dom", { 
+
+    let graph = new Graph("dom", {
       plugins: {
         'peakPicking': {}
       }
@@ -19,7 +19,7 @@ import Plugin from './graph.plugin.js';
     wv.setData( [ 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 ] );
     let s = graph.newSerie("serie").setWaveform( wv ).autoAxis();
 
-    graph.getPlugin('peakPicking').setSerie( s ); 
+    graph.getPlugin('peakPicking').setSerie( s );
     graph.draw();
 */
 
@@ -87,7 +87,7 @@ class PluginPeakPicking extends Plugin {
     if ( this.serie == serie ) {
       this.picks.map( ( pick ) => {
         pick.kill();
-      } )
+      } );
     }
   }
 

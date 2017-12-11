@@ -136,8 +136,8 @@ class ShapeRectangle extends GraphShape {
           transform: 'translate(-3 -3)',
           stroke: 'transparent',
           fill: 'transparent',
-          width: "20px",
-          cursor: "ew-resize"
+          width: '20px',
+          cursor: 'ew-resize'
         } );
 
         break;

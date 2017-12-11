@@ -1272,7 +1272,7 @@ class SerieLine extends Serie {
         var x = this.getX( this.getFlip() ? value.yClosest : value.xClosest );
         var y = this.getY( this.getFlip() ? value.xClosest : value.yClosest );
 
-        if ( isNaN( x ) ||  isNaN( y ) ) {
+        if ( isNaN( x ) || isNaN( y ) ) {
           return;
         }
 

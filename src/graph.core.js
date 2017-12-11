@@ -3397,7 +3397,9 @@ function doDom() {
     util.setAttributeTo( this.dom, {
       'data-jsgraph-version': __VERSION__
     } );
-  } catch ( e ) {}
+  } catch ( e ) {
+    // ignore
+  }
 
   this.defs = document.createElementNS( Graph.ns, 'defs' );
   this.dom.appendChild( this.defs );
@@ -3886,10 +3888,10 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
         serieShape = {
           shape: 'ellipse',
           properties: {
-            rx: [ serie.serie.getLineWidth() * 3 + "px" ],
-            ry: [ serie.serie.getLineWidth() * 3 + "px" ]
+            rx: [ serie.serie.getLineWidth() * 3 + 'px' ],
+            ry: [ serie.serie.getLineWidth() * 3 + 'px' ]
           }
-        }
+        };
       }
 
       if ( !serie.serie.trackingShape ) {
