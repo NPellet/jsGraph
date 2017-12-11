@@ -127,8 +127,6 @@ class Axis extends EventEmitter {
     this.group.appendChild( this.groupTickLabels );
     this.group.appendChild( this.line );
 
-    this.labelValue;
-
     this.label = document.createElementNS( this.graph.ns, 'text' );
 
     this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the main label
@@ -343,9 +341,6 @@ class Axis extends EventEmitter {
       return;
     }
 
-    if ( !axis )
-      var val;
-
     var axis = this.options.adaptTo.axis,
       current = this.options.adaptTo.thisValue,
       foreign = this.options.adaptTo.foreignValue;
@@ -488,7 +483,7 @@ class Axis extends EventEmitter {
    * @memberof Axis
    * @return {Number} The position in px of the top of the axis
    */
-  getMaxPx( px ) {
+  getMaxPx() {
     return this.maxPxFlipped;
   }
 
@@ -638,7 +633,7 @@ class Axis extends EventEmitter {
     return this;
   }
 
-  handleMouseMove( px, e ) {
+  handleMouseMove( px ) {
     this.mouseVal = this.getVal( px );
   }
 

@@ -20,7 +20,6 @@ class ShapeRectangle extends GraphShape {
    * @return {Shape} The current shape
    */
   createDom() {
-    var self = this;
     this._dom = document.createElementNS( this.graph.ns, 'rect' );
 
     if ( !this.getStrokeColor() ) {
