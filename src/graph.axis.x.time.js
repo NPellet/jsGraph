@@ -439,7 +439,7 @@ var axisFormat = [
  * The mask defaults to dateFormat.masks.default.
  */
 
-var dateFormat = function() {
+var dateFormat = ( function() {
   var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[WLloSZ]|"[^"]*"|'[^']*'/g,
     timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
     timezoneClip = /[^-+\dA-Z]/g,
@@ -521,7 +521,7 @@ var dateFormat = function() {
       return $0 in flags ? flags[ $0 ] : $0.slice( 1, $0.length - 1 );
     } );
   };
-}();
+} )();
 
 // Some common format strings
 dateFormat.masks = {

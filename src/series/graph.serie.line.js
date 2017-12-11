@@ -1227,8 +1227,6 @@ class SerieLine extends Serie {
       return returnObj;
     }
 
-    return;
-
   }
 
   handleMouseMove( xValue, doMarker, yValue ) {

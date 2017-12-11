@@ -39,3 +39,9 @@ rules:
   no-dupe-class-members: warn
   no-case-declarations: warn
   eol-last: off
+  no-throw-literal: warn
+  no-sequences: off
+  no-return-assign: off
+  no-loop-func: warn
+  no-self-compare: warn
+  no-new: warn

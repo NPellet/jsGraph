@@ -47,7 +47,7 @@ class ShapeEllipse extends Shape {
   }
 
   handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
-    return;
+
   }
 }
 

@@ -1947,7 +1947,7 @@ class Shape extends EventEmitter {
   updateMask() {
     return;
     if ( !this.maskDom ) {
-      return;
+      return; // eslint-disable-line no-useless-return
     }
 
     var position = {

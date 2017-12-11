@@ -82,7 +82,7 @@ class Waveform {
 
     data.map( ( el, index ) => {
 
-      if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
+      if ( !nanable && Number.isNaN( el[ 0 ] ) || Number.isNaN( el[ 1 ] ) ) {
         warnNaN = true;
       }
 
@@ -363,11 +363,7 @@ class Waveform {
       return;
     }
 
-    if ( this.xdata ) {
-
-      return;
-
-    } else {
+    if ( !this.xdata ) {
 
       const b1 = this.xOffset + this.xScale * this.getLength(),
         b2 = this.xOffset;

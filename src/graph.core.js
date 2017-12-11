@@ -1932,8 +1932,6 @@ class Graph extends EventEmitter {
     if ( typeof this.options[ func ] == 'function' ) {
       return this.options[ func ].apply( this, arguments );
     }
-
-    return;
   }
 
   /**
@@ -1952,8 +1950,6 @@ class Graph extends EventEmitter {
     } else {
       return util.throwError( 'Graph legend is not available as it has not been registered' );
     }
-
-    //    this.legend.update();
 
     return this.legend;
   }
@@ -3765,8 +3761,6 @@ function _handleMouseMove( graph, x, y, e ) {
   }
 
   checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseMove' );
-
-  return;
 
 }
 

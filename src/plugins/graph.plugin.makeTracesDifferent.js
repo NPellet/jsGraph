@@ -48,7 +48,7 @@ class PluginMakeTracesDifferent extends Plugin {
 
       result.saturation = saturation;
     } else {
-      result.saturation = .75;
+      result.saturation = 0.75;
     }
 
     if ( ( lightness = ( color.lightness || color.l ) ) ) {

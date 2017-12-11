@@ -64,7 +64,6 @@ class ShapeCross extends Shape {
 
   handleCreateImpl() {
 
-    return;
   }
 
   handleMouseDownImpl( e ) {

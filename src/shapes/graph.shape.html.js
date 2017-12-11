@@ -102,13 +102,6 @@ class ShapeHTML extends GraphShape {
    */
   setHandles() {
 
-    if ( !this.areHandlesInDom() ) {
-      return;
-    }
-
-    if ( isNaN( this.currentPos1x ) ) {
-      return;
-    }
   }
 
   isHTML() {
