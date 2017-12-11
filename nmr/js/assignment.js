@@ -43,6 +43,9 @@ enabled: false
  */
 
 
+var processQuerySelector = ( string ) => {
+	return string.replace('\\', '\\\\');
+}
 
 var ns = 'http://www.w3.org/2000/svg';
 
@@ -142,6 +145,7 @@ var ns = 'http://www.w3.org/2000/svg';
 					return;
 				}
 */
+
 
 				if( e.target.matches( options.molecule.bindableFilter ) ) {
 					this.mouseenter( e, false );
@@ -527,6 +531,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 		getEquivalentsFromUnique( attributeValue, type ) {
 
+			attributeValue = processQuerySelector( attributeValue );
 			return this
 					.getDom( type )
 					.querySelectorAll( 
@@ -609,10 +614,11 @@ var ns = 'http://www.w3.org/2000/svg';
 				return;
 			}
 
-			var elA = this.getDom( true ).querySelector( "[" + this.getOptions( true ).equivalentAttribute + "=\"" + pair.graphUnique + "\"]" );
-			var elB = this.getDom( false ).querySelector( "[" + this.getOptions( false ).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]" );
+			
+			var elA = this.getDom( true ).querySelector( "[" + this.getOptions( true ).equivalentAttribute + "=\"" + processQuerySelector( pair.graphUnique ) + "\"]" );
+			var elB = this.getDom( false ).querySelector( "[" + this.getOptions( false ).equivalentAttribute + "=\"" + processQuerySelector( pair.moleculeUnique ) + "\"]" );
 
-			var posA = elA.jsGraphIsShape.getPosition( 3 );
+			var posA = elA._shape.computePosition( 0 );
 			var posB = elB.getBoundingClientRect();
 
 			//var bbA = elA.jsGraphIsShape.getPosition( 3 );
@@ -647,8 +653,8 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			
 			line.setAttribute('stroke', 'black');
-			line.setAttribute('x1', parseFloat(posA.x.replace('px', '')) + this.graph.getPaddingLeft() /*- posMain.left*/ );
-			line.setAttribute('y1', parseFloat(posA.y.replace('px', '')) + this.graph.getPaddingTop() /*- posMain.top*/  );
+			line.setAttribute('x1', parseFloat( posA.x ) + this.graph.getPaddingLeft() /*- posMain.left*/ );
+			line.setAttribute('y1', parseFloat( posA.y ) + this.graph.getPaddingTop() /*- posMain.top*/  );
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2 );
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2 );
 
@@ -815,7 +821,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 		findElement( type, selector ) {
 
-			return this.getDom( type ).querySelectorAll( "[" + this.getOptions( type ).equivalentAttribute + "=\"" + selector + "\"]");	
+			return this.getDom( type ).querySelectorAll( "[" + this.getOptions( type ).equivalentAttribute + "=\"" + processQuerySelector( selector ) + "\"]");	
 		}
 
 		// External setter

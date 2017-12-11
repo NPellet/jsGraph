@@ -5,21 +5,22 @@ import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
 import NMRSerie from './nmrserie.jsx'
 import Assignment from './assignment.js'
+import FormArea from './formarea.jsx';
 
 const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
+const marginLeft = 300;
 
 class NMR1D extends React.Component {
 	
 
 	constructor( props ) {
-
-		console.log("Making1D");
+		
 		super( props );
 		this.state = {};
-
 		this.unique = "NMRUnique";
-		
+		this.reactFormArea = new FormArea();
+
 		this.graph = new Graph( {
 			close: false,
 			plugins: {
@@ -197,7 +198,11 @@ class NMR1D extends React.Component {
 						key: Math.random(), // Generate an unique ID for React only
 						id: this.getIntegralId( _from.x, _to.x ), 
 						from: _from.x, 
-						to: _to.x 
+						to: _to.x,
+						signal: [ {
+							delta: ( _from.x + _to.x ) / 2,
+							couplings: []
+						} ] // Add 1 signal
 					} );
 				}
 			} );
@@ -208,6 +213,8 @@ class NMR1D extends React.Component {
 		});
 
 
+		this.onSignalChanged = this.onSignalChanged.bind( this );
+		this.onSignalCreated = this.onSignalCreated.bind( this );
 		this.onIntegralChanged = this.onIntegralChanged.bind( this );
 		this.onIntegralRemoved = this.onIntegralRemoved.bind( this );
 		this.onIntegralLabelRatioChanged = this.onIntegralLabelRatioChanged.bind( this );
@@ -226,7 +233,8 @@ class NMR1D extends React.Component {
 	 	return {
 	 		assignment: this.assignment,
 	   		graph: this.graph,
-	   		integralBaseline: integralBaseline
+	   		integralBaseline: integralBaseline,
+	   		formArea: this.reactFormArea
 	    };
 	 }
 
@@ -418,7 +426,10 @@ class NMR1D extends React.Component {
 
 		// Binds the graph to the DOM element
 		this.graph.setWrapper( this.dom );
-		this.graph.resize( this.props.width, this.props.height );
+		this.graph.resize( 
+			this.props.width - marginLeft, 
+			this.props.height 
+		);
 		
 		this.attributeIntegralIds( this.props.series );
 
@@ -426,6 +437,7 @@ class NMR1D extends React.Component {
 		this.setState( { series: this.props.series, molecule: this.props.molecule } );
 
 		this.updateMainData();
+
 
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
@@ -493,8 +505,8 @@ class NMR1D extends React.Component {
 		let assignmentOptions = {
 
 			graph: {
-				bindableFilter: '[data-integral-id]',
-				equivalentAttribute: 'data-integral-id',
+				bindableFilter: '[data-signal-id]',
+				equivalentAttribute: 'data-signal-id',
 				highlightStyle: {
 
 					'binding': {
@@ -547,7 +559,7 @@ class NMR1D extends React.Component {
 		this.setState( { series: nextProps.series, molecule: nextProps.molecule } );
 		
 		if( nextProps.width !== this.props.width || nextProps.heigth !== this.props.height ) {
-			this.graph.resize( nextProps.width, nextProps.height );	
+			this.graph.resize( nextProps.width - marginLeft, nextProps.height );	
 		}
 		this.updateMainData();
 
@@ -627,6 +639,83 @@ class NMR1D extends React.Component {
 		}		
 	}
 
+	onSignalCreated( seriename, integralId, signalValue, signalDelta ) {
+
+		
+		let update = false;
+		for( let serie of this.state.series ) {
+
+			if( serie.name == seriename ) {
+
+				for( let integral of serie.integrals ) {
+
+					if( integral.id == integralId ) {
+						integral.signal = integral.signal || [];
+						integral.signal.push( Object.assign( {}, signalValue, { delta: signalDelta } ) );
+					}
+				}
+
+				if( update ) {
+					break;
+				}
+			}
+
+			if( update ) {
+				break;
+			}
+		}
+
+		if( update ) { // Redo everything
+
+			this.setState( { series: this.state.series } );	
+			this.updateOutput();
+		}	
+	}
+
+
+
+	onSignalChanged( seriename, integralId, signalId, signalValue ) {
+
+		let update = false;
+		for( let serie of this.state.series ) {
+
+			if( serie.name == seriename ) {
+
+				for( let integral of serie.integrals ) {
+
+					if( integral.id == integralId ) {
+
+						for( let signal of integral.signal ) {
+
+							if( signal.delta == signalId ) {
+
+								Object.assign( signal, signalValue );
+								console.log( signal );
+							}
+						}
+
+						update = true;
+						break;
+					}
+				}
+
+				if( update ) {
+					break;
+				}
+			}
+
+			if( update ) {
+				break;
+			}
+		}
+
+		if( update ) { // Redo everything
+
+			this.setState( { series: this.state.series } );	
+			this.updateOutput();
+		}		
+	}
+
 	// TODO: Make a general listener at the graph level
 	onIntegralRemoved( serieName, integralId ) {
 
@@ -641,7 +730,6 @@ class NMR1D extends React.Component {
 
 					if( serie.integrals[ i ].id == integralId ) {
 
-						this.assignment.removeGraphShape( integralId );
 						serie.integrals.splice( i, 1 );
 						update = true;
 						break;
@@ -668,52 +756,75 @@ class NMR1D extends React.Component {
 	render() {
 
 		return ( 
-		<div 
-			id={ this.unique }
-			ref={ el => this.wrapper = el } 
-			style={ { position: 'relative' } } 
-		>
-			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
-			<div 
-				style={ { 
-					pointerEvents: 'none', 
-					position: "absolute", 
-					top: '0px', 
-					userSelect: "none" 
-				} } 
-				ref={ el => this.domMolecule = el } 
-				dangerouslySetInnerHTML={ { __html: this.state.molecule } }
-			></div>
-				
-			{  
-				<div className={ "toolbar" + ( this.props.options.toolbar ? '' : ' hidden' ) }>
-					<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>
-					<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Create assignment</p>
-					<p><input ref={ el => { this.checkboxRemoveAssignment = el } } onClick={ this.toggleRemoveAssignment } type="checkbox" name="assignment" /> Remove assignments</p>
-					<p><button ref={ el => { this.zoomOutButton = el } } onClick={ this.fullOut }>Zoom out</button></p>
-				</div>
-			}
 
-			<span>
-				{ ( this.state.series || [] ).map( ( serie ) => 
-					<NMRSerie 
-						key 		= { serie.name }
-						color 		= {serie.color} 
-						onChanged 	= { this.serieChanged } 
-						onIntegralChanged 	= { this.onIntegralChanged } 
-						onIntegralRemoved	= { this.onIntegralRemoved }
-						onIntegralLabelRatioChanged = { this.onIntegralLabelRatioChanged }
-						name 		= { serie.name } 
-						data 		= { serie.data } 
-						shift 		= { serie.shift } 
-						integrals 	= { serie.integrals } 
-						integralLabelRatio = { serie.integralLabelRatio }
-						assignement	= { serie.assignment }
-						direction = { this.props.options.slave == "left" ? 'y' : 'x' }
-					/> 
-				) }
-			</span>
-		</div>
+
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<div 
+							id={ this.unique }
+							ref={ el => this.wrapper = el } 
+							style={ { position: 'relative' } } 
+						>
+							<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
+							<div 
+								style={ { 
+									pointerEvents: 'none', 
+									position: "absolute", 
+									top: '0px', 
+									width: this.props.width - marginLeft,
+									userSelect: "none" 
+								} } 
+								ref={ el => this.domMolecule = el } 
+								dangerouslySetInnerHTML={ { __html: this.state.molecule } }
+							></div>
+						</div>
+					</td>
+					<td>
+								
+				<div ref={ el => this.reactFormArea.setDom( el ) }>
+
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td style={ { 'verticalAlign': 'top' } }>
+
+				{  
+					<div className={ "toolbar" + ( this.props.options.toolbar ? '' : ' hidden' ) }>
+						<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>
+						<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Create assignment</p>
+						<p><input ref={ el => { this.checkboxRemoveAssignment = el } } onClick={ this.toggleRemoveAssignment } type="checkbox" name="assignment" /> Remove assignments</p>
+						<p><button ref={ el => { this.zoomOutButton = el } } onClick={ this.fullOut }>Zoom out</button></p>
+					</div>
+				}
+
+				<span>
+					{ ( this.state.series || [] ).map( ( serie ) => 
+						<NMRSerie 
+							key 		= { serie.name }
+							color 		= {serie.color} 
+							onChanged 	= { this.serieChanged } 
+							onIntegralChanged 	= { this.onIntegralChanged } 
+							onSignalChanged 	= { this.onSignalChanged } 
+							onSignalCreated		= { this.onSignalCreated }
+							onIntegralRemoved	= { this.onIntegralRemoved }
+							onIntegralLabelRatioChanged = { this.onIntegralLabelRatioChanged }
+							name 		= { serie.name } 
+							data 		= { serie.data } 
+							shift 		= { serie.shift } 
+							integrals 	= { serie.integrals } 
+							integralLabelRatio = { serie.integralLabelRatio }
+							assignement	= { serie.assignment }
+							direction = { this.props.options.slave == "left" ? 'y' : 'x' }
+						/> 
+					) }
+				</span>
+			</td>
+			</tr>
+			</tbody>
+		</table>
 		);
 	}
 }
@@ -721,6 +832,7 @@ class NMR1D extends React.Component {
 NMR1D.childContextTypes = {
   assignment: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph ),
+  formArea: PropTypes.instanceOf( FormArea ),
   integralBaseline: PropTypes.number
 };
 

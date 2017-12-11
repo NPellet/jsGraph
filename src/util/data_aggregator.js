@@ -31,6 +31,12 @@ if (
       let dataAggregatedY = [];
       let aggregationSum = [];
       let getX;
+      let slotNumber;
+      let lastAggregationX;
+      let lastAggregation;
+      let lastAggregationSum;
+      let newAggregation;
+      let newAggregationX;
 
       if ( e.data.xdata ) {
 
@@ -46,9 +52,7 @@ if (
       let aggregations = {};
 
       // Direction x
-      console.log( direction );
       if ( direction == 'x' ) {
-
         const dataPerSlot = numPoints / ( maxX - minX ); // Computed number of aggregation per slot
 
         for ( ; i < l; i++ ) {

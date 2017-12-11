@@ -712,8 +712,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelText( text, index ) {
-    this.setProp( 'labelText', text, index || 0 );
+  setLabelText( text, index = 0 ) {
+    this.setProp( 'labelText', text, index );
     return this;
   }
 
@@ -723,8 +723,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelData( data, index ) {
-    this.setProp( 'labelData', text, index || 0 );
+  setLabelData( data, text, index = 0 ) {
+    this.setProp( 'labelData', text, index );
     return this;
   }
 
@@ -733,8 +733,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {String} The text of the label
    */
-  getLabelText( text, index ) {
-    return this.getProp( 'labelText', index || 0 );
+  getLabelText( text, index = 0 ) {
+    return this.getProp( 'labelText', index );
   }
 
   /**
@@ -742,8 +742,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  displayLabel( index ) {
-    this.setProp( 'labelVisible', true, index || 0 );
+  displayLabel( index = 0 ) {
+    this.setProp( 'labelVisible', true, index );
     return this;
   }
 
@@ -752,8 +752,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  hideLabel( index ) {
-    this.setProp( 'labelVisible', false, index || 0 );
+  hideLabel( index = 0 ) {
+    this.setProp( 'labelVisible', false, index );
     return this;
   }
 
@@ -763,8 +763,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelColor( color, index ) {
-    this.setProp( 'labelColor', color, index || 0 );
+  setLabelColor( color, index = 0 ) {
+    this.setProp( 'labelColor', color, index );
     return this;
   }
 
@@ -774,8 +774,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelFontSize( size, index ) {
-    this.setProp( 'labelFontSize', size, index || 0 );
+  setLabelFontSize( size, index = 0 ) {
+    this.setProp( 'labelFontSize', size, index );
     return this;
   }
 
@@ -784,8 +784,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Position} The current position of the label
    */
-  getLabelPosition( index ) {
-    return this.getProp( 'labelPosition', index || 0 );
+  getLabelPosition( index = 0 ) {
+    return this.getProp( 'labelPosition', index );
   }
 
   /**

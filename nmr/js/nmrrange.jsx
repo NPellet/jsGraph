@@ -1,13 +1,14 @@
 import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
-import Assignment from './assignment.js'
+import NMRSignal from './nmrsignal.jsx'
 
-class NMRIntegral extends React.Component {
+class NMRRange extends React.Component {
 	
 	constructor( props, context ) {
 		
 		super( props );
+
 
 		this.state = {};
 		this.annotation = context.graph.newShape("nmrintegral", {
@@ -22,9 +23,8 @@ class NMRIntegral extends React.Component {
 			}, 
 			false,
 			{ 'labelEditable': [ true ], layer: [ 3 ], strokeWidth: [ 2 ]  }
-		);console.log()
-		this.assignment = context.assignment;
-
+		);
+		
 		this.annotation.addClass('integral');
 		this.annotation.setProp('baseLine', context.integralBaseline );
 
@@ -62,7 +62,8 @@ class NMRIntegral extends React.Component {
 			this.props.onRemoved( this.props.id );
 		});
 
-
+		this.onSignalChanged = this.onSignalChanged.bind( this );
+		this.onSignalCreated = this.onSignalCreated.bind( this );
 			 // Determine the shift
 		
 	}
@@ -82,16 +83,6 @@ class NMRIntegral extends React.Component {
 		this.annotation.setDom( 'data-integral-id', props.id );
 		this.annotation.setProp( 'labelHTMLData', { 'data-integral-id': props.id } );
 		this.annotation.updateIntegralValue( props.labelRatio );
-
-		if( props.id !== this.props.id ) {
-
-			if( ! this.assignment ) {
-				throw "No assignment object. Cannot rename integral";
-			}
-
-			this.assignment.renameAssignementElement( this.props.id, props.id );
-		}
-
 		this.annotation.redraw( );
 	}
 
@@ -100,20 +91,51 @@ class NMRIntegral extends React.Component {
 		this.updateAnnotation( nextProps );
 	}
 
+	onSignalChanged( signalId, signalValue ) {
+		this.props.onSignalChanged( this.props.id, signalId, signalValue );
+	}
+
+	onSignalCreated( signalValue ) {
+		this.props.onSignalChanged( this.props.id, signalValue, ( this.props.to + this.props.from ) / 2 );
+	}
+
 	render() {
 
 		this.updateAnnotation();
-		return (<span key={ this.props.id } />)
+		
+		return (
+			<span>
+				{ 
+					( this.props.signal || [] ).map( 
+						
+						( el ) => {
+
+							if( ! el.key ) {
+								el.key = Math.random();
+							}
+
+							return <NMRSignal 
+								key 		= { el.key } 
+								couplings 	= { el.j }
+								id 			= { el.delta }
+								delta 		= { el.delta }
+								onSignalChanged = { this.onSignalChanged }
+								onSignalCreated = { this.onSignalCreated }
+							/> 
+						}
+					) 
+				}
+			</span> 
+		);
 	}
 }
 
 
-NMRIntegral.contextTypes = {
-  assignment: PropTypes.instanceOf( Assignment ),
+NMRRange.contextTypes = {
   graph: PropTypes.instanceOf( Graph ),
   serie: PropTypes.instanceOf( Graph.getConstructor( Graph.SERIE_LINE ) ),
   integralBaseline: PropTypes.number
 };
 
 
-export default NMRIntegral
+export default NMRRange

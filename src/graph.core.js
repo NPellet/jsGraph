@@ -922,12 +922,14 @@ class Graph extends EventEmitter {
 
     this.draw();
   }
+
   saveAxisState( savedName ) {
     this.savedAxisState = this.savedAxisState || {};
     this.savedAxisState[ savedName ] = this.getAxisState();
     return this;
   }
-  recallAxisState( stateName ) {
+
+  recallAxisState( savedName ) {
     if ( this.savedAxisState[ savedName ] ) {
       this.recallAxisState( this.savedAxisState[ savedName ] );
     }
@@ -1790,7 +1792,7 @@ class Graph extends EventEmitter {
       return;
     }
 
-    if ( action.enabled && ( typeof action.enabled == 'function' ? !action.enabled( this ) : !actions.enabled ) ) {
+    if ( action.enabled && ( typeof action.enabled == 'function' ? !action.enabled( this ) : !action.enabled ) ) {
       return;
     }
 
@@ -1876,7 +1878,7 @@ class Graph extends EventEmitter {
     this.activePlugin = false;
   }
 
-  _serieExecute( which, func, args ) {
+  _serieExecute( serie, func, args ) {
 
     if ( typeof serie !== 'object' ) {
       serie = this.getSerie( serie );
@@ -2482,6 +2484,8 @@ class Graph extends EventEmitter {
 
         if ( schemaSerie.lineStyle ) {
 
+          let lineStyle;
+
           if ( Array.isArray( lineStyle ) ) {
             lineStyle = {
               unselected: lineStyle
@@ -2917,7 +2921,7 @@ class Graph extends EventEmitter {
 
     schema.data = seriesExport.concat( this.series.map( ( serie ) => {
 
-      style = [];
+      let style = [];
       let linestyle = [];
 
       if ( serie.getType() == Graph.SERIE_LINE ) {
@@ -3294,7 +3298,7 @@ function _handleKey( graph, event, type ) {
   if ( graph.forcedPlugin ) {
 
     graph.activePlugin = graph.forcedPlugin;
-    graph._pluginExecute( graph.activePlugin, type, [ graph, e ] );
+    graph._pluginExecute( graph.activePlugin, type, [ graph, event ] );
     return;
   }
 

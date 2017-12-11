@@ -153,7 +153,7 @@ class PluginAxisSplitting extends Plugin {
    *  @return {Axis} The newly created split axis
    */
   newXAxis( options ) {
-    return newBottomAxis( options );
+    return this.newBottomAxis( options );
   }
 
   /**
@@ -162,7 +162,7 @@ class PluginAxisSplitting extends Plugin {
    *  @return {Axis} The newly created split axis
    */
   newYAxis( options ) {
-    return newLeftAxis( options );
+    return this.newLeftAxis( options );
   }
 
   /**
@@ -318,11 +318,11 @@ class PluginAxisSplitting extends Plugin {
     switch ( type ) {
 
       case 'line':
-        return newLineSerie( name, options );
+        return this.newLineSerie( name, options );
         break;
 
       case 'scatter':
-        return newScatterSerie( name, options );
+        return this.newScatterSerie( name, options );
         break;
     }
 

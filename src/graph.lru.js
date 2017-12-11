@@ -3,6 +3,12 @@ var memory = {},
   memoryCount = {},
   memoryLimit = {};
 
+
+function emptyMemory( store ) {
+  memory[ store ] = {};
+  memoryCount[ store ] = 0;
+}
+
 function createStoreMemory( store, limit ) {
   limit = limit || 50;
   if ( !memory[ store ] ) {

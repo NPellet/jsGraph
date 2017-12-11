@@ -215,7 +215,7 @@ class SerieBox extends Serie {
 
   setStyle( style, selectionType = 'unselected' ) {
     //console.log( style, selectionType );
-    this.styles[ selectionType ] = extend( {}, defaults.defaultStyle, this.styles.unselected, style );
+    this.styles[ selectionType ] = extend( {}, this.default().defaultStyle, this.styles.unselected, style );
     this.styleHasChanged( selectionType );
   }
 

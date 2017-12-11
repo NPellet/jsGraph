@@ -802,7 +802,7 @@ class Waveform {
 
   invert( data ) {
 
-    let d = dataY || this.data;
+    let d = data || this.data;
     d.reverse();
 
     if ( this.isMonotoneous() ) {

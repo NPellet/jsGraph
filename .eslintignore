@@ -1,3 +1,6 @@
 /src/build_utils
 /src/dependencies
 /src/plugin.peakpicking.js
+/src/shapes/graph.shape.zoom2d.js
+/src/shapes/graph.shape.peakInterval.js
+/src/shapes/graph.shape.peakInterval2.js

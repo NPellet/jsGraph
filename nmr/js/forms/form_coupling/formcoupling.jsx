@@ -1,0 +1,140 @@
+import React from "react";
+import FormCouplingElement from './formcouplingelement.jsx'
+
+class FormCoupling extends React.Component {
+	
+	constructor() {
+
+		super();
+		this.state = {
+			delta: 0,
+			couplings: [ {} ]
+		};
+
+		this.addCoupling = this.addCoupling.bind( this );
+		this.removeCoupling = this.removeCoupling.bind( this );
+		this.subFormChanged = this.subFormChanged.bind( this );
+		this.handleInputChange = this.handleInputChange.bind( this );
+	}
+
+
+	handleInputChange(event) {
+	    const target = event.target;
+	    const value = target.type === 'checkbox' ? target.checked : target.value;
+	    const name = target.name;
+
+	    this.setState({
+	      [name]: value
+	    });
+	}
+
+	subFormChanged( event, index ) {
+		const target = event.target;
+	    const value = target.type === 'checkbox' ? target.checked : target.value;
+	    const name = target.name;
+
+	    this.state.couplings[ index ][ name ] = value;
+	    this.setState({
+	      couplings: this.state.couplings
+	    });
+	}
+
+	addCoupling( index ) {
+		this.state.couplings.splice( index + 1, 0, {
+			constant: '',
+			multiplicity: 'd' // Doublet by default
+		} );
+		this.setState( { couplings: this.state.couplings } );
+	}
+
+	removeCoupling( index ) {
+		this.state.couplings.splice( index, 1 );
+		this.setState( { couplings: this.state.couplings } );
+	}
+
+	componentDidMount() {
+		this.extendState();
+	}
+
+	componentWillReceiveProps( nextProps ) {
+		this.extendState( nextProps );
+	}
+
+	componentDidUpdate() {
+
+		if( Array.isArray( this.state.couplings ) && this.state.couplings.length == 0 ) {
+			this.setState( { couplings: [ { multiplicity: null, constant: null } ] })
+		}
+	}
+
+	extendState( props = this.props ) {
+		
+		this.setState( props.formData );
+	}
+
+	render() {
+		let couplings = this.state.couplings;
+
+		if( ! couplings ) {
+			couplings = [];
+		}
+		return ( 
+
+			<form>	
+
+				<div className="row">
+					<div className="col-sm-4">Delta</div>
+					<div className="col-sm-4">
+						<div className="input-group">
+							<input type="number" className="form-control" onChange={ this.handleInputChange } name="delta" value={ this.state.delta } />
+							<span className="input-addon">ppm</span>
+						</div>
+					</div>
+				</div>
+				<div className="row">
+					<div className="col-sm-12">Coupling</div>
+					<div className="col-sm-12">
+
+						<table>	
+							<thead>	
+								<tr>
+									<th>
+										Multiplicity
+									</th>
+									<th>
+										Constant (Hz)
+									</th>
+									<th>
+										
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+							{
+								couplings.map( ( coupling, index ) => {
+
+									return ( <FormCouplingElement 
+										addLine={ () => { this.addCoupling( index ) } } 
+										removeLine={ () => { this.removeCoupling( index ) } } 
+										onChange={ ( event ) => this.subFormChanged( event, index ) } 
+										multiplicity={ coupling.multiplicity } 
+										coupling={ coupling.coupling } 
+									/> )
+								} )
+							}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div className="col-sm-12">
+					<button type="button" className="btn btn-default" onClick={ () => this.props.onValidate( this.state ) }>Ok</button>
+					<button type="button" className="btn btn-default" onClick={ () => this.props.onCancel( this.state ) }>Cancel</button>
+					<button type="button" className="btn btn-default" onClick={ () => this.props.onSplit( this.state ) }>New signal</button>
+				</div>
+			</form> 
+		);
+	}
+}
+
+export default FormCoupling;

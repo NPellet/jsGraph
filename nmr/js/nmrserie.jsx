@@ -1,7 +1,7 @@
 import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
-import NMRIntegral from './nmrintegral.jsx'
+import NMRRange from './nmrrange.jsx'
 import Assignment from './assignment.js'
 
 
@@ -43,6 +43,8 @@ class NMRSerie extends React.Component {
 		//this.onChanged = this.onChanged.bind( this );
 		this.integralChanged = this.integralChanged.bind( this );
 		this.integralRemoved = this.integralRemoved.bind( this );
+		this.onSignalChanged = this.onSignalChanged.bind( this );
+		this.onSignalCreated = this.onSignalCreated.bind( this );
 	}
 
 	sumChanged( newSum, identifier ) {
@@ -92,8 +94,6 @@ class NMRSerie extends React.Component {
 			{	
 				type: "mousewheel",
 				enabled: ( graph ) => { 
-
-
 					return graph.getSelectedShapes().reduce( 
 								( acc, shape ) => { 
 									if( ! acc ) { 
@@ -152,7 +152,7 @@ class NMRSerie extends React.Component {
 		}
 
 		if( nextProps.assignment ) {
-			console.log( arguments );
+			
 			//	this._assignment.setPairing( this.getSerieState() );
 		}
 
@@ -201,6 +201,14 @@ class NMRSerie extends React.Component {
 		this.props.onIntegralLabelRatioChanged( this.props.name, whichIntegral, whichValue / sum );
 	}
 
+	onSignalChanged( integralId, signalId, signalValue ) {
+		this.props.onSignalChanged( this.props.name, integralId, signalId, signalValue );
+	}
+
+	onSignalCreated( integralId, signalValue, signalDelta ) {
+		this.props.onSignalChanged( this.props.name, integralId, signalValue, signalDelta );
+	}
+
 
 
 	render() {
@@ -221,20 +229,21 @@ class NMRSerie extends React.Component {
 								el.key = Math.random();
 							}
 
-							console.log( el.id );
-
-							return <NMRIntegral 
-								id 		= { el.id } 
-								key 	= { el.key } 
-								labelRatio 	= { this.state.labelRatio } 
-								ratio 	= { this.state.ratio } 
-								from 	= { el.from } 
-								to 		= { el.to } 
-								onSumChanged 	= { this.sumChanged } 
-								onChanged 		= { this.integralChanged } 
-								onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
-								onRemoved 		= { this.integralRemoved } 
-							/> 
+							return 	<NMRRange 
+										id 		= { el.id } 
+										key 	= { el.key } 
+										labelRatio 	= { this.state.labelRatio } 
+										ratio 	= { this.state.ratio } 
+										from 	= { el.from } 
+										signal 	= { el.signal }
+										to 		= { el.to } 
+										onSumChanged 	= { this.sumChanged } 
+										onChanged 		= { this.integralChanged } 
+										onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
+										onRemoved 		= { this.integralRemoved } 
+										onSignalChanged = { this.onSignalChanged }
+										onSignalCreated = { this.onSignalCreated }
+									/> 
 						}
 					) 
 				}

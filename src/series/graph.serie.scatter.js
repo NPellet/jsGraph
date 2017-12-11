@@ -308,7 +308,8 @@ class SerieScatter extends Serie {
 
   _addPoint( xpx, ypx, k ) {
 
-    var g = document.createElementNS( this.graph.ns, 'g' );
+    let shape;
+    let g = document.createElementNS( this.graph.ns, 'g' );
     g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
     g.setAttribute( 'data-shapeid', k );
 

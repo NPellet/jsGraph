@@ -155,8 +155,8 @@ class SerieDensityMap extends Serie {
     this.fromX = fromX;
     this.fromY = fromY;
 
-    this.numX = maxIndexX;
-    this.numY = maxIndexY;
+    this.numX = this.maxIndexX;
+    this.numY = this.maxIndexY;
 
     this.densitymap = densitymap;
     return densitymap;
@@ -678,7 +678,7 @@ class SerieDensityMap extends Serie {
    * @memberof SerieDensityMap
    */
   setOptions( options ) {
-    this.options = util.extend( true, {}, defaults, ( options || {} ) );
+    this.options = util.extend( true, {}, this.defaults(), ( options || {} ) );
     // Unselected style
 
     return this;
