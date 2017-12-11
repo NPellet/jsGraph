@@ -2190,9 +2190,9 @@ class Graph extends EventEmitter {
 
           if ( options.series == 'all' ) {
 
-            options.series = this.series.map( ( serie ) => {
-              serie;
-            } );
+            options.series = this.series.map( ( serie ) => ( {
+              serie: serie
+            } ) );
 
           } else {
 
