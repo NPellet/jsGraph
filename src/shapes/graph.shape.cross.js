@@ -99,18 +99,6 @@ class ShapeCross extends Shape {
 
   }
 
-  createHandles() {
-
-    this._createHandles( 1, 'rect', {
-      transform: 'translate(-3 -3)',
-      width: 6,
-      height: 6,
-      stroke: 'black',
-      fill: 'white',
-      cursor: 'nwse-resize'
-    } );
-  }
-
   setHandles() {
 
     if ( !this.areHandlesInDom() ) {
