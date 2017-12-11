@@ -22,7 +22,6 @@ rules:
   no-compare-neg-zero: warn
   no-console: off
   no-redeclare: off
-  no-undef: warn
   no-unreachable: warn
   no-unused-expressions: warn
   no-unused-vars: warn
