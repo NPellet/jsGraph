@@ -469,7 +469,7 @@ class Waveform {
     return position;
   }
 
-  getIndexFromData( val, valCollection, isAscending, roundingMethod ) {
+  getIndexFromData( val, valCollection, isAscending ) {
 
     let data, position;
 
