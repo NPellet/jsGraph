@@ -736,7 +736,6 @@ class Axis extends EventEmitter {
 
   getUnitPerTick( px, nbTick, valrange ) {
 
-    var umin;
     var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
     if ( !nbTick ) {
       nbTick = px / 10;
@@ -752,88 +751,84 @@ class Axis extends EventEmitter {
 
       case 'time':
       case 'time:min.sec':
+        {
 
-        var max = this.getModifiedValue( this.getMaxValue() ),
-          units = [
+          //const max = this.getModifiedValue( this.getMaxValue() );/*,
+          /*units = [
             [ 60, 'min' ],
             [ 3600, 'h' ],
             [ 3600 * 24, 'd' ]
-          ];
+          ];*/
 
-        if ( max < 3600 ) { // to minutes
-          umin = 0;
-        } else if ( max < 3600 * 24 ) {
-          umin = 1;
-        } else {
-          umin = 2;
-        }
-
-        var breaked = false;
-        for ( var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
-          for ( var k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
-            if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
-              breaked = true;
+          let i, l, k, m;
+          let breaked = false;
+          for ( i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
+            for ( k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
+              if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
+                breaked = true;
+                break;
+              }
+            }
+            if ( breaked ) {
               break;
             }
           }
-          if ( breaked ) {
-            break;
+
+          //i and k contain the good variable;
+          if ( i !== this.unitModificationTimeTicks.length ) {
+            unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
+          } else {
+            unitPerTickCorrect = 1;
           }
+
+          break;
         }
-
-        //i and k contain the good variable;
-        if ( i !== this.unitModificationTimeTicks.length ) {
-          unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
-        } else {
-          unitPerTickCorrect = 1;
-        }
-
-        break;
-
       default:
+        {
 
-        // We take the log
-        var decimals = Math.floor( Math.log( unitPerTick ) / Math.log( 10 ) );
-        /*
+          // We take the log
+          var decimals = Math.floor( Math.log( unitPerTick ) / Math.log( 10 ) );
+          /*
   					Example:
   						13'453 => Math.log10() = 4.12 => 4
   						0.0000341 => Math.log10() = -4.46 => -5
   				*/
 
-        var numberToNatural = unitPerTick * Math.pow( 10, -decimals );
+          var numberToNatural = unitPerTick * Math.pow( 10, -decimals );
 
-        /*
+          /*
   					Example:
   						13'453 (4) => 1.345
   						0.0000341 (-5) => 3.41
   				*/
 
-        this.decimals = -decimals;
+          this.decimals = -decimals;
 
-        var possibleTicks = [ 1, 2, 5, 10 ];
-        var closest = false;
-        for ( var i = possibleTicks.length - 1; i >= 0; i-- ) {
-          if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
-            closest = possibleTicks[ i ];
+          var possibleTicks = [ 1, 2, 5, 10 ];
+          var closest = false;
+          for ( let i = possibleTicks.length - 1; i >= 0; i-- ) {
+            if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
+              closest = possibleTicks[ i ];
+            }
           }
-        }
 
-        // Ok now closest is the number of unit per tick in the natural number
-        /*
+          // Ok now closest is the number of unit per tick in the natural number
+          /*
   					Example:
   						13'453 (4) (1.345) => 1
   						0.0000341 (-5) (3.41) => 5
   				*/
 
-        // Let's scale it back
-        var unitPerTickCorrect = closest * Math.pow( 10, decimals );
+          // Let's scale it back
+          var unitPerTickCorrect = closest * Math.pow( 10, decimals );
 
-        /*
+          /*
   					Example:
   						13'453 (4) (1.345) (1) => 10'000
   						0.0000341 (-5) (3.41) (5) => 0.00005
   				*/
-        break;
+          break;
+        }
     }
 
     var nbTicks = valrange / unitPerTickCorrect;
@@ -1036,7 +1031,7 @@ class Axis extends EventEmitter {
   _draw() { // Redrawing of the axis
 
     var self = this;
-    var visible;
+    // var visible;
 
     //    this.drawInit();
 
@@ -1131,8 +1126,9 @@ class Axis extends EventEmitter {
 
     } else {
 
-      let string = this.getLabel(),
-        domEl;
+      let string = this.getLabel();
+      /*,
+              domEl;*/
 
       if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
 
@@ -1186,7 +1182,7 @@ class Axis extends EventEmitter {
 
     // Looks for axes linked to this current axis
     var axes = this.graph.findAxesLinkedTo( this );
-    axes.map( function( axis ) {
+    axes.forEach( function( axis ) {
 
       if ( !axis.linkedToAxis ) {
         return;
@@ -1239,51 +1235,58 @@ class Axis extends EventEmitter {
     } else {
       this.unitTspan.setAttribute( 'display', 'none' );
     }
-
   }
 
   getExponentGreekLetter( val ) {
+
     switch ( val ) {
 
       case 3:
-        return 'k';
-        break;
+        {
+          return 'k';
+        }
 
       case 6:
-        return 'M';
-        break;
-
+        {
+          return 'M';
+        }
       case 9:
-        return 'G';
-        break;
-
+        {
+          return 'G';
+        }
       case 12:
-        return 'T';
-        break;
-
+        {
+          return 'T';
+        }
       case 15:
-        return 'E';
-        break;
-
+        {
+          return 'E';
+        }
       case -3:
-        return 'm';
-        break;
-
+        {
+          return 'm';
+        }
       case -6:
-        return '&mu;';
-        break;
-
+        {
+          return '&mu;';
+        }
       case -9:
-        return 'n';
-        break;
-
+        {
+          return 'n';
+        }
       case -12:
-        return 'p';
-        break;
+        {
+          return 'p';
 
+        }
       case -15:
-        return 'f';
-        break;
+        {
+          return 'f';
+        }
+      default:
+        {
+          return '';
+        }
     }
 
   }
@@ -1349,7 +1352,6 @@ class Axis extends EventEmitter {
     var unitPerTick = primary,
       min = this.getCurrentMin(),
       max = this.getCurrentMax(),
-      widthHeight = 0,
       secondaryIncr,
       incrTick,
       subIncrTick,
@@ -1540,11 +1542,13 @@ class Axis extends EventEmitter {
       exponential: true,
       overwrite: false
     };
-    if ( incr < 0 )
+
+    if ( incr < 0 ) {
       incr = 0;
+    }
+
     var pow = incr == 0 ? 0 : Math.floor( Math.log( incr ) / Math.log( 10 ) );
     var incr = 1,
-      k = 0,
       val;
     while ( ( val = incr * Math.pow( 10, pow ) ) < max ) {
       if ( incr == 1 ) { // Superior power
@@ -1611,7 +1615,6 @@ class Axis extends EventEmitter {
       px = 0,
       val,
       t,
-      i = 0,
       l,
       delta2;
 
@@ -1633,8 +1636,8 @@ class Axis extends EventEmitter {
       t = this.drawTick( val, 1, {}, px + this.getMinPx() );
 
       if ( !t ) {
-        console.log( val, px, this.getMinPx() );
-        throw 'Unable to draw tick. Please report the test-case';
+        console.error( val, px, this.getMinPx() );
+        throw new Error( 'Unable to draw tick. Please report the test-case' );
       }
 
       l = String( t[ 1 ].textContent ).length * 8;
@@ -1646,8 +1649,6 @@ class Axis extends EventEmitter {
         this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
         return;
       }
-
-      i++;
 
       px += opts.deltaPx;
 
@@ -1833,18 +1834,18 @@ class Axis extends EventEmitter {
 
     var text = '';
     var incr = this.incrTick;
+    var umin;
 
     switch ( mode ) {
 
       case 'time': // val must be in seconds => transform in hours / days / months
         var max = this.getModifiedValue( this.getMaxValue() ),
-          first,
           units = [
             [ 60, 'min' ],
             [ 3600, 'h' ],
             [ 3600 * 24, 'd' ]
           ];
-        var umin;
+
         if ( max < 3600 ) { // to minutes
           umin = 0;
         } else if ( max < 3600 * 24 ) {
@@ -1865,7 +1866,6 @@ class Axis extends EventEmitter {
         umin--;
         while ( incr < 1 * units[ umin + 1 ][ 0 ] && umin > -1 ) {
 
-          first = false;
           value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
           valueRounded = Math.round( value );
           text += ' ' + valueRounded + units[ umin ][ 1 ];
@@ -1880,6 +1880,9 @@ class Axis extends EventEmitter {
         var s = ( Math.round( ( value - valueRounded ) * 60 ) + '' );
         s = s.length == 1 ? '0' + s : s;
         text = valueRounded + '.' + s;
+        break;
+
+      default:
         break;
     }
 
@@ -1964,21 +1967,27 @@ class Axis extends EventEmitter {
       case 3:
       case 'outside':
       case Graph.TICKS_OUTSIDE:
-        pos = 3;
-        break;
+        {
+          pos = 3;
+          break;
+        }
 
       case 2:
       case 'centered':
       case Graph.TICKS_CENTERED:
-        pos = 2;
-        break;
+        {
+          pos = 2;
+          break;
+        }
 
-      default:
       case 1:
       case 'inside':
       case Graph.TICKS_INSIDE:
-        pos = 1;
-        break;
+      default:
+        {
+          pos = 1;
+          break;
+        }
     }
 
     this.options.tickPosition = pos;
@@ -1994,6 +2003,7 @@ class Axis extends EventEmitter {
         this.tickPx2 = 1;
         break;
 
+      default:
       case 1:
         this.tickPx1 = 0;
         this.tickPx2 = 2;
@@ -2120,7 +2130,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the axis
    * @since 1.13.2
    */
-  getAxisColor( color ) {
+  getAxisColor() {
     return this.options.axisColor || 'black';
   }
 
@@ -2147,7 +2157,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the primary ticks
    * @since 1.13.2
    */
-  getPrimaryTicksColor( color ) {
+  getPrimaryTicksColor() {
     return this.options.primaryTicksColor || 'black';
   }
 
@@ -2169,7 +2179,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the secondary ticks
    * @since 1.13.2
    */
-  getSecondaryTicksColor( color ) {
+  getSecondaryTicksColor() {
     return this.options.secondaryTicksColor || 'black';
   }
 
@@ -2196,7 +2206,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the tick labels
    * @since 1.13.2
    */
-  getTicksLabelColor( color ) {
+  getTicksLabelColor() {
     return this.options.ticksLabelColor || 'black';
   }
 

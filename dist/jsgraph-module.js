@@ -1591,6 +1591,12 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
       let dataAggregatedY = [];
       let aggregationSum = [];
       let getX;
+      let slotNumber;
+      let lastAggregationX;
+      let lastAggregation;
+      let lastAggregationSum;
+      let newAggregation;
+      let newAggregationX;
 
       if (e.data.xdata) {
 
@@ -1606,9 +1612,7 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
       let aggregations = {};
 
       // Direction x
-      console.log(direction);
       if (direction == 'x') {
-
         const dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
 
         for (; i < l; i++) {
@@ -1864,7 +1868,7 @@ class Waveform {
 
     data.map((el, index) => {
 
-      if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+      if (!nanable && Number.isNaN(el[0]) || Number.isNaN(el[1])) {
         warnNaN = true;
       }
 
@@ -2138,10 +2142,7 @@ class Waveform {
       return;
     }
 
-    if (this.xdata) {
-
-      return;
-    } else {
+    if (!this.xdata) {
 
       const b1 = this.xOffset + this.xScale * this.getLength(),
             b2 = this.xOffset;
@@ -2244,7 +2245,7 @@ class Waveform {
     return position;
   }
 
-  getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+  getIndexFromData(val, valCollection, isAscending) {
 
     val -= this.getShift();
     val /= this.getScale();
@@ -2574,7 +2575,7 @@ class Waveform {
 
   invert(data) {
 
-    let d = dataY || this.data;
+    let d = data || this.data;
     d.reverse();
 
     if (this.isMonotoneous()) {
@@ -3855,14 +3856,18 @@ class Graph$1 extends EventEmitter {
             case 'top':
               this.getTopAxis(j, axis[i][j]);
               break;
-            case 'bottom':
-              this.getBottomAxis(j, axis[i][j]);
-              break;
             case 'left':
               this.getLeftAxis(j, axis[i][j]);
               break;
             case 'right':
               this.getRightAxis(j, axis[i][j]);
+              break;
+            case 'bottom':
+              this.getBottomAxis(j, axis[i][j]);
+              break;
+
+            default:
+              // Do not do anything
               break;
           }
         }
@@ -3875,11 +3880,11 @@ class Graph$1 extends EventEmitter {
   setWrapper(wrapper) {
 
     if (!wrapper) {
-      throw 'The wrapper DOM element was not found.';
+      throw new Error('The wrapper DOM element was not found.');
     }
 
     if (!wrapper.appendChild) {
-      throw 'The wrapper appears to be an invalid HTMLElement';
+      throw new Error('The wrapper appears to be an invalid HTMLElement');
     }
 
     wrapper.style['-webkit-user-select'] = 'none';
@@ -3900,8 +3905,8 @@ class Graph$1 extends EventEmitter {
 
     if (!this.height || !this.width) {
       var wrapperStyle = getComputedStyle(wrapper);
-      var w = parseInt(wrapperStyle.width);
-      var h = parseInt(wrapperStyle.height);
+      var w = parseInt(wrapperStyle.width, 10);
+      var h = parseInt(wrapperStyle.height, 10);
       this.setSize(w, h);
       this._resize();
     }
@@ -4011,7 +4016,7 @@ class Graph$1 extends EventEmitter {
     return false;
   }
 
-  executeRedrawSlaves(noLegend) {
+  executeRedrawSlaves() {
     this._pluginsExecute('preDraw');
   }
 
@@ -4400,7 +4405,7 @@ class Graph$1 extends EventEmitter {
       }
 
       if (!noSerieKill) {
-        this.series.map(serie => {
+        this.series.forEach(serie => {
 
           if (serie.getXAxis() == axis) {
             serie.kill();
@@ -4420,7 +4425,7 @@ class Graph$1 extends EventEmitter {
       }
 
       if (!noSerieKill) {
-        this.series.map(serie => {
+        this.series.forEach(serie => {
 
           if (serie.getYAxis() == axis) {
             serie.kill();
@@ -4603,12 +4608,14 @@ class Graph$1 extends EventEmitter {
 
     this.draw();
   }
+
   saveAxisState(savedName) {
     this.savedAxisState = this.savedAxisState || {};
     this.savedAxisState[savedName] = this.getAxisState();
     return this;
   }
-  recallAxisState(stateName) {
+
+  recallAxisState(savedName) {
     if (this.savedAxisState[savedName]) {
       this.recallAxisState(this.savedAxisState[savedName]);
     }
@@ -4627,7 +4634,6 @@ class Graph$1 extends EventEmitter {
             this.axis[type][i][func].apply(this.axis[type][i], params);
           }
         };
-        break;
 
       case 'function':
         return function (type, func, params) {
@@ -4635,7 +4641,9 @@ class Graph$1 extends EventEmitter {
             func.call(this, this.axis[type][i], type, params);
           }
         };
-        break;
+
+      default:
+        throw new Error('You must either execute a function or provide a string that registers a function');
     }
   }
 
@@ -4664,7 +4672,6 @@ class Graph$1 extends EventEmitter {
         func = axis.isX() ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
         func2use = func[min ? 0 : 1],
         infinity2use = min ? +Infinity : -Infinity,
-        currentSerie,
         serie,
         series,
         serieValue,
@@ -4724,6 +4731,10 @@ class Graph$1 extends EventEmitter {
       for (i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
 
         axis = this.axis[axisvars[j]][i];
+
+        // 25.10.2017. Wait a second, this cannot be real. Even hidden axes must have min max values.
+        // The data can be displayed while the axis is hidden
+        // I assume this was added to cover another bug, but another approach must be chosen
         if (!axis.isShown()) {}
         //          continue;
 
@@ -4801,7 +4812,8 @@ class Graph$1 extends EventEmitter {
 
     return axes;
   }
-  _axisHasChanged(axis) {
+
+  _axisHasChanged() {
     this._axesHaveChanged = true;
   }
 
@@ -4900,7 +4912,7 @@ class Graph$1 extends EventEmitter {
   drawSerie(serie, force) {
 
     if (!serie.draw) {
-      throw 'Serie has no method draw';
+      throw new Error('Serie has no method draw');
     }
 
     serie.draw(force);
@@ -5169,7 +5181,7 @@ class Graph$1 extends EventEmitter {
         type,
         value
 
-      }, index) => {
+      }) => {
 
         shape.addTransform(type, value);
       });
@@ -5225,16 +5237,16 @@ class Graph$1 extends EventEmitter {
 
   /**
    * Creates a new position. Arguments are passed to the position constructor
-   * @param {...*} var_args
+   * @param {...*} varArgs
    * @see Position
    */
-  newPosition(var_args) {
+  newPosition(varArgs) {
 
     return new Position(...arguments);
 
     // 18 September 2016 Norman: What is that ?
-    Array.prototype.unshift.call(arguments, null);
-    return new (Function.prototype.bind.apply(Position, arguments))();
+    //Array.prototype.unshift.call( arguments, null );
+    //return new( Function.prototype.bind.apply( GraphPosition, arguments ) )();
   }
 
   /**
@@ -5453,7 +5465,7 @@ class Graph$1 extends EventEmitter {
       return;
     }
 
-    if (action.enabled && (typeof action.enabled == 'function' ? !action.enabled(this) : !actions.enabled)) {
+    if (action.enabled && (typeof action.enabled == 'function' ? !action.enabled(this) : !action.enabled)) {
       return;
     }
 
@@ -5537,7 +5549,7 @@ class Graph$1 extends EventEmitter {
     this.activePlugin = false;
   }
 
-  _serieExecute(which, func, args) {
+  _serieExecute(serie, func, args) {
 
     if (typeof serie !== 'object') {
       serie = this.getSerie(serie);
@@ -5586,14 +5598,13 @@ class Graph$1 extends EventEmitter {
     return plugin;
   }
   triggerEvent() {
-    var func = arguments[0],
-        args = Array.prototype.splice.apply(arguments, [0, 1]);
-
+    var func = arguments[0];
+    /*,
+          args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
+    */
     if (typeof this.options[func] == 'function') {
       return this.options[func].apply(this, arguments);
     }
-
-    return;
   }
 
   /**
@@ -5612,8 +5623,6 @@ class Graph$1 extends EventEmitter {
     } else {
       return throwError('Graph legend is not available as it has not been registered');
     }
-
-    //    this.legend.update();
 
     return this.legend;
   }
@@ -5653,7 +5662,7 @@ class Graph$1 extends EventEmitter {
     this.legend.requireDelayedUpdate();
   }
 
-  orthogonalProjectionSetup(options) {
+  orthogonalProjectionSetup() {
 
     this.options.zAxis = extend(true, {
       maxZ: 10,
@@ -5850,9 +5859,9 @@ class Graph$1 extends EventEmitter {
 
           if (options.series == 'all') {
 
-            options.series = this.series.map(serie => {
-              
-            });
+            options.series = this.series.map(serie => ({
+              serie: serie
+            }));
           } else {
 
             options.series = [options.series];
@@ -5864,7 +5873,7 @@ class Graph$1 extends EventEmitter {
           if (typeof sOptions.serie !== 'object') {
 
             if (typeof sOptions !== 'object') {
-              throw 'Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }';
+              throw new Error('Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }');
             }
 
             sOptions.serie = this.getSerie(sOptions.serie);
@@ -5879,7 +5888,7 @@ class Graph$1 extends EventEmitter {
       }
     } else {
 
-      options.series.map(serie => {
+      options.series.forEach(serie => {
         serie.serie.disableTracking();
       });
     }
@@ -5917,7 +5926,12 @@ class Graph$1 extends EventEmitter {
       });
     }
 
-    // TODO: Check if not already existing
+    this.options.trackingLine.series.forEach((serieO, index) => {
+      if (serieO.serie == serie) {
+        this.options.trackingLine.series.splice(index, 1);
+      }
+    });
+
     this.options.trackingLine.series.push(Object.assign({
       serie: serie
     }, options));
@@ -5941,9 +5955,7 @@ class Graph$1 extends EventEmitter {
           }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : output => {
 
             for (var i in output) {
-
               return output[i].serie.serie.getName() + ': ' + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
-              break;
             }
           }, index.trueX);
 
@@ -6024,7 +6036,6 @@ class Graph$1 extends EventEmitter {
       right: [],
       bottom: []
     },
-        axesIndices = [],
         style;
 
     if (schema.title) {
@@ -6033,7 +6044,7 @@ class Graph$1 extends EventEmitter {
 
     if (schema.axis) {
 
-      schema.axis.map(function (schemaAxis) {
+      schema.axis.forEach(function (schemaAxis) {
 
         if (!schemaAxis.type) {
           throwError('Axis type is required (top, bottom, left or right)');
@@ -6087,7 +6098,7 @@ class Graph$1 extends EventEmitter {
 
     if (schema.data) {
 
-      schema.data.map(function (schemaSerie) {
+      schema.data.forEach(function (schemaSerie) {
 
         var serieType = schemaSerie.type,
             serie,
@@ -6136,6 +6147,8 @@ class Graph$1 extends EventEmitter {
         serie = graph.newSerie(schemaSerie.id || schemaSerie.label || guid(), serieOptions, serieType);
 
         if (schemaSerie.lineStyle) {
+
+          let lineStyle;
 
           if (Array.isArray(lineStyle)) {
             lineStyle = {
@@ -6566,7 +6579,7 @@ class Graph$1 extends EventEmitter {
 
     schema.data = seriesExport.concat(this.series.map(serie => {
 
-      style = [];
+      let style = [];
       let linestyle = [];
 
       if (serie.getType() == Graph$1.SERIE_LINE) {
@@ -6929,7 +6942,7 @@ function _handleKey(graph, event, type) {
   if (graph.forcedPlugin) {
 
     graph.activePlugin = graph.forcedPlugin;
-    graph._pluginExecute(graph.activePlugin, type, [graph, e]);
+    graph._pluginExecute(graph.activePlugin, type, [graph, event]);
     return;
   }
 
@@ -7022,7 +7035,9 @@ function doDom() {
     setAttributeTo(this.dom, {
       'data-jsgraph-version': 'v<%= pkg.version %>'
     });
-  } catch (e) {}
+  } catch (e) {
+    // ignore
+  }
 
   this.defs = document.createElementNS(Graph$1.ns, 'defs');
   this.dom.appendChild(this.defs);
@@ -7380,8 +7395,6 @@ function _handleMouseMove(graph, x, y, e) {
   }
 
   checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
-
-  return;
 }
 
 function checkMouseActions(graph, e, parameters, methodName) {
@@ -7499,8 +7512,8 @@ var _trackingLegendSerie = function (graph, serie, x, y, legend, textMethod, xVa
         serieShape = {
           shape: 'ellipse',
           properties: {
-            rx: [serie.serie.getLineWidth() * 3 + "px"],
-            ry: [serie.serie.getLineWidth() * 3 + "px"]
+            rx: [serie.serie.getLineWidth() * 3 + 'px'],
+            ry: [serie.serie.getLineWidth() * 3 + 'px']
           }
         };
       }
@@ -8493,7 +8506,7 @@ function getBBox(svgElement) {
  * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
  * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
  */
-const defaults$1 = {
+const defaults = {
   lineAt: false,
   display: true,
   flipped: false,
@@ -8564,7 +8577,7 @@ class Axis extends EventEmitter {
     this.unitModificationTimeTicks = [[1, [1, 2, 5, 10, 20, 30]], [60, [1, 2, 5, 10, 20, 30]], [3600, [1, 2, 6, 12]], [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]];
 
     this.graph = graph;
-    this.options = extend(true, {}, defaults$1, overwriteoptions, options);
+    this.options = extend(true, {}, defaults, overwriteoptions, options);
 
     this.group = document.createElementNS(this.graph.ns, 'g');
     this.hasChanged = true;
@@ -8589,8 +8602,6 @@ class Axis extends EventEmitter {
     this.group.appendChild(this.groupTicks);
     this.group.appendChild(this.groupTickLabels);
     this.group.appendChild(this.line);
-
-    this.labelValue;
 
     this.label = document.createElementNS(this.graph.ns, 'text');
 
@@ -8947,7 +8958,7 @@ class Axis extends EventEmitter {
    * @memberof Axis
    * @return {Number} The position in px of the top of the axis
    */
-  getMaxPx(px) {
+  getMaxPx() {
     return this.maxPxFlipped;
   }
 
@@ -9095,7 +9106,7 @@ class Axis extends EventEmitter {
     return this;
   }
 
-  handleMouseMove(px, e) {
+  handleMouseMove(px) {
     this.mouseVal = this.getVal(px);
   }
 
@@ -9210,77 +9221,84 @@ class Axis extends EventEmitter {
 
       case 'time':
       case 'time:min.sec':
+        {
 
-        var max = this.getModifiedValue(this.getMaxValue());
+          //const max = this.getModifiedValue( this.getMaxValue() );/*,
+          /*units = [
+            [ 60, 'min' ],
+            [ 3600, 'h' ],
+            [ 3600 * 24, 'd' ]
+          ];*/
 
-        
-
-        var breaked = false;
-        for (var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
-          for (var k = 0, m = this.unitModificationTimeTicks[i][1].length; k < m; k++) {
-            if (unitPerTick < this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k]) {
-              breaked = true;
+          let i, l, k, m;
+          let breaked = false;
+          for (i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
+            for (k = 0, m = this.unitModificationTimeTicks[i][1].length; k < m; k++) {
+              if (unitPerTick < this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k]) {
+                breaked = true;
+                break;
+              }
+            }
+            if (breaked) {
               break;
             }
           }
-          if (breaked) {
-            break;
+
+          //i and k contain the good variable;
+          if (i !== this.unitModificationTimeTicks.length) {
+            unitPerTickCorrect = this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k];
+          } else {
+            unitPerTickCorrect = 1;
           }
+
+          break;
         }
-
-        //i and k contain the good variable;
-        if (i !== this.unitModificationTimeTicks.length) {
-          unitPerTickCorrect = this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k];
-        } else {
-          unitPerTickCorrect = 1;
-        }
-
-        break;
-
       default:
+        {
 
-        // We take the log
-        var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
-        /*
-        Example:
-        13'453 => Math.log10() = 4.12 => 4
-        0.0000341 => Math.log10() = -4.46 => -5
-        */
+          // We take the log
+          var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
+          /*
+          Example:
+          13'453 => Math.log10() = 4.12 => 4
+          0.0000341 => Math.log10() = -4.46 => -5
+          */
 
-        var numberToNatural = unitPerTick * Math.pow(10, -decimals);
+          var numberToNatural = unitPerTick * Math.pow(10, -decimals);
 
-        /*
-        Example:
-        13'453 (4) => 1.345
-        0.0000341 (-5) => 3.41
-        */
+          /*
+          Example:
+          13'453 (4) => 1.345
+          0.0000341 (-5) => 3.41
+          */
 
-        this.decimals = -decimals;
+          this.decimals = -decimals;
 
-        var possibleTicks = [1, 2, 5, 10];
-        var closest = false;
-        for (var i = possibleTicks.length - 1; i >= 0; i--) {
-          if (!closest || Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural)) {
-            closest = possibleTicks[i];
+          var possibleTicks = [1, 2, 5, 10];
+          var closest = false;
+          for (let i = possibleTicks.length - 1; i >= 0; i--) {
+            if (!closest || Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural)) {
+              closest = possibleTicks[i];
+            }
           }
+
+          // Ok now closest is the number of unit per tick in the natural number
+          /*
+          Example:
+          13'453 (4) (1.345) => 1
+          0.0000341 (-5) (3.41) => 5
+          */
+
+          // Let's scale it back
+          var unitPerTickCorrect = closest * Math.pow(10, decimals);
+
+          /*
+          Example:
+          13'453 (4) (1.345) (1) => 10'000
+          0.0000341 (-5) (3.41) (5) => 0.00005
+          */
+          break;
         }
-
-        // Ok now closest is the number of unit per tick in the natural number
-        /*
-        Example:
-        13'453 (4) (1.345) => 1
-        0.0000341 (-5) (3.41) => 5
-        */
-
-        // Let's scale it back
-        var unitPerTickCorrect = closest * Math.pow(10, decimals);
-
-        /*
-        Example:
-        13'453 (4) (1.345) (1) => 10'000
-        0.0000341 (-5) (3.41) (5) => 0.00005
-        */
-        break;
     }
 
     var nbTicks = valrange / unitPerTickCorrect;
@@ -9480,6 +9498,10 @@ class Axis extends EventEmitter {
     // Redrawing of the axis
 
     var self = this;
+    // var visible;
+
+    //    this.drawInit();
+
     if (this.currentAxisMin === undefined || this.currentAxisMax === undefined) {
       this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
     }
@@ -9569,6 +9591,8 @@ class Axis extends EventEmitter {
     } else {
 
       let string = this.getLabel();
+      /*,
+              domEl;*/
 
       if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
 
@@ -9618,7 +9642,7 @@ class Axis extends EventEmitter {
 
     // Looks for axes linked to this current axis
     var axes = this.graph.findAxesLinkedTo(this);
-    axes.map(function (axis) {
+    axes.forEach(function (axis) {
 
       if (!axis.linkedToAxis) {
         return;
@@ -9669,47 +9693,54 @@ class Axis extends EventEmitter {
   }
 
   getExponentGreekLetter(val) {
+
     switch (val) {
 
       case 3:
-        return 'k';
-        break;
+        {
+          return 'k';
+        }
 
       case 6:
-        return 'M';
-        break;
-
+        {
+          return 'M';
+        }
       case 9:
-        return 'G';
-        break;
-
+        {
+          return 'G';
+        }
       case 12:
-        return 'T';
-        break;
-
+        {
+          return 'T';
+        }
       case 15:
-        return 'E';
-        break;
-
+        {
+          return 'E';
+        }
       case -3:
-        return 'm';
-        break;
-
+        {
+          return 'm';
+        }
       case -6:
-        return '&mu;';
-        break;
-
+        {
+          return '&mu;';
+        }
       case -9:
-        return 'n';
-        break;
-
+        {
+          return 'n';
+        }
       case -12:
-        return 'p';
-        break;
-
+        {
+          return 'p';
+        }
       case -15:
-        return 'f';
-        break;
+        {
+          return 'f';
+        }
+      default:
+        {
+          return '';
+        }
     }
   }
 
@@ -9772,7 +9803,6 @@ class Axis extends EventEmitter {
     var unitPerTick = primary,
         min = this.getCurrentMin(),
         max = this.getCurrentMax(),
-        widthHeight = 0,
         secondaryIncr,
         incrTick,
         subIncrTick,
@@ -9961,10 +9991,13 @@ class Axis extends EventEmitter {
       exponential: true,
       overwrite: false
     };
-    if (incr < 0) incr = 0;
+
+    if (incr < 0) {
+      incr = 0;
+    }
+
     var pow = incr == 0 ? 0 : Math.floor(Math.log(incr) / Math.log(10));
     var incr = 1,
-        k = 0,
         val;
     while ((val = incr * Math.pow(10, pow)) < max) {
       if (incr == 1) {
@@ -10029,7 +10062,6 @@ class Axis extends EventEmitter {
         px = 0,
         val,
         t,
-        i = 0,
         l,
         delta2;
 
@@ -10051,8 +10083,8 @@ class Axis extends EventEmitter {
       t = this.drawTick(val, 1, {}, px + this.getMinPx());
 
       if (!t) {
-        console.log(val, px, this.getMinPx());
-        throw 'Unable to draw tick. Please report the test-case';
+        console.error(val, px, this.getMinPx());
+        throw new Error('Unable to draw tick. Please report the test-case');
       }
 
       l = String(t[1].textContent).length * 8;
@@ -10244,15 +10276,15 @@ class Axis extends EventEmitter {
 
     var text = '';
     var incr = this.incrTick;
+    var umin;
 
     switch (mode) {
 
       case 'time':
         // val must be in seconds => transform in hours / days / months
         var max = this.getModifiedValue(this.getMaxValue()),
-            first,
             units = [[60, 'min'], [3600, 'h'], [3600 * 24, 'd']];
-        var umin;
+
         if (max < 3600) {
           // to minutes
           umin = 0;
@@ -10288,6 +10320,9 @@ class Axis extends EventEmitter {
         var s = Math.round((value - valueRounded) * 60) + '';
         s = s.length == 1 ? '0' + s : s;
         text = valueRounded + '.' + s;
+        break;
+
+      default:
         break;
     }
 
@@ -10372,21 +10407,27 @@ class Axis extends EventEmitter {
       case 3:
       case 'outside':
       case Graph$1.TICKS_OUTSIDE:
-        pos = 3;
-        break;
+        {
+          pos = 3;
+          break;
+        }
 
       case 2:
       case 'centered':
       case Graph$1.TICKS_CENTERED:
-        pos = 2;
-        break;
+        {
+          pos = 2;
+          break;
+        }
 
-      default:
       case 1:
       case 'inside':
       case Graph$1.TICKS_INSIDE:
-        pos = 1;
-        break;
+      default:
+        {
+          pos = 1;
+          break;
+        }
     }
 
     this.options.tickPosition = pos;
@@ -10402,6 +10443,7 @@ class Axis extends EventEmitter {
         this.tickPx2 = 1;
         break;
 
+      default:
       case 1:
         this.tickPx1 = 0;
         this.tickPx2 = 2;
@@ -10528,7 +10570,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the axis
    * @since 1.13.2
    */
-  getAxisColor(color) {
+  getAxisColor() {
     return this.options.axisColor || 'black';
   }
 
@@ -10555,7 +10597,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the primary ticks
    * @since 1.13.2
    */
-  getPrimaryTicksColor(color) {
+  getPrimaryTicksColor() {
     return this.options.primaryTicksColor || 'black';
   }
 
@@ -10577,7 +10619,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the secondary ticks
    * @since 1.13.2
    */
-  getSecondaryTicksColor(color) {
+  getSecondaryTicksColor() {
     return this.options.secondaryTicksColor || 'black';
   }
 
@@ -10604,7 +10646,7 @@ class Axis extends EventEmitter {
    * @return {String} The color of the tick labels
    * @since 1.13.2
    */
-  getTicksLabelColor(color) {
+  getTicksLabelColor() {
     return this.options.ticksLabelColor || 'black';
   }
 
@@ -11223,7 +11265,8 @@ class AxisX extends Axis {
   /**
    *  @private
    */
-  handleMouseMoveLocal(x, y, e) {
+  handleMouseMoveLocal(x) {
+    // handleMouseMoveLocal( x, y, e )
     x -= this.graph.getPaddingLeft();
     this.mouseVal = this.getVal(x);
   }
@@ -11272,7 +11315,7 @@ class AxisY extends Axis {
     this.shiftPosition = shift;
   }
 
-  getAxisPosition(shift) {
+  getAxisPosition() {
     return this.shiftPosition || 0;
   }
 
@@ -11344,11 +11387,7 @@ class AxisY extends Axis {
    *  @private
    */
   drawTick(value, level, options, forcedPos) {
-    var pos;
-
-    var self = this,
-        group = this.groupTicks,
-        tickLabel;
+    let pos, tick, tickLabel;
 
     pos = forcedPos || this.getPos(value);
 
@@ -11356,7 +11395,7 @@ class AxisY extends Axis {
       return;
     }
 
-    var tick = this.nextTick(level, tick => {
+    tick = this.nextTick(level, tick => {
 
       tick.setAttribute('x1', (this.left ? 1 : -1) * this.tickPx1 * this.tickScaling[level]);
       tick.setAttribute('x2', (this.left ? 1 : -1) * this.tickPx2 * this.tickScaling[level]);
@@ -11375,7 +11414,7 @@ class AxisY extends Axis {
 
     //  this.groupTicks.appendChild( tick );
     if (level == 1) {
-      var tickLabel = this.nextTickLabel(tickLabel => {
+      tickLabel = this.nextTickLabel(tickLabel => {
 
         tickLabel.setAttribute('x', this.tickMargin + this.options.tickLabelOffset);
         if (this.getTicksLabelColor() !== 'black') {
@@ -11515,7 +11554,7 @@ class AxisY extends Axis {
   /**
    *  @private
    */
-  handleMouseMoveLocal(x, y, e) {
+  handleMouseMoveLocal(x, y) {
     y -= this.graph.getPaddingTop();
     this.mouseVal = this.getVal(y);
   }
@@ -11653,7 +11692,6 @@ class AxisXBar extends AxisX {
 
     var self = this,
         tickLabel,
-        width = this.graph.drawingSpaceWidth,
         elements = this._barCategories;
 
     this.forceMin(0);
@@ -11773,7 +11811,7 @@ class AxisXBar extends AxisX {
       let scategories = serie.getUsedCategories(),
           indices = {};
 
-      scategories.map(cat => {
+      scategories.forEach(cat => {
 
         dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
         indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
@@ -11781,7 +11819,6 @@ class AxisXBar extends AxisX {
       });
 
       serie.setDataIndices(indices, total);
-      
     });
   }
 
@@ -12365,8 +12402,9 @@ function roundDate(date, format) {
       break;
 
     default:
-      throw 'Date format not recognized';
-      break;
+      {
+        throw new Error('Date format not recognized');
+      }
   }
 
   return date;
@@ -12436,8 +12474,9 @@ function incrementDate(date, format) {
       break;
 
     default:
-      throw 'Date format not recognized';
-      break;
+      {
+        throw new Error('Date format not recognized');
+      }
   }
 
   return date;
@@ -12472,6 +12511,7 @@ function getGroup(axis, level, number) {
       g.group.appendChild(g.line);
       break;
 
+    default:
     case 1:
 
       line.setAttribute('y2', 20);
@@ -12517,6 +12557,22 @@ function renderGroup(level, group, text, minPx, maxPx, x1, x2) {
 
   switch (level) {
 
+    case 2:
+
+      if (x1 < minPx || x1 > maxPx) {
+
+        hideGroup(group);
+        return;
+      }
+
+      group.line.setAttribute('x1', x1);
+      group.line.setAttribute('x2', x1);
+      group.text.setAttribute('x', x1);
+      group.text.textContent = text;
+
+      break;
+
+    default:
     case 1:
 
       var x1B = Math.max(minPx, Math.min(maxPx, x1)),
@@ -12546,27 +12602,12 @@ function renderGroup(level, group, text, minPx, maxPx, x1, x2) {
 
       group.text.textContent = text;
       break;
-
-    case 2:
-
-      if (x1 < minPx || x1 > maxPx) {
-
-        hideGroup(group);
-        return;
-      }
-
-      group.line.setAttribute('x1', x1);
-      group.line.setAttribute('x2', x1);
-      group.text.setAttribute('x', x1);
-      group.text.textContent = text;
-
-      break;
   }
 }
 
 class GraphTimeAxis extends Axis {
 
-  constructor(graph, topbottom, options) {
+  constructor() {
 
     super(...arguments);
   }
@@ -12606,6 +12647,9 @@ class GraphTimeAxis extends Axis {
 
   draw() {
     // Redrawing of the axis
+
+    //this.drawInit();
+
     this.cacheCurrentMax();
     this.cacheCurrentMin();
 
@@ -12699,7 +12743,7 @@ class GraphTimeAxis extends Axis {
     return this.wrapper[level];
   }
 
-  setShift(shift, totalDimension) {
+  setShift(shift) {
     this.shift = shift;
     this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : this.graph.getDrawingHeight() - this.shift) + ')');
   }
@@ -14994,8 +15038,6 @@ class SerieLine extends Serie {
       });
       return returnObj;
     }
-
-    return;
   }
 
   handleMouseMove(xValue, doMarker, yValue) {
@@ -16122,7 +16164,7 @@ class SerieBox extends Serie {
 
   setStyle(style, selectionType = 'unselected') {
     //console.log( style, selectionType );
-    this.styles[selectionType] = extend({}, defaults.defaultStyle, this.styles.unselected, style);
+    this.styles[selectionType] = extend({}, this.default().defaultStyle, this.styles.unselected, style);
     this.styleHasChanged(selectionType);
   }
 
@@ -17232,7 +17274,8 @@ class SerieScatter extends Serie {
 
   _addPoint(xpx, ypx, k) {
 
-    var g = document.createElementNS(this.graph.ns, 'g');
+    let shape;
+    let g = document.createElementNS(this.graph.ns, 'g');
     g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
     g.setAttribute('data-shapeid', k);
 
@@ -17937,8 +17980,8 @@ class SerieDensityMap extends Serie {
     this.fromX = fromX;
     this.fromY = fromY;
 
-    this.numX = maxIndexX;
-    this.numY = maxIndexY;
+    this.numX = this.maxIndexX;
+    this.numY = this.maxIndexY;
 
     this.densitymap = densitymap;
     return densitymap;
@@ -18451,7 +18494,7 @@ class SerieDensityMap extends Serie {
    * @memberof SerieDensityMap
    */
   setOptions(options) {
-    this.options = extend(true, {}, defaults, options || {});
+    this.options = extend(true, {}, this.defaults(), options || {});
     // Unselected style
 
     return this;
@@ -19535,8 +19578,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelText(text, index) {
-    this.setProp('labelText', text, index || 0);
+  setLabelText(text, index = 0) {
+    this.setProp('labelText', text, index);
     return this;
   }
 
@@ -19546,8 +19589,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelData(data, index) {
-    this.setProp('labelData', text, index || 0);
+  setLabelData(data, text, index = 0) {
+    this.setProp('labelData', text, index);
     return this;
   }
 
@@ -19556,8 +19599,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {String} The text of the label
    */
-  getLabelText(text, index) {
-    return this.getProp('labelText', index || 0);
+  getLabelText(text, index = 0) {
+    return this.getProp('labelText', index);
   }
 
   /**
@@ -19565,8 +19608,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  displayLabel(index) {
-    this.setProp('labelVisible', true, index || 0);
+  displayLabel(index = 0) {
+    this.setProp('labelVisible', true, index);
     return this;
   }
 
@@ -19575,8 +19618,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  hideLabel(index) {
-    this.setProp('labelVisible', false, index || 0);
+  hideLabel(index = 0) {
+    this.setProp('labelVisible', false, index);
     return this;
   }
 
@@ -19586,8 +19629,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelColor(color, index) {
-    this.setProp('labelColor', color, index || 0);
+  setLabelColor(color, index = 0) {
+    this.setProp('labelColor', color, index);
     return this;
   }
 
@@ -19597,8 +19640,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
-  setLabelFontSize(size, index) {
-    this.setProp('labelFontSize', size, index || 0);
+  setLabelFontSize(size, index = 0) {
+    this.setProp('labelFontSize', size, index);
     return this;
   }
 
@@ -19607,8 +19650,8 @@ class Shape extends EventEmitter {
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Position} The current position of the label
    */
-  getLabelPosition(index) {
-    return this.getProp('labelPosition', index || 0);
+  getLabelPosition(index = 0) {
+    return this.getProp('labelPosition', index);
   }
 
   /**
@@ -20750,7 +20793,7 @@ class Shape extends EventEmitter {
   updateMask() {
     return;
     if (!this.maskDom) {
-      return;
+      return; // eslint-disable-line no-useless-return
     }
 
     var position = {
@@ -21110,8 +21153,13 @@ class ShapeLine extends Shape {
 
     this._dom = document.createElementNS(this.graph.ns, 'line');
 
-    this.setStrokeColor('black');
-    this.setStrokeWidth(1);
+    if (!this.getStrokeColor()) {
+      this.setStrokeColor('black');
+    }
+
+    if (!this.getStrokeWidth()) {
+      this.setStrokeWidth(1);
+    }
   }
 
   /**
@@ -21370,9 +21418,7 @@ class ShapeEllipse extends Shape {
     this.triggerChange();
   }
 
-  handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-    return;
-  }
+  handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {}
 }
 
 /**
@@ -21972,8 +22018,8 @@ class ShapeRectangle extends Shape {
           transform: 'translate(-3 -3)',
           stroke: 'transparent',
           fill: 'transparent',
-          width: "20px",
-          cursor: "ew-resize"
+          width: '20px',
+          cursor: 'ew-resize'
         });
 
         break;
@@ -22316,10 +22362,7 @@ class ShapeCross extends Shape {
     this.setHandles();
   }
 
-  handleCreateImpl() {
-
-    return;
-  }
+  handleCreateImpl() {}
 
   handleMouseDownImpl(e) {
 
@@ -22351,18 +22394,6 @@ class ShapeCross extends Shape {
     this.redrawImpl();
 
     return true;
-  }
-
-  createHandles() {
-
-    this._createHandles(1, 'rect', {
-      transform: 'translate(-3 -3)',
-      width: 6,
-      height: 6,
-      stroke: 'black',
-      fill: 'white',
-      cursor: 'nwse-resize'
-    });
   }
 
   setHandles() {
@@ -22707,16 +22738,7 @@ class ShapeHTML extends Shape {
    * Sets the handle position
    * @private
    */
-  setHandles() {
-
-    if (!this.areHandlesInDom()) {
-      return;
-    }
-
-    if (isNaN(this.currentPos1x)) {
-      return;
-    }
-  }
+  setHandles() {}
 
   isHTML() {
     return true;
@@ -24894,7 +24916,7 @@ class PluginAxisSplitting extends Plugin {
    *  @return {Axis} The newly created split axis
    */
   newXAxis(options) {
-    return newBottomAxis(options);
+    return this.newBottomAxis(options);
   }
 
   /**
@@ -24903,7 +24925,7 @@ class PluginAxisSplitting extends Plugin {
    *  @return {Axis} The newly created split axis
    */
   newYAxis(options) {
-    return newLeftAxis(options);
+    return this.newLeftAxis(options);
   }
 
   /**
@@ -25056,11 +25078,11 @@ class PluginAxisSplitting extends Plugin {
     switch (type) {
 
       case 'line':
-        return newLineSerie(name, options);
+        return this.newLineSerie(name, options);
         break;
 
       case 'scatter':
-        return newScatterSerie(name, options);
+        return this.newScatterSerie(name, options);
         break;
     }
 
@@ -25551,7 +25573,7 @@ class PluginMakeTracesDifferent extends Plugin {
 
       result.saturation = saturation;
     } else {
-      result.saturation = .75;
+      result.saturation = 0.75;
     }
 
     if (lightness = color.lightness || color.l) {
@@ -25677,8 +25699,8 @@ class PluginMakeTracesDifferent extends Plugin {
 
   How to use ?
     Basic usage:
-    
-    let graph = new Graph("dom", { 
+
+    let graph = new Graph("dom", {
       plugins: {
         'peakPicking': {}
       }
@@ -25689,7 +25711,7 @@ class PluginMakeTracesDifferent extends Plugin {
     wv.setData( [ 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 ] );
     let s = graph.newSerie("serie").setWaveform( wv ).autoAxis();
 
-    graph.getPlugin('peakPicking').setSerie( s ); 
+    graph.getPlugin('peakPicking').setSerie( s );
     graph.draw();
 */
 
@@ -25937,11 +25959,11 @@ class PluginPeakPicking extends Plugin {
       this._hidePeakPickingLocked = lock;
     }
 
-    if (!graph.picks) {
+    if (!this.graph.picks) {
       return;
     }
-    for (var i = 0; i < graph.picks.length; i++) {
-      graph.picks[i].hide();
+    for (var i = 0; i < this.graph.picks.length; i++) {
+      this.graph.picks[i].hide();
     }
   }
 
@@ -25955,12 +25977,12 @@ class PluginPeakPicking extends Plugin {
       return;
     }
 
-    if (!graph.picks) {
+    if (!this.graph.picks) {
       return;
     }
 
-    for (var i = 0; i < graph.picks.length; i++) {
-      graph.picks[i].show();
+    for (var i = 0; i < this.graph.picks.length; i++) {
+      this.graph.picks[i].show();
     }
   }
 

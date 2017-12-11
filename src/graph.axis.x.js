@@ -226,7 +226,7 @@ class AxisX extends Axis {
   /**
    *  @private
    */
-  handleMouseMoveLocal( x, y, e ) {
+  handleMouseMoveLocal( x ) { // handleMouseMoveLocal( x, y, e )
     x -= this.graph.getPaddingLeft();
     this.mouseVal = this.getVal( x );
   }

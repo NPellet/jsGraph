@@ -26,7 +26,6 @@ class AxisXBar extends AxisX {
 
     var self = this,
       tickLabel,
-      width = this.graph.drawingSpaceWidth,
       elements = this._barCategories;
 
     this.forceMin( 0 );
@@ -143,13 +142,12 @@ class AxisXBar extends AxisX {
 
     let dispatchedCategories = {};
 
-    let i = 0;
     Array.prototype.map.call( this.series, ( serie ) => {
 
       let scategories = serie.getUsedCategories(),
         indices = {};
 
-      scategories.map( ( cat ) => {
+      scategories.forEach( ( cat ) => {
 
         dispatchedCategories[ cat ] = dispatchedCategories[ cat ] || 0.5;
         indices[ cat ] = ( categories[ cat ] + dispatchedCategories[ cat ] ) / total;
@@ -157,7 +155,7 @@ class AxisXBar extends AxisX {
       } );
 
       serie.setDataIndices( indices, total );
-      i++;
+
     } );
 
   }

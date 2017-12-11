@@ -21,7 +21,7 @@ class AxisY extends Axis {
     this.shiftPosition = shift;
   }
 
-  getAxisPosition( shift ) {
+  getAxisPosition() {
     return this.shiftPosition || 0;
   }
 
@@ -92,10 +92,8 @@ class AxisY extends Axis {
    *  @private
    */
   drawTick( value, level, options, forcedPos ) {
-    var pos;
-
-    var self = this,
-      group = this.groupTicks,
+    let pos,
+      tick,
       tickLabel;
 
     pos = forcedPos || this.getPos( value );
@@ -104,7 +102,7 @@ class AxisY extends Axis {
       return;
     }
 
-    var tick = this.nextTick( level, ( tick ) => {
+    tick = this.nextTick( level, ( tick ) => {
 
       tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * this.tickScaling[ level ] );
       tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * this.tickScaling[ level ] );
@@ -124,7 +122,7 @@ class AxisY extends Axis {
 
     //  this.groupTicks.appendChild( tick );
     if ( level == 1 ) {
-      var tickLabel = this.nextTickLabel( ( tickLabel ) => {
+      tickLabel = this.nextTickLabel( ( tickLabel ) => {
 
         tickLabel.setAttribute( 'x', this.tickMargin + this.options.tickLabelOffset );
         if ( this.getTicksLabelColor() !== 'black' ) {
@@ -268,7 +266,7 @@ class AxisY extends Axis {
   /**
    *  @private
    */
-  handleMouseMoveLocal( x, y, e ) {
+  handleMouseMoveLocal( x, y ) {
     y -= this.graph.getPaddingTop();
     this.mouseVal = this.getVal( y );
   }

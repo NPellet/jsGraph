@@ -20,14 +20,13 @@ class ShapeLine extends GraphShape {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
 
-  if ( !this.getStrokeColor() ) {
+    if ( !this.getStrokeColor() ) {
       this.setStrokeColor( 'black' );
     }
 
     if ( !this.getStrokeWidth() ) {
       this.setStrokeWidth( 1 );
     }
-
 
   }
 

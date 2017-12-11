@@ -623,8 +623,9 @@ function roundDate( date, format ) {
       break;
 
     default:
-      throw 'Date format not recognized';
-      break;
+      {
+        throw new Error( 'Date format not recognized' );
+      }
   }
 
   return date;
@@ -693,8 +694,9 @@ function incrementDate( date, format ) {
       break;
 
     default:
-      throw 'Date format not recognized';
-      break;
+      {
+        throw new Error( 'Date format not recognized' );
+      }
   }
 
   return date;
@@ -729,6 +731,7 @@ function getGroup( axis, level, number ) {
       g.group.appendChild( g.line );
       break;
 
+    default:
     case 1:
 
       line.setAttribute( 'y2', 20 );
@@ -774,6 +777,22 @@ function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
 
   switch ( level ) {
 
+    case 2:
+
+      if ( x1 < minPx || x1 > maxPx ) {
+
+        hideGroup( group );
+        return;
+      }
+
+      group.line.setAttribute( 'x1', x1 );
+      group.line.setAttribute( 'x2', x1 );
+      group.text.setAttribute( 'x', x1 );
+      group.text.textContent = text;
+
+      break;
+
+    default:
     case 1:
 
       var x1B = Math.max( minPx, Math.min( maxPx, x1 ) ),
@@ -803,28 +822,12 @@ function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
 
       group.text.textContent = text;
       break;
-
-    case 2:
-
-      if ( x1 < minPx || x1 > maxPx ) {
-
-        hideGroup( group );
-        return;
-      }
-
-      group.line.setAttribute( 'x1', x1 );
-      group.line.setAttribute( 'x2', x1 );
-      group.text.setAttribute( 'x', x1 );
-      group.text.textContent = text;
-
-      break;
   }
-
 }
 
 class GraphTimeAxis extends Axis {
 
-  constructor( graph, topbottom, options ) {
+  constructor() {
 
     super( ...arguments );
   }
@@ -863,7 +866,6 @@ class GraphTimeAxis extends Axis {
   }
 
   draw() { // Redrawing of the axis
-    var visible;
 
     //this.drawInit();
 
@@ -963,7 +965,7 @@ class GraphTimeAxis extends Axis {
     return this.wrapper[ level ];
   }
 
-  setShift( shift, totalDimension ) {
+  setShift( shift ) {
     this.shift = shift;
     this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' );
   }

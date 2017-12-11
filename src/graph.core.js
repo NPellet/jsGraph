@@ -169,14 +169,17 @@ class Graph extends EventEmitter {
             case 'top':
               this.getTopAxis( j, axis[ i ][ j ] );
               break;
-            case 'bottom':
-              this.getBottomAxis( j, axis[ i ][ j ] );
-              break;
             case 'left':
               this.getLeftAxis( j, axis[ i ][ j ] );
               break;
             case 'right':
               this.getRightAxis( j, axis[ i ][ j ] );
+              break;
+            case 'bottom':
+              this.getBottomAxis( j, axis[ i ][ j ] );
+              break;
+
+            default: // Do not do anything
               break;
           }
         }
@@ -190,11 +193,11 @@ class Graph extends EventEmitter {
   setWrapper( wrapper ) {
 
     if ( !wrapper ) {
-      throw 'The wrapper DOM element was not found.';
+      throw new Error( 'The wrapper DOM element was not found.' );
     }
 
     if ( !wrapper.appendChild ) {
-      throw 'The wrapper appears to be an invalid HTMLElement';
+      throw new Error( 'The wrapper appears to be an invalid HTMLElement' );
     }
 
     wrapper.style[ '-webkit-user-select' ] = 'none';
@@ -215,8 +218,8 @@ class Graph extends EventEmitter {
 
     if ( !this.height || !this.width ) {
       var wrapperStyle = getComputedStyle( wrapper );
-      var w = parseInt( wrapperStyle.width );
-      var h = parseInt( wrapperStyle.height );
+      var w = parseInt( wrapperStyle.width, 10 );
+      var h = parseInt( wrapperStyle.height, 10 );
       this.setSize( w, h );
       this._resize();
     }
@@ -328,7 +331,7 @@ class Graph extends EventEmitter {
     return false;
   }
 
-  executeRedrawSlaves( noLegend ) {
+  executeRedrawSlaves() {
     this._pluginsExecute( 'preDraw' );
 
   }
@@ -719,7 +722,7 @@ class Graph extends EventEmitter {
       }
 
       if ( !noSerieKill ) {
-        this.series.map( ( serie ) => {
+        this.series.forEach( ( serie ) => {
 
           if ( serie.getXAxis() == axis ) {
             serie.kill();
@@ -739,7 +742,7 @@ class Graph extends EventEmitter {
       }
 
       if ( !noSerieKill ) {
-        this.series.map( ( serie ) => {
+        this.series.forEach( ( serie ) => {
 
           if ( serie.getYAxis() == axis ) {
             serie.kill();
@@ -948,7 +951,6 @@ class Graph extends EventEmitter {
             this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
           }
         };
-        break;
 
       case 'function':
         return function( type, func, params ) {
@@ -956,7 +958,9 @@ class Graph extends EventEmitter {
             func.call( this, this.axis[ type ][ i ], type, params );
           }
         };
-        break;
+
+      default:
+        throw new Error( 'You must either execute a function or provide a string that registers a function' );
     }
   }
 
@@ -986,7 +990,6 @@ class Graph extends EventEmitter {
       func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
       func2use = func[ min ? 0 : 1 ],
       infinity2use = min ? +Infinity : -Infinity,
-      currentSerie,
       serie,
       series,
       serieValue,
@@ -1039,15 +1042,13 @@ class Graph extends EventEmitter {
       axis,
       j,
       l,
-      i,
-      xy;
+      i;
 
     for ( j = 0, l = axisvars.length; j < l; j++ ) {
 
       for ( i = this.axis[ axisvars[ j ] ].length - 1; i >= 0; i-- ) {
 
         axis = this.axis[ axisvars[ j ] ][ i ];
-        xy = j < 2 ? 'x' : 'y';
 
         // 25.10.2017. Wait a second, this cannot be real. Even hidden axes must have min max values.
         // The data can be displayed while the axis is hidden
@@ -1130,7 +1131,8 @@ class Graph extends EventEmitter {
 
     return axes;
   }
-  _axisHasChanged( axis ) {
+
+  _axisHasChanged() {
     this._axesHaveChanged = true;
   }
 
@@ -1230,7 +1232,7 @@ class Graph extends EventEmitter {
   drawSerie( serie, force ) {
 
     if ( !serie.draw ) {
-      throw 'Serie has no method draw';
+      throw new Error( 'Serie has no method draw' );
     }
 
     serie.draw( force );
@@ -1378,9 +1380,6 @@ class Graph extends EventEmitter {
    */
   newShape( shapeType, shapeData, mute = false, shapeProperties ) {
 
-    var self = this,
-      response;
-
     this.prevent( false );
 
     if ( !mute ) {
@@ -1502,7 +1501,7 @@ class Graph extends EventEmitter {
         type,
         value
 
-      }, index ) => {
+      } ) => {
 
         shape.addTransform( type, value );
 
@@ -1560,16 +1559,16 @@ class Graph extends EventEmitter {
 
   /**
    * Creates a new position. Arguments are passed to the position constructor
-   * @param {...*} var_args
+   * @param {...*} varArgs
    * @see Position
    */
-  newPosition( var_args ) {
+  newPosition( varArgs ) {
 
     return new GraphPosition( ...arguments );
 
     // 18 September 2016 Norman: What is that ?
-    Array.prototype.unshift.call( arguments, null );
-    return new( Function.prototype.bind.apply( GraphPosition, arguments ) )();
+    //Array.prototype.unshift.call( arguments, null );
+    //return new( Function.prototype.bind.apply( GraphPosition, arguments ) )();
   }
 
   /**
@@ -1928,9 +1927,10 @@ class Graph extends EventEmitter {
     return plugin;
   }
   triggerEvent() {
-    var func = arguments[ 0 ],
-      args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
-
+    var func = arguments[ 0 ];
+    /*,
+          args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
+    */
     if ( typeof this.options[ func ] == 'function' ) {
       return this.options[ func ].apply( this, arguments );
     }
@@ -1992,7 +1992,7 @@ class Graph extends EventEmitter {
     this.legend.requireDelayedUpdate();
   }
 
-  orthogonalProjectionSetup( options ) {
+  orthogonalProjectionSetup() {
 
     this.options.zAxis = util.extend( true, {
       maxZ: 10,
@@ -2062,8 +2062,6 @@ class Graph extends EventEmitter {
     this._pluginsExecute( 'serieRemoved', serie );
   }
   contextListen( target, menuElements, callback ) {
-
-    var self = this;
 
     if ( this.options.onContextMenuListen ) {
       return this.options.onContextMenuListen( target, menuElements, callback );
@@ -2207,7 +2205,7 @@ class Graph extends EventEmitter {
           if ( typeof sOptions.serie !== 'object' ) {
 
             if ( typeof sOptions !== 'object' ) {
-              throw 'Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }';
+              throw new Error( 'Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }' );
             }
 
             sOptions.serie = this.getSerie( sOptions.serie );
@@ -2223,7 +2221,7 @@ class Graph extends EventEmitter {
       }
     } else {
 
-      options.series.map( ( serie ) => {
+      options.series.forEach( ( serie ) => {
         serie.serie.disableTracking();
       } );
     }
@@ -2260,7 +2258,12 @@ class Graph extends EventEmitter {
       } );
     }
 
-    // TODO: Check if not already existing
+    this.options.trackingLine.series.forEach( ( serieO, index ) => {
+      if ( serieO.serie == serie ) {
+        this.options.trackingLine.series.splice( index, 1 );
+      }
+    } );
+
     this.options.trackingLine.series.push( Object.assign( {
       serie: serie
     }, options ) );
@@ -2284,9 +2287,7 @@ class Graph extends EventEmitter {
           }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : ( output ) => {
 
             for ( var i in output ) {
-
               return output[ i ].serie.serie.getName() + ': ' + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue );
-              break;
             }
 
           }, index.trueX );
@@ -2370,7 +2371,6 @@ class Graph extends EventEmitter {
         right: [],
         bottom: []
       },
-      axesIndices = [],
       style;
 
     if ( schema.title ) {
@@ -2379,7 +2379,7 @@ class Graph extends EventEmitter {
 
     if ( schema.axis ) {
 
-      schema.axis.map( function( schemaAxis ) {
+      schema.axis.forEach( function( schemaAxis ) {
 
         if ( !schemaAxis.type ) {
           util.throwError( 'Axis type is required (top, bottom, left or right)' );
@@ -2434,7 +2434,7 @@ class Graph extends EventEmitter {
 
     if ( schema.data ) {
 
-      schema.data.map( function( schemaSerie ) {
+      schema.data.forEach( function( schemaSerie ) {
 
         var serieType = schemaSerie.type,
           serie,

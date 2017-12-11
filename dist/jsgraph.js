@@ -1548,49 +1548,65 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'setLabelText',
-      value: function setLabelText(text, index) {
-        this.setProp('labelText', text, index || 0);
+      value: function setLabelText(text) {
+        var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        this.setProp('labelText', text, index);
         return this;
       }
     }, {
       key: 'setLabelData',
-      value: function setLabelData(data, index) {
-        this.setProp('labelData', text, index || 0);
+      value: function setLabelData(data, text) {
+        var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+        this.setProp('labelData', text, index);
         return this;
       }
     }, {
       key: 'getLabelText',
-      value: function getLabelText(text, index) {
-        return this.getProp('labelText', index || 0);
+      value: function getLabelText(text) {
+        var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        return this.getProp('labelText', index);
       }
     }, {
       key: 'displayLabel',
-      value: function displayLabel(index) {
-        this.setProp('labelVisible', true, index || 0);
+      value: function displayLabel() {
+        var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+        this.setProp('labelVisible', true, index);
         return this;
       }
     }, {
       key: 'hideLabel',
-      value: function hideLabel(index) {
-        this.setProp('labelVisible', false, index || 0);
+      value: function hideLabel() {
+        var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+        this.setProp('labelVisible', false, index);
         return this;
       }
     }, {
       key: 'setLabelColor',
-      value: function setLabelColor(color, index) {
-        this.setProp('labelColor', color, index || 0);
+      value: function setLabelColor(color) {
+        var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        this.setProp('labelColor', color, index);
         return this;
       }
     }, {
       key: 'setLabelFontSize',
-      value: function setLabelFontSize(size, index) {
-        this.setProp('labelFontSize', size, index || 0);
+      value: function setLabelFontSize(size) {
+        var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        this.setProp('labelFontSize', size, index);
         return this;
       }
     }, {
       key: 'getLabelPosition',
-      value: function getLabelPosition(index) {
-        return this.getProp('labelPosition', index || 0);
+      value: function getLabelPosition() {
+        var index = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+        return this.getProp('labelPosition', index);
       }
     }, {
       key: 'setLabelPosition',
@@ -2463,7 +2479,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function updateMask() {
         return;
         if (!this.maskDom) {
-          return;
+          return; // eslint-disable-line no-useless-return
         }
 
         var position = {
@@ -3851,14 +3867,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               case 'top':
                 _this.getTopAxis(j, axis[i][j]);
                 break;
-              case 'bottom':
-                _this.getBottomAxis(j, axis[i][j]);
-                break;
               case 'left':
                 _this.getLeftAxis(j, axis[i][j]);
                 break;
               case 'right':
                 _this.getRightAxis(j, axis[i][j]);
+                break;
+              case 'bottom':
+                _this.getBottomAxis(j, axis[i][j]);
+                break;
+
+              default:
+                // Do not do anything
                 break;
             }
           }
@@ -3875,11 +3895,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function setWrapper(wrapper) {
 
         if (!wrapper) {
-          throw 'The wrapper DOM element was not found.';
+          throw new Error('The wrapper DOM element was not found.');
         }
 
         if (!wrapper.appendChild) {
-          throw 'The wrapper appears to be an invalid HTMLElement';
+          throw new Error('The wrapper appears to be an invalid HTMLElement');
         }
 
         wrapper.style['-webkit-user-select'] = 'none';
@@ -3900,8 +3920,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (!this.height || !this.width) {
           var wrapperStyle = getComputedStyle(wrapper);
-          var w = parseInt(wrapperStyle.width);
-          var h = parseInt(wrapperStyle.height);
+          var w = parseInt(wrapperStyle.width, 10);
+          var h = parseInt(wrapperStyle.height, 10);
           this.setSize(w, h);
           this._resize();
         }
@@ -3987,7 +4007,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'executeRedrawSlaves',
-      value: function executeRedrawSlaves(noLegend) {
+      value: function executeRedrawSlaves() {
         this._pluginsExecute('preDraw');
       }
     }, {
@@ -4228,7 +4248,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (!noSerieKill) {
-            this.series.map(function (serie) {
+            this.series.forEach(function (serie) {
 
               if (serie.getXAxis() == axis) {
                 serie.kill();
@@ -4248,7 +4268,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (!noSerieKill) {
-            this.series.map(function (serie) {
+            this.series.forEach(function (serie) {
 
               if (serie.getYAxis() == axis) {
                 serie.kill();
@@ -4397,7 +4417,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'recallAxisState',
-      value: function recallAxisState(stateName) {
+      value: function recallAxisState(savedName) {
         if (this.savedAxisState[savedName]) {
           this.recallAxisState(this.savedAxisState[savedName]);
         }
@@ -4417,7 +4437,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 this.axis[type][i][func].apply(this.axis[type][i], params);
               }
             };
-            break;
 
           case 'function':
             return function (type, func, params) {
@@ -4425,7 +4444,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 func.call(this, this.axis[type][i], type, params);
               }
             };
-            break;
+
+          default:
+            throw new Error('You must either execute a function or provide a string that registers a function');
         }
       }
     }, {
@@ -4446,7 +4467,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             func = axis.isX() ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
             func2use = func[min ? 0 : 1],
             infinity2use = min ? +Infinity : -Infinity,
-            currentSerie,
             serie,
             series,
             serieValue,
@@ -4492,15 +4512,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             axis,
             j,
             l,
-            i,
-            xy;
+            i;
 
         for (j = 0, l = axisvars.length; j < l; j++) {
 
           for (i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
 
             axis = this.axis[axisvars[j]][i];
-            xy = j < 2 ? 'x' : 'y';
 
             // 25.10.2017. Wait a second, this cannot be real. Even hidden axes must have min max values.
             // The data can be displayed while the axis is hidden
@@ -4561,7 +4579,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: '_axisHasChanged',
-      value: function _axisHasChanged(axis) {
+      value: function _axisHasChanged() {
         this._axesHaveChanged = true;
       }
     }, {
@@ -4637,7 +4655,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function drawSerie(serie, force) {
 
         if (!serie.draw) {
-          throw 'Serie has no method draw';
+          throw new Error('Serie has no method draw');
         }
 
         serie.draw(force);
@@ -4756,9 +4774,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var shapeProperties = arguments[3];
 
 
-        var self = this,
-            response;
-
         this.prevent(false);
 
         if (!mute) {
@@ -4875,7 +4890,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (shapeData.transforms !== undefined && Array.isArray(shapeData.transforms)) {
 
-          shapeData.transforms.forEach(function (_ref, index) {
+          shapeData.transforms.forEach(function (_ref) {
             var type = _ref.type,
                 value = _ref.value;
 
@@ -4933,13 +4948,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'newPosition',
-      value: function newPosition(var_args) {
+      value: function newPosition(varArgs) {
 
         return new (Function.prototype.bind.apply(_graphPosition2.default, [null].concat(Array.prototype.slice.call(arguments))))();
 
         // 18 September 2016 Norman: What is that ?
-        Array.prototype.unshift.call(arguments, null);
-        return new (Function.prototype.bind.apply(_graphPosition2.default, arguments))();
+        //Array.prototype.unshift.call( arguments, null );
+        //return new( Function.prototype.bind.apply( GraphPosition, arguments ) )();
       }
     }, {
       key: 'redrawShapes',
@@ -5158,7 +5173,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
-        if (action.enabled && (typeof action.enabled == 'function' ? !action.enabled(this) : !actions.enabled)) {
+        if (action.enabled && (typeof action.enabled == 'function' ? !action.enabled(this) : !action.enabled)) {
           return;
         }
 
@@ -5254,7 +5269,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: '_serieExecute',
-      value: function _serieExecute(which, func, args) {
+      value: function _serieExecute(serie, func, args) {
 
         if ((typeof serie === 'undefined' ? 'undefined' : _typeof(serie)) !== 'object') {
           serie = this.getSerie(serie);
@@ -5303,14 +5318,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'triggerEvent',
       value: function triggerEvent() {
-        var func = arguments[0],
-            args = Array.prototype.splice.apply(arguments, [0, 1]);
-
+        var func = arguments[0]; /*,
+                                 args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
+                                 */
         if (typeof this.options[func] == 'function') {
           return this.options[func].apply(this, arguments);
         }
-
-        return;
       }
     }, {
       key: 'makeLegend',
@@ -5326,8 +5339,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         } else {
           return util.throwError('Graph legend is not available as it has not been registered');
         }
-
-        //    this.legend.update();
 
         return this.legend;
       }
@@ -5365,7 +5376,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'orthogonalProjectionSetup',
-      value: function orthogonalProjectionSetup(options) {
+      value: function orthogonalProjectionSetup() {
 
         this.options.zAxis = util.extend(true, {
           maxZ: 10,
@@ -5439,8 +5450,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'contextListen',
       value: function contextListen(target, menuElements, callback) {
-
-        var self = this;
 
         if (this.options.onContextMenuListen) {
           return this.options.onContextMenuListen(target, menuElements, callback);
@@ -5607,7 +5616,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               if (options.series == 'all') {
 
                 options.series = this.series.map(function (serie) {
-                  serie;
+                  return {
+                    serie: serie
+                  };
                 });
               } else {
 
@@ -5620,7 +5631,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               if (_typeof(sOptions.serie) !== 'object') {
 
                 if ((typeof sOptions === 'undefined' ? 'undefined' : _typeof(sOptions)) !== 'object') {
-                  throw 'Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }';
+                  throw new Error('Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }');
                 }
 
                 sOptions.serie = _this9.getSerie(sOptions.serie);
@@ -5635,7 +5646,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         } else {
 
-          options.series.map(function (serie) {
+          options.series.forEach(function (serie) {
             serie.serie.disableTracking();
           });
         }
@@ -5675,7 +5686,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           });
         }
 
-        // TODO: Check if not already existing
+        this.options.trackingLine.series.forEach(function (serieO, index) {
+          if (serieO.serie == serie) {
+            _this10.options.trackingLine.series.splice(index, 1);
+          }
+        });
+
         this.options.trackingLine.series.push(Object.assign({
           serie: serie
         }, options));
@@ -5699,9 +5715,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : function (output) {
 
                 for (var i in output) {
-
                   return output[i].serie.serie.getName() + ': ' + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
-                  break;
                 }
               }, index.trueX);
 
@@ -5865,7 +5879,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         schema.data = seriesExport.concat(this.series.map(function (serie) {
 
-          style = [];
+          var style = [];
           var linestyle = [];
 
           if (serie.getType() == Graph.SERIE_LINE) {
@@ -5924,7 +5938,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           right: [],
           bottom: []
         },
-            axesIndices = [],
             style = void 0;
 
         if (schema.title) {
@@ -5933,7 +5946,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (schema.axis) {
 
-          schema.axis.map(function (schemaAxis) {
+          schema.axis.forEach(function (schemaAxis) {
 
             if (!schemaAxis.type) {
               util.throwError('Axis type is required (top, bottom, left or right)');
@@ -5987,7 +6000,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (schema.data) {
 
-          schema.data.map(function (schemaSerie) {
+          schema.data.forEach(function (schemaSerie) {
 
             var serieType = schemaSerie.type,
                 serie,
@@ -6036,6 +6049,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             serie = graph.newSerie(schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType);
 
             if (schemaSerie.lineStyle) {
+
+              var lineStyle = void 0;
 
               if (Array.isArray(lineStyle)) {
                 lineStyle = {
@@ -6683,7 +6698,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (graph.forcedPlugin) {
 
       graph.activePlugin = graph.forcedPlugin;
-      graph._pluginExecute(graph.activePlugin, type, [graph, e]);
+      graph._pluginExecute(graph.activePlugin, type, [graph, event]);
       return;
     }
 
@@ -6774,9 +6789,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.68'
+        'data-jsgraph-version': 'v2.0.69'
       });
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
 
     this.defs = document.createElementNS(Graph.ns, 'defs');
     this.dom.appendChild(this.defs);
@@ -7138,8 +7155,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
-
-    return;
   }
 
   function checkMouseActions(graph, e, parameters, methodName) {
@@ -7257,8 +7272,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           serieShape = {
             shape: 'ellipse',
             properties: {
-              rx: [serie.serie.getLineWidth() * 3 + "px"],
-              ry: [serie.serie.getLineWidth() * 3 + "px"]
+              rx: [serie.serie.getLineWidth() * 3 + 'px'],
+              ry: [serie.serie.getLineWidth() * 3 + 'px']
             }
           };
         }
@@ -7718,7 +7733,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         data.map(function (el, index) {
 
-          if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+          if (!nanable && Number.isNaN(el[0]) || Number.isNaN(el[1])) {
             warnNaN = true;
           }
 
@@ -8006,10 +8021,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
-        if (this.xdata) {
-
-          return;
-        } else {
+        if (!this.xdata) {
 
           var b1 = this.xOffset + this.xScale * this.getLength(),
               b2 = this.xOffset;
@@ -8129,7 +8141,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getIndexFromData',
-      value: function getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+      value: function getIndexFromData(val, valCollection, isAscending) {
 
         var data = void 0,
             position = void 0;
@@ -8523,7 +8535,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'invert',
       value: function invert(data) {
 
-        var d = dataY || this.data;
+        var d = data || this.data;
         d.reverse();
 
         if (this.isMonotoneous()) {
@@ -11105,8 +11117,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           });
           return returnObj;
         }
-
-        return;
       }
     }, {
       key: 'handleMouseMove',
@@ -13890,8 +13900,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.group.appendChild(this.groupTickLabels);
         this.group.appendChild(this.line);
 
-        this.labelValue;
-
         this.label = document.createElementNS(this.graph.ns, 'text');
 
         this.labelTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the main label
@@ -14075,8 +14083,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
-        if (!axis) var val;
-
         var axis = this.options.adaptTo.axis,
             current = this.options.adaptTo.thisValue,
             foreign = this.options.adaptTo.foreignValue;
@@ -14181,7 +14187,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getMaxPx',
-      value: function getMaxPx(px) {
+      value: function getMaxPx() {
         return this.maxPxFlipped;
       }
     }, {
@@ -14299,7 +14305,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'handleMouseMove',
-      value: function handleMouseMove(px, e) {
+      value: function handleMouseMove(px) {
         this.mouseVal = this.getVal(px);
       }
     }, {
@@ -14384,7 +14390,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'getUnitPerTick',
       value: function getUnitPerTick(px, nbTick, valrange) {
 
-        var umin;
         var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
         if (!nbTick) {
           nbTick = px / 10;
@@ -14400,85 +14405,87 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           case 'time':
           case 'time:min.sec':
+            {
 
-            var max = this.getModifiedValue(this.getMaxValue()),
-                units = [[60, 'min'], [3600, 'h'], [3600 * 24, 'd']];
+              //const max = this.getModifiedValue( this.getMaxValue() );/*,
+              /*units = [
+                [ 60, 'min' ],
+                [ 3600, 'h' ],
+                [ 3600 * 24, 'd' ]
+              ];*/
 
-            if (max < 3600) {
-              // to minutes
-              umin = 0;
-            } else if (max < 3600 * 24) {
-              umin = 1;
-            } else {
-              umin = 2;
-            }
-
-            var breaked = false;
-            for (var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
-              for (var k = 0, m = this.unitModificationTimeTicks[i][1].length; k < m; k++) {
-                if (unitPerTick < this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k]) {
-                  breaked = true;
+              var i = void 0,
+                  l = void 0,
+                  k = void 0,
+                  m = void 0;
+              var breaked = false;
+              for (i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
+                for (k = 0, m = this.unitModificationTimeTicks[i][1].length; k < m; k++) {
+                  if (unitPerTick < this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k]) {
+                    breaked = true;
+                    break;
+                  }
+                }
+                if (breaked) {
                   break;
                 }
               }
-              if (breaked) {
-                break;
+
+              //i and k contain the good variable;
+              if (i !== this.unitModificationTimeTicks.length) {
+                unitPerTickCorrect = this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k];
+              } else {
+                unitPerTickCorrect = 1;
               }
+
+              break;
             }
-
-            //i and k contain the good variable;
-            if (i !== this.unitModificationTimeTicks.length) {
-              unitPerTickCorrect = this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k];
-            } else {
-              unitPerTickCorrect = 1;
-            }
-
-            break;
-
           default:
+            {
 
-            // We take the log
-            var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
-            /*
-            Example:
-            13'453 => Math.log10() = 4.12 => 4
-            0.0000341 => Math.log10() = -4.46 => -5
-            */
+              // We take the log
+              var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
+              /*
+              Example:
+              13'453 => Math.log10() = 4.12 => 4
+              0.0000341 => Math.log10() = -4.46 => -5
+              */
 
-            var numberToNatural = unitPerTick * Math.pow(10, -decimals);
+              var numberToNatural = unitPerTick * Math.pow(10, -decimals);
 
-            /*
-            Example:
-            13'453 (4) => 1.345
-            0.0000341 (-5) => 3.41
-            */
+              /*
+              Example:
+              13'453 (4) => 1.345
+              0.0000341 (-5) => 3.41
+              */
 
-            this.decimals = -decimals;
+              this.decimals = -decimals;
 
-            var possibleTicks = [1, 2, 5, 10];
-            var closest = false;
-            for (var i = possibleTicks.length - 1; i >= 0; i--) {
-              if (!closest || Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural)) {
-                closest = possibleTicks[i];
+              var possibleTicks = [1, 2, 5, 10];
+              var closest = false;
+              for (var _i = possibleTicks.length - 1; _i >= 0; _i--) {
+                if (!closest || Math.abs(possibleTicks[_i] - numberToNatural) < Math.abs(closest - numberToNatural)) {
+                  closest = possibleTicks[_i];
+                }
               }
+
+              // Ok now closest is the number of unit per tick in the natural number
+              /*
+              Example:
+              13'453 (4) (1.345) => 1
+              0.0000341 (-5) (3.41) => 5
+              */
+
+              // Let's scale it back
+              var unitPerTickCorrect = closest * Math.pow(10, decimals);
+
+              /*
+              Example:
+              13'453 (4) (1.345) (1) => 10'000
+              0.0000341 (-5) (3.41) (5) => 0.00005
+              */
+              break;
             }
-
-            // Ok now closest is the number of unit per tick in the natural number
-            /*
-            Example:
-            13'453 (4) (1.345) => 1
-            0.0000341 (-5) (3.41) => 5
-            */
-
-            // Let's scale it back
-            var unitPerTickCorrect = closest * Math.pow(10, decimals);
-
-            /*
-            Example:
-            13'453 (4) (1.345) (1) => 10'000
-            0.0000341 (-5) (3.41) (5) => 0.00005
-            */
-            break;
         }
 
         var nbTicks = valrange / unitPerTickCorrect;
@@ -14627,7 +14634,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         // Redrawing of the axis
 
         var self = this;
-        var visible;
+        // var visible;
 
         //    this.drawInit();
 
@@ -14719,8 +14726,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.writeUnit();
         } else {
 
-          var string = this.getLabel(),
-              domEl = void 0;
+          var string = this.getLabel(); /*,
+                                        domEl;*/
 
           if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
 
@@ -14770,7 +14777,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         // Looks for axes linked to this current axis
         var axes = this.graph.findAxesLinkedTo(this);
-        axes.map(function (axis) {
+        axes.forEach(function (axis) {
 
           if (!axis.linkedToAxis) {
             return;
@@ -14825,48 +14832,54 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'getExponentGreekLetter',
       value: function getExponentGreekLetter(val) {
+
         switch (val) {
 
           case 3:
-            return 'k';
-            break;
+            {
+              return 'k';
+            }
 
           case 6:
-            return 'M';
-            break;
-
+            {
+              return 'M';
+            }
           case 9:
-            return 'G';
-            break;
-
+            {
+              return 'G';
+            }
           case 12:
-            return 'T';
-            break;
-
+            {
+              return 'T';
+            }
           case 15:
-            return 'E';
-            break;
-
+            {
+              return 'E';
+            }
           case -3:
-            return 'm';
-            break;
-
+            {
+              return 'm';
+            }
           case -6:
-            return '&mu;';
-            break;
-
+            {
+              return '&mu;';
+            }
           case -9:
-            return 'n';
-            break;
-
+            {
+              return 'n';
+            }
           case -12:
-            return 'p';
-            break;
-
+            {
+              return 'p';
+            }
           case -15:
-            return 'f';
-            break;
-        }
+            {
+              return 'f';
+            }
+          default:
+            {
+              return '';
+            }}
       }
     }, {
       key: 'drawLinearTicksWrapper',
@@ -14937,7 +14950,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var unitPerTick = primary,
             min = this.getCurrentMin(),
             max = this.getCurrentMax(),
-            widthHeight = 0,
             secondaryIncr,
             incrTick,
             subIncrTick,
@@ -15130,10 +15142,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           exponential: true,
           overwrite: false
         };
-        if (incr < 0) incr = 0;
+
+        if (incr < 0) {
+          incr = 0;
+        }
+
         var pow = incr == 0 ? 0 : Math.floor(Math.log(incr) / Math.log(10));
         var incr = 1,
-            k = 0,
             val;
         while ((val = incr * Math.pow(10, pow)) < max) {
           if (incr == 1) {
@@ -15186,7 +15201,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             px = 0,
             val,
             t,
-            i = 0,
             l,
             delta2;
 
@@ -15208,8 +15222,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           t = this.drawTick(val, 1, {}, px + this.getMinPx());
 
           if (!t) {
-            console.log(val, px, this.getMinPx());
-            throw 'Unable to draw tick. Please report the test-case';
+            console.error(val, px, this.getMinPx());
+            throw new Error('Unable to draw tick. Please report the test-case');
           }
 
           l = String(t[1].textContent).length * 8;
@@ -15221,8 +15235,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
             return;
           }
-
-          i++;
 
           px += opts.deltaPx;
         } while (px < widthPx);
@@ -15371,15 +15383,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var text = '';
         var incr = this.incrTick;
+        var umin;
 
         switch (mode) {
 
           case 'time':
             // val must be in seconds => transform in hours / days / months
             var max = this.getModifiedValue(this.getMaxValue()),
-                first,
                 units = [[60, 'min'], [3600, 'h'], [3600 * 24, 'd']];
-            var umin;
+
             if (max < 3600) {
               // to minutes
               umin = 0;
@@ -15401,7 +15413,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             umin--;
             while (incr < 1 * units[umin + 1][0] && umin > -1) {
 
-              first = false;
               value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
               valueRounded = Math.round(value);
               text += ' ' + valueRounded + units[umin][1];
@@ -15416,6 +15427,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             var s = Math.round((value - valueRounded) * 60) + '';
             s = s.length == 1 ? '0' + s : s;
             text = valueRounded + '.' + s;
+            break;
+
+          default:
             break;
         }
 
@@ -15498,21 +15512,27 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           case 3:
           case 'outside':
           case _graphCore2.default.TICKS_OUTSIDE:
-            pos = 3;
-            break;
+            {
+              pos = 3;
+              break;
+            }
 
           case 2:
           case 'centered':
           case _graphCore2.default.TICKS_CENTERED:
-            pos = 2;
-            break;
+            {
+              pos = 2;
+              break;
+            }
 
-          default:
           case 1:
           case 'inside':
           case _graphCore2.default.TICKS_INSIDE:
-            pos = 1;
-            break;
+          default:
+            {
+              pos = 1;
+              break;
+            }
         }
 
         this.options.tickPosition = pos;
@@ -15528,6 +15548,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             this.tickPx2 = 1;
             break;
 
+          default:
           case 1:
             this.tickPx1 = 0;
             this.tickPx2 = 2;
@@ -15603,7 +15624,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getAxisColor',
-      value: function getAxisColor(color) {
+      value: function getAxisColor() {
         return this.options.axisColor || 'black';
       }
     }, {
@@ -15620,7 +15641,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getPrimaryTicksColor',
-      value: function getPrimaryTicksColor(color) {
+      value: function getPrimaryTicksColor() {
         return this.options.primaryTicksColor || 'black';
       }
     }, {
@@ -15631,7 +15652,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getSecondaryTicksColor',
-      value: function getSecondaryTicksColor(color) {
+      value: function getSecondaryTicksColor() {
         return this.options.secondaryTicksColor || 'black';
       }
     }, {
@@ -15647,7 +15668,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getTicksLabelColor',
-      value: function getTicksLabelColor(color) {
+      value: function getTicksLabelColor() {
         return this.options.ticksLabelColor || 'black';
       }
     }, {
@@ -17409,7 +17430,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'handleMouseMoveLocal',
-      value: function handleMouseMoveLocal(x, y, e) {
+      value: function handleMouseMoveLocal(x) {
+        // handleMouseMoveLocal( x, y, e )
         x -= this.graph.getPaddingLeft();
         this.mouseVal = this.getVal(x);
       }
@@ -17547,8 +17569,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this._dom = document.createElementNS(this.graph.ns, 'line');
 
-        this.setStrokeColor('black');
-        this.setStrokeWidth(1);
+        if (!this.getStrokeColor()) {
+          this.setStrokeColor('black');
+        }
+
+        if (!this.getStrokeWidth()) {
+          this.setStrokeWidth(1);
+        }
       }
     }, {
       key: 'createHandles',
@@ -19171,7 +19198,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'getAxisPosition',
-      value: function getAxisPosition(shift) {
+      value: function getAxisPosition() {
         return this.shiftPosition || 0;
       }
     }, {
@@ -19238,11 +19265,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function drawTick(value, level, options, forcedPos) {
         var _this2 = this;
 
-        var pos;
-
-        var self = this,
-            group = this.groupTicks,
-            tickLabel;
+        var pos = void 0,
+            tick = void 0,
+            tickLabel = void 0;
 
         pos = forcedPos || this.getPos(value);
 
@@ -19250,7 +19275,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
-        var tick = this.nextTick(level, function (tick) {
+        tick = this.nextTick(level, function (tick) {
 
           tick.setAttribute('x1', (_this2.left ? 1 : -1) * _this2.tickPx1 * _this2.tickScaling[level]);
           tick.setAttribute('x2', (_this2.left ? 1 : -1) * _this2.tickPx2 * _this2.tickScaling[level]);
@@ -19269,7 +19294,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         //  this.groupTicks.appendChild( tick );
         if (level == 1) {
-          var tickLabel = this.nextTickLabel(function (tickLabel) {
+          tickLabel = this.nextTickLabel(function (tickLabel) {
 
             tickLabel.setAttribute('x', _this2.tickMargin + _this2.options.tickLabelOffset);
             if (_this2.getTicksLabelColor() !== 'black') {
@@ -19398,7 +19423,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'handleMouseMoveLocal',
-      value: function handleMouseMoveLocal(x, y, e) {
+      value: function handleMouseMoveLocal(x, y) {
         y -= this.graph.getPaddingTop();
         this.mouseVal = this.getVal(y);
       }
@@ -20089,6 +20114,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: '_addPoint',
       value: function _addPoint(xpx, ypx, k) {
 
+        var shape = void 0;
         var g = document.createElementNS(this.graph.ns, 'g');
         g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
         g.setAttribute('data-shapeid', k);
@@ -20842,7 +20868,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _createClass(ShapeRectangle, [{
       key: 'createDom',
       value: function createDom() {
-        var self = this;
         this._dom = document.createElementNS(this.graph.ns, 'rect');
 
         if (!this.getStrokeColor()) {
@@ -20953,8 +20978,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               transform: 'translate(-3 -3)',
               stroke: 'transparent',
               fill: 'transparent',
-              width: "20px",
-              cursor: "ew-resize"
+              width: '20px',
+              cursor: 'ew-resize'
             });
 
             break;
@@ -26498,6 +26523,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var dataAggregatedY = [];
         var aggregationSum = [];
         var getX = void 0;
+        var slotNumber = void 0;
+        var lastAggregationX = void 0;
+        var lastAggregation = void 0;
+        var lastAggregationSum = void 0;
+        var newAggregation = void 0;
+        var newAggregationX = void 0;
 
         if (e.data.xdata) {
 
@@ -26513,9 +26544,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var aggregations = {};
 
         // Direction x
-        console.log(direction);
         if (direction == 'x') {
-
           var dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
 
           for (; i < l; i++) {
@@ -27559,7 +27588,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var self = this,
             tickLabel,
-            width = this.graph.drawingSpaceWidth,
             elements = this._barCategories;
 
         this.forceMin(0);
@@ -27702,21 +27730,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         });
 
         var accumulator = 0;
-        for (var _i in categories) {
-          var temp = categories[_i];
-          categories[_i] = accumulator;
+        for (var i in categories) {
+          var temp = categories[i];
+          categories[i] = accumulator;
           accumulator += temp;
         }
 
         var dispatchedCategories = {};
 
-        var i = 0;
         Array.prototype.map.call(this.series, function (serie) {
 
           var scategories = serie.getUsedCategories(),
               indices = {};
 
-          scategories.map(function (cat) {
+          scategories.forEach(function (cat) {
 
             dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
             indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
@@ -27724,7 +27751,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           });
 
           serie.setDataIndices(indices, total);
-          i++;
         });
       }
     }, {
@@ -28449,8 +28475,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         break;
 
       default:
-        throw 'Date format not recognized';
-        break;
+        {
+          throw new Error('Date format not recognized');
+        }
     }
 
     return date;
@@ -28520,8 +28547,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         break;
 
       default:
-        throw 'Date format not recognized';
-        break;
+        {
+          throw new Error('Date format not recognized');
+        }
     }
 
     return date;
@@ -28556,6 +28584,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         g.group.appendChild(g.line);
         break;
 
+      default:
       case 1:
 
         line.setAttribute('y2', 20);
@@ -28601,6 +28630,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     switch (level) {
 
+      case 2:
+
+        if (x1 < minPx || x1 > maxPx) {
+
+          hideGroup(group);
+          return;
+        }
+
+        group.line.setAttribute('x1', x1);
+        group.line.setAttribute('x2', x1);
+        group.text.setAttribute('x', x1);
+        group.text.textContent = text;
+
+        break;
+
+      default:
       case 1:
 
         var x1B = Math.max(minPx, Math.min(maxPx, x1)),
@@ -28630,28 +28675,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         group.text.textContent = text;
         break;
-
-      case 2:
-
-        if (x1 < minPx || x1 > maxPx) {
-
-          hideGroup(group);
-          return;
-        }
-
-        group.line.setAttribute('x1', x1);
-        group.line.setAttribute('x2', x1);
-        group.text.setAttribute('x', x1);
-        group.text.textContent = text;
-
-        break;
     }
   }
 
   var GraphTimeAxis = function (_Axis) {
     _inherits(GraphTimeAxis, _Axis);
 
-    function GraphTimeAxis(graph, topbottom, options) {
+    function GraphTimeAxis() {
       _classCallCheck(this, GraphTimeAxis);
 
       return _possibleConstructorReturn(this, (GraphTimeAxis.__proto__ || Object.getPrototypeOf(GraphTimeAxis)).apply(this, arguments));
@@ -28695,7 +28725,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'draw',
       value: function draw() {
         // Redrawing of the axis
-        var visible;
+
 
         //this.drawInit();
 
@@ -28795,7 +28825,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'setShift',
-      value: function setShift(shift, totalDimension) {
+      value: function setShift(shift) {
         this.shift = shift;
         this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : this.graph.getDrawingHeight() - this.shift) + ')');
       }
@@ -29534,7 +29564,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'unselected';
 
         //console.log( style, selectionType );
-        this.styles[selectionType] = (0, _graphUtil.extend)({}, defaults.defaultStyle, this.styles.unselected, style);
+        this.styles[selectionType] = (0, _graphUtil.extend)({}, this.default().defaultStyle, this.styles.unselected, style);
         this.styleHasChanged(selectionType);
       }
     }, {
@@ -30867,8 +30897,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.fromX = fromX;
         this.fromY = fromY;
 
-        this.numX = maxIndexX;
-        this.numY = maxIndexY;
+        this.numX = this.maxIndexX;
+        this.numY = this.maxIndexY;
 
         this.densitymap = densitymap;
         return densitymap;
@@ -31253,7 +31283,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setOptions',
       value: function setOptions(options) {
-        this.options = util.extend(true, {}, defaults, options || {});
+        this.options = util.extend(true, {}, this.defaults(), options || {});
         // Unselected style
 
         return this;
@@ -33165,10 +33195,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'handleCreateImpl',
-      value: function handleCreateImpl() {
-
-        return;
-      }
+      value: function handleCreateImpl() {}
     }, {
       key: 'handleMouseDownImpl',
       value: function handleMouseDownImpl(e) {
@@ -33203,19 +33230,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.redrawImpl();
 
         return true;
-      }
-    }, {
-      key: 'createHandles',
-      value: function createHandles() {
-
-        this._createHandles(1, 'rect', {
-          transform: 'translate(-3 -3)',
-          width: 6,
-          height: 6,
-          stroke: 'black',
-          fill: 'white',
-          cursor: 'nwse-resize'
-        });
       }
     }, {
       key: 'setHandles',
@@ -33754,16 +33768,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'setHandles',
-      value: function setHandles() {
-
-        if (!this.areHandlesInDom()) {
-          return;
-        }
-
-        if (isNaN(this.currentPos1x)) {
-          return;
-        }
-      }
+      value: function setHandles() {}
     }, {
       key: 'isHTML',
       value: function isHTML() {
@@ -35948,6 +35953,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       memoryCount = {},
       memoryLimit = {};
 
+  function emptyMemory(store) {
+    memory[store] = {};
+    memoryCount[store] = 0;
+  }
+
   function createStoreMemory(store, limit) {
     limit = limit || 50;
     if (!memory[store]) {
@@ -36791,12 +36801,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'newXAxis',
       value: function newXAxis(options) {
-        return newBottomAxis(options);
+        return this.newBottomAxis(options);
       }
     }, {
       key: 'newYAxis',
       value: function newYAxis(options) {
-        return newLeftAxis(options);
+        return this.newLeftAxis(options);
       }
     }, {
       key: 'newTopAxis',
@@ -36933,11 +36943,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         switch (type) {
 
           case 'line':
-            return newLineSerie(name, options);
+            return this.newLineSerie(name, options);
             break;
 
           case 'scatter':
-            return newScatterSerie(name, options);
+            return this.newScatterSerie(name, options);
             break;
         }
 
@@ -37738,7 +37748,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           result.saturation = saturation;
         } else {
-          result.saturation = .75;
+          result.saturation = 0.75;
         }
 
         if (lightness = color.lightness || color.l) {
@@ -38238,11 +38248,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this._hidePeakPickingLocked = lock;
         }
 
-        if (!graph.picks) {
+        if (!this.graph.picks) {
           return;
         }
-        for (var i = 0; i < graph.picks.length; i++) {
-          graph.picks[i].hide();
+        for (var i = 0; i < this.graph.picks.length; i++) {
+          this.graph.picks[i].hide();
         }
       }
     }, {
@@ -38253,12 +38263,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
-        if (!graph.picks) {
+        if (!this.graph.picks) {
           return;
         }
 
-        for (var i = 0; i < graph.picks.length; i++) {
-          graph.picks[i].show();
+        for (var i = 0; i < this.graph.picks.length; i++) {
+          this.graph.picks[i].show();
         }
       }
     }, {
@@ -38443,9 +38453,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }, {
       key: 'handleMouseMoveImpl',
-      value: function handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-        return;
-      }
+      value: function handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {}
     }]);
 
     return ShapeEllipse;

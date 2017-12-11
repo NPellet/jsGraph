@@ -3,7 +3,6 @@ var memory = {},
   memoryCount = {},
   memoryLimit = {};
 
-
 function emptyMemory( store ) {
   memory[ store ] = {};
   memoryCount[ store ] = 0;

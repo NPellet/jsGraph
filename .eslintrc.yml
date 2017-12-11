@@ -13,7 +13,7 @@ rules:
   array-bracket-spacing: [error, always]
   array-callback-return: warn
   brace-style: off
-  camelcase: off
+  camelcase: warn
   consistent-return: off
   curly: off
   default-case: warn
