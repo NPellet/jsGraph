@@ -206,7 +206,7 @@ class NMRSerie extends React.Component {
 	}
 
 	onSignalCreated( integralId, signalValue, signalDelta ) {
-		this.props.onSignalChanged( this.props.name, integralId, signalValue, signalDelta );
+		this.props.onSignalCreated( this.props.name, integralId, signalValue, signalDelta );
 	}
 
 

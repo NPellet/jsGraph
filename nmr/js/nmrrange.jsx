@@ -73,6 +73,12 @@ class NMRRange extends React.Component {
 		this.updateAnnotation();
 	}
 
+
+	componentWillUnmount() {
+		this.annotation.kill();
+	}
+
+
 	updateAnnotation( props = this.props ) {
 
 		this.annotation.ratio = props.ratio;
@@ -96,7 +102,7 @@ class NMRRange extends React.Component {
 	}
 
 	onSignalCreated( signalValue ) {
-		this.props.onSignalChanged( this.props.id, signalValue, ( this.props.to + this.props.from ) / 2 );
+		this.props.onSignalCreated( this.props.id, signalValue, ( this.props.to + this.props.from ) / 2 );
 	}
 
 	render() {
@@ -116,7 +122,7 @@ class NMRRange extends React.Component {
 
 							return <NMRSignal 
 								key 		= { el.key } 
-								couplings 	= { el.j }
+								j 			= { el.j }
 								id 			= { el.delta }
 								delta 		= { el.delta }
 								onSignalChanged = { this.onSignalChanged }

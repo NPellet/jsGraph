@@ -3290,11 +3290,11 @@ function refreshDrawingZone( graph ) {
   graph.shift = shift;
   graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
 }
-
+  
 function _handleKey( graph, event, type ) {
 
   var self = graph;
-
+console.log( event, type );
   if ( graph.forcedPlugin ) {
 
     graph.activePlugin = graph.forcedPlugin;
@@ -3563,22 +3563,22 @@ function doDom() {
 
 function _registerEvents( graph ) {
   var self = graph;
-
+console.log('REGISTER');
   if ( !graph.wrapper ) {
     throw 'No wrapper exists. Cannot register the events.';
   }
 
-  graph.wrapper.addEventListener( 'keydown', e => {
-
+  graph.dom.addEventListener( 'keydown', e => {
+console.log('down');
     _handleKey( graph, e, 'keydown' );
   } );
 
-  graph.wrapper.addEventListener( 'keypress', e => {
+  graph.dom.addEventListener( 'keypress', e => {
 
     _handleKey( graph, e, 'keypress' );
   } );
 
-  graph.wrapper.addEventListener( 'keyup', e => {
+  graph.dom.addEventListener( 'keyup', e => {
 
     _handleKey( graph, e, 'keyup' );
   } );
@@ -3588,6 +3588,7 @@ function _registerEvents( graph ) {
   // intuitive. Let us see if it breaks another example...
   graph.dom.addEventListener( 'mousemove', function( e ) {
     //e.preventDefault();
+    console.log('move');
     var coords = graph._getXY( e );
 
     _handleMouseMove( graph, coords.x, coords.y, e );

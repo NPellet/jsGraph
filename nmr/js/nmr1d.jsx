@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import NMRSerie from './nmrserie.jsx'
 import Assignment from './assignment.js'
 import FormArea from './formarea.jsx';
+import extend from 'extend';
 
 const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
@@ -651,7 +652,9 @@ class NMR1D extends React.Component {
 
 					if( integral.id == integralId ) {
 						integral.signal = integral.signal || [];
-						integral.signal.push( Object.assign( {}, signalValue, { delta: signalDelta } ) );
+						integral.signal.push( extend( true, {}, signalValue, { delta: signalDelta, id: undefined } ) );
+
+						console.log( integral.signal );
 					}
 				}
 
@@ -690,7 +693,7 @@ class NMR1D extends React.Component {
 							if( signal.delta == signalId ) {
 
 								Object.assign( signal, signalValue );
-								console.log( signal );
+				//				console.log( signal );
 							}
 						}
 

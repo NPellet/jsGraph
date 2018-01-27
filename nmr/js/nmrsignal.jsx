@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Assignment from './assignment.js'
 import FormCoupling from './forms/form_coupling/formcoupling.jsx'
 import FormArea from './formarea.jsx'
+import extend from 'extend';
 
 var levelHeight = 12;
 var colors=[ '#ca072c','#9507ca','#0727ca','#07cac8', '#08a538' ];
@@ -208,6 +209,7 @@ class NMRSignal extends React.Component {
 		}
 
 		let split = ( newValue ) => {
+			newValue = extend( true, {}, newValue );
 			this.props.onSignalCreated( newValue );
 		}
 
@@ -240,13 +242,16 @@ class NMRSignal extends React.Component {
 		
 		this.allLevels = [ this.previousLevel ];
 		this.paintTree( null, this.previousLevel.peaks, this.currentColor );
-		if( ! Array.isArray( this.props.couplings ) ) {
+		if( ! Array.isArray( this.props.j ) ) {
 			return;
 		}		
 
-		for (var i = 0; i < this.props.couplings.length; i++) {
-		    var multiplicity = this.props.couplings[ i ].multiplicity;
-		    var coupling = this.props.couplings[ i ].coupling;
+
+		console.log( this.props.j );
+
+		for (var i = 0; i < this.props.j.length; i++) {
+		    var multiplicity = this.props.j[ i ].multiplicity;
+		    var coupling = this.props.j[ i ].coupling;
 		    if (multiplicity && coupling) {
 		        this.appendLevel( multiplicity, coupling );
 		    }

@@ -8,7 +8,7 @@ class FormCoupling extends React.Component {
 		super();
 		this.state = {
 			delta: 0,
-			couplings: [ {} ]
+			j: [ {} ]
 		};
 
 		this.addCoupling = this.addCoupling.bind( this );
@@ -20,8 +20,12 @@ class FormCoupling extends React.Component {
 
 	handleInputChange(event) {
 	    const target = event.target;
-	    const value = target.type === 'checkbox' ? target.checked : target.value;
+	    let value = target.type === 'checkbox' ? target.checked : target.value;
 	    const name = target.name;
+
+	    if( target.type == 'number' ) {
+	    	value = parseFloat( value );
+	    }
 
 	    this.setState({
 	      [name]: value
@@ -30,26 +34,31 @@ class FormCoupling extends React.Component {
 
 	subFormChanged( event, index ) {
 		const target = event.target;
-	    const value = target.type === 'checkbox' ? target.checked : target.value;
+	    let value = target.type === 'checkbox' ? target.checked : target.value;
 	    const name = target.name;
 
-	    this.state.couplings[ index ][ name ] = value;
+
+	    if( target.type == 'number' ) {
+	    	value = parseFloat( value );
+	    }
+
+	    this.state.j[ index ][ name ] = value;
 	    this.setState({
-	      couplings: this.state.couplings
+	      couplings: this.state.j
 	    });
 	}
 
 	addCoupling( index ) {
-		this.state.couplings.splice( index + 1, 0, {
+		this.state.j.splice( index + 1, 0, {
 			constant: '',
 			multiplicity: 'd' // Doublet by default
 		} );
-		this.setState( { couplings: this.state.couplings } );
+		this.setState( { j: this.state.j } );
 	}
 
 	removeCoupling( index ) {
-		this.state.couplings.splice( index, 1 );
-		this.setState( { couplings: this.state.couplings } );
+		this.state.j.splice( index, 1 );
+		this.setState( { j: this.state.j } );
 	}
 
 	componentDidMount() {
@@ -62,8 +71,8 @@ class FormCoupling extends React.Component {
 
 	componentDidUpdate() {
 
-		if( Array.isArray( this.state.couplings ) && this.state.couplings.length == 0 ) {
-			this.setState( { couplings: [ { multiplicity: null, constant: null } ] })
+		if( Array.isArray( this.state.j ) && this.state.j.length == 0 ) {
+			this.setState( { j: [ { multiplicity: null, constant: null } ] })
 		}
 	}
 
@@ -73,7 +82,7 @@ class FormCoupling extends React.Component {
 	}
 
 	render() {
-		let couplings = this.state.couplings;
+		let couplings = this.state.j;
 
 		if( ! couplings ) {
 			couplings = [];
@@ -114,6 +123,7 @@ class FormCoupling extends React.Component {
 								couplings.map( ( coupling, index ) => {
 
 									return ( <FormCouplingElement 
+										key = {index}
 										addLine={ () => { this.addCoupling( index ) } } 
 										removeLine={ () => { this.removeCoupling( index ) } } 
 										onChange={ ( event ) => this.subFormChanged( event, index ) } 

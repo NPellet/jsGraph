@@ -432,6 +432,7 @@ class SerieLine extends Serie {
           numberOfPointsInTotal = this.graph.getDrawingWidth() * ( xaxis.getDataMax() - xaxis.getDataMin() ) / ( xaxis.getCurrentMax() - xaxis.getCurrentMin() ),
           promise = this.waveform.selectAggregatedData( numberOfPointsInTotal );
 
+
         if ( promise instanceof Promise ) {
 
           promise.then( () => {
@@ -498,6 +499,7 @@ class SerieLine extends Serie {
    */
   draw( force ) { // Serie redrawing
 
+
     super.draw( ...arguments );
 
     if ( !this.getXAxis() || !this.getYAxis() ) {
@@ -505,7 +507,6 @@ class SerieLine extends Serie {
     }
 
     if ( force || this.hasDataChanged() ) {
-
       if ( !this.drawInit( force ) ) {
         return;
       }
@@ -557,6 +558,7 @@ class SerieLine extends Serie {
 
     this.dataHasChanged( false );
     super.afterDraw();
+    
   }
 
   _draw() {
@@ -638,7 +640,7 @@ class SerieLine extends Serie {
         l = data.length;
       }
     }
-
+console.log('d10');
     for ( ; i < l; i += 1 ) {
 
       x = waveform.getX( i, true );
@@ -1201,7 +1203,9 @@ class SerieLine extends Serie {
   searchClosestValue( valX, valY ) {
 
     if ( this.waveform ) {
+      
       const indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
+
       let returnObj = {};
 
       let direction;
