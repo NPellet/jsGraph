@@ -1754,12 +1754,15 @@ class Graph extends EventEmitter {
     return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
 
   }
+
   focus() {
     this.wrapper.focus();
   }
+
   elementMoving( movingElement ) {
     this.bypassHandleMouse = movingElement;
   }
+
   stopElementMoving( element ) {
 
     if ( element && element == this.bypassHandleMouse ) {
@@ -1768,6 +1771,7 @@ class Graph extends EventEmitter {
       this.bypassHandleMouse = false;
     }
   }
+
   _makeClosingLines() {
 
     this.closingLines = {};
@@ -1842,9 +1846,11 @@ class Graph extends EventEmitter {
   forcePlugin( plugin ) {
     this.forcedPlugin = plugin;
   }
+
   unforcePlugin() {
     this.forcedPlugin = false;
   }
+
   _pluginsExecute( funcName, ...args ) {
 
     //			Array.prototype.splice.apply(args, [0, 0, this]);
@@ -1858,6 +1864,7 @@ class Graph extends EventEmitter {
       }
     }
   }
+
   _pluginExecute( which, func, args ) {
 
     //Array.prototype.splice.apply( args, [ 0, 0, this ] );
@@ -3290,11 +3297,11 @@ function refreshDrawingZone( graph ) {
   graph.shift = shift;
   graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
 }
-  
+
 function _handleKey( graph, event, type ) {
 
   var self = graph;
-console.log( event, type );
+  console.log( event, type );
   if ( graph.forcedPlugin ) {
 
     graph.activePlugin = graph.forcedPlugin;
@@ -3350,7 +3357,8 @@ function checkKeyActions( graph, e, parameters, methodName ) {
       e.stopPropagation();
 
       graph.selectedShapes.map( ( shape ) => {
-        shape.kill();
+
+        shape.kill( keyComb[ i ].keepInDom );
       } );
     }
 
@@ -3563,43 +3571,45 @@ function doDom() {
 
 function _registerEvents( graph ) {
   var self = graph;
-console.log('REGISTER');
+
   if ( !graph.wrapper ) {
     throw 'No wrapper exists. Cannot register the events.';
   }
 
+  graph.dom.setAttribute( 'tabindex', 0 );
+
   graph.dom.addEventListener( 'keydown', e => {
-console.log('down');
+    console.log( 'd' );
     _handleKey( graph, e, 'keydown' );
   } );
 
   graph.dom.addEventListener( 'keypress', e => {
-
+    console.log( 'p' );
     _handleKey( graph, e, 'keypress' );
   } );
 
   graph.dom.addEventListener( 'keyup', e => {
-
+    console.log( 'u' );
     _handleKey( graph, e, 'keyup' );
   } );
   // Not sure this has to be prevented
 
   // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
   // intuitive. Let us see if it breaks another example...
-  graph.dom.addEventListener( 'mousemove', function( e ) {
+  graph.dom.addEventListener( 'mousemove', e => {
     //e.preventDefault();
-    console.log('move');
     var coords = graph._getXY( e );
-
     _handleMouseMove( graph, coords.x, coords.y, e );
+
   } );
 
-  graph.dom.addEventListener( 'mouseleave', function( e ) {
+  graph.dom.addEventListener( 'mouseleave', e => {
 
     _handleMouseLeave( graph );
+
   } );
 
-  graph.groupEvent.addEventListener( 'mousedown', function( e ) {
+  graph.groupEvent.addEventListener( 'mousedown', e => {
 
     graph.focus();
 
@@ -3613,7 +3623,7 @@ console.log('down');
 
   } );
 
-  graph.dom.addEventListener( 'mouseup', function( e ) {
+  graph.dom.addEventListener( 'mouseup', e => {
 
     graph.emit( 'mouseUp', e );
     var coords = graph._getXY( e );
@@ -3622,11 +3632,11 @@ console.log('down');
 
   } );
 
-  graph.wrapper.addEventListener( 'mouseup', ( e ) => {
+  graph.wrapper.addEventListener( 'mouseup', e => {
     e.stopPropagation();
   } );
 
-  graph.dom.addEventListener( 'dblclick', function( e ) {
+  graph.dom.addEventListener( 'dblclick', e => {
 
     graph.emit( 'dblClick', e );
     var coords = graph._getXY( e );
@@ -3634,7 +3644,7 @@ console.log('down');
     _handleDblClick( graph, coords.x, coords.y, e );
   } );
 
-  graph.groupEvent.addEventListener( 'click', function( e ) {
+  graph.groupEvent.addEventListener( 'click', e => {
 
     // Cancel right click or Command+Click
     if ( e.which == 3 || e.ctrlKey ) {
@@ -3651,7 +3661,7 @@ console.log('down');
     //}, 200 );
   } );
 
-  graph.groupEvent.addEventListener( 'mousewheel', function( e ) {
+  graph.groupEvent.addEventListener( 'mousewheel', e => {
 
     var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
     var coords = graph._getXY( e );
@@ -3660,7 +3670,7 @@ console.log('down');
     return false;
   } );
 
-  graph.groupEvent.addEventListener( 'wheel', function( e ) {
+  graph.groupEvent.addEventListener( 'wheel', e => {
 
     var coords = graph._getXY( e );
     var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;

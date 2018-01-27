@@ -105,7 +105,7 @@ class NMR1D extends React.Component {
 			],
 
 			keyActions: [
-				{ type: 'keydown', key: 'backspace', removeSelectedShape: true }
+				{ type: 'keydown', key: 'backspace', removeSelectedShape: true, keepInDom: true }
 			]
 
 		} );
@@ -431,7 +431,7 @@ class NMR1D extends React.Component {
 			this.props.width - marginLeft, 
 			this.props.height 
 		);
-		
+
 		this.attributeIntegralIds( this.props.series );
 
 		// Reassigns some properties to the state (because it can potentially change)	
@@ -443,6 +443,8 @@ class NMR1D extends React.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
 			
+
+			console.log('dsfdsfsdf');
 
 			if( e.keyCode == 16 ) {
 				this.wrapper.classList.add( "linkable" );
@@ -759,9 +761,7 @@ class NMR1D extends React.Component {
 	render() {
 
 		return ( 
-
-
-		<table>
+		<table ref={ el => this.globalWraper = el }>
 			<tbody>
 				<tr>
 					<td>
@@ -769,6 +769,7 @@ class NMR1D extends React.Component {
 							id={ this.unique }
 							ref={ el => this.wrapper = el } 
 							style={ { position: 'relative' } } 
+							tabIndex="0"
 						>
 							<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
 							<div 

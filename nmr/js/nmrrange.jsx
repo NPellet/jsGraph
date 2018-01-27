@@ -5,13 +5,23 @@ import NMRSignal from './nmrsignal.jsx'
 
 class NMRRange extends React.Component {
 	
-	constructor( props, context ) {
+	constructor( props ) {
 		
 		super( props );
 
 
 		this.state = {};
-		this.annotation = context.graph.newShape("nmrintegral", {
+		
+
+		this.onSignalChanged = this.onSignalChanged.bind( this );
+		this.onSignalCreated = this.onSignalCreated.bind( this );
+			 // Determine the shift
+		
+	}
+
+	componentDidMount() {
+		
+		this.annotation = this.context.graph.newShape("nmrintegral", {
 				editable: true,
 				selectable: true,
 				selectOnClick: true,
@@ -26,7 +36,7 @@ class NMRRange extends React.Component {
 		);
 		
 		this.annotation.addClass('integral');
-		this.annotation.setProp('baseLine', context.integralBaseline );
+		this.annotation.setProp('baseLine', this.context.integralBaseline );
 
 		this.ratio = undefined;
 		this.annotation.draw( false, true );
@@ -62,14 +72,6 @@ class NMRRange extends React.Component {
 			this.props.onRemoved( this.props.id );
 		});
 
-		this.onSignalChanged = this.onSignalChanged.bind( this );
-		this.onSignalCreated = this.onSignalCreated.bind( this );
-			 // Determine the shift
-		
-	}
-
-	componentDidMount() {
-		
 		this.updateAnnotation();
 	}
 
@@ -107,8 +109,6 @@ class NMRRange extends React.Component {
 
 	render() {
 
-		this.updateAnnotation();
-		
 		return (
 			<span>
 				{ 
@@ -119,7 +119,7 @@ class NMRRange extends React.Component {
 							if( ! el.key ) {
 								el.key = Math.random();
 							}
-
+							
 							return <NMRSignal 
 								key 		= { el.key } 
 								j 			= { el.j }

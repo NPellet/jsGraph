@@ -1165,7 +1165,7 @@ class Waveform {
         }
     */
 
-    if( pxWidth > 2147483647 ) {
+    if ( pxWidth > 2147483647 ) {
       pxWidth = 2147483647;
     }
     var level = pow2ceil( pxWidth );

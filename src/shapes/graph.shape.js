@@ -133,7 +133,7 @@ class Shape extends EventEmitter {
    */
   kill( keepDom ) {
 
-    if ( this._inDom ) {
+    if ( this._inDom && !keepDom ) {
       this.graph.removeShapeFromDom( this );
     }
 
@@ -1607,6 +1607,7 @@ class Shape extends EventEmitter {
         if ( !this.graph.prevent( false ) ) {
 
           this.moving = true;
+          this.moved = false;
         }
       }
     }
@@ -1659,6 +1660,7 @@ class Shape extends EventEmitter {
       return false;
     }
 
+    this.moved = true;
     var coords = this.graph._getXY( e );
     var
       deltaX = this.getXAxis().getRelVal( coords.x - this._mouseCoords.x ),
@@ -1684,7 +1686,7 @@ class Shape extends EventEmitter {
    */
   handleMouseUp( e ) {
 
-    if ( this.moving ) {
+    if ( this.moving && this.moved ) {
 
       this.graph.emit( 'shapeMoved', this );
       this.emit( 'shapeMoved' );

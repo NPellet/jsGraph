@@ -671,7 +671,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     kill(keepDom) {
 
-      if (this._inDom) {
+      if (this._inDom && !keepDom) {
         this.graph.removeShapeFromDom(this);
       }
 
@@ -2132,6 +2132,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           if (!this.graph.prevent(false)) {
 
             this.moving = true;
+            this.moved = false;
           }
         }
       }
@@ -2184,6 +2185,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return false;
       }
 
+      this.moved = true;
       var coords = this.graph._getXY(e);
       var deltaX = this.getXAxis().getRelVal(coords.x - this._mouseCoords.x),
           deltaY = this.getYAxis().getRelVal(coords.y - this._mouseCoords.y);
@@ -2207,7 +2209,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     handleMouseUp(e) {
 
-      if (this.moving) {
+      if (this.moving && this.moved) {
 
         this.graph.emit('shapeMoved', this);
         this.emit('shapeMoved');
@@ -4502,12 +4504,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       return this.layers[layer][mode == 'shape' ? 2 : 1];
     }
+
     focus() {
       this.wrapper.focus();
     }
+
     elementMoving(movingElement) {
       this.bypassHandleMouse = movingElement;
     }
+
     stopElementMoving(element) {
 
       if (element && element == this.bypassHandleMouse) {
@@ -4516,6 +4521,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.bypassHandleMouse = false;
       }
     }
+
     _makeClosingLines() {
 
       this.closingLines = {};
@@ -4590,9 +4596,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     forcePlugin(plugin) {
       this.forcedPlugin = plugin;
     }
+
     unforcePlugin() {
       this.forcedPlugin = false;
     }
+
     _pluginsExecute(funcName, ...args) {
 
       //			Array.prototype.splice.apply(args, [0, 0, this]);
@@ -4605,6 +4613,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
       }
     }
+
     _pluginExecute(which, func, args) {
 
       //Array.prototype.splice.apply( args, [ 0, 0, this ] );
@@ -4672,9 +4681,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return plugin;
     }
     triggerEvent() {
-      var func = arguments[0]; /*,
-                               args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
-                               */
+      var func = arguments[0];
+      /*,
+            args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
+      */
       if (typeof this.options[func] == 'function') {
         return this.options[func].apply(this, arguments);
       }
@@ -6016,7 +6026,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function _handleKey(graph, event, type) {
 
     var self = graph;
-
+    console.log(event, type);
     if (graph.forcedPlugin) {
 
       graph.activePlugin = graph.forcedPlugin;
@@ -6072,7 +6082,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         e.stopPropagation();
 
         graph.selectedShapes.map(shape => {
-          shape.kill();
+
+          shape.kill(keyComb[i].keepInDom);
         });
       }
 
@@ -6111,7 +6122,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.69'
+        'data-jsgraph-version': 'v2.0.70'
       });
     } catch (e) {
       // ignore
@@ -6284,37 +6295,38 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       throw 'No wrapper exists. Cannot register the events.';
     }
 
-    graph.wrapper.addEventListener('keydown', e => {
+    graph.dom.setAttribute('tabindex', 0);
 
+    graph.dom.addEventListener('keydown', e => {
+      console.log('d');
       _handleKey(graph, e, 'keydown');
     });
 
-    graph.wrapper.addEventListener('keypress', e => {
-
+    graph.dom.addEventListener('keypress', e => {
+      console.log('p');
       _handleKey(graph, e, 'keypress');
     });
 
-    graph.wrapper.addEventListener('keyup', e => {
-
+    graph.dom.addEventListener('keyup', e => {
+      console.log('u');
       _handleKey(graph, e, 'keyup');
     });
     // Not sure this has to be prevented
 
     // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
     // intuitive. Let us see if it breaks another example...
-    graph.dom.addEventListener('mousemove', function (e) {
+    graph.dom.addEventListener('mousemove', e => {
       //e.preventDefault();
       var coords = graph._getXY(e);
-
       _handleMouseMove(graph, coords.x, coords.y, e);
     });
 
-    graph.dom.addEventListener('mouseleave', function (e) {
+    graph.dom.addEventListener('mouseleave', e => {
 
       _handleMouseLeave(graph);
     });
 
-    graph.groupEvent.addEventListener('mousedown', function (e) {
+    graph.groupEvent.addEventListener('mousedown', e => {
 
       graph.focus();
 
@@ -6327,7 +6339,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       _handleMouseDown(graph, coords.x, coords.y, e);
     });
 
-    graph.dom.addEventListener('mouseup', function (e) {
+    graph.dom.addEventListener('mouseup', e => {
 
       graph.emit('mouseUp', e);
       var coords = graph._getXY(e);
@@ -6339,7 +6351,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       e.stopPropagation();
     });
 
-    graph.dom.addEventListener('dblclick', function (e) {
+    graph.dom.addEventListener('dblclick', e => {
 
       graph.emit('dblClick', e);
       var coords = graph._getXY(e);
@@ -6347,7 +6359,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       _handleDblClick(graph, coords.x, coords.y, e);
     });
 
-    graph.groupEvent.addEventListener('click', function (e) {
+    graph.groupEvent.addEventListener('click', e => {
 
       // Cancel right click or Command+Click
       if (e.which == 3 || e.ctrlKey) {
@@ -6364,7 +6376,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       //}, 200 );
     });
 
-    graph.groupEvent.addEventListener('mousewheel', function (e) {
+    graph.groupEvent.addEventListener('mousewheel', e => {
 
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
       var coords = graph._getXY(e);
@@ -6373,7 +6385,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return false;
     });
 
-    graph.groupEvent.addEventListener('wheel', function (e) {
+    graph.groupEvent.addEventListener('wheel', e => {
 
       var coords = graph._getXY(e);
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -8096,6 +8108,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
       */
 
+      if (pxWidth > 2147483647) {
+        pxWidth = 2147483647;
+      }
       var level = pow2ceil(pxWidth);
 
       if (this._dataAggregated[level]) {
@@ -9385,6 +9400,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     draw(force) {
       // Serie redrawing
 
+
       super.draw(...arguments);
 
       if (!this.getXAxis() || !this.getYAxis()) {
@@ -9392,7 +9408,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (force || this.hasDataChanged()) {
-
         if (!this.drawInit(force)) {
           return;
         }
@@ -10073,7 +10088,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     searchClosestValue(valX, valY) {
 
       if (this.waveform) {
+
         const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+
         let returnObj = {};
 
         let direction;
@@ -13587,8 +13604,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.writeUnit();
       } else {
 
-        let string = this.getLabel(); /*,
-                                      domEl;*/
+        let string = this.getLabel();
+        /*,
+                domEl;*/
 
         if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
 
@@ -13736,7 +13754,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         default:
           {
             return '';
-          }}
+          }
+      }
     }
 
     drawLinearTicksWrapper(widthPx, valrange) {
@@ -20518,7 +20537,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     draw() {
       // Redrawing of the axis
-
 
       //this.drawInit();
 

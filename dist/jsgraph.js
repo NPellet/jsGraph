@@ -1129,7 +1129,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'kill',
       value: function kill(keepDom) {
 
-        if (this._inDom) {
+        if (this._inDom && !keepDom) {
           this.graph.removeShapeFromDom(this);
         }
 
@@ -2241,6 +2241,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             if (!this.graph.prevent(false)) {
 
               this.moving = true;
+              this.moved = false;
             }
           }
         }
@@ -2283,6 +2284,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return false;
         }
 
+        this.moved = true;
         var coords = this.graph._getXY(e);
         var deltaX = this.getXAxis().getRelVal(coords.x - this._mouseCoords.x),
             deltaY = this.getYAxis().getRelVal(coords.y - this._mouseCoords.y);
@@ -2301,7 +2303,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'handleMouseUp',
       value: function handleMouseUp(e) {
 
-        if (this.moving) {
+        if (this.moving && this.moved) {
 
           this.graph.emit('shapeMoved', this);
           this.emit('shapeMoved');
@@ -5318,9 +5320,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'triggerEvent',
       value: function triggerEvent() {
-        var func = arguments[0]; /*,
-                                 args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
-                                 */
+        var func = arguments[0];
+        /*,
+              args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
+        */
         if (typeof this.options[func] == 'function') {
           return this.options[func].apply(this, arguments);
         }
@@ -6694,7 +6697,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function _handleKey(graph, event, type) {
 
     var self = graph;
-
+    console.log(event, type);
     if (graph.forcedPlugin) {
 
       graph.activePlugin = graph.forcedPlugin;
@@ -6750,7 +6753,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         e.stopPropagation();
 
         graph.selectedShapes.map(function (shape) {
-          shape.kill();
+
+          shape.kill(keyComb[i].keepInDom);
         });
       }
 
@@ -6789,7 +6793,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.69'
+        'data-jsgraph-version': 'v2.0.70'
       });
     } catch (e) {
       // ignore
@@ -6962,18 +6966,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       throw 'No wrapper exists. Cannot register the events.';
     }
 
-    graph.wrapper.addEventListener('keydown', function (e) {
+    graph.dom.setAttribute('tabindex', 0);
 
+    graph.dom.addEventListener('keydown', function (e) {
+      console.log('d');
       _handleKey(graph, e, 'keydown');
     });
 
-    graph.wrapper.addEventListener('keypress', function (e) {
-
+    graph.dom.addEventListener('keypress', function (e) {
+      console.log('p');
       _handleKey(graph, e, 'keypress');
     });
 
-    graph.wrapper.addEventListener('keyup', function (e) {
-
+    graph.dom.addEventListener('keyup', function (e) {
+      console.log('u');
       _handleKey(graph, e, 'keyup');
     });
     // Not sure this has to be prevented
@@ -6983,7 +6989,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     graph.dom.addEventListener('mousemove', function (e) {
       //e.preventDefault();
       var coords = graph._getXY(e);
-
       _handleMouseMove(graph, coords.x, coords.y, e);
     });
 
@@ -8925,6 +8930,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
         */
 
+        if (pxWidth > 2147483647) {
+          pxWidth = 2147483647;
+        }
         var level = pow2ceil(pxWidth);
 
         if (this._dataAggregated[level]) {
@@ -10429,6 +10437,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function draw(force) {
         // Serie redrawing
 
+
         _get(SerieLine.prototype.__proto__ || Object.getPrototypeOf(SerieLine.prototype), 'draw', this).apply(this, arguments);
 
         if (!this.getXAxis() || !this.getYAxis()) {
@@ -10436,7 +10445,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         if (force || this.hasDataChanged()) {
-
           if (!this.drawInit(force)) {
             return;
           }
@@ -11092,7 +11100,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function searchClosestValue(valX, valY) {
 
         if (this.waveform) {
+
           var indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+
           var returnObj = {};
 
           var direction = void 0;
@@ -14726,8 +14736,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.writeUnit();
         } else {
 
-          var string = this.getLabel(); /*,
-                                        domEl;*/
+          var string = this.getLabel();
+          /*,
+                  domEl;*/
 
           if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
 
@@ -14879,7 +14890,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           default:
             {
               return '';
-            }}
+            }
+        }
       }
     }, {
       key: 'drawLinearTicksWrapper',
@@ -28725,7 +28737,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'draw',
       value: function draw() {
         // Redrawing of the axis
-
 
         //this.drawInit();
 

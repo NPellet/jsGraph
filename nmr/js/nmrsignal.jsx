@@ -247,7 +247,6 @@ class NMRSignal extends React.Component {
 		}		
 
 
-		console.log( this.props.j );
 
 		for (var i = 0; i < this.props.j.length; i++) {
 		    var multiplicity = this.props.j[ i ].multiplicity;
