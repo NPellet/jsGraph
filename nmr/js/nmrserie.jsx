@@ -45,17 +45,20 @@ class NMRSerie extends React.Component {
 		this.integralRemoved = this.integralRemoved.bind( this );
 		this.onSignalChanged = this.onSignalChanged.bind( this );
 		this.onSignalCreated = this.onSignalCreated.bind( this );
+		this.scaleIntegralText = this.scaleIntegralText.bind( this );
+		
 	}
 
 	sumChanged( newSum, identifier ) {
 
 		if( Object.keys( this.sums ).length == 0 ) { // None for now
-			
-			this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
+	//		this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
 		}
 
 		this.sums[ identifier ] = newSum;
 		this.rescaleIntegrals();
+
+
 	}
 
 	loaded( ) {
@@ -182,8 +185,8 @@ class NMRSerie extends React.Component {
 		this.setShift( this.props.shift );		
 	}
 
-	integralChanged( integralId, from, to ) {
-		this.props.onIntegralChanged( this.props.name, integralId, from, to );
+	integralChanged( integralId, from, to, newValue ) {
+		this.props.onIntegralChanged( this.props.name, integralId, from, to, newValue );
 	}
 
 	integralRemoved( integralId ) {
@@ -191,14 +194,8 @@ class NMRSerie extends React.Component {
 	}
 
 	// Occurs after the rescaling of the integral
-	scaleIntegralText( whichIntegral, whichValue ) {
-
-		const sum = this.sums[ whichIntegral ];
-		if( ! sum ) {
-			return;
-		}
-
-		this.props.onIntegralLabelRatioChanged( this.props.name, whichIntegral, whichValue / sum );
+	scaleIntegralText( newRatio ) {
+		this.props.onIntegralLabelRatioChanged( this.props.name, newRatio );
 	}
 
 	onSignalChanged( integralId, signalId, signalValue ) {
@@ -209,37 +206,43 @@ class NMRSerie extends React.Component {
 		this.props.onSignalCreated( this.props.name, integralId, signalValue, signalDelta );
 	}
 
-
-
 	render() {
 //console.log( this._jsGraphGraph );
 		//this._jsGraphGraph.redraw();
 
 		this.loadedState = false;
-
 		this._jsGraphSerie.setLineColor( this.props.color, "unselected", true );
+		let integralValue;
 
 		return (
 			<span>
 				{ 
 					( this.props.integrals || [] ).map( 
-						( el ) => {
+						( el, index ) => {
 
 							if( ! el.key ) {
 								el.key = Math.random();
 							}
 
+//							if( index == 0 && this.state.labelRatio == undefined ) { // First value is dictating the ratios. Do NOT pass that value to the indices > 0
+								integralValue = parseFloat( el.integral );
+//							} else {
+//								integralValue = undefined;
+//							}
+
+
 							return 	<NMRRange 
 										id 		= { el.id } 
 										key 	= { el.key } 
-										labelRatio 	= { this.state.labelRatio } 
 										ratio 	= { this.state.ratio } 
 										from 	= { el.from } 
 										signal 	= { el.signal }
 										to 		= { el.to } 
+										integralValue = { integralValue }
+										labelRatio 	= { this.state.labelRatio } 
 										onSumChanged 	= { this.sumChanged } 
 										onChanged 		= { this.integralChanged } 
-										onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
+										onValueChanged 	= { this.scaleIntegralText } 
 										onRemoved 		= { this.integralRemoved } 
 										onSignalChanged = { this.onSignalChanged }
 										onSignalCreated = { this.onSignalCreated }

@@ -3579,17 +3579,14 @@ function _registerEvents( graph ) {
   graph.dom.setAttribute( 'tabindex', 0 );
 
   graph.dom.addEventListener( 'keydown', e => {
-    console.log( 'd' );
     _handleKey( graph, e, 'keydown' );
   } );
 
   graph.dom.addEventListener( 'keypress', e => {
-    console.log( 'p' );
     _handleKey( graph, e, 'keypress' );
   } );
 
   graph.dom.addEventListener( 'keyup', e => {
-    console.log( 'u' );
     _handleKey( graph, e, 'keyup' );
   } );
   // Not sure this has to be prevented

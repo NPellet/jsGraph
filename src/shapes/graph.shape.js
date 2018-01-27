@@ -87,9 +87,7 @@ class Shape extends EventEmitter {
         self.handleMouseDown( e );
       } );
 
-      this.group.addEventListener( 'click', function( e ) {
-        self.handleClick( e );
-      } );
+      this.group.addEventListener( 'click', this.handleClick.bind( this ) );
 
       this.group.addEventListener( 'dblclick', function( e ) {
 
@@ -439,6 +437,7 @@ class Shape extends EventEmitter {
 
     this.redrawImpl();
     if ( !this.position ) {
+      this.updateLabels();
       return this;
     }
 
@@ -1387,6 +1386,7 @@ class Shape extends EventEmitter {
 
       this.addHandles();
       this.setHandles();
+
     }
 
     if ( !mute ) {

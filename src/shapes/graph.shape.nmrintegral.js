@@ -16,7 +16,14 @@ class ShapeNMRIntegral extends Shape {
 
   createDom() {
     this._dom = document.createElementNS( this.graph.ns, 'path' );
+    this._domShadow = document.createElementNS( this.graph.ns, 'path' );
+    this._domShadow.jsGraphIsShape = this;
     this._dom.setAttribute( 'pointer-events', 'stroke' );
+    this._domShadow.setAttribute( 'pointer-events', 'stroke' );
+    this._domShadow.setAttribute( 'stroke-width', '12' );
+    this._domShadow.setAttribute( 'fill', 'transparent' );
+    this._domShadow.setAttribute( 'stroke', 'transparent' );
+    this.group.appendChild( this._domShadow );
   }
 
   initImpl() {
@@ -69,7 +76,9 @@ class ShapeNMRIntegral extends Shape {
 
     if ( ( pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() ) || ( pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax() ) ) {
       this.setDom( 'd', '' );
-      this.emptyLabels();
+      this._domShadow.setAttribute( 'd', '' );
+
+      this.hideLabel( 0 );
       return false;
     }
 
@@ -240,6 +249,7 @@ class ShapeNMRIntegral extends Shape {
     this.firstPointY = baseLine;
 
     this.setDom( 'd', currentLine );
+    this._domShadow.setAttribute( 'd', currentLine );
 
     this.firstX = firstX;
     this.firstY = firstY;
@@ -261,13 +271,19 @@ class ShapeNMRIntegral extends Shape {
     return true;
   }
 
-  updateIntegralValue( ratioLabel = this.ratioLabel ) {
+  updateIntegralValue( ratioLabel = this.ratioLabel, forceValue ) {
 
     if ( ratioLabel ) {
       this.ratioLabel = ratioLabel;
     }
+
+    if ( forceValue !== undefined ) {
+      this.ratioLabel = forceValue / this.sumVal;
+    }
+
     this.setLabelText( ratioLabel ? ( Math.round( 100 * this.sumVal * ratioLabel ) / 100 ).toPrecision( 3 ) : 'N/A', 0 );
     this.updateLabels();
+    return this.ratioLabel;
   }
 
   getAxis() {

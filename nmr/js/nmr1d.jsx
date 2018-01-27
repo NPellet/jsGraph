@@ -443,9 +443,6 @@ class NMR1D extends React.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
 			
-
-			console.log('dsfdsfsdf');
-
 			if( e.keyCode == 16 ) {
 				this.wrapper.classList.add( "linkable" );
 			}
@@ -588,14 +585,18 @@ class NMR1D extends React.Component {
 
 	}
 
-	onIntegralLabelRatioChanged( seriename, integralId, newRatio ) {
+	onIntegralLabelRatioChanged( seriename, rescaleBy ) {
 
 		let update = false;
 		for( let serie of this.state.series ) {
 
 			if( serie.name == seriename ) {
 
-				serie.integralLabelRatio = newRatio;
+				for( let integral of serie.integrals ) {
+
+					integral.integral *= rescaleBy;
+				}
+				//serie.integralLabelRatio = newRatio;
 				update = true;
 			}
 
@@ -610,7 +611,7 @@ class NMR1D extends React.Component {
 		}		
 	}
 
-	onIntegralChanged( seriename, integralId, integralFrom, integralTo ) {
+	onIntegralChanged( seriename, integralId, integralFrom, integralTo, newValue ) {
 
 		let update = false;
 		for( let serie of this.state.series ) {
@@ -624,6 +625,7 @@ class NMR1D extends React.Component {
 						integral.from = integralFrom;
 						integral.to = integralTo;
 						integral.id = this.getIntegralId( integralFrom, integralTo );
+						integral.integral = newValue;
 						update = true;
 
 						break;
@@ -655,8 +657,6 @@ class NMR1D extends React.Component {
 					if( integral.id == integralId ) {
 						integral.signal = integral.signal || [];
 						integral.signal.push( extend( true, {}, signalValue, { delta: signalDelta, id: undefined } ) );
-
-						console.log( integral.signal );
 					}
 				}
 
@@ -832,7 +832,7 @@ class NMR1D extends React.Component {
 		);
 	}
 }
-
+//
 NMR1D.childContextTypes = {
   assignment: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph ),

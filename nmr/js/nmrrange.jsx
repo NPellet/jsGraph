@@ -43,28 +43,29 @@ class NMRRange extends React.Component {
 		this.annotation.on("changed", () => {
 
 			if( this.annotation.sumVal !== this.sum ) {
-
 				this.sum = this.annotation.sumVal;
 				this.props.onSumChanged && this.props.onSumChanged( this.sum, this.props.id );
-			}
 
-		});
+			}
+		} );
 
 		this.annotation.on("shapeResized", () => {
 
-			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x );
+
+			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x, parseFloat( this.annotation.getLabelText() ) );
+
+
 		});
 
 		this.annotation.on("shapeMoved", () => {
 
-			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x );
+			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x, parseFloat( this.annotation.getLabelText() ) );
 		});
 
-		this.annotation.on("shapeLabelChanged", ( shape, parameters ) => {
 
-			//const rescale = parseFloat( parameters.nextValue ) / parameters.previousValue;
-			this.props.onValueChanged( parseFloat( parameters.nextValue ) );
-			 
+
+		this.annotation.on("shapeLabelChanged", ( shape, parameters ) => {
+			this.props.onValueChanged( parseFloat( parameters.nextValue ) / parseFloat( parameters.previousValue ) );
 		});
 
 
@@ -90,8 +91,21 @@ class NMRRange extends React.Component {
 		this.annotation.setSerie( this.context.serie );
 		this.annotation.setDom( 'data-integral-id', props.id );
 		this.annotation.setProp( 'labelHTMLData', { 'data-integral-id': props.id } );
-		this.annotation.updateIntegralValue( props.labelRatio );
+
 		this.annotation.redraw( );
+
+		//if( props.integralValue !== undefined ) {
+			let ratio = this.annotation.updateIntegralValue( undefined, props.integralValue );
+			
+			//if( ! isNaN( ratio ) ) {
+				//this.props.onValueChanged( ratio );
+			//}
+	//	} else {
+			//this.annotation.updateIntegralValue( props.labelRatio );
+	//	}
+		
+		
+		
 	}
 
 	componentWillUpdate( nextProps ) {
@@ -119,7 +133,7 @@ class NMRRange extends React.Component {
 							if( ! el.key ) {
 								el.key = Math.random();
 							}
-							
+
 							return <NMRSignal 
 								key 		= { el.key } 
 								j 			= { el.j }
