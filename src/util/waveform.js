@@ -1797,7 +1797,7 @@ function getIndexInterpolate( value, valueBefore, valueAfter, indexBefore, index
   return ( value - valueBefore ) / ( valueAfter - valueBefore ) * ( indexAfter - indexBefore ) + indexBefore;
 }
 
-function binarySearch( target, haystack, reverse ) {
+function binarySearch( target, haystack, reverse = haystack[ haystack.length - 1 ] < haystack[ 0 ] ) {
 
   let seedA = 0,
     length = haystack.length,
@@ -1805,6 +1805,10 @@ function binarySearch( target, haystack, reverse ) {
     seedInt,
     i = 0,
     nanDirection = 1;
+
+  if ( !reverse && ( haystack[ 0 ] > target || haystack[ seedB ] < target ) || reverse && ( haystack[ 0 ] < target || haystack[ seedB ] > target ) ) {
+    throw new Error( `Target ${target} is not in the stack` );
+  }
 
   if ( haystack[ seedA ] == target ) {
     return seedA;
@@ -1817,7 +1821,7 @@ function binarySearch( target, haystack, reverse ) {
   while ( true ) {
     i++;
     if ( i > 100 ) {
-      throw "Error loop";
+      throw new Error( "Error loop" );
     }
 
     seedInt = Math.floor( ( seedA + seedB ) / 2 );
@@ -1843,7 +1847,7 @@ function binarySearch( target, haystack, reverse ) {
     }
 
     //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-    if ( haystack[ seedInt ] <= target ) {
+    if ( haystack[ seedInt ] < target ) {
       if ( reverse ) {
         seedB = seedInt;
       } else {

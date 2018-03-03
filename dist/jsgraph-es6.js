@@ -6120,7 +6120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.74'
+        'data-jsgraph-version': 'v2.0.75'
       });
     } catch (e) {
       // ignore
@@ -8711,7 +8711,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
   }
 
-  function binarySearch(target, haystack, reverse) {
+  function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] < haystack[0]) {
 
     let seedA = 0,
         length = haystack.length,
@@ -8719,6 +8719,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         seedInt,
         i = 0,
         nanDirection = 1;
+
+    if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
+      throw new Error(`Target ${target} is not in the stack`);
+    }
 
     if (haystack[seedA] == target) {
       return seedA;
@@ -8731,7 +8735,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     while (true) {
       i++;
       if (i > 100) {
-        throw "Error loop";
+        throw new Error("Error loop");
       }
 
       seedInt = Math.floor((seedA + seedB) / 2);
@@ -8756,7 +8760,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-      if (haystack[seedInt] <= target) {
+      if (haystack[seedInt] < target) {
         if (reverse) {
           seedB = seedInt;
         } else {
