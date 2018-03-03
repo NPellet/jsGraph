@@ -6120,7 +6120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.72'
+        'data-jsgraph-version': 'v2.0.73'
       });
     } catch (e) {
       // ignore
@@ -7237,8 +7237,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this._monotoneousAscending = dataY[1] > dataY[0];
       }
 
-      this.minY = minY;
-      this.maxY = maxY;
+      if (this.hasErrorBars()) {
+        // If prefer to loop again here
+
+        for (i = 0; i < l; i++) {
+
+          if (dataY[i] === dataY[i]) {
+            // NaN support
+
+            minY = Math.min(minY, dataY[i] - this.getMaxError(i, 'below'));
+            maxY = Math.max(maxY, dataY[i] + this.getMaxError(i, 'above'));
+          }
+        }
+
+        this.minY = minY;
+        this.maxY = maxY;
+      } else {
+        this.minY = minY;
+        this.maxY = maxY;
+      }
 
       this.data = dataY;
 
@@ -8380,7 +8397,262 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.setData(this.data);
     }
 
-  };
+    ////////////////////////////////////////////////////////////
+    ///// HANDLING ERRORS   ////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+
+    setErrorBarX(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBar(waveform);
+      return this;
+    }
+
+    setErrorBarXBelow(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBarBelow(waveform);
+      return this;
+    }
+
+    setErrorBarXAbove(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBarAbove(waveform);
+      return this;
+    }
+
+    setErrorBoxX(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBoxAbove(waveform);
+      xWave.setErrorBoxBelow(waveform);
+      return this;
+    }
+
+    setErrorBoxXBelow(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+
+      xWave.setErrorBoxBelow(waveform);
+      return this;
+    }
+
+    setErrorBoxXAbove(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBoxAbove(waveform);
+      return this;
+    }
+
+    setErrorBar(waveform, checkMinMax = true) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.nb++;
+      this.errors.bars.bottom = waveform;
+      this.errors.bars.top = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+
+    setErrorBarBelow(waveform, checkMinMax = true) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.bars.below = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+
+    setErrorBarAbove(waveform, checkMinMax = true) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      this.errors.nb++;
+      this.errors.bars.above = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+
+    setErrorBox(waveform, checkMinMax = true) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.nb++;
+      this.errors.boxes.above = waveform;
+      this.errors.boxes.below = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+
+    setErrorBoxBelow(waveform, checkMinMax = true) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.boxes.below = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+
+    setErrorBoxAbove(waveform, checkMinMax = true) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      this.errors.boxes.above = waveform;
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+
+    getMaxError(i, side = Waveform.ABOVE) {
+
+      return Math.max(this.getMaxErrorType(i, side, Waveform.BOX), this.getMaxErrorType(i, side, Waveform.BAR));
+    }
+
+    getMaxErrorType(i, side = Waveform.ABOVE, type = Waveform.BOX) {
+
+      let stack;
+      if (type == Waveform.BOX) {
+        stack = this.errors.boxes;
+      } else if (type == Waveform.BAR) {
+        stack = this.errors.bars;
+      } else {
+        throw 'Unknown type of error';
+      }
+
+      let waveform;
+      if (!(waveform = stack[side])) {
+        if (side == Waveform.ABOVE) {
+          if (stack[side] == Waveform.BELOW) {
+            waveform = stack.below;
+          }
+        } else {
+          if (stack[side] == Waveform.ABOVE) {
+            waveform = stack.above;
+          }
+        }
+      }
+
+      if (!waveform) {
+        return 0;
+      }
+
+      return waveform.getY(i);
+    }
+
+    getErrorBarXBelow(index) {
+      return this.getErrorX(index, Waveform.BELOW, Waveform.BAR);
+    }
+    getErrorBarXAbove(index) {
+      return this.getErrorX(index, Waveform.ABOVE, Waveform.BAR);
+    }
+    getErrorBoxXBelow(index) {
+      return this.getErrorX(index, Waveform.BELOW, Waveform.BOX);
+    }
+    getErrorBoxXAbove(index) {
+      return this.getErrorX(index, Waveform.ABOVE, Waveform.BOX);
+    }
+
+    getErrorBarYBelow(index) {
+      return this.getError(index, Waveform.BELOW, Waveform.BAR);
+    }
+    getErrorBarYAbove(index) {
+      return this.getError(index, Waveform.ABOVE, Waveform.BAR);
+    }
+    getErrorBoxYBelow(index) {
+      return this.getError(index, Waveform.BELOW, Waveform.BOX);
+    }
+    getErrorBoxYAbove(index) {
+      return this.getError(index, Waveform.ABOVE, Waveform.BOX);
+    }
+
+    getErrorX(index, side = Waveform.ABOVE, type = Waveform.BAR) {
+
+      if (!this.hasXWaveform()) {
+        return false;
+      }
+
+      return this.xdata.getError(index, side, type);
+    }
+
+    getError(index, side = Waveform.ABOVE, type = Waveform.BAR) {
+
+      let errors = type == Waveform.BAR ? this.errors.bars : this.errors.boxes;
+
+      if (!errors) {
+        return false;
+      }
+
+      let wave;
+      if (wave = side == Waveform.ABOVE ? errors.above : errors.below) {
+
+        if (wave == Waveform.ABOVE && side == Waveform.BELOW) {
+          wave = errors.above;
+        } else if (wave == Waveform.BELOW && side == Waveform.ABOVE) {
+          wave = errors.below;
+        }
+
+        if (!wave) {
+          return false;
+        }
+
+        return wave.getY(index);
+      }
+    }
+
+    hasErrorBars() {
+
+      return this.errors.nb > 0 || this.hasXWaveform() && this.xdata.errors.nb > 0;
+    }
+
+  }
 
   const MULTIPLY = Symbol();
   const ADD = Symbol();
