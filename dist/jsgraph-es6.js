@@ -6120,7 +6120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.75'
+        'data-jsgraph-version': 'v2.0.76'
       });
     } catch (e) {
       // ignore
@@ -9418,18 +9418,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (waveform.isXMonotoneousAscending()) {
 
-          i = waveform.getIndexFromX(xMin, true) || 0;
-          l = waveform.getIndexFromX(xMax, true);
+          try {
+            i = waveform.getIndexFromX(xMin, true) || 0;
+            l = waveform.getIndexFromX(xMax, true);
+          } catch (e) {
 
-          if (l === false) {
             l = waveform.getLength();
           }
         } else {
 
-          i = waveform.getIndexFromX(xMax, true) || 0;
-          l = waveform.getIndexFromX(xMin, true);
+          try {
+            i = waveform.getIndexFromX(xMax, true) || 0;
+            l = waveform.getIndexFromX(xMin, true);
+          } catch (e) {
 
-          if (l === false) {
             l = waveform.getLength();
           }
         }

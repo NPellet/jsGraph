@@ -1806,7 +1806,7 @@ function binarySearch( target, haystack, reverse = haystack[ haystack.length - 1
     i = 0,
     nanDirection = 1;
 
-  if ( !reverse && ( haystack[ 0 ] > target || haystack[ seedB ] < target ) || reverse && ( haystack[ 0 ] < target || haystack[ seedB ] > target ) ) {
+  if ( ( !reverse && ( haystack[ 0 ] > target || haystack[ seedB ] < target ) ) || ( reverse && ( haystack[ 0 ] < target || haystack[ seedB ] > target ) ) ) {
     throw new Error( `Target ${target} is not in the stack` );
   }
 

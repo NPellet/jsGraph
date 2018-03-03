@@ -14133,18 +14133,20 @@ class SerieLine extends Serie {
 
       if (waveform.isXMonotoneousAscending()) {
 
-        i = waveform.getIndexFromX(xMin, true) || 0;
-        l = waveform.getIndexFromX(xMax, true);
+        try {
+          i = waveform.getIndexFromX(xMin, true) || 0;
+          l = waveform.getIndexFromX(xMax, true);
+        } catch (e) {
 
-        if (l === false) {
           l = waveform.getLength();
         }
       } else {
 
-        i = waveform.getIndexFromX(xMax, true) || 0;
-        l = waveform.getIndexFromX(xMin, true);
+        try {
+          i = waveform.getIndexFromX(xMax, true) || 0;
+          l = waveform.getIndexFromX(xMin, true);
+        } catch (e) {
 
-        if (l === false) {
           l = waveform.getLength();
         }
       }
