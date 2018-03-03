@@ -6120,7 +6120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.73'
+        'data-jsgraph-version': 'v2.0.74'
       });
     } catch (e) {
       // ignore
@@ -6960,6 +6960,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       this.xOffset = xOffset;
       this.xScale = xScale;
+
+      // Error bar handling
+      this.errors = {
+
+        nb: 0,
+
+        bars: {
+          above: null,
+          below: null
+        },
+
+        boxes: {
+          above: null,
+          below: null
+        }
+      };
+
+      this.BELOW = Waveform.BELOW;
+      this.ABOVE = Waveform.ABOVE;
+      this.BOX = Waveform.BOX;
+      this.BAR = Waveform.BAR;
+
       this.setData(data);
     }
 
@@ -8653,6 +8675,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
   }
+
+  Waveform.BELOW = Symbol();
+  Waveform.ABOVE = Symbol();
+
+  Waveform.BOX = Symbol();
+  Waveform.BAR = Symbol();
 
   const MULTIPLY = Symbol();
   const ADD = Symbol();
@@ -18367,88 +18395,87 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 var hasOwn = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
 
-var isArray = function isArray(arr) {
-	if (typeof Array.isArray === 'function') {
-		return Array.isArray(arr);
-	}
+var isArray = function isArray( arr ) {
+  if ( typeof Array.isArray === 'function' ) {
+    return Array.isArray( arr );
+  }
 
-	return toStr.call(arr) === '[object Array]';
+  return toStr.call( arr ) === '[object Array]';
 };
 
-var isPlainObject = function isPlainObject(obj) {
-	if (!obj || toStr.call(obj) !== '[object Object]') {
-		return false;
-	}
+var isPlainObject = function isPlainObject( obj ) {
+  if ( !obj || toStr.call( obj ) !== '[object Object]' ) {
+    return false;
+  }
 
-	var hasOwnConstructor = hasOwn.call(obj, 'constructor');
-	var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
-	// Not own constructor property must be Object
-	if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
-		return false;
-	}
+  var hasOwnConstructor = hasOwn.call( obj, 'constructor' );
+  var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' );
+  // Not own constructor property must be Object
+  if ( obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf ) {
+    return false;
+  }
 
-	// Own properties are enumerated firstly, so to speed up,
-	// if last one is own, then all properties are own.
-	var key;
-	for (key in obj) { /**/ }
+  // Own properties are enumerated firstly, so to speed up,
+  // if last one is own, then all properties are own.
+  var key;
+  for ( key in obj ) { /**/ }
 
-	return typeof key === 'undefined' || hasOwn.call(obj, key);
+  return typeof key === 'undefined' || hasOwn.call( obj, key );
 };
 
 module.exports = function extend() {
-	var options, name, src, copy, copyIsArray, clone;
-	var target = arguments[0];
-	var i = 1;
-	var length = arguments.length;
-	var deep = false;
+  var options, name, src, copy, copyIsArray, clone;
+  var target = arguments[ 0 ];
+  var i = 1;
+  var length = arguments.length;
+  var deep = false;
 
-	// Handle a deep copy situation
-	if (typeof target === 'boolean') {
-		deep = target;
-		target = arguments[1] || {};
-		// skip the boolean and the target
-		i = 2;
-	}
-	if (target == null || (typeof target !== 'object' && typeof target !== 'function')) {
-		target = {};
-	}
+  // Handle a deep copy situation
+  if ( typeof target === 'boolean' ) {
+    deep = target;
+    target = arguments[ 1 ] || {};
+    // skip the boolean and the target
+    i = 2;
+  }
+  if ( target == null || ( typeof target !== 'object' && typeof target !== 'function' ) ) {
+    target = {};
+  }
 
-	for (; i < length; ++i) {
-		options = arguments[i];
-		// Only deal with non-null/undefined values
-		if (options != null) {
-			// Extend the base object
-			for (name in options) {
-				src = target[name];
-				copy = options[name];
+  for ( ; i < length; ++i ) {
+    options = arguments[ i ];
+    // Only deal with non-null/undefined values
+    if ( options != null ) {
+      // Extend the base object
+      for ( name in options ) {
+        src = target[ name ];
+        copy = options[ name ];
 
-				// Prevent never-ending loop
-				if (target !== copy) {
-					// Recurse if we're merging plain objects or arrays
-					if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
-						if (copyIsArray) {
-							copyIsArray = false;
-							clone = src && isArray(src) ? src : [];
-						} else {
-							clone = src && isPlainObject(src) ? src : {};
-						}
+        // Prevent never-ending loop
+        if ( target !== copy ) {
+          // Recurse if we're merging plain objects or arrays
+          if ( deep && copy && ( isPlainObject( copy ) || ( copyIsArray = isArray( copy ) ) ) ) {
+            if ( copyIsArray ) {
+              copyIsArray = false;
+              clone = src && isArray( src ) ? src : [];
+            } else {
+              clone = src && isPlainObject( src ) ? src : {};
+            }
 
-						// Never move original objects, clone them
-						target[name] = extend(deep, clone, copy);
+            // Never move original objects, clone them
+            target[ name ] = extend( deep, clone, copy );
 
-					// Don't bring in undefined values
-					} else if (typeof copy !== 'undefined') {
-						target[name] = copy;
-					}
-				}
-			}
-		}
-	}
+            // Don't bring in undefined values
+          } else if ( typeof copy !== 'undefined' ) {
+            target[ name ] = copy;
+          }
+        }
+      }
+    }
+  }
 
-	// Return the modified object
-	return target;
+  // Return the modified object
+  return target;
 };
-
 
 /***/ }),
 /* 21 */

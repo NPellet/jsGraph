@@ -7,7 +7,30 @@ class Waveform {
 
     this.xOffset = xOffset;
     this.xScale = xScale;
+
+    // Error bar handling
+    this.errors = {
+
+      nb: 0,
+
+      bars: {
+        above: null,
+        below: null
+      },
+
+      boxes: {
+        above: null,
+        below: null
+      }
+    };
+
+    this.BELOW = Waveform.BELOW;
+    this.ABOVE = Waveform.ABOVE;
+    this.BOX = Waveform.BOX;
+    this.BAR = Waveform.BAR;
+
     this.setData( data );
+
   }
 
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
@@ -1737,6 +1760,12 @@ class Waveform {
   }
 
 }
+
+Waveform.BELOW = Symbol();
+Waveform.ABOVE = Symbol();
+
+Waveform.BOX = Symbol();
+Waveform.BAR = Symbol();
 
 const MULTIPLY = Symbol();
 const ADD = Symbol();
