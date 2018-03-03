@@ -164,12 +164,13 @@ class NMRSignal extends React.Component {
 	    this.previousLevel = this.currentLevel;
 	}
 
-	paintTree( parentPeak, currentPeaks, color ) {
+	paintTree( parentPeak, currentPeaks, color, horizontal ) {
 	    // we paint diagonals to parent
 
 	    this._jsGraphShapes.map( ( shape ) => shape.kill() );
 
 	    this.highlight++;
+
 
 	    if( parentPeak ) {
 	        for (var i=0; i < currentPeaks.length; i++) {
@@ -178,17 +179,27 @@ class NMRSignal extends React.Component {
 	        }        
 	    };
 
-	    // we paint vertical of current level
-	    for (var i = 0; i < currentPeaks.length; i++) {
-	        var peak = currentPeaks[i];
-	        this.annotations.push( makePeakLine( peak.x, peak.y, null, color ) );
-	    }
+	    if( horizontal ) {
+
+	    	let peak = currentPeaks[ 0 ];
+	    	this.annotations.push( makeDiagonalLine( horizontal[ 1 ], peak.y + levelHeight / 2, horizontal[ 0 ], peak.y + levelHeight / 2, color) );
+	    	this.annotations.push( makePeakLine( horizontal[ 0 ], peak.y, null, color ) );
+			this.annotations.push( makePeakLine( horizontal[ 1 ], peak.y, null, color ) );
+
+	    } else {
+		    	    // we paint vertical of current level
+		    for (var i = 0; i < currentPeaks.length; i++) {
+		        let peak = currentPeaks[i];
+		        this.annotations.push( makePeakLine( peak.x, peak.y, null, color ) );
+		    }
+		}
+
 
 	    let refShape;
 	    this._jsGraphShapes = this.annotations.map( ( annotation, index ) => {
 
 
-	    	let annotation_jsGraph = this.graph.newShape( annotation.type, undefined, false, annotation.properties );
+	    	let annotation_jsGraph = this.graph.newShape( annotation.type, { noY: true }, false, annotation.properties );
 	    	annotation_jsGraph.setDom( 'data-signal-id', this.props.id );
 	    	annotation_jsGraph.draw().redraw();
 
@@ -241,12 +252,16 @@ class NMRSignal extends React.Component {
 		};
 		
 		this.allLevels = [ this.previousLevel ];
-		this.paintTree( null, this.previousLevel.peaks, this.currentColor );
+		this.paintTree( null, this.previousLevel.peaks, this.currentColor, ! this.props.j || this.props.j.length == 0 ? [ this.props.from, this.props.to ] : undefined );
+
+		 this._jsGraphShapes[ 0 ].selectable( true );
+		 this._jsGraphShapes[ 0 ].movable( true );
+		 this._jsGraphShapes[ 0 ].setProp( 'selectOnMouseDown', true );
+		 //this._jsGraphShapes[ 0 ]._data = { noY: true };
+
 		if( ! Array.isArray( this.props.j ) ) {
 			return;
 		}		
-
-
 
 		for (var i = 0; i < this.props.j.length; i++) {
 		    var multiplicity = this.props.j[ i ].multiplicity;

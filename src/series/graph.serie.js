@@ -443,7 +443,9 @@ class Serie extends EventEmitter {
   setWaveform( waveform ) {
 
     if ( !( waveform instanceof Waveform ) ) {
-      throw 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance';
+      console.trace();
+      console.error( waveform );
+      throw new Error( 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance' );
     }
 
     this.waveform = waveform;

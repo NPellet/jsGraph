@@ -111,20 +111,20 @@ class ShapeLine extends GraphShape {
     }
 
     if ( this.moving ) {
-
+      console.log( this._data );
       // If the pos2 is defined by a delta, no need to move them
-      if ( pos.x ) {
+      if ( pos.x && !this._data.noX ) {
         pos.deltaPosition( 'x', deltaX, this.getXAxis() );
       }
-      if ( pos.y ) {
+      if ( pos.y && !this._data.noY ) {
         pos.deltaPosition( 'y', deltaY, this.getYAxis() );
       }
 
       // If the pos2 is defined by a delta, no need to move them
-      if ( pos2.x ) {
+      if ( pos2.x && !this._data.noX ) {
         pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
       }
-      if ( pos2.y ) {
+      if ( pos2.y && !this._data.noY ) {
         pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
       }
 

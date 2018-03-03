@@ -28,11 +28,21 @@ class NMRRange extends React.Component {
 				resizable: true,
 				movable: true,
 				handles: true,
-				labels: [ { text: "", anchor: "middle", backgroundColor: 'white', backgroundOpacity: 0.8, baseline: 'middle' } ],
-
+				labels: [ 
+				{ 
+					text: "", 
+					anchor: "middle", 
+					backgroundColor: 'white', 
+					backgroundOpacity: 0.8, 
+					baseline: 'middle' 
+				} ],
 			}, 
 			false,
-			{ 'labelEditable': [ true ], layer: [ 3 ], strokeWidth: [ 2 ]  }
+			{ 
+				labelEditable: [ true ], 
+				layer: [ 3 ], 
+				strokeWidth: [ 2 ]  
+			}
 		);
 		
 		this.annotation.addClass('integral');
@@ -50,24 +60,16 @@ class NMRRange extends React.Component {
 		} );
 
 		this.annotation.on("shapeResized", () => {
-
-
 			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x, parseFloat( this.annotation.getLabelText() ) );
-
-
 		});
 
 		this.annotation.on("shapeMoved", () => {
-
 			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x, parseFloat( this.annotation.getLabelText() ) );
 		});
-
-
 
 		this.annotation.on("shapeLabelChanged", ( shape, parameters ) => {
 			this.props.onValueChanged( parseFloat( parameters.nextValue ) / parseFloat( parameters.previousValue ) );
 		});
-
 
 		this.annotation.on("removed", () => {
 			this.props.onRemoved( this.props.id );
@@ -94,18 +96,11 @@ class NMRRange extends React.Component {
 
 		this.annotation.redraw( );
 
-		//if( props.integralValue !== undefined ) {
+		if( props.integralValue !== undefined ) {
 			let ratio = this.annotation.updateIntegralValue( undefined, props.integralValue );
-			
-			//if( ! isNaN( ratio ) ) {
-				//this.props.onValueChanged( ratio );
-			//}
-	//	} else {
-			//this.annotation.updateIntegralValue( props.labelRatio );
-	//	}
-		
-		
-		
+		} else {
+			let ratio = this.annotation.updateIntegralValue( props.labelRatio );
+		}
 	}
 
 	componentWillUpdate( nextProps ) {
@@ -141,6 +136,8 @@ class NMRRange extends React.Component {
 								delta 		= { el.delta }
 								onSignalChanged = { this.onSignalChanged }
 								onSignalCreated = { this.onSignalCreated }
+								from = { this.props.from } 
+								to = { this.props.to }
 							/> 
 						}
 					) 

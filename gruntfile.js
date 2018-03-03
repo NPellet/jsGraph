@@ -71,6 +71,14 @@ module.exports = function ( grunt ) {
                 files: {
                     '../visualizer/src/components/jsgraph/dist/jsgraph-es6.js': 'dist/jsgraph-es6.js'
                 }
+            },
+
+
+            candlelight: {
+
+                files: {
+                    '/Users/normanpellet/Documents/Candlelight/code/website/node_modules/node-jsgraph/dist/jsgraph-es6.js': 'dist/jsgraph-es6.js'
+                }
             }
 
         },
@@ -295,8 +303,8 @@ module.exports = function ( grunt ) {
 
 
     grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'rollup:distModule' ] );
-
     grunt.registerTask( 'visualizer', [ 'webpack:dist_es6', 'copy:visualizer' ] );
+    grunt.registerTask( 'candlelight', [ 'webpack:dist_es6', 'copy:candlelight' ] );
 
 
     function WebpackBeautifier( options ) {

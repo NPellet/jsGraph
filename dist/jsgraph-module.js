@@ -1,3 +1,5 @@
+import extend from 'extend';
+
 function _parsePx(px) {
   if (px && px.indexOf && px.indexOf('px') > -1) {
     return parseInt(px.replace('px', ''));
@@ -624,7 +626,7 @@ var isPlainObject = function isPlainObject(obj) {
   return typeof key === 'undefined' || hasOwn.call(obj, key);
 };
 
-function extend() {
+function extend$1() {
   var options, name, src, copy, copyIsArray, clone;
   var target = arguments[0];
   var i = 1;
@@ -662,7 +664,7 @@ function extend() {
             }
 
             // Never move original objects, clone them
-            target[name] = extend(deep, clone, copy);
+            target[name] = extend$1(deep, clone, copy);
 
             // Don't bring in undefined values
           } else if (typeof copy !== 'undefined') {
@@ -1562,267 +1564,13 @@ class LM {
 
 //module.export = FitHost
 
-var dataAggregator;
-
-if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || typeof Blob === 'undefined' || typeof Worker === 'undefined') {
-  dataAggregator = () => {};
-} else {
-  var aggregatorWorker;
-  var queue = {};
-
-  let string = function () {
-
-    onmessage = function (e) {
-
-      const data = e.data.data,
-            // The initial data
-      maxX = e.data.maxX,
-            minX = e.data.minX,
-            maxY = e.data.maxY,
-            minY = e.data.minY,
-            direction = e.data.direction;
-
-      let numPoints = e.data.numPoints; // Total number of points in the slot
-      let l = data.length; // Number of data in the original buffer
-      let i = 0;
-      let k = -4;
-      let slots = [];
-      let dataAggregatedX = [];
-      let dataAggregatedY = [];
-      let aggregationSum = [];
-      let getX;
-      let slotNumber;
-      let lastAggregationX;
-      let lastAggregation;
-      let lastAggregationSum;
-      let newAggregation;
-      let newAggregationX;
-
-      if (e.data.xdata) {
-
-        getX = function getX(index) {
-          return e.data.xdata[index];
-        };
-      } else {
-        getX = function getX(index) {
-          return index * e.data.xScale + e.data.xOffset;
-        };
-      }
-
-      let aggregations = {};
-
-      // Direction x
-      if (direction == 'x') {
-        const dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
-
-        for (; i < l; i++) {
-
-          // dataPerSlot: 1 / 1000 ( compression by 1'000 )
-          //console.log( dataPerSlot, getX( i ) );
-          slotNumber = Math.floor((getX(i) - minX) * dataPerSlot);
-
-          if (slots[k] !== slotNumber) {
-            k += 4;
-            slots[k] = slotNumber;
-
-            let slotX = (slotNumber + 0.5) / dataPerSlot + minX;
-
-            dataAggregatedX[k] = slotX;
-            dataAggregatedX[k + 1] = slotX;
-            dataAggregatedX[k + 2] = slotX;
-            dataAggregatedX[k + 3] = slotX;
-
-            dataAggregatedY[k] = data[i];
-            dataAggregatedY[k + 1] = data[i];
-            dataAggregatedY[k + 2] = data[i];
-            dataAggregatedY[k + 3] = data[i];
-            aggregationSum[k] = 0;
-          }
-
-          dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
-          dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
-          dataAggregatedY[k + 3] = data[i];
-          aggregationSum[k] += data[i];
-        }
-      } else {
-        // y
-
-        const dataPerSlot = numPoints / (maxY - minY); // Computed number of aggregation per slot
-
-        for (; i < l; i++) {
-
-          // dataPerSlot: 1 / 1000 ( compression by 1'000 )
-          //console.log( dataPerSlot, getX( i ) );
-          slotNumber = Math.floor((data[i] - minY) * dataPerSlot);
-
-          if (slots[k] !== slotNumber) {
-            k += 4;
-            slots[k] = slotNumber;
-
-            let slotY = (slotNumber + 0.5) / dataPerSlot + minY;
-
-            dataAggregatedY[k] = slotY;
-            dataAggregatedY[k + 1] = slotY;
-            dataAggregatedY[k + 2] = slotY;
-            dataAggregatedY[k + 3] = slotY;
-
-            dataAggregatedX[k] = data[i];
-            dataAggregatedX[k + 1] = data[i];
-            dataAggregatedX[k + 2] = data[i];
-            dataAggregatedX[k + 3] = data[i];
-            aggregationSum[k] = 0;
-          }
-          dataAggregatedX[k + 1] = Math.min(getX(i), dataAggregatedX[k + 1]);
-          dataAggregatedX[k + 2] = Math.max(getX(i), dataAggregatedX[k + 2]);
-          dataAggregatedX[k + 3] = getX(i);
-          aggregationSum[k] += getX(i);
-        }
-      }
-
-      aggregations[numPoints] = {
-        x: dataAggregatedX,
-        y: dataAggregatedY,
-        sums: aggregationSum
-      };
-
-      lastAggregation = dataAggregatedY;
-      lastAggregationX = dataAggregatedX;
-      lastAggregationSum = aggregationSum;
-
-      while (numPoints > 256) {
-
-        numPoints /= 2;
-
-        newAggregation = [];
-        newAggregationX = [];
-
-        k = 0;
-
-        if (direction == 'x') {
-
-          for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
-
-            newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
-            newAggregationX[k + 1] = newAggregationX[k];
-            newAggregationX[k + 2] = newAggregationX[k];
-            newAggregationX[k + 3] = newAggregationX[k];
-
-            newAggregation[k] = lastAggregation[i];
-            newAggregation[k + 1] = Math.min(lastAggregation[i + 1], lastAggregation[i + 5]);
-            newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
-            newAggregation[k + 3] = lastAggregation[i + 7];
-
-            aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
-
-            k += 4;
-          }
-        } else {
-
-          for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
-
-            newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
-            newAggregation[k + 1] = newAggregation[k];
-            newAggregation[k + 2] = newAggregation[k];
-            newAggregation[k + 3] = newAggregation[k];
-
-            newAggregationX[k] = lastAggregationX[i];
-            newAggregationX[k + 1] = Math.min(lastAggregationX[i + 1], lastAggregationX[i + 5]);
-            newAggregationX[k + 2] = Math.max(lastAggregationX[i + 2], lastAggregationX[i + 6]);
-            newAggregationX[k + 3] = lastAggregationX[i + 7];
-
-            aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
-
-            k += 4;
-          }
-        }
-
-        aggregations[numPoints] = {
-          x: newAggregationX,
-          y: newAggregation,
-          sums: aggregationSum
-        };
-
-        lastAggregation = newAggregation;
-        lastAggregationX = newAggregationX;
-        lastAggregationSum = aggregationSum;
-
-        aggregationSum = [];
-      }
-
-      postMessage({
-        aggregates: aggregations,
-        _queueId: e.data._queueId
-      });
-    };
-  }.toString();
-
-  string = string.replace(/^\s*function\s*\(\s*\)\s*\{/, '');
-  string = string.replace(/}\s*$/, '');
-  /*
-  if ( typeof URL == "undefined" ) {
-    module.exports = function() {};
-   } else {
-  */
-
-  var workerUrl = URL.createObjectURL(new Blob([string], {
-    type: 'application/javascript'
-  }));
-
-  aggregatorWorker = new Worker(workerUrl);
-
-  aggregatorWorker.onmessage = function (e) {
-
-    var id = e.data._queueId;
-    delete e.data._queueId;
-    queue[id](e.data);
-    delete queue[id];
-  };
-
-  dataAggregator = function (toOptimize) {
-
-    var requestId = Date.now();
-    toOptimize._queueId = requestId;
-
-    var prom = new Promise(resolver => {
-      queue[requestId] = resolver;
-    });
-
-    aggregatorWorker.postMessage(toOptimize);
-    return prom;
-  };
-}
-
-var aggregator = dataAggregator;
-
 class Waveform {
 
   constructor(data = [], xOffset = 0, xScale = 1) {
 
     this.xOffset = xOffset;
     this.xScale = xScale;
-
-    // Error bar handling
-    this.errors = {
-
-      nb: 0,
-
-      bars: {
-        above: null,
-        below: null
-      },
-
-      boxes: {
-        above: null,
-        below: null
-      }
-    };
-
     this.setData(data);
-
-    this.BELOW = Waveform.BELOW;
-    this.ABOVE = Waveform.ABOVE;
-    this.BOX = Waveform.BOX;
-    this.BAR = Waveform.BAR;
   }
 
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
@@ -1868,7 +1616,7 @@ class Waveform {
 
     data.map((el, index) => {
 
-      if (!nanable && Number.isNaN(el[0]) || Number.isNaN(el[1])) {
+      if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
         warnNaN = true;
       }
 
@@ -1887,7 +1635,7 @@ class Waveform {
     return this;
   }
 
-  getY(index, optimized = false) {
+  getY(index, optimized) {
 
     if (optimized && this.dataInUse) {
       return this.dataInUse.y[index] * this.getScale() + this.getShift();
@@ -1912,7 +1660,7 @@ class Waveform {
       if (Array.isArray(waveform)) {
         waveform = new Waveform(waveform);
       } else {
-        throw 'Cannot set X waveform. Data is not a valid array.';
+        throw "Cannot set X waveform. Data is not a valid array.";
       }
     }
 
@@ -1926,20 +1674,14 @@ class Waveform {
   }
 
   getXWaveform() {
-
     if (this.xdata) {
       return this.xdata;
     }
 
-    let wave = new Waveform(),
-        xs = [];
+    var wave = new Waveform();
     for (var i = 0; i < this.getLength(); i += 1) {
-      xs.push(this.getX(i));
+      wave.append(this.getX(i));
     }
-
-    wave.setData(xs);
-
-    this.xdata = wave;
     return wave;
   }
 
@@ -1957,11 +1699,11 @@ class Waveform {
   setTypedArrayClass(constructor) {
 
     if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
-      this.warn('NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')');
+      this.warn("NaN values are not allowed by the new constructor (" + constructor.name + ") while it was allowed by the previous one (" + this._typedArrayClass.name + ")");
     }
 
     if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
-      this.warn('You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.');
+      this.warn("You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.");
     }
 
     this._typedArrayClass = constructor;
@@ -1983,7 +1725,7 @@ class Waveform {
 
   isUnsigned(constructor = this._typedArrayClass) {
 
-    // The following types accept unsigned numbers
+    // The following types accept NaNs
     return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
   }
 
@@ -2007,11 +1749,11 @@ class Waveform {
 
   prepend(x, y) {
 
-    if (typeof x == 'function') {
+    if (typeof x == "function") {
       x = x(this);
     }
 
-    if (typeof y == 'function') {
+    if (typeof y == "function") {
       y = y(this);
     }
 
@@ -2031,15 +1773,11 @@ class Waveform {
 
   append(x, y) {
 
-    if (!this.data) {
-      this.data = [];
-    }
-
-    if (typeof x == 'function') {
+    if (typeof x == "function") {
       x = x(this);
     }
 
-    if (typeof y == 'function') {
+    if (typeof y == "function") {
       y = y(this);
     }
 
@@ -2051,9 +1789,9 @@ class Waveform {
     }
 
     if (this.monotoneous) {
-      if (y >= this.data[this.data.y] && this.getMonotoneousAscending() === false) {
+      if (y > this.data[this.data.y] && this.getMonotoneousAscending() === false) {
         this.monotoneous = false;
-      } else if (y <= this.data[this.data.y] && this.getMonotoneousAscending() === true) {
+      } else if (y < this.data[this.data.y] && this.getMonotoneousAscending() === true) {
         this.monotoneous = false;
       }
     }
@@ -2084,8 +1822,7 @@ class Waveform {
     return new Array(length);
   }
 
-  _setData(dataY = this.data) {
-
+  _setData(dataY) {
     const l = dataY.length;
     let i = 1,
         monoDir = dataY[1] > dataY[0],
@@ -2110,25 +1847,8 @@ class Waveform {
       this._monotoneousAscending = dataY[1] > dataY[0];
     }
 
-    if (this.hasErrorBars()) {
-      // If prefer to loop again here
-
-      for (i = 0; i < l; i++) {
-
-        if (dataY[i] === dataY[i]) {
-          // NaN support
-
-          minY = Math.min(minY, dataY[i] - this.getMaxError(i, 'below'));
-          maxY = Math.max(maxY, dataY[i] + this.getMaxError(i, 'above'));
-        }
-      }
-
-      this.minY = minY;
-      this.maxY = maxY;
-    } else {
-      this.minY = minY;
-      this.maxY = maxY;
-    }
+    this.minY = minY;
+    this.maxY = maxY;
 
     this.data = dataY;
 
@@ -2142,7 +1862,11 @@ class Waveform {
       return;
     }
 
-    if (!this.xdata) {
+    if (this.xdata) {
+
+      this.minX = this.xdata.getMin();
+      this.maxX = this.xdata.getMax();
+    } else {
 
       const b1 = this.xOffset + this.xScale * this.getLength(),
             b2 = this.xOffset;
@@ -2170,7 +1894,7 @@ class Waveform {
 
     position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
 
-    if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateY') {
+    if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY") {
       // In case of aggregation, round to the closest element of 4.
       return position - position % 4;
     }
@@ -2185,19 +1909,18 @@ class Waveform {
     if (useDataToUse && this.dataInUse) {
       xdata = this.dataInUse.x;
     } else if (this.xdata) {
-      xdata = this.xdata.data;
+      xdata = this.xdata.getData();
     }
 
     let position;
 
     if (this.hasXWaveform()) {
-      // The x value HAS to be rescaled
       position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
     } else {
       position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
     }
 
-    if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
+    if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
       // In case of aggregation, round to the closest element of 4.
       return position - position % 4;
     }
@@ -2205,68 +1928,17 @@ class Waveform {
     return position;
   }
 
-  getIndexFromXY(xval, yval, useDataToUse = false, roundingMethod = Math.round, scaleX, scaleY) {
+  getIndexFromData(val, valCollection, isAscending, roundingMethod) {
 
-    let xdata, ydata;
-
-    if (useDataToUse && this.dataInUse) {
-
-      xdata = this.dataInUse.x;
-      ydata = this.dataInUse.y;
-    } else if (this.xdata) {
-
-      xdata = this.xdata.data;
-      ydata = this.data;
+    if (!this.isMonotoneous()) {
+      console.trace();
+      throw "Impossible to get the index from a non-monotoneous wave !";
     }
-
-    let position;
-
-    if (this.isXMonotoneous()) {
-      // X lookup only
-
-      if (this.hasXWaveform()) {
-        // The x value HAS to be rescaled
-        position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
-      } else {
-        position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
-      }
-    } else if (!isNaN(yval)) {
-
-      position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
-    } else {
-      return;
-    }
-
-    if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
-      // In case of aggregation, round to the closest element of 4.
-      return position - position % 4;
-    }
-
-    return position;
-  }
-
-  getIndexFromData(val, valCollection, isAscending) {
 
     val -= this.getShift();
     val /= this.getScale();
 
-    if (!this.isMonotoneous()) {
-      console.trace();
-      throw 'Impossible to get the index from a non-monotoneous wave !';
-    }
-
     return binarySearch(val, valCollection, !isAscending);
-  }
-
-  getIndexFromDataXY(valX, dataX, valY, dataY, scaleX = 1, scaleY = 1) {
-
-    valX -= this.getXShift();
-    valX /= this.getXScale();
-
-    valY -= this.getShift();
-    valY /= this.getScale();
-
-    return euclidianSearch(valX, valY, dataX, dataY, scaleX, scaleY);
   }
 
   getReductionType() {
@@ -2274,11 +1946,11 @@ class Waveform {
   }
 
   getXMin() {
-    return this.xdata ? this.xdata.getMin() : this.minX;
+    return this.minX * this.getXScale() + this.getXShift();
   }
 
   getXMax() {
-    return this.xdata ? this.xdata.getMax() : this.maxX;
+    return this.maxX * this.getXScale() + this.getXShift();
   }
 
   getYMin() {
@@ -2298,11 +1970,12 @@ class Waveform {
   }
 
   getMinX() {
-    return this.getXMin();
+
+    return this.minX * this.getXScale() + this.getXShift();
   }
 
   getMaxX() {
-    return this.getXMax();
+    return this.maxX * this.getXScale() + this.getXShift();
   }
 
   getMinY() {
@@ -2346,11 +2019,12 @@ class Waveform {
     // this.minY = ( this.minY - this.getShift() ) * scale;
     // this.maxY = ( this.maxY - this.getShift() ) * scale;
     this.scale = scale;
+    return this;
   }
 
   setXShift(shift = 0) {
 
-    if (!this.hasXWaveform()) {
+    if (!this.hasXWaveform) {
       return this;
     }
 
@@ -2362,7 +2036,7 @@ class Waveform {
     return this;
   }
 
-  getXShift(shift) {
+  getXShift(shift = 0) {
 
     if (!this.hasXWaveform) {
       return 0;
@@ -2391,9 +2065,6 @@ class Waveform {
   }
 
   getLength() {
-    if (!this.data) {
-      return 0;
-    }
     return this.data.length;
   }
 
@@ -2433,7 +2104,7 @@ class Waveform {
 
     return new Promise(function (resolver, rejector) {
 
-      var fit = new FitHost(Object.assign({}, {
+      var fit = new FitHost(extend({}, {
 
         dataY: self,
         dataX: self.getXWaveform(),
@@ -2557,7 +2228,7 @@ class Waveform {
 
   requireMonotonicity() {
     if (!this.isMonotoneous()) {
-      throw 'The wave must be monotonic';
+      throw "The wave must be monotonic";
     }
   }
 
@@ -2575,7 +2246,7 @@ class Waveform {
 
   invert(data) {
 
-    let d = data || this.data;
+    let d = dataY || this.data;
     d.reverse();
 
     if (this.isMonotoneous()) {
@@ -2613,11 +2284,11 @@ class Waveform {
     const l = this.getLength();
 
     if (!options.xPosition) {
-      throw 'No position calculation method provided';
+      throw "No position calculation method provided";
     }
 
     if (!options.resampleToPx) {
-      throw 'No "resampleToPx" method was provided. Unit: px per point';
+      throw "No \"resampleToPx\" method was provided. Unit: px per point";
     }
 
     if (options.minX > options.maxX) {
@@ -2700,22 +2371,19 @@ class Waveform {
       resampleMax = Math.max(resampleMax, dataY[i]);
     }
 
-    this.dataInUseType = 'resampled';
+    this.dataInUseType = "resampled";
     this.dataInUse = data;
     return dataMinMax;
   }
 
   interpolate(x) {
 
-    let xIndex;
     let yData = this.getDataY();
-
-    x = (x - this.getXShift()) / this.getXScale();
+    let xIndex;
 
     if (this.xdata) {
-      let xData = this.xdata.getData(),
-          xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
-
+      let xData = this.xdata.getData();
+      xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
       if (xData[xIndex] == x) {
         return yData[xIndex];
       }
@@ -2727,10 +2395,21 @@ class Waveform {
     }
   }
 
+  interpolateIndex_X(index) {
+
+    let yData = this.getDataY();
+    if (this.xdata) {
+      let xData = this.xdata.getData();
+      let indexStart = Math.floor(index);
+
+      return (index - indexStart) * (xData[indexStart + 1] - xData[indexStart]) + xData[indexStart];
+    }
+  }
+
   getMonotoneousAscending() {
 
     if (!this.isMonotoneous()) {
-      return 'The waveform is not monotoneous';
+      return "The waveform is not monotoneous";
     }
 
     return this._monotoneousAscending;
@@ -2903,10 +2582,10 @@ class Waveform {
 
     this._dataAggregating = aggregator({
 
-      minX: this.getMinX(),
-      maxX: this.getMaxX(),
-      minY: this.getMinY(),
-      maxY: this.getMaxY(),
+      minX: this.minX,
+      maxX: this.maxX,
+      minY: this.minY,
+      maxY: this.maxY,
       data: this.data,
       xdata: this.xdata ? this.xdata.getData() : undefined,
       xScale: this.xScale,
@@ -2917,7 +2596,6 @@ class Waveform {
     }).then(event => {
 
       this._dataAggregated = event.aggregates;
-      console.log(this._dataAggregated);
       this._dataAggregating = false;
     });
   }
@@ -2938,14 +2616,11 @@ class Waveform {
         }
     */
 
-    if (pxWidth > 2147483647) {
-      pxWidth = 2147483647;
-    }
     var level = pow2ceil(pxWidth);
 
     if (this._dataAggregated[level]) {
 
-      this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
+      this.dataInUseType = "aggregate" + this._dataAggregationDirection;
       this.dataInUse = this._dataAggregated[level];
       return;
     } else if (this._dataAggregating) {
@@ -2953,7 +2628,7 @@ class Waveform {
       return this._dataAggregating;
     }
 
-    this.dataInUseType = 'none';
+    this.dataInUseType = "none";
     this.dataInUse = {
       y: this.data,
       x: this.getXWaveform().data
@@ -3082,7 +2757,7 @@ class Waveform {
   }
 
   getUnit() {
-    return this.unit || '';
+    return this.unit || "";
   }
 
   getXUnit() {
@@ -3090,7 +2765,7 @@ class Waveform {
       return this.xdata.getUnit();
     }
 
-    return this.xunit | '';
+    return this.xunit | "";
   }
 
   hasXUnit() {
@@ -3103,7 +2778,7 @@ class Waveform {
 
   findLevels(level, options) {
 
-    options = Object.assign({
+    options = extend({
 
       box: 1,
       edge: 'both',
@@ -3117,7 +2792,7 @@ class Waveform {
     var indices = [];
     var i = 0;
 
-    while (lvlIndex = this.findLevel(level, Object.assign({}, options, {
+    while (lvlIndex = this.findLevel(level, extend(true, {}, options, {
       rangeP: [lastLvlIndex, options.rangeP[1]]
     }))) {
       indices.push(lvlIndex);
@@ -3135,7 +2810,7 @@ class Waveform {
   // Find the first level in the specified range
   findLevel(level, options) {
 
-    options = Object.assign({
+    options = extend({
 
       box: 1,
       edge: 'both',
@@ -3157,7 +2832,7 @@ class Waveform {
       box++;
     }
 
-    if (options.direction == 'descending') {
+    if (options.direction == "descending") {
       i = options.rangeP[1], l = options.rangeP[0], increment = -1;
     } else {
       i = options.rangeP[0], l = options.rangeP[1], increment = +1;
@@ -3165,7 +2840,7 @@ class Waveform {
 
     for (;; i += increment) {
 
-      if (options.direction == 'descending') {
+      if (options.direction == "descending") {
         if (i < l) {
           break;
         }
@@ -3199,7 +2874,7 @@ class Waveform {
 
           for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
 
-            if (this.data[j] >= level && this.data[j - 1] < level) {
+            if (this.data[j] >= level && this.data[j - 1] <= level) {
               // Find a crossing
 
               switch (options.rounding) {
@@ -3226,7 +2901,7 @@ class Waveform {
 
           for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
 
-            if (this.data[j] <= level && this.data[j - 1] > level) {
+            if (this.data[j] <= level && this.data[j - 1] >= level) {
               // Find a crossing
 
               switch (options.rounding) {
@@ -3312,262 +2987,13 @@ class Waveform {
     this.setData(this.data);
   }
 
-  ////////////////////////////////////////////////////////////
-  ///// HANDLING ERRORS   ////////////////////////////////////
-  ////////////////////////////////////////////////////////////
-
-  setErrorBarX(waveform) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    var xWave = this.getXWaveform();
-    xWave.setErrorBar(waveform);
-    return this;
-  }
-
-  setErrorBarXBelow(waveform) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    var xWave = this.getXWaveform();
-    xWave.setErrorBarBelow(waveform);
-    return this;
-  }
-
-  setErrorBarXAbove(waveform) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    var xWave = this.getXWaveform();
-    xWave.setErrorBarAbove(waveform);
-    return this;
-  }
-
-  setErrorBoxX(waveform) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    var xWave = this.getXWaveform();
-    xWave.setErrorBoxAbove(waveform);
-    xWave.setErrorBoxBelow(waveform);
-    return this;
-  }
-
-  setErrorBoxXBelow(waveform) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    var xWave = this.getXWaveform();
-
-    xWave.setErrorBoxBelow(waveform);
-    return this;
-  }
-
-  setErrorBoxXAbove(waveform) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    var xWave = this.getXWaveform();
-    xWave.setErrorBoxAbove(waveform);
-    return this;
-  }
-
-  setErrorBar(waveform, checkMinMax = true) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-    this.errors.nb++;
-    this.errors.nb++;
-    this.errors.bars.bottom = waveform;
-    this.errors.bars.top = waveform;
-
-    if (checkMinMax) {
-      this._setData();
-    }
-  }
-
-  setErrorBarBelow(waveform, checkMinMax = true) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-    this.errors.nb++;
-    this.errors.bars.below = waveform;
-
-    if (checkMinMax) {
-      this._setData();
-    }
-  }
-
-  setErrorBarAbove(waveform, checkMinMax = true) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    this.errors.nb++;
-    this.errors.bars.above = waveform;
-
-    if (checkMinMax) {
-      this._setData();
-    }
-  }
-
-  setErrorBox(waveform, checkMinMax = true) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-    this.errors.nb++;
-    this.errors.nb++;
-    this.errors.boxes.above = waveform;
-    this.errors.boxes.below = waveform;
-
-    if (checkMinMax) {
-      this._setData();
-    }
-  }
-
-  setErrorBoxBelow(waveform, checkMinMax = true) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-    this.errors.nb++;
-    this.errors.boxes.below = waveform;
-
-    if (checkMinMax) {
-      this._setData();
-    }
-  }
-
-  setErrorBoxAbove(waveform, checkMinMax = true) {
-
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
-    }
-
-    this.errors.boxes.above = waveform;
-    if (checkMinMax) {
-      this._setData();
-    }
-  }
-
-  getMaxError(i, side = Waveform.ABOVE) {
-
-    return Math.max(this.getMaxErrorType(i, side, Waveform.BOX), this.getMaxErrorType(i, side, Waveform.BAR));
-  }
-
-  getMaxErrorType(i, side = Waveform.ABOVE, type = Waveform.BOX) {
-
-    let stack;
-    if (type == Waveform.BOX) {
-      stack = this.errors.boxes;
-    } else if (type == Waveform.BAR) {
-      stack = this.errors.bars;
-    } else {
-      throw 'Unknown type of error';
-    }
-
-    let waveform;
-    if (!(waveform = stack[side])) {
-      if (side == Waveform.ABOVE) {
-        if (stack[side] == Waveform.BELOW) {
-          waveform = stack.below;
-        }
-      } else {
-        if (stack[side] == Waveform.ABOVE) {
-          waveform = stack.above;
-        }
-      }
-    }
-
-    if (!waveform) {
-      return 0;
-    }
-
-    return waveform.getY(i);
-  }
-
-  getErrorBarXBelow(index) {
-    return this.getErrorX(index, Waveform.BELOW, Waveform.BAR);
-  }
-  getErrorBarXAbove(index) {
-    return this.getErrorX(index, Waveform.ABOVE, Waveform.BAR);
-  }
-  getErrorBoxXBelow(index) {
-    return this.getErrorX(index, Waveform.BELOW, Waveform.BOX);
-  }
-  getErrorBoxXAbove(index) {
-    return this.getErrorX(index, Waveform.ABOVE, Waveform.BOX);
-  }
-
-  getErrorBarYBelow(index) {
-    return this.getError(index, Waveform.BELOW, Waveform.BAR);
-  }
-  getErrorBarYAbove(index) {
-    return this.getError(index, Waveform.ABOVE, Waveform.BAR);
-  }
-  getErrorBoxYBelow(index) {
-    return this.getError(index, Waveform.BELOW, Waveform.BOX);
-  }
-  getErrorBoxYAbove(index) {
-    return this.getError(index, Waveform.ABOVE, Waveform.BOX);
-  }
-
-  getErrorX(index, side = Waveform.ABOVE, type = Waveform.BAR) {
-
-    if (!this.hasXWaveform()) {
-      return false;
-    }
-
-    return this.xdata.getError(index, side, type);
-  }
-
-  getError(index, side = Waveform.ABOVE, type = Waveform.BAR) {
-
-    let errors = type == Waveform.BAR ? this.errors.bars : this.errors.boxes;
-
-    if (!errors) {
-      return false;
-    }
-
-    let wave;
-    if (wave = side == Waveform.ABOVE ? errors.above : errors.below) {
-
-      if (wave == Waveform.ABOVE && side == Waveform.BELOW) {
-        wave = errors.above;
-      } else if (wave == Waveform.BELOW && side == Waveform.ABOVE) {
-        wave = errors.below;
-      }
-
-      if (!wave) {
-        return false;
-      }
-
-      return wave.getY(index);
-    }
-  }
-
-  hasErrorBars() {
-
-    return this.errors.nb > 0 || this.hasXWaveform() && this.xdata.errors.nb > 0;
-  }
-
 }
+
+const MULTIPLY = Symbol();
+const ADD = Symbol();
+const SUBTRACT = Symbol();
+const DIVIDE = Symbol();
+
 // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
 function pow2ceil(v) {
   v--;
@@ -3592,27 +3018,6 @@ function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexA
   return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
 }
 
-function euclidianSearch(targetX, targetY, haystackX, haystackY, scaleX = 1, scaleY = 1) {
-
-  let distance = Number.MAX_VALUE,
-      distance_i;
-
-  let index = -1;
-
-  for (var i = 0, l = haystackX.length; i < l; i++) {
-
-    distance_i = Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2);
-
-    if (distance_i < distance) {
-
-      index = i;
-      distance = distance_i;
-    }
-  }
-
-  return index;
-}
-
 function binarySearch(target, haystack, reverse) {
 
   let seedA = 0,
@@ -3633,7 +3038,7 @@ function binarySearch(target, haystack, reverse) {
   while (true) {
     i++;
     if (i > 100) {
-      throw 'Error loop';
+      throw "Error loop";
     }
 
     seedInt = Math.floor((seedA + seedB) / 2);
@@ -3677,20 +3082,6 @@ function binarySearch(target, haystack, reverse) {
     nanDirection *= -1;
   }
 }
-
-Waveform.BELOW = Symbol();
-Waveform.ABOVE = Symbol();
-
-Waveform.BOX = Symbol();
-Waveform.BAR = Symbol();
-
-const MULTIPLY = Symbol();
-const ADD = Symbol();
-const SUBTRACT = Symbol();
-const DIVIDE = Symbol();
-
-
-//export default Waveform
 
 /**
  * Default graph parameters
@@ -3806,7 +3197,7 @@ class Graph$1 extends EventEmitter {
      * Access directly the options of the graph using this public object.
      * @example graph.options.mouseActions.push( {  } );
      */
-    this.options = extend({}, GraphOptionsDefault, options);
+    this.options = extend$1({}, GraphOptionsDefault, options);
     // Options declaration must be placed before the doDom operation
 
     // doDom is a private method. We bind it to this thanks to ES6 features
@@ -4747,12 +4138,11 @@ class Graph$1 extends EventEmitter {
         let min = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues);
         let max = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues);
 
-        if (isFinite(min)) {
-          axis.setMinValueData(min);
-        }
-
         if (isFinite(max)) {
           axis.setMaxValueData(max);
+        }
+        if (isFinite(min)) {
+          axis.setMinValueData(min);
         }
       }
     }
@@ -5674,7 +5064,7 @@ class Graph$1 extends EventEmitter {
 
   orthogonalProjectionSetup() {
 
-    this.options.zAxis = extend(true, {
+    this.options.zAxis = extend$1(true, {
       maxZ: 10,
       minZ: 0,
       shiftX: -25,
@@ -5911,7 +5301,7 @@ class Graph$1 extends EventEmitter {
       // Avoid multiple creation of tracking lines
 
       // Creates a new shape called trackingLine, in the first layer (below everything)
-      this.trackingObject = this.newShape('line', extend(true, {
+      this.trackingObject = this.newShape('line', extend$1(true, {
         position: [{
           y: 'min'
         }, {
@@ -6829,7 +6219,7 @@ function refreshDrawingZone(graph) {
     shift[position][level] = Math.max(drawn, shift[position][level] || 0);
   }, false, false, true);
 
-  var shift2 = extend(true, {}, shift);
+  var shift2 = extend$1(true, {}, shift);
 
   // Applied to left and right
   graph._applyToAxes(function (axis, position) {
@@ -7896,7 +7286,7 @@ class Legend {
 
   constructor(graph, options) {
 
-    this.options = extend({}, legendDefaults, options);
+    this.options = extend$1({}, legendDefaults, options);
 
     this.graph = graph;
     this.svg = document.createElementNS(this.graph.ns, 'g');
@@ -8587,7 +7977,7 @@ class Axis extends EventEmitter {
     this.unitModificationTimeTicks = [[1, [1, 2, 5, 10, 20, 30]], [60, [1, 2, 5, 10, 20, 30]], [3600, [1, 2, 6, 12]], [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]];
 
     this.graph = graph;
-    this.options = extend(true, {}, defaults, overwriteoptions, options);
+    this.options = extend$1(true, {}, defaults, overwriteoptions, options);
 
     this.group = document.createElementNS(this.graph.ns, 'g');
     this.hasChanged = true;
@@ -9005,8 +8395,9 @@ class Axis extends EventEmitter {
 
     // 25.10.2017. This is to help in the case there's no autoscaling
     if (isNaN(this.getCurrentMin())) {
-      this.setCurrentMin(this.getMinValue());
-      this.cache();
+      //this.setCurrentMin( this.getMinValue() );
+      //this.cache();
+
     }
   }
 
@@ -9014,9 +8405,11 @@ class Axis extends EventEmitter {
     this.dataMax = max;
 
     // 25.10.2017. This is to help in the case there's no autoscaling
+    // 02.02.2018. Don't agree with this. Next time, put a link to show the use of this piece of code
     if (isNaN(this.getCurrentMax())) {
-      this.setCurrentMax(this.getMaxValue());
-      this.cache();
+      //     this.setCurrentMax( this.getMaxValue() );
+      //this.cache();
+
     }
   }
 
@@ -9437,7 +8830,6 @@ class Axis extends EventEmitter {
     if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val === undefined)) {
       val = this.getMinValue();
     }
-
     this.currentAxisMin = val;
     if (this.options.logScale) {
       this.currentAxisMin = Math.max(1e-50, val);
@@ -10131,6 +9523,7 @@ class Axis extends EventEmitter {
     // Ex 50 / (100) * (1000 - 700) + 700
 
     //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
+
     if (!this.options.logScale) {
 
       return (value - this.getCurrentMin()) / this.getCurrentInterval() * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
@@ -13206,7 +12599,9 @@ class Serie extends EventEmitter {
   setWaveform(waveform) {
 
     if (!(waveform instanceof Waveform)) {
-      throw 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance';
+      console.trace();
+      console.error(waveform);
+      throw new Error('Cannot assign waveform to serie. Waveform is not of the proper Waveform instance');
     }
 
     this.waveform = waveform;
@@ -13737,15 +13132,15 @@ var ErrorBarMixin = {
 
       if (errorstyles.all) {
 
-        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles.all);
-        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles.all);
+        errorstyles[pairs[j][1]] = extend$1(true, {}, errorstyles.all);
+        errorstyles[pairs[j][2]] = extend$1(true, {}, errorstyles.all);
       }
 
       if (errorstyles[pairs[j][0]]) {
         //.x, .y
 
-        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles[pairs[j][0]]);
-        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles[pairs[j][0]]);
+        errorstyles[pairs[j][1]] = extend$1(true, {}, errorstyles[pairs[j][0]]);
+        errorstyles[pairs[j][2]] = extend$1(true, {}, errorstyles[pairs[j][0]]);
       }
 
       for (var k = 1; k <= 2; k++) {
@@ -14000,25 +13395,6 @@ class SerieLine extends Serie {
     }
   }
 
-  setWaveform(waveform) {
-
-    if (!(waveform instanceof Waveform)) {
-      throw 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance';
-    }
-
-    this.waveform = waveform;
-
-    this.minX = this.waveform.getXMin();
-    this.maxX = this.waveform.getXMax();
-    this.minY = this.waveform.getMin();
-    this.maxY = this.waveform.getMax();
-
-    this.graph.updateDataMinMaxAxes();
-    this.dataHasChanged();
-
-    return this;
-  }
-
   /**
    * Sets the options of the serie
    * @see SerieLineDefaultOptions
@@ -14027,7 +13403,7 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   setOptions(options) {
-    this.options = extend(true, {}, SerieLine.prototype.defaults, options || {});
+    this.options = extend$1(true, {}, SerieLine.prototype.defaults, options || {});
     // Unselected style
     this.styles.unselected = {
       lineColor: this.options.lineColor,
@@ -15312,7 +14688,7 @@ class SerieLine extends Serie {
 
       var s = this.styles[i];
       if (s) {
-        this.styles[i] = extend(true, {}, this.styles.unselected, s);
+        this.styles[i] = extend$1(true, {}, this.styles.unselected, s);
       }
     }
   }
@@ -15320,7 +14696,7 @@ class SerieLine extends Serie {
   extendStyle(styleTarget, styleOrigin) {
     var s = this.styles[styleTarget];
 
-    this.styles[styleTarget] = extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
+    this.styles[styleTarget] = extend$1(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
 
     this.styles[styleTarget].markers.map(function (marker) {
       if (marker.dom) {
@@ -15455,7 +14831,7 @@ class SerieLine extends Serie {
     this.styles[selectionType || 'unselected'].markers = families;
 
     if (applyToSelected) {
-      this.styles.selected.markers = extend(true, {}, families);
+      this.styles.selected.markers = extend$1(true, {}, families);
     }
 
     this._recalculateMarkerPoints(selectionType, families);
@@ -16175,7 +15551,7 @@ class SerieBox extends Serie {
 
   setStyle(style, selectionType = 'unselected') {
     //console.log( style, selectionType );
-    this.styles[selectionType] = extend({}, this.default().defaultStyle, this.styles.unselected, style);
+    this.styles[selectionType] = extend$1({}, this.default().defaultStyle, this.styles.unselected, style);
     this.styleHasChanged(selectionType);
   }
 
@@ -18505,7 +17881,7 @@ class SerieDensityMap extends Serie {
    * @memberof SerieDensityMap
    */
   setOptions(options) {
-    this.options = extend(true, {}, this.defaults(), options || {});
+    this.options = extend$1(true, {}, this.defaults(), options || {});
     // Unselected style
 
     return this;
@@ -21254,20 +20630,20 @@ class ShapeLine extends Shape {
     }
 
     if (this.moving) {
-
+      console.log(this._data);
       // If the pos2 is defined by a delta, no need to move them
-      if (pos.x) {
+      if (pos.x && !this._data.noX) {
         pos.deltaPosition('x', deltaX, this.getXAxis());
       }
-      if (pos.y) {
+      if (pos.y && !this._data.noY) {
         pos.deltaPosition('y', deltaY, this.getYAxis());
       }
 
       // If the pos2 is defined by a delta, no need to move them
-      if (pos2.x) {
+      if (pos2.x && !this._data.noX) {
         pos2.deltaPosition('x', deltaX, this.getXAxis());
       }
-      if (pos2.y) {
+      if (pos2.y && !this._data.noY) {
         pos2.deltaPosition('y', deltaY, this.getYAxis());
       }
     }
@@ -21777,7 +21153,7 @@ class ShapeNMRIntegral extends Shape {
           }
            this.setHandles();*/
 
-    this.ratioLabel && this.updateIntegralValue(this.ratioLabel) || this.updateLabels();
+    this.serie.ratioLabel && this.updateIntegralValue(this.serie.ratioLabel) || this.updateLabels();
 
     this.changed();
     this.handleCondition = !this.xor(incrementation == -1, flipped);
@@ -21788,19 +21164,19 @@ class ShapeNMRIntegral extends Shape {
     return true;
   }
 
-  updateIntegralValue(ratioLabel = this.ratioLabel, forceValue) {
-
+  updateIntegralValue(ratioLabel = this.serie.ratioLabel, forceValue) {
+    console.log(ratioLabel);
     if (ratioLabel) {
-      this.ratioLabel = ratioLabel;
+      this.serie.ratioLabel = ratioLabel;
     }
 
-    if (forceValue !== undefined) {
-      this.ratioLabel = forceValue / this.sumVal;
+    if (!isNaN(forceValue) && !isNaN(this.sumVal) && this.sumVal) {
+      this.serie.ratioLabel = forceValue / this.sumVal;
     }
 
     this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : 'N/A', 0);
     this.updateLabels();
-    return this.ratioLabel;
+    return this.serie.ratioLabel;
   }
 
   getAxis() {
@@ -21979,7 +21355,7 @@ class ShapeRectangle extends Shape {
 
       case 'sides':
 
-        extend(handles, {
+        extend$1(handles, {
           sides: {
             top: true,
             bottom: true,
@@ -23078,7 +22454,7 @@ class PluginShape extends Plugin {
 
     let shapeProperties = this.options.properties;
 
-    extend(true, shapeInfo, this.options);
+    extend$1(true, shapeInfo, this.options);
 
     this.emit('beforeNewShape', e, shapeInfo);
 
@@ -25001,7 +24377,7 @@ class PluginAxisSplitting extends Plugin {
       marginMin: this.options.axes.margins.low,
       marginMax: this.options.axes.margins.high
     };
-    return extend(true, defaults, options);
+    return extend$1(true, defaults, options);
   }
 
   preDraw() {
@@ -25175,7 +24551,7 @@ var SplitAxis = function (mixin) {
       super(graph, position, options);
       this.axes = [];
       this.position = position;
-      this.constructorOptions = extend(true, {}, defaultAxisConstructorOptions, options);
+      this.constructorOptions = extend$1(true, {}, defaultAxisConstructorOptions, options);
 
       this._splitVal = [];
     }

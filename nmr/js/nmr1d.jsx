@@ -23,6 +23,7 @@ class NMR1D extends React.Component {
 		this.reactFormArea = new FormArea();
 
 		this.graph = new Graph( {
+
 			close: false,
 			plugins: {
 				'zoom': { zoomMode: 'x', transition: false },
@@ -144,14 +145,17 @@ class NMR1D extends React.Component {
 
 		if( ! this.props.options.slave ) {
 
-			this.graph.getLeftAxis().hide();
-			this.graph.getBottomAxis().gridsOff();
-			
 			this.graph
-				.getBottomAxis()
-				.flip( true )
-				.setLabel( '\u03B4' )
-				.setUnit( 'ppm' );
+					.getLeftAxis()
+					.hide()
+					.setAxisDataSpacing( 0.1, 0.1 );
+
+			this.graph
+					.getBottomAxis()
+					.gridsOff()
+					.flip( true )
+					.setLabel( '\u03B4' )
+					.setUnit( 'ppm' );
 
 		} else {
 
@@ -565,7 +569,7 @@ class NMR1D extends React.Component {
 
 
 		if( nextProps.options.legend && ! this.legend ) {
-			this.makeLegend();
+			this.makeLegend( { frame: false });
 		}
 
 		return;
@@ -785,7 +789,7 @@ class NMR1D extends React.Component {
 							></div>
 						</div>
 					</td>
-					<td>
+					<td style={ { 'verticalAlign': 'top' } }>
 								
 				<div ref={ el => this.reactFormArea.setDom( el ) }>
 

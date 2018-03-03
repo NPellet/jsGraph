@@ -625,9 +625,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           self.handleMouseDown(e);
         });
 
-        this.group.addEventListener('click', function (e) {
-          self.handleClick(e);
-        });
+        this.group.addEventListener('click', this.handleClick.bind(this));
 
         this.group.addEventListener('dblclick', function (e) {
 
@@ -975,6 +973,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       this.redrawImpl();
       if (!this.position) {
+        this.updateLabels();
         return this;
       }
 
@@ -6122,7 +6121,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.70'
+        'data-jsgraph-version': 'v2.0.71'
       });
     } catch (e) {
       // ignore
@@ -6298,17 +6297,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     graph.dom.setAttribute('tabindex', 0);
 
     graph.dom.addEventListener('keydown', e => {
-      console.log('d');
       _handleKey(graph, e, 'keydown');
     });
 
     graph.dom.addEventListener('keypress', e => {
-      console.log('p');
       _handleKey(graph, e, 'keypress');
     });
 
     graph.dom.addEventListener('keyup', e => {
-      console.log('u');
       _handleKey(graph, e, 'keyup');
     });
     // Not sure this has to be prevented
@@ -9399,7 +9395,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     draw(force) {
       // Serie redrawing
-
 
       super.draw(...arguments);
 
@@ -23984,7 +23979,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     createDom() {
       this._dom = document.createElementNS(this.graph.ns, 'path');
+      this._domShadow = document.createElementNS(this.graph.ns, 'path');
+      this._domShadow.jsGraphIsShape = this;
       this._dom.setAttribute('pointer-events', 'stroke');
+      this._domShadow.setAttribute('pointer-events', 'stroke');
+      this._domShadow.setAttribute('stroke-width', '12');
+      this._domShadow.setAttribute('fill', 'transparent');
+      this._domShadow.setAttribute('stroke', 'transparent');
+      this.group.appendChild(this._domShadow);
     }
 
     initImpl() {
@@ -24035,7 +24037,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() || pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax()) {
         this.setDom('d', '');
-        this.emptyLabels();
+        this._domShadow.setAttribute('d', '');
+
+        this.hideLabel(0);
         return false;
       }
 
@@ -24200,6 +24204,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.firstPointY = baseLine;
 
       this.setDom('d', currentLine);
+      this._domShadow.setAttribute('d', currentLine);
 
       this.firstX = firstX;
       this.firstY = firstY;
@@ -24220,13 +24225,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return true;
     }
 
-    updateIntegralValue(ratioLabel = this.ratioLabel) {
+    updateIntegralValue(ratioLabel = this.ratioLabel, forceValue) {
 
       if (ratioLabel) {
         this.ratioLabel = ratioLabel;
       }
+
+      if (forceValue !== undefined) {
+        this.ratioLabel = forceValue / this.sumVal;
+      }
+
       this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : 'N/A', 0);
       this.updateLabels();
+      return this.ratioLabel;
     }
 
     getAxis() {

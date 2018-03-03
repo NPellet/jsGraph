@@ -91,27 +91,27 @@ class FormCoupling extends React.Component {
 
 			<form>	
 
-				<div className="row">
-					<div className="col-sm-4">Delta</div>
-					<div className="col-sm-4">
+				<div className="form-group row">
+					<label className="col-sm-4">Delta</label>
+					<div className="col-sm-8">
 						<div className="input-group">
 							<input type="number" className="form-control" onChange={ this.handleInputChange } name="delta" value={ this.state.delta } />
-							<span className="input-addon">ppm</span>
+							<div className="input-group-append"><span className="input-group-text">ppm</span></div>
 						</div>
 					</div>
 				</div>
-				<div className="row">
-					<div className="col-sm-12">Coupling</div>
-					<div className="col-sm-12">
+				<div className="form-group row">
+					<label className="col-sm-4">Coupling</label>
+					<div className="col-sm-8">
 
 						<table>	
 							<thead>	
 								<tr>
 									<th>
-										Multiplicity
+										Mult.
 									</th>
 									<th>
-										Constant (Hz)
+										J (Hz)
 									</th>
 									<th>
 										
@@ -137,10 +137,9 @@ class FormCoupling extends React.Component {
 					</div>
 				</div>
 
-				<div className="col-sm-12">
-					<button type="button" className="btn btn-default" onClick={ () => this.props.onValidate( this.state ) }>Ok</button>
-					<button type="button" className="btn btn-default" onClick={ () => this.props.onCancel( this.state ) }>Cancel</button>
-					<button type="button" className="btn btn-default" onClick={ () => this.props.onSplit( this.state ) }>New signal</button>
+				<div className="col-sm-12 btn-group">
+					<button type="button" className="btn btn-light" onClick={ () => this.props.onValidate( this.state ) }>Ok</button>
+					<button type="button" className="btn btn-light" onClick={ () => this.props.onSplit( this.state ) }>New signal</button>
 				</div>
 			</form> 
 		);

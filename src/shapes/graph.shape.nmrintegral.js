@@ -260,7 +260,7 @@ class ShapeNMRIntegral extends Shape {
 
           this.setHandles();*/
 
-    ( this.ratioLabel && this.updateIntegralValue( this.ratioLabel ) ) || this.updateLabels();
+    ( this.serie.ratioLabel && this.updateIntegralValue( this.serie.ratioLabel ) ) || this.updateLabels();
 
     this.changed();
     this.handleCondition = !this.xor( incrementation == -1, flipped );
@@ -271,19 +271,19 @@ class ShapeNMRIntegral extends Shape {
     return true;
   }
 
-  updateIntegralValue( ratioLabel = this.ratioLabel, forceValue ) {
-
+  updateIntegralValue( ratioLabel = this.serie.ratioLabel, forceValue ) {
+    console.log( ratioLabel );
     if ( ratioLabel ) {
-      this.ratioLabel = ratioLabel;
+      this.serie.ratioLabel = ratioLabel;
     }
 
-    if ( forceValue !== undefined ) {
-      this.ratioLabel = forceValue / this.sumVal;
+    if ( !isNaN( forceValue ) && !isNaN( this.sumVal ) && this.sumVal ) {
+      this.serie.ratioLabel = forceValue / this.sumVal;
     }
 
     this.setLabelText( ratioLabel ? ( Math.round( 100 * this.sumVal * ratioLabel ) / 100 ).toPrecision( 3 ) : 'N/A', 0 );
     this.updateLabels();
-    return this.ratioLabel;
+    return this.serie.ratioLabel;
   }
 
   getAxis() {

@@ -147,25 +147,6 @@ class SerieLine extends Serie {
 
   }
 
-  setWaveform( waveform ) {
-
-    if ( !( waveform instanceof Waveform ) ) {
-      throw 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance';
-    }
-
-    this.waveform = waveform;
-
-    this.minX = this.waveform.getXMin();
-    this.maxX = this.waveform.getXMax();
-    this.minY = this.waveform.getMin();
-    this.maxY = this.waveform.getMax();
-
-    this.graph.updateDataMinMaxAxes();
-    this.dataHasChanged();
-
-    return this;
-  }
-
   /**
    * Sets the options of the serie
    * @see SerieLineDefaultOptions

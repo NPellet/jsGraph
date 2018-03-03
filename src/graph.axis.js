@@ -520,8 +520,8 @@ class Axis extends EventEmitter {
 
     // 25.10.2017. This is to help in the case there's no autoscaling
     if ( isNaN( this.getCurrentMin() ) ) {
-      this.setCurrentMin( this.getMinValue() );
-      this.cache();
+      //this.setCurrentMin( this.getMinValue() );
+      //this.cache();
 
     }
   }
@@ -530,9 +530,10 @@ class Axis extends EventEmitter {
     this.dataMax = max;
 
     // 25.10.2017. This is to help in the case there's no autoscaling
+    // 02.02.2018. Don't agree with this. Next time, put a link to show the use of this piece of code
     if ( isNaN( this.getCurrentMax() ) ) {
-      this.setCurrentMax( this.getMaxValue() );
-      this.cache();
+      //     this.setCurrentMax( this.getMaxValue() );
+      //this.cache();
 
     }
   }
@@ -958,7 +959,6 @@ class Axis extends EventEmitter {
     if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() || val === undefined ) ) ) {
       val = this.getMinValue();
     }
-
     this.currentAxisMin = val;
     if ( this.options.logScale ) {
       this.currentAxisMin = Math.max( 1e-50, val );
@@ -1675,6 +1675,7 @@ class Axis extends EventEmitter {
     // Ex 50 / (100) * (1000 - 700) + 700
 
     //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
+
     if ( !this.options.logScale ) {
 
       return ( value - this.getCurrentMin() ) / ( this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();

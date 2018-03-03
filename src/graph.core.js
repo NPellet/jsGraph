@@ -1062,16 +1062,14 @@ class Graph extends EventEmitter {
         let min = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues );
         let max = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues );
 
-        if ( isFinite( min ) ) {
-          axis.setMinValueData( min );
-        }
-
         if ( isFinite( max ) ) {
           axis.setMaxValueData( max );
         }
+        if ( isFinite( min ) ) {
+          axis.setMinValueData( min );
+        }
       }
     }
-
   }
 
   /**

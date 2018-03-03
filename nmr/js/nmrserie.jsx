@@ -52,13 +52,13 @@ class NMRSerie extends React.Component {
 	sumChanged( newSum, identifier ) {
 
 		if( Object.keys( this.sums ).length == 0 ) { // None for now
-	//		this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
+			//this.setState( { labelRatio: 1 / Object.values( this.sums )[ 0 ] } );
+		} else {
+			//this.setState( { labelRatio: labelValue / newSum } );
 		}
 
 		this.sums[ identifier ] = newSum;
 		this.rescaleIntegrals();
-
-
 	}
 
 	loaded( ) {
