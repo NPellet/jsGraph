@@ -1185,7 +1185,11 @@ class SerieLine extends Serie {
 
     if ( this.waveform ) {
 
-      const indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
+      try {
+        const indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
+      } catch ( e ) {
+        console.error( "Error while finding the closest index" );
+      }
 
       let returnObj = {};
 

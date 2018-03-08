@@ -3400,6 +3400,7 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
       nanDirection = 1;
 
   if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
+    console.log(target, haystack);
     throw new Error(`Target ${target} is not in the stack`);
   }
 
@@ -14777,7 +14778,11 @@ class SerieLine extends Serie {
 
     if (this.waveform) {
 
-      const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+      try {
+        const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+      } catch (e) {
+        console.error("Error while finding the closest index");
+      }
 
       let returnObj = {};
 
