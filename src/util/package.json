@@ -1,7 +1,7 @@
 {
   "name": "jsgraph-waveform",
   "description": "Waveform library that represents and manipulates arrays of data",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "scripts": {},
   "main": "dist/waveform.js",
   "files": [

@@ -417,6 +417,59 @@ class Waveform {
     return position;
   }
 
+  getIndexFromXY( xval, yval, useDataToUse = false, roundingMethod = Math.round, scaleX, scaleY ) {
+
+    let xdata, ydata;
+
+    if ( useDataToUse && this.dataInUse ) {
+
+      xdata = this.dataInUse.x;
+      ydata = this.dataInUse.y;
+
+    } else if ( this.xdata ) {
+
+      xdata = this.xdata.data;
+      ydata = this.data;
+    }
+
+    let position;
+
+    if ( this.isXMonotoneous() ) { // X lookup only
+
+      if ( this.hasXWaveform() ) { // The x value HAS to be rescaled
+        position = this.xdata.getIndexFromData( xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod );
+
+      } else {
+        position = Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
+      }
+    } else if ( !isNaN( yval ) ) {
+
+      position = this.getIndexFromDataXY( xval, xdata, yval, ydata, scaleX, scaleY );
+
+    } else {
+      return;
+    }
+
+    if ( useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX' ) { // In case of aggregation, round to the closest element of 4.
+      return position - ( position % 4 );
+    }
+
+    return position;
+  }
+
+  getIndexFromDataXY( valX, dataX, valY, dataY, scaleX = 1, scaleY = 1 ) {
+
+    let data, position;
+
+    valX -= this.getXShift();
+    valX /= this.getXScale();
+
+    valY -= this.getShift();
+    valY /= this.getScale();
+
+    return euclidianSearch( valX, valY, dataX, dataY, scaleX, scaleY );
+  }
+
   getIndexFromData( val, valCollection, isAscending, roundingMethod ) {
 
     if ( !this.isMonotoneous() ) {
@@ -1795,6 +1848,27 @@ function pow2floor( v ) {
 
 function getIndexInterpolate( value, valueBefore, valueAfter, indexBefore, indexAfter ) {
   return ( value - valueBefore ) / ( valueAfter - valueBefore ) * ( indexAfter - indexBefore ) + indexBefore;
+}
+
+function euclidianSearch( targetX, targetY, haystackX, haystackY, scaleX = 1, scaleY = 1 ) {
+
+  let distance = Number.MAX_VALUE,
+    distance_i;
+
+  let index = -1;
+
+  for ( var i = 0, l = haystackX.length; i < l; i++ ) {
+
+    distance_i = ( ( ( ( targetX - haystackX[ i ] ) * scaleX ) ** 2 + ( ( targetY - haystackY[ i ] ) * scaleY ) ** 2 ) );
+
+    if ( distance_i < distance ) {
+
+      index = i;
+      distance = distance_i;
+    }
+  }
+
+  return index;
 }
 
 function binarySearch( target, haystack, reverse = haystack[ haystack.length - 1 ] < haystack[ 0 ] ) {
