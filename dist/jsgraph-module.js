@@ -104,13 +104,18 @@ class Position {
             pos[i] = 0;
           } else {
 
-            var closest = serie.searchClosestValue(this.x);
+            try {
 
-            if (!closest) {
-              console.warn('Could not find y position for x = ' + this.x + ' on serie "' + serie.getName() + '". Returning 0 for y.');
+              var closest = serie.searchClosestValue(this.x);
+
+              if (!closest) {
+                throw new Error(`Could not find y position for x = ${this.x} on serie "${serie.getName()}". Returning 0 for y.`);
+              }
+
+              pos[i] = serie.getY(closest.yClosest);
+            } catch (error) {
+              console.error(error);
               pos[i] = 0;
-            } else {
-              pos[i] = serie.getY(closest.yMin);
             }
           }
         }
@@ -126,7 +131,7 @@ class Position {
         if (i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined) {
 
           if (!serie) {
-            throw 'Error. No serie exists. Cannot find y value';
+            throw new Error(`Error. No serie exists. Cannot find y value`);
             return;
           }
 
@@ -2076,6 +2081,22 @@ class Waveform {
     return this.maxY * this.getScale() + this.getShift();
   }
 
+  getDataMaxX() {
+    return this.maxX;
+  }
+
+  getDataMinX() {
+    return this.minX;
+  }
+
+  getDataMaxY() {
+    return this.maxY;
+  }
+
+  getDataMaxY() {
+    return this.minY;
+  }
+
   getDataY() {
     return this.data;
   }
@@ -3400,7 +3421,6 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
       nanDirection = 1;
 
   if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
-    console.log(target, haystack);
     throw new Error(`Target ${target} is not in the stack`);
   }
 
@@ -14778,20 +14798,24 @@ class SerieLine extends Serie {
 
     if (this.waveform) {
 
+      let indexX;
       try {
-        const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+
+        indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
       } catch (e) {
-        console.error("Error while finding the closest index");
+        console.log(e);
+        throw new Error(`Error while finding the closest index`);
+        return {};
       }
 
       let returnObj = {};
 
       let direction;
-
+      // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
       if (valX > this.waveform.getX(indexX)) {
-        direction = 0;
+        direction = -1;
       } else {
-        direction = 1;
+        direction = 0;
       }
 
       Object.assign(returnObj, {
@@ -22487,7 +22511,6 @@ class ShapeHTML extends Shape {
     } else {
       this.div.innerHTML = this.getProp('content');
     }
-
     super.redraw(...arguments);
   }
 

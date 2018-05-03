@@ -62,7 +62,6 @@ class ShapeHTML extends GraphShape {
     } else {
       this.div.innerHTML = this.getProp( 'content' );
     }
-
     super.redraw( ...arguments );
   }
 

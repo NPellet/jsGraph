@@ -1185,20 +1185,25 @@ class SerieLine extends Serie {
 
     if ( this.waveform ) {
 
+      let indexX;
       try {
-        const indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
+
+        indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
+
       } catch ( e ) {
-        console.error( "Error while finding the closest index" );
+        console.log( e );
+        throw new Error( `Error while finding the closest index` );
+        return {};
       }
 
       let returnObj = {};
 
       let direction;
-
+      // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
       if ( valX > this.waveform.getX( indexX ) ) {
-        direction = 0;
+        direction = -1;
       } else {
-        direction = 1;
+        direction = 0;
       }
 
       Object.assign( returnObj, {

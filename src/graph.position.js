@@ -103,13 +103,19 @@ class Position {
             pos[ i ] = 0;
           } else {
 
-            var closest = serie.searchClosestValue( this.x );
+            try {
 
-            if ( !closest ) {
-              console.warn( 'Could not find y position for x = ' + ( this.x ) + ' on serie "' + serie.getName() + '". Returning 0 for y.' );
+              var closest = serie.searchClosestValue( this.x );
+
+              if ( !closest ) {
+                throw new Error( `Could not find y position for x = ${ this.x } on serie "${ serie.getName() }". Returning 0 for y.` );
+              }
+
+              pos[ i ] = serie.getY( closest.yClosest );
+
+            } catch ( error ) {
+              console.error( error );
               pos[ i ] = 0;
-            } else {
-              pos[ i ] = serie.getY( closest.yMin );
             }
           }
         }
@@ -126,7 +132,7 @@ class Position {
         if ( i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined ) {
 
           if ( !serie ) {
-            throw 'Error. No serie exists. Cannot find y value';
+            throw new Error( `Error. No serie exists. Cannot find y value` );
             return;
           }
 

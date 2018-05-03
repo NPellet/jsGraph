@@ -6120,7 +6120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.79'
+        'data-jsgraph-version': 'v2.0.80'
       });
     } catch (e) {
       // ignore
@@ -7470,6 +7470,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return this.maxY * this.getScale() + this.getShift();
     }
 
+    getDataMaxX() {
+      return this.maxX;
+    }
+
+    getDataMinX() {
+      return this.minX;
+    }
+
+    getDataMaxY() {
+      return this.maxY;
+    }
+
+    getDataMaxY() {
+      return this.minY;
+    }
+
     getDataY() {
       return this.data;
     }
@@ -8795,7 +8811,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         nanDirection = 1;
 
     if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
-      console.log(target, haystack);
       throw new Error(`Target ${target} is not in the stack`);
     }
 
@@ -10065,20 +10080,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.waveform) {
 
+        let indexX;
         try {
-          const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+
+          indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
         } catch (e) {
-          console.error("Error while finding the closest index");
+          console.log(e);
+          throw new Error(`Error while finding the closest index`);
+          return {};
         }
 
         let returnObj = {};
 
         let direction;
-
+        // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
         if (valX > this.waveform.getX(indexX)) {
-          direction = 0;
+          direction = -1;
         } else {
-          direction = 1;
+          direction = 0;
         }
 
         Object.assign(returnObj, {
@@ -10854,13 +10873,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               pos[i] = 0;
             } else {
 
-              var closest = serie.searchClosestValue(this.x);
+              try {
 
-              if (!closest) {
-                console.warn('Could not find y position for x = ' + this.x + ' on serie "' + serie.getName() + '". Returning 0 for y.');
+                var closest = serie.searchClosestValue(this.x);
+
+                if (!closest) {
+                  throw new Error(`Could not find y position for x = ${this.x} on serie "${serie.getName()}". Returning 0 for y.`);
+                }
+
+                pos[i] = serie.getY(closest.yClosest);
+              } catch (error) {
+                console.error(error);
                 pos[i] = 0;
-              } else {
-                pos[i] = serie.getY(closest.yMin);
               }
             }
           }
@@ -10876,7 +10900,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           if (i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined) {
 
             if (!serie) {
-              throw 'Error. No serie exists. Cannot find y value';
+              throw new Error(`Error. No serie exists. Cannot find y value`);
               return;
             }
 
@@ -24756,7 +24780,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       } else {
         this.div.innerHTML = this.getProp('content');
       }
-
       super.redraw(...arguments);
     }
 
