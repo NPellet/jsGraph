@@ -2661,7 +2661,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     constructor(options) {
       super(...arguments);
-
       this.options = Object.assign({}, Plugin.default(), this.constructor.default(), options);
     }
 
@@ -6120,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.80'
+        'data-jsgraph-version': 'v2.0.81'
       });
     } catch (e) {
       // ignore
@@ -28170,7 +28169,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return 'hsl( ' + Math.round(hsl.h) + ', ' + Math.round(hsl.s * 100) + '%, ' + Math.round(hsl.l * 100) + '%)';
     }
 
-    colorizeAll(options) {
+    colorizeAll(options, callback = false) {
 
       let series, seriesLength;
 
@@ -28257,13 +28256,30 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           throw 'The serie ' + serie.getName() + ' does not implement the method `startingColor`';
         }
 
-        const colorString = this.buildHSLString({
-          h: options.startingColorHSL.h + index / (seriesLength - 1) * (options.endingColorHSL.h - options.startingColorHSL.h),
-          s: options.startingColorHSL.s + index / (seriesLength - 1) * (options.endingColorHSL.s - options.startingColorHSL.s),
-          l: options.startingColorHSL.l + index / (seriesLength - 1) * (options.endingColorHSL.l - options.startingColorHSL.l)
-        });
+        let colorString;
+
+        if (seriesLength == 1) {
+
+          colorString = this.buildHSLString({
+            h: options.startingColorHSL.h,
+            s: options.startingColorHSL.s,
+            l: options.startingColorHSL.l
+          });
+        } else {
+
+          colorString = this.buildHSLString({
+            h: options.startingColorHSL.h + index / (seriesLength - 1) * (options.endingColorHSL.h - options.startingColorHSL.h),
+            s: options.startingColorHSL.s + index / (seriesLength - 1) * (options.endingColorHSL.s - options.startingColorHSL.s),
+            l: options.startingColorHSL.l + index / (seriesLength - 1) * (options.endingColorHSL.l - options.startingColorHSL.l)
+          });
+        }
 
         serie.setLineColor(colorString);
+
+        if (typeof callback == 'function') {
+          callback(index, colorString);
+        }
+
         return colorString;
       });
     }

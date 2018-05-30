@@ -69,7 +69,7 @@ class PluginMakeTracesDifferent extends Plugin {
     return 'hsl( ' + Math.round( hsl.h ) + ', ' + Math.round( hsl.s * 100 ) + '%, ' + Math.round( hsl.l * 100 ) + '%)';
   }
 
-  colorizeAll( options ) {
+  colorizeAll( options, callback = false ) {
 
     let series,
       seriesLength;
@@ -157,13 +157,31 @@ class PluginMakeTracesDifferent extends Plugin {
         throw 'The serie ' + serie.getName() + ' does not implement the method `startingColor`';
       }
 
-      const colorString = this.buildHSLString( {
-        h: options.startingColorHSL.h + index / ( seriesLength - 1 ) * ( options.endingColorHSL.h - options.startingColorHSL.h ),
-        s: options.startingColorHSL.s + index / ( seriesLength - 1 ) * ( options.endingColorHSL.s - options.startingColorHSL.s ),
-        l: options.startingColorHSL.l + index / ( seriesLength - 1 ) * ( options.endingColorHSL.l - options.startingColorHSL.l )
-      } );
+      let colorString;
+
+      if ( seriesLength == 1 ) {
+
+        colorString = this.buildHSLString( {
+          h: options.startingColorHSL.h,
+          s: options.startingColorHSL.s,
+          l: options.startingColorHSL.l
+        } );
+
+      } else {
+
+        colorString = this.buildHSLString( {
+          h: options.startingColorHSL.h + index / ( seriesLength - 1 ) * ( options.endingColorHSL.h - options.startingColorHSL.h ),
+          s: options.startingColorHSL.s + index / ( seriesLength - 1 ) * ( options.endingColorHSL.s - options.startingColorHSL.s ),
+          l: options.startingColorHSL.l + index / ( seriesLength - 1 ) * ( options.endingColorHSL.l - options.startingColorHSL.l )
+        } );
+      }
 
       serie.setLineColor( colorString );
+
+      if ( typeof callback == 'function' ) {
+        callback( index, colorString );
+      }
+
       return colorString;
     } );
   }

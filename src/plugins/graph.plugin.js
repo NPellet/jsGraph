@@ -13,7 +13,6 @@ class Plugin extends EventEmitter {
 
   constructor( options ) {
     super( ...arguments );
-
     this.options = Object.assign( {}, Plugin.default(), this.constructor.default(), options );
   }
 
