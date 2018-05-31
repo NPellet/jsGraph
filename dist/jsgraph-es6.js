@@ -6119,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.83'
+        'data-jsgraph-version': 'v2.0.84'
       });
     } catch (e) {
       // ignore
@@ -7240,6 +7240,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           minY = dataY[0],
           maxY = dataY[0];
 
+      if (isNaN(minY)) {
+        minY = Number.MAX_VALUE;
+      }
+
+      if (isNaN(maxY)) {
+        maxY = -Number.MAX_VALUE;
+      }
+
       this._monotoneous = true;
 
       for (; i < l; i++) {
@@ -7882,6 +7890,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       let xIndex;
 
       if (this.xdata) {
+
         let xData = this.xdata.getData();
 
         try {

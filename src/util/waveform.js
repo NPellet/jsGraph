@@ -303,6 +303,14 @@ class Waveform {
       minY = dataY[ 0 ],
       maxY = dataY[ 0 ];
 
+    if ( isNaN( minY ) ) {
+      minY = Number.MAX_VALUE;
+    }
+
+    if ( isNaN( maxY ) ) {
+      maxY = -Number.MAX_VALUE;
+    }
+
     this._monotoneous = true;
 
     for ( ; i < l; i++ ) {
@@ -940,6 +948,7 @@ class Waveform {
     let xIndex;
 
     if ( this.xdata ) {
+
       let xData = this.xdata.getData();
 
       try {
