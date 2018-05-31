@@ -2114,6 +2114,24 @@ class Axis extends EventEmitter {
   }
 
   /**
+   * Sets the color of the axis, the ticks and the label
+   * @memberof Axis
+   * @param {String} color - The new color of the primary ticks
+   * @return {Axis} The current axis
+   * @since 2.0.82
+   */
+  setColor( color = 'black' ) {
+    this.options.axisColor = color;
+    this.options.primaryTicksColor = color;
+    this.options.secondaryTicksColor = color;
+    this.options.ticksLabelColor = color;
+    this.options.primaryGridColor = color;
+    this.options.secondaryGridColor = color;
+    this.options.labelColor = color;
+    return this;
+  }
+
+  /**
    * Sets the axis color
    * @memberof Axis
    * @param {String} color - The color to set the axis

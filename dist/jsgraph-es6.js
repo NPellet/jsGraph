@@ -6119,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.81'
+        'data-jsgraph-version': 'v2.0.82'
       });
     } catch (e) {
       // ignore
@@ -14572,6 +14572,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     turnGridsOn() {
       return this.gridsOn(...arguments);
+    }
+
+    /**
+     * Sets the color of the axis, the ticks and the label
+     * @memberof Axis
+     * @param {String} color - The new color of the primary ticks
+     * @return {Axis} The current axis
+     * @since 2.0.82
+     */
+    setColor(color = 'black') {
+      this.options.axisColor = color;
+      this.options.primaryTicksColor = color;
+      this.options.secondaryTicksColor = color;
+      this.options.ticksLabelColor = color;
+      this.options.primaryGridColor = color;
+      this.options.secondaryGridColor = color;
+      this.options.labelColor = color;
+      return this;
     }
 
     /**

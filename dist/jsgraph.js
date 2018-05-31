@@ -6879,7 +6879,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.81'
+        'data-jsgraph-version': 'v2.0.82'
       });
     } catch (e) {
       // ignore
@@ -15789,6 +15789,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'turnGridsOn',
       value: function turnGridsOn() {
         return this.gridsOn.apply(this, arguments);
+      }
+    }, {
+      key: 'setColor',
+      value: function setColor() {
+        var color = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'black';
+
+        this.options.axisColor = color;
+        this.options.primaryTicksColor = color;
+        this.options.secondaryTicksColor = color;
+        this.options.ticksLabelColor = color;
+        this.options.primaryGridColor = color;
+        this.options.secondaryGridColor = color;
+        this.options.labelColor = color;
+        return this;
       }
     }, {
       key: 'setAxisColor',
