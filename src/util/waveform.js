@@ -941,7 +941,13 @@ class Waveform {
 
     if ( this.xdata ) {
       let xData = this.xdata.getData();
-      xIndex = binarySearch( x, xData, !this.xdata.getMonotoneousAscending() );
+
+      try {
+        xIndex = binarySearch( x, xData, !this.xdata.getMonotoneousAscending() );
+      } catch ( e ) {
+        return NaN;
+      }
+
       if ( xData[ xIndex ] == x ) {
         return yData[ xIndex ];
       }

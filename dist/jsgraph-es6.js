@@ -6119,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.82'
+        'data-jsgraph-version': 'v2.0.83'
       });
     } catch (e) {
       // ignore
@@ -7883,7 +7883,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.xdata) {
         let xData = this.xdata.getData();
-        xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
+
+        try {
+          xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
+        } catch (e) {
+          return NaN;
+        }
+
         if (xData[xIndex] == x) {
           return yData[xIndex];
         }
