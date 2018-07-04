@@ -6119,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.84'
+        'data-jsgraph-version': 'v2.0.85'
       });
     } catch (e) {
       // ignore
@@ -19085,8 +19085,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           text.setAttribute('transform', 'translate(' + dx + ', 3)');
-
-          text.setAttribute('color', this.options.color);
+          text.setAttribute('fill', this.options.color);
 
           if (line) {
             g.appendChild(line);
