@@ -6119,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.85'
+        'data-jsgraph-version': 'v2.0.86'
       });
     } catch (e) {
       // ignore
@@ -23214,6 +23214,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this._shapeZoom.setHandlePos(Math.pow(this.positiveDelta, 3), this.maxZ);
       }
+    }
+
+    handleMouseMove(xValue, doMarker, yValue) {
+
+      var valX = xValue || this.getXAxis().getMouseVal(),
+          valY = yValue || this.getYAxis().getMouseVal();
+
+      return {
+        trueX: valX,
+        interpolatedY: valY,
+        xClosest: valX,
+        yClosest: valY
+      };
     }
 
     /**

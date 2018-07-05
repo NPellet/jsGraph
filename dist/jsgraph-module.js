@@ -18595,6 +18595,19 @@ class SerieContour extends SerieLine {
     }
   }
 
+  handleMouseMove(xValue, doMarker, yValue) {
+
+    var valX = xValue || this.getXAxis().getMouseVal(),
+        valY = yValue || this.getYAxis().getMouseVal();
+
+    return {
+      trueX: valX,
+      interpolatedY: valY,
+      xClosest: valX,
+      yClosest: valY
+    };
+  }
+
   /**
    * Sets rainbow colors based on hsl format
    * @memberof SerieContour.prototype
