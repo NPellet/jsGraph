@@ -1,5 +1,5 @@
 import FitLM from './fit_lm';
-import extend from 'extend';
+import extend from '../graph.util';
 
 class Waveform {
 

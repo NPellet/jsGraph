@@ -74,6 +74,14 @@ module.exports = function ( grunt ) {
             },
 
 
+            raytracer: {
+
+                files: {
+                      '/Users/normanpellet/Documents/Candlelight/code/board_generator/raytracer/node_modules/node-jsgraph/dist/jsgraph-module.js': 'dist/jsgraph-module.js'
+                }
+            },
+
+
             candlelight: {
 
                 files: {

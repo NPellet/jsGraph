@@ -1317,6 +1317,9 @@ class Axis extends EventEmitter {
 
   forcePrimaryTickUnit( primaryInterval ) {
     this.options.primaryTickUnit = primaryInterval;
+
+    this.decimals = Math.max( 0, Math.round( -Math.log( primaryInterval ) / Math.log( 10 ) ) );
+
   }
 
   forcePrimaryTickUnitMax( value ) {
@@ -1367,7 +1370,7 @@ class Axis extends EventEmitter {
     while ( incrTick <= max ) {
 
       loop++;
-      if ( loop > 200 ) {
+      if ( loop > 1000 ) {
         break;
       }
 
@@ -1771,7 +1774,7 @@ class Axis extends EventEmitter {
       if ( isNaN( value ) ) {
         return '';
       }
-
+      console.log( dec, value, this.decimals, this.getExponentialFactor(), this.getExponentialLabelFactor() );
       if ( dec > 0 ) {
         value = value.toFixed( dec );
       } else {
@@ -2432,7 +2435,9 @@ class Axis extends EventEmitter {
   }
 
   setTickContent( dom, val, options ) {
-    if ( !options ) options = {};
+    if ( !options ) {
+      options = {};
+    }
 
     if ( options.overwrite || !options.exponential ) {
 

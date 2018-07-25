@@ -124,11 +124,10 @@ class SerieDensityMap extends Serie {
    * @see SerieDensityMap#autoColorMapBinBoundaries
    * @see SerieDensityMap#setPxPerBin
    */
-  setDensityMap( densitymap, fromX, deltaX, numX, fromY, deltaY, numY ) {
+  setDensityMap( densitymap, fromX, deltaX, fromY, deltaY ) {
 
     var i,
       j,
-      l = this.data.length,
       indexX, indexY;
 
     var binMin = Number.POSITIVE_INFINITY;
@@ -145,7 +144,7 @@ class SerieDensityMap extends Serie {
 
     this.maxIndexX = densitymap.length;
     this.maxIndexY = densitymap[ 0 ].length;
-
+    console.log( densitymap );
     this.binMin = binMin;
     this.binMax = binMax;
 
@@ -431,9 +430,15 @@ class SerieDensityMap extends Serie {
    * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
    * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );
    */
-  setColorMapBinBoundaries( min, max ) {
+  setColorMapBinBoundaries( min, max, _internal ) {
     this.colorMapMin = min;
     this.colorMapMax = max;
+
+    if ( !_internal ) {
+      // If the method is called externally, the bins must be fixed and not automatically scaled when the draw method is invoked.
+      this.callbackColorMapMinMax = 'manual';
+    }
+
     return this;
   }
 
@@ -527,6 +532,7 @@ class SerieDensityMap extends Serie {
     this.opacities = opacities;
     this.colorMap = colorMap;
     this.colorMapNum = numColors;
+
     return this;
   }
 
@@ -538,7 +544,7 @@ class SerieDensityMap extends Serie {
    * @return {SerieDensityMap} The current instance
    */
   autoColorMapHSL( colorStops, method = 'linear' ) {
-    this.colorMapHSV( colorStops, 100, method );
+    this.colorMapHSL( colorStops, 100, method );
     return this;
   }
 
@@ -608,10 +614,11 @@ class SerieDensityMap extends Serie {
     if ( !this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto' ) {
 
       this.autoColorMapBinBoundaries();
-    } else {
-      var val = this.callbackColorMapMinMax( this.binMin, this.binMax );
 
-      this.setColorMapBinBoundaries( val[ 0 ], val[ 1 ] );
+    } else if ( typeof this.callbackColorMapMinMax == 'function' ) {
+
+      var val = this.callbackColorMapMinMax( this.binMin, this.binMax );
+      this.setColorMapBinBoundaries( val[ 0 ], val[ 1 ], true );
     }
 
     var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
@@ -620,6 +627,8 @@ class SerieDensityMap extends Serie {
     for ( var i = 0; i < this.paths.length; i++ ) {
       this.paths[ i ] = '';
     }
+
+    console.log( this.maxIndexX, this.maxIndexY );
 
     for ( var i = 0; i < this.maxIndexX; i++ ) {
 

@@ -1,5 +1,3 @@
-import extend from 'extend';
-
 function _parsePx(px) {
   if (px && px.indexOf && px.indexOf('px') > -1) {
     return parseInt(px.replace('px', ''));
@@ -631,7 +629,7 @@ var isPlainObject = function isPlainObject(obj) {
   return typeof key === 'undefined' || hasOwn.call(obj, key);
 };
 
-function extend$1() {
+function extend() {
   var options, name, src, copy, copyIsArray, clone;
   var target = arguments[0];
   var i = 1;
@@ -669,7 +667,7 @@ function extend$1() {
             }
 
             // Never move original objects, clone them
-            target[name] = extend$1(deep, clone, copy);
+            target[name] = extend(deep, clone, copy);
 
             // Don't bring in undefined values
           } else if (typeof copy !== 'undefined') {
@@ -683,6 +681,8 @@ function extend$1() {
   // Return the modified object
   return target;
 }
+
+var extend$1 = {};
 
 function mix(baseClass, mixin) {
 
@@ -2223,7 +2223,7 @@ class Waveform {
 
     return new Promise(function (resolver, rejector) {
 
-      var fit = new FitHost(extend({}, {
+      var fit = new FitHost(extend$1({}, {
 
         dataY: self,
         dataX: self.getXWaveform(),
@@ -2904,7 +2904,7 @@ class Waveform {
 
   findLevels(level, options) {
 
-    options = extend({
+    options = extend$1({
 
       box: 1,
       edge: 'both',
@@ -2918,7 +2918,7 @@ class Waveform {
     var indices = [];
     var i = 0;
 
-    while (lvlIndex = this.findLevel(level, extend(true, {}, options, {
+    while (lvlIndex = this.findLevel(level, extend$1(true, {}, options, {
       rangeP: [lastLvlIndex, options.rangeP[1]]
     }))) {
       indices.push(lvlIndex);
@@ -2936,7 +2936,7 @@ class Waveform {
   // Find the first level in the specified range
   findLevel(level, options) {
 
-    options = extend({
+    options = extend$1({
 
       box: 1,
       edge: 'both',
@@ -3609,7 +3609,7 @@ class Graph$1 extends EventEmitter {
      * Access directly the options of the graph using this public object.
      * @example graph.options.mouseActions.push( {  } );
      */
-    this.options = extend$1({}, GraphOptionsDefault, options);
+    this.options = extend({}, GraphOptionsDefault, options);
     // Options declaration must be placed before the doDom operation
 
     // doDom is a private method. We bind it to this thanks to ES6 features
@@ -5476,7 +5476,7 @@ class Graph$1 extends EventEmitter {
 
   orthogonalProjectionSetup() {
 
-    this.options.zAxis = extend$1(true, {
+    this.options.zAxis = extend(true, {
       maxZ: 10,
       minZ: 0,
       shiftX: -25,
@@ -5713,7 +5713,7 @@ class Graph$1 extends EventEmitter {
       // Avoid multiple creation of tracking lines
 
       // Creates a new shape called trackingLine, in the first layer (below everything)
-      this.trackingObject = this.newShape('line', extend$1(true, {
+      this.trackingObject = this.newShape('line', extend(true, {
         position: [{
           y: 'min'
         }, {
@@ -6631,7 +6631,7 @@ function refreshDrawingZone(graph) {
     shift[position][level] = Math.max(drawn, shift[position][level] || 0);
   }, false, false, true);
 
-  var shift2 = extend$1(true, {}, shift);
+  var shift2 = extend(true, {}, shift);
 
   // Applied to left and right
   graph._applyToAxes(function (axis, position) {
@@ -7698,7 +7698,7 @@ class Legend {
 
   constructor(graph, options) {
 
-    this.options = extend$1({}, legendDefaults, options);
+    this.options = extend({}, legendDefaults, options);
 
     this.graph = graph;
     this.svg = document.createElementNS(this.graph.ns, 'g');
@@ -8388,7 +8388,7 @@ class Axis extends EventEmitter {
     this.unitModificationTimeTicks = [[1, [1, 2, 5, 10, 20, 30]], [60, [1, 2, 5, 10, 20, 30]], [3600, [1, 2, 6, 12]], [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]];
 
     this.graph = graph;
-    this.options = extend$1(true, {}, defaults, overwriteoptions, options);
+    this.options = extend(true, {}, defaults, overwriteoptions, options);
 
     this.group = document.createElementNS(this.graph.ns, 'g');
     this.hasChanged = true;
@@ -9581,6 +9581,8 @@ class Axis extends EventEmitter {
 
   forcePrimaryTickUnit(primaryInterval) {
     this.options.primaryTickUnit = primaryInterval;
+
+    this.decimals = Math.max(0, Math.round(-Math.log(primaryInterval) / Math.log(10)));
   }
 
   forcePrimaryTickUnitMax(value) {
@@ -9631,7 +9633,7 @@ class Axis extends EventEmitter {
     while (incrTick <= max) {
 
       loop++;
-      if (loop > 200) {
+      if (loop > 1000) {
         break;
       }
 
@@ -10027,7 +10029,7 @@ class Axis extends EventEmitter {
       if (isNaN(value)) {
         return '';
       }
-
+      console.log(dec, value, this.decimals, this.getExponentialFactor(), this.getExponentialLabelFactor());
       if (dec > 0) {
         value = value.toFixed(dec);
       } else {
@@ -10685,7 +10687,9 @@ class Axis extends EventEmitter {
   }
 
   setTickContent(dom, val, options) {
-    if (!options) options = {};
+    if (!options) {
+      options = {};
+    }
 
     if (options.overwrite || !options.exponential) {
 
@@ -10988,6 +10992,7 @@ class AxisX extends Axis {
 
     //  this.groupTicks.appendChild( tick );
     if (level == 1) {
+
       var tickLabel = this.nextTickLabel(tickLabel => {
 
         tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + this.options.tickLabelOffset);
@@ -13561,15 +13566,15 @@ var ErrorBarMixin = {
 
       if (errorstyles.all) {
 
-        errorstyles[pairs[j][1]] = extend$1(true, {}, errorstyles.all);
-        errorstyles[pairs[j][2]] = extend$1(true, {}, errorstyles.all);
+        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles.all);
+        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles.all);
       }
 
       if (errorstyles[pairs[j][0]]) {
         //.x, .y
 
-        errorstyles[pairs[j][1]] = extend$1(true, {}, errorstyles[pairs[j][0]]);
-        errorstyles[pairs[j][2]] = extend$1(true, {}, errorstyles[pairs[j][0]]);
+        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles[pairs[j][0]]);
+        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles[pairs[j][0]]);
       }
 
       for (var k = 1; k <= 2; k++) {
@@ -13832,7 +13837,7 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   setOptions(options) {
-    this.options = extend$1(true, {}, SerieLine.prototype.defaults, options || {});
+    this.options = extend(true, {}, SerieLine.prototype.defaults, options || {});
     // Unselected style
     this.styles.unselected = {
       lineColor: this.options.lineColor,
@@ -15127,7 +15132,7 @@ class SerieLine extends Serie {
 
       var s = this.styles[i];
       if (s) {
-        this.styles[i] = extend$1(true, {}, this.styles.unselected, s);
+        this.styles[i] = extend(true, {}, this.styles.unselected, s);
       }
     }
   }
@@ -15135,7 +15140,7 @@ class SerieLine extends Serie {
   extendStyle(styleTarget, styleOrigin) {
     var s = this.styles[styleTarget];
 
-    this.styles[styleTarget] = extend$1(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
+    this.styles[styleTarget] = extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
 
     this.styles[styleTarget].markers.map(function (marker) {
       if (marker.dom) {
@@ -15270,7 +15275,7 @@ class SerieLine extends Serie {
     this.styles[selectionType || 'unselected'].markers = families;
 
     if (applyToSelected) {
-      this.styles.selected.markers = extend$1(true, {}, families);
+      this.styles.selected.markers = extend(true, {}, families);
     }
 
     this._recalculateMarkerPoints(selectionType, families);
@@ -15990,7 +15995,7 @@ class SerieBox extends Serie {
 
   setStyle(style, selectionType = 'unselected') {
     //console.log( style, selectionType );
-    this.styles[selectionType] = extend$1({}, this.default().defaultStyle, this.styles.unselected, style);
+    this.styles[selectionType] = extend({}, this.default().defaultStyle, this.styles.unselected, style);
     this.styleHasChanged(selectionType);
   }
 
@@ -17776,11 +17781,9 @@ class SerieDensityMap extends Serie {
    * @see SerieDensityMap#autoColorMapBinBoundaries
    * @see SerieDensityMap#setPxPerBin
    */
-  setDensityMap(densitymap, fromX, deltaX, numX, fromY, deltaY, numY) {
+  setDensityMap(densitymap, fromX, deltaX, fromY, deltaY) {
 
-    var i,
-        j,
-        l = this.data.length;
+    var i, j;
 
     var binMin = Number.POSITIVE_INFINITY;
     var binMax = Number.NEGATIVE_INFINITY;
@@ -17796,7 +17799,7 @@ class SerieDensityMap extends Serie {
 
     this.maxIndexX = densitymap.length;
     this.maxIndexY = densitymap[0].length;
-
+    console.log(densitymap);
     this.binMin = binMin;
     this.binMax = binMax;
 
@@ -18075,9 +18078,15 @@ class SerieDensityMap extends Serie {
    * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
    * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );
    */
-  setColorMapBinBoundaries(min, max) {
+  setColorMapBinBoundaries(min, max, _internal) {
     this.colorMapMin = min;
     this.colorMapMax = max;
+
+    if (!_internal) {
+      // If the method is called externally, the bins must be fixed and not automatically scaled when the draw method is invoked.
+      this.callbackColorMapMinMax = 'manual';
+    }
+
     return this;
   }
 
@@ -18172,6 +18181,7 @@ class SerieDensityMap extends Serie {
     this.opacities = opacities;
     this.colorMap = colorMap;
     this.colorMapNum = numColors;
+
     return this;
   }
 
@@ -18183,7 +18193,7 @@ class SerieDensityMap extends Serie {
    * @return {SerieDensityMap} The current instance
    */
   autoColorMapHSL(colorStops, method = 'linear') {
-    this.colorMapHSV(colorStops, 100, method);
+    this.colorMapHSL(colorStops, 100, method);
     return this;
   }
 
@@ -18253,10 +18263,10 @@ class SerieDensityMap extends Serie {
     if (!this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto') {
 
       this.autoColorMapBinBoundaries();
-    } else {
-      var val = this.callbackColorMapMinMax(this.binMin, this.binMax);
+    } else if (typeof this.callbackColorMapMinMax == 'function') {
 
-      this.setColorMapBinBoundaries(val[0], val[1]);
+      var val = this.callbackColorMapMinMax(this.binMin, this.binMax);
+      this.setColorMapBinBoundaries(val[0], val[1], true);
     }
 
     var deltaXPx = this.getXAxis().getRelPx(this.deltaX),
@@ -18265,6 +18275,8 @@ class SerieDensityMap extends Serie {
     for (var i = 0; i < this.paths.length; i++) {
       this.paths[i] = '';
     }
+
+    console.log(this.maxIndexX, this.maxIndexY);
 
     for (var i = 0; i < this.maxIndexX; i++) {
 
@@ -18320,7 +18332,7 @@ class SerieDensityMap extends Serie {
    * @memberof SerieDensityMap
    */
   setOptions(options) {
-    this.options = extend$1(true, {}, this.defaults(), options || {});
+    this.options = extend(true, {}, this.defaults(), options || {});
     // Unselected style
 
     return this;
@@ -21807,7 +21819,7 @@ class ShapeRectangle extends Shape {
 
       case 'sides':
 
-        extend$1(handles, {
+        extend(handles, {
           sides: {
             top: true,
             bottom: true,
@@ -22904,7 +22916,7 @@ class PluginShape extends Plugin {
 
     let shapeProperties = this.options.properties;
 
-    extend$1(true, shapeInfo, this.options);
+    extend(true, shapeInfo, this.options);
 
     this.emit('beforeNewShape', e, shapeInfo);
 
@@ -24827,7 +24839,7 @@ class PluginAxisSplitting extends Plugin {
       marginMin: this.options.axes.margins.low,
       marginMax: this.options.axes.margins.high
     };
-    return extend$1(true, defaults, options);
+    return extend(true, defaults, options);
   }
 
   preDraw() {
@@ -25001,7 +25013,7 @@ var SplitAxis = function (mixin) {
       super(graph, position, options);
       this.axes = [];
       this.position = position;
-      this.constructorOptions = extend$1(true, {}, defaultAxisConstructorOptions, options);
+      this.constructorOptions = extend(true, {}, defaultAxisConstructorOptions, options);
 
       this._splitVal = [];
     }

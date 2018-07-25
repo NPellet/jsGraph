@@ -1,11 +1,17 @@
+import Graph from '../../dist/jsgraph-module.js'
+const domGraph = 'graph';
+
 
 var graph = new Graph( domGraph, { }, { } );
 
-graph.resize( 400, 100 );
+graph.resize( 400, 80 );
 graph
   .getXAxis()
-  .turnGridsOff()
-  .setDisplay( false );
+  .forceMin( 0.5 )
+  .forceMax( 1 )
+  .forcePrimaryTickUnit( 0.1 );
+  /*.turnGridsOff()
+  .setDisplay( false );*/
 
 graph
   .getYAxis()
@@ -15,15 +21,18 @@ graph
 var s = graph.newSerie( "density", {}, "densitymap" );
 var data = []; 
 
-for( var i = 1; i < 200; i ++ ) { 
-  for( var j = 0; j < i; j ++ ) { 
-    data.push( [ i + j / i, 0 ] );
-  }
+for( var i = 0.5; i <= 1; i += 1 / 200 ) { 
+ // for( var j = 0; j < i; j += 1 / 200 ) { 
+    data.push( [ i ] );
+  //}
 }
 
+
 s
-  .setData( data )
-  .autoAxis();
+  .setDensityMap( data, 0.5, 1 / 200, -0.5, 1 );
+
+
+s.autoAxis();
 
 graph
   .getYAxis()
@@ -31,13 +40,23 @@ graph
   .forceMax( 0.5 );
 
 //s.setPxPerBin( false, 20, true );
-s.setBinsFromTo( 'x', 0.5, 199.5, 199 );
-s.setBinsFromTo( 'y', -0.5, 0.5, 3 );
+//s.setBinsFromTo( 'x', -0.005, 200, 1 );
+//s.setBinsFromTo( 'y', -0.5, 0.5, 1 );
 
 s.colorMapHSL( [
-  { h: 0, s: 1, l: 0 }, // Black
   { h: 0, s: 1, l: 0.5 }, // Red
-  { h: 60, s: 1, l: 0.5 } // Yellow
+  { h: 270, s: 1, l: 0.5 } // Yellow
 ], 300 ); // Use 300 colors
+
+for( var i = 0.5; i <= 1; i += 0.05 ) {
+
+  let s = graph.newShape('line');
+  s.setPosition( { x: i * 1, y: -0.5 }, 0 );
+  s.setPosition( { x: i * 1, y: 0.5 }, 1 );
+
+  s.setStrokeColor('black');
+  s.draw().redraw();
+}
+
 
 graph.draw();

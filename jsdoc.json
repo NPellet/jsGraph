@@ -26,7 +26,6 @@
 			"./src/series/graph.serie.zone.js",
 			"./src/shapes/graph.shape.rect.js",
 			"./src/graph.js",
-			"./src/util/node_modules/extend/index.js",
 			"./src/graph.legend.js",
 			"./src/graph.axis.x.bar.js",
 			"./src/graph.axis.x.time.js",

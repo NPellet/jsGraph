@@ -113,6 +113,7 @@ class AxisX extends Axis {
 
     //  this.groupTicks.appendChild( tick );
     if ( level == 1 ) {
+
       var tickLabel = this.nextTickLabel( ( tickLabel ) => {
 
         tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) + this.options.tickLabelOffset );
