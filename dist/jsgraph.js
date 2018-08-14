@@ -6885,7 +6885,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.89'
+        'data-jsgraph-version': 'v2.0.90'
       });
     } catch (e) {
       // ignore
@@ -30278,13 +30278,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         } else {
           // Get all the spacing and determine the smallest one
           boxOtherDimension = this.options.maxBoxWidth;
-          //      console.log( boxOtherDimension );
+          console.log(boxOtherDimension);
           for (var i = 0, l = this.data.length; i < l - 1; i++) {
 
             //     console.log( Math.abs( axis.getPx( this.data[ i + 1 ].pos ) - axis.getPx( this.data[ i ].pos ) ), axis.getPx( this.data[ i + 1 ].pos ), axis.getPx( this.data[ i ].pos ) );
-            boxOtherDimension = Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].pos) - axis2.getPx(this.data[i].pos)));
+            boxOtherDimension = Math.max(5, Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].pos) - axis2.getPx(this.data[i].pos))));
           }
-          // console.log( boxOtherDimension );
         }
 
         for (var i = 0, l = this.data.length; i < l; i++) {
