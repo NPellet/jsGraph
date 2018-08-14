@@ -682,8 +682,6 @@ function extend() {
   return target;
 }
 
-var extend$1 = {};
-
 function mix(baseClass, mixin) {
 
   for (let prop in mixin) {
@@ -2223,7 +2221,7 @@ class Waveform {
 
     return new Promise(function (resolver, rejector) {
 
-      var fit = new FitHost(extend$1({}, {
+      var fit = new FitHost(extend({}, {
 
         dataY: self,
         dataX: self.getXWaveform(),
@@ -2904,7 +2902,7 @@ class Waveform {
 
   findLevels(level, options) {
 
-    options = extend$1({
+    options = extend({
 
       box: 1,
       edge: 'both',
@@ -2918,7 +2916,7 @@ class Waveform {
     var indices = [];
     var i = 0;
 
-    while (lvlIndex = this.findLevel(level, extend$1(true, {}, options, {
+    while (lvlIndex = this.findLevel(level, extend(true, {}, options, {
       rangeP: [lastLvlIndex, options.rangeP[1]]
     }))) {
       indices.push(lvlIndex);
@@ -2936,7 +2934,7 @@ class Waveform {
   // Find the first level in the specified range
   findLevel(level, options) {
 
-    options = extend$1({
+    options = extend({
 
       box: 1,
       edge: 'both',
@@ -10029,7 +10027,7 @@ class Axis extends EventEmitter {
       if (isNaN(value)) {
         return '';
       }
-      console.log(dec, value, this.decimals, this.getExponentialFactor(), this.getExponentialLabelFactor());
+
       if (dec > 0) {
         value = value.toFixed(dec);
       } else {

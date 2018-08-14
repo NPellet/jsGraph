@@ -1774,7 +1774,7 @@ class Axis extends EventEmitter {
       if ( isNaN( value ) ) {
         return '';
       }
-      console.log( dec, value, this.decimals, this.getExponentialFactor(), this.getExponentialLabelFactor() );
+
       if ( dec > 0 ) {
         value = value.toFixed( dec );
       } else {

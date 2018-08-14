@@ -6119,7 +6119,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.87'
+        'data-jsgraph-version': 'v2.0.88'
       });
     } catch (e) {
       // ignore
@@ -6945,7 +6945,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
-  var _graph2 = _interopRequireDefault(_graph);
+  var util = _interopRequireWildcard(_graph);
+
+  function _interopRequireWildcard(obj) {
+    if (obj && obj.__esModule) {
+      return obj;
+    } else {
+      var newObj = {};
+
+      if (obj != null) {
+        for (var key in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+        }
+      }
+
+      newObj.default = obj;
+      return newObj;
+    }
+  }
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -7611,7 +7628,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       return new Promise(function (resolver, rejector) {
 
-        var fit = new _fit_lm2.default((0, _graph2.default)({}, {
+        var fit = new _fit_lm2.default(util.extend({}, {
 
           dataY: self,
           dataX: self.getXWaveform(),
@@ -8293,7 +8310,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     findLevels(level, options) {
 
-      options = (0, _graph2.default)({
+      options = util.extend({
 
         box: 1,
         edge: 'both',
@@ -8307,7 +8324,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var indices = [];
       var i = 0;
 
-      while (lvlIndex = this.findLevel(level, (0, _graph2.default)(true, {}, options, {
+      while (lvlIndex = this.findLevel(level, util.extend(true, {}, options, {
         rangeP: [lastLvlIndex, options.rangeP[1]]
       }))) {
         indices.push(lvlIndex);
@@ -8325,7 +8342,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // Find the first level in the specified range
     findLevel(level, options) {
 
-      options = (0, _graph2.default)({
+      options = util.extend({
 
         box: 1,
         edge: 'both',
@@ -14252,7 +14269,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (isNaN(value)) {
           return '';
         }
-        console.log(dec, value, this.decimals, this.getExponentialFactor(), this.getExponentialLabelFactor());
+
         if (dec > 0) {
           value = value.toFixed(dec);
         } else {
