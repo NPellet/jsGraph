@@ -1,5 +1,5 @@
-import FitLM from './fit_lm';
-import * as util from '../graph.util';
+import FitLM from './fit_lm.js';
+import * as util from '../graph.util.js';
 
 class Waveform {
 

@@ -274,11 +274,11 @@ class PluginPeakPicking extends Plugin {
       this._hidePeakPickingLocked = lock;
     }
 
-    if ( !this.graph.picks ) {
+    if ( !this.picks ) {
       return;
     }
-    for ( var i = 0; i < this.graph.picks.length; i++ ) {
-      this.graph.picks[ i ].hide();
+    for ( var i = 0; i < this.picks.length; i++ ) {
+      this.picks[ i ].hide();
     }
   }
 
@@ -292,12 +292,12 @@ class PluginPeakPicking extends Plugin {
       return;
     }
 
-    if ( !this.graph.picks ) {
+    if ( !this.picks ) {
       return;
     }
 
-    for ( var i = 0; i < this.graph.picks.length; i++ ) {
-      this.graph.picks[ i ].show();
+    for ( var i = 0; i < this.picks.length; i++ ) {
+      this.picks[ i ].show();
     }
   }
 
@@ -308,6 +308,10 @@ class PluginPeakPicking extends Plugin {
         this.picks[ i ].kill();
       }
     }
+  }
+
+  getSerie() {
+    return this.serie;
   }
 }
 

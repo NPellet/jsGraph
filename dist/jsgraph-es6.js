@@ -4646,6 +4646,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       for (var i in this.options.plugins) {
 
         pluginName = i;
+        console.log(pluginName);
         pluginOptions = this.options.plugins[i];
 
         constructor = this.getConstructor('graph.plugin.' + pluginName);
@@ -4677,6 +4678,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       return plugin;
     }
+
+    hasPlugin(pluginName) {
+      return !!this.plugins[pluginName];
+    }
+
     triggerEvent() {
       var func = arguments[0];
       /*,
@@ -6119,7 +6125,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.88'
+        'data-jsgraph-version': 'v2.0.89'
       });
     } catch (e) {
       // ignore
@@ -6928,15 +6934,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./fit_lm'), require('../graph.util'));
+    factory(module, exports, require('./fit_lm.js'), require('../graph.util.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.fit_lm, global.graph);
+    factory(mod, mod.exports, global.fit_lm, global.graphUtil);
     global.waveform = mod.exports;
   }
-})(this, function (module, exports, _fit_lm, _graph) {
+})(this, function (module, exports, _fit_lm, _graphUtil) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -6945,7 +6951,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
-  var util = _interopRequireWildcard(_graph);
+  var util = _interopRequireWildcard(_graphUtil);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -11825,6 +11831,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.graph.draw(true);
       }
 
+      if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
+        this.graph.getPlugin('peakPicking').hidePeakPicking();
+      }
+
       return this;
     }
 
@@ -11860,6 +11870,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
         this.graph.draw(true);
       }
+
+      if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
+        this.graph.getPlugin('peakPicking').showPeakPicking();
+      }
+
       return this;
     }
 
@@ -28588,11 +28603,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this._hidePeakPickingLocked = lock;
       }
 
-      if (!this.graph.picks) {
+      if (!this.picks) {
         return;
       }
-      for (var i = 0; i < this.graph.picks.length; i++) {
-        this.graph.picks[i].hide();
+      for (var i = 0; i < this.picks.length; i++) {
+        this.picks[i].hide();
       }
     }
 
@@ -28606,12 +28621,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
 
-      if (!this.graph.picks) {
+      if (!this.picks) {
         return;
       }
 
-      for (var i = 0; i < this.graph.picks.length; i++) {
-        this.graph.picks[i].show();
+      for (var i = 0; i < this.picks.length; i++) {
+        this.picks[i].show();
       }
     }
 
@@ -28622,6 +28637,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.picks[i].kill();
         }
       }
+    }
+
+    getSerie() {
+      return this.serie;
     }
   }
 

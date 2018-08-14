@@ -1899,6 +1899,7 @@ class Graph extends EventEmitter {
     for ( var i in this.options.plugins ) {
 
       pluginName = i;
+      console.log( pluginName );
       pluginOptions = this.options.plugins[ i ];
 
       constructor = this.getConstructor( 'graph.plugin.' + pluginName );
@@ -1931,6 +1932,11 @@ class Graph extends EventEmitter {
 
     return plugin;
   }
+
+  hasPlugin( pluginName ) {
+    return !!this.plugins[ pluginName ];
+  }
+
   triggerEvent() {
     var func = arguments[ 0 ];
     /*,

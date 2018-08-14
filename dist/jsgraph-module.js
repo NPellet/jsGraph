@@ -5376,6 +5376,7 @@ class Graph$1 extends EventEmitter {
     for (var i in this.options.plugins) {
 
       pluginName = i;
+      console.log(pluginName);
       pluginOptions = this.options.plugins[i];
 
       constructor = this.getConstructor('graph.plugin.' + pluginName);
@@ -5407,6 +5408,11 @@ class Graph$1 extends EventEmitter {
 
     return plugin;
   }
+
+  hasPlugin(pluginName) {
+    return !!this.plugins[pluginName];
+  }
+
   triggerEvent() {
     var func = arguments[0];
     /*,
@@ -12751,6 +12757,10 @@ class Serie extends EventEmitter {
       this.graph.draw(true);
     }
 
+    if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
+      this.graph.getPlugin('peakPicking').hidePeakPicking();
+    }
+
     return this;
   }
 
@@ -12786,6 +12796,11 @@ class Serie extends EventEmitter {
     if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
       this.graph.draw(true);
     }
+
+    if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
+      this.graph.getPlugin('peakPicking').showPeakPicking();
+    }
+
     return this;
   }
 
@@ -25840,11 +25855,11 @@ class PluginPeakPicking extends Plugin {
       this._hidePeakPickingLocked = lock;
     }
 
-    if (!this.graph.picks) {
+    if (!this.picks) {
       return;
     }
-    for (var i = 0; i < this.graph.picks.length; i++) {
-      this.graph.picks[i].hide();
+    for (var i = 0; i < this.picks.length; i++) {
+      this.picks[i].hide();
     }
   }
 
@@ -25858,12 +25873,12 @@ class PluginPeakPicking extends Plugin {
       return;
     }
 
-    if (!this.graph.picks) {
+    if (!this.picks) {
       return;
     }
 
-    for (var i = 0; i < this.graph.picks.length; i++) {
-      this.graph.picks[i].show();
+    for (var i = 0; i < this.picks.length; i++) {
+      this.picks[i].show();
     }
   }
 
@@ -25874,6 +25889,10 @@ class PluginPeakPicking extends Plugin {
         this.picks[i].kill();
       }
     }
+  }
+
+  getSerie() {
+    return this.serie;
   }
 }
 

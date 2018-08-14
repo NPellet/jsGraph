@@ -157,6 +157,10 @@ class Serie extends EventEmitter {
       this.graph.draw( true );
     }
 
+    if ( this.graph.hasPlugin( 'peakPicking' ) && this.graph.getPlugin( 'peakPicking' ).getSerie() == this ) {
+      this.graph.getPlugin( 'peakPicking' ).hidePeakPicking();
+    }
+
     return this;
   }
 
@@ -192,6 +196,11 @@ class Serie extends EventEmitter {
     if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
       this.graph.draw( true );
     }
+
+    if ( this.graph.hasPlugin( 'peakPicking' ) && this.graph.getPlugin( 'peakPicking' ).getSerie() == this ) {
+      this.graph.getPlugin( 'peakPicking' ).showPeakPicking();
+    }
+
     return this;
   }
 
