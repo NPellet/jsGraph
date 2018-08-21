@@ -6885,7 +6885,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.90'
+        'data-jsgraph-version': 'v2.0.91'
       });
     } catch (e) {
       // ignore
@@ -14060,7 +14060,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     tickLabelOffset: 0,
 
-    useKatexForLabel: false
+    useKatexForLabel: false,
+
+    highestMax: false,
+    lowestMin: false
   };
 
   /**
@@ -14419,12 +14422,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'getMinValue',
       value: function getMinValue() {
-        return this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin;
+        return this.options.forcedMin !== false ? this.options.forcedMin : this.options.lowestMin !== false ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin;
       }
     }, {
       key: 'getMaxValue',
       value: function getMaxValue() {
-        return this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax;
+        return this.options.forcedMax !== false ? this.options.forcedMax : this.options.highestMax !== false ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax;
       }
     }, {
       key: 'setMinValueData',
@@ -14462,6 +14465,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return this.dataMin;
       }
     }, {
+      key: 'setLowestMin',
+      value: function setLowestMin(lowestMin) {
+        this.options.lowestMin = lowestMin;
+        this.graph._axisHasChanged(this);
+      }
+    }, {
       key: 'forceMin',
       value: function forceMin(min) {
         var noRescale = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -14470,6 +14479,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.setCurrentMin(noRescale ? this.getCurrentMin() : undefined);
         this.graph._axisHasChanged(this);
         return this;
+      }
+    }, {
+      key: 'setHighestMax',
+      value: function setHighestMax(highestMax) {
+        this.options.highestMax = highestMax;
+        this.graph._axisHasChanged(this);
       }
     }, {
       key: 'forceMax',
@@ -14801,7 +14816,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'setCurrentMin',
       value: function setCurrentMin(val) {
 
-        if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val === undefined)) {
+        if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val < this.options.lowestMin || val === undefined)) {
           val = this.getMinValue();
         }
         this.currentAxisMin = val;
@@ -14819,7 +14834,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'setCurrentMax',
       value: function setCurrentMax(val) {
 
-        if (val === undefined || this.getForcedMax() !== false && (val > this.getForcedMax() || val === undefined)) {
+        if (val === undefined || this.getForcedMax() !== false && (val > this.getForcedMax() || val > this.options.highestMax || val === undefined)) {
           val = this.getMaxValue();
         }
 

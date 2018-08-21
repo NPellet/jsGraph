@@ -6125,7 +6125,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     try {
       util.setAttributeTo(this.dom, {
-        'data-jsgraph-version': 'v2.0.90'
+        'data-jsgraph-version': 'v2.0.91'
       });
     } catch (e) {
       // ignore
@@ -12619,7 +12619,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     tickLabelOffset: 0,
 
-    useKatexForLabel: false
+    useKatexForLabel: false,
+
+    highestMax: false,
+    lowestMin: false
   };
 
   /**
@@ -13044,7 +13047,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Number} The minimum possible value of the axis
      */
     getMinValue() {
-      return this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin;
+      return this.options.forcedMin !== false ? this.options.forcedMin : this.options.lowestMin !== false ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin;
     }
 
     /**
@@ -13053,7 +13056,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Number} The maximum possible value of the axis
      */
     getMaxValue() {
-      return this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax;
+      return this.options.forcedMax !== false ? this.options.forcedMax : this.options.highestMax !== false ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax;
     }
 
     setMinValueData(min) {
@@ -13098,6 +13101,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     /**
+     * Sets the highest maximum value of the axis.
+     * @memberof Axis
+     * @param {Number} max - The maximum value of the axis
+     * @return {Axis} The current axis
+     */
+    setLowestMin(lowestMin) {
+      this.options.lowestMin = lowestMin;
+      this.graph._axisHasChanged(this);
+    }
+
+    /**
      * Forces the minimum value of the axis (no more dependant on the serie values)
      * @memberof Axis
      * @param {Number} min - The minimum value of the axis
@@ -13109,6 +13123,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.setCurrentMin(noRescale ? this.getCurrentMin() : undefined);
       this.graph._axisHasChanged(this);
       return this;
+    }
+
+    /**
+     * Sets the highest maximum value of the axis.
+     * @memberof Axis
+     * @param {Number} max - The maximum value of the axis
+     * @return {Axis} The current axis
+     */
+    setHighestMax(highestMax) {
+      this.options.highestMax = highestMax;
+      this.graph._axisHasChanged(this);
     }
 
     /**
@@ -13493,7 +13518,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     setCurrentMin(val) {
 
-      if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val === undefined)) {
+      if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val < this.options.lowestMin || val === undefined)) {
         val = this.getMinValue();
       }
       this.currentAxisMin = val;
@@ -13516,7 +13541,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     setCurrentMax(val) {
 
-      if (val === undefined || this.getForcedMax() !== false && (val > this.getForcedMax() || val === undefined)) {
+      if (val === undefined || this.getForcedMax() !== false && (val > this.getForcedMax() || val > this.options.highestMax || val === undefined)) {
         val = this.getMaxValue();
       }
 
