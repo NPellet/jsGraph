@@ -129,7 +129,7 @@ class Position {
         if (i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined) {
 
           if (!serie) {
-            throw new Error(`Error. No serie exists. Cannot find y value`);
+            throw new Error('Error. No serie exists. Cannot find y value');
             return;
           }
 
@@ -1685,7 +1685,7 @@ class Waveform {
       if (Array.isArray(waveform)) {
         waveform = new Waveform(waveform);
       } else {
-        throw "Cannot set X waveform. Data is not a valid array.";
+        throw 'Cannot set X waveform. Data is not a valid array.';
       }
     }
 
@@ -1724,11 +1724,11 @@ class Waveform {
   setTypedArrayClass(constructor) {
 
     if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
-      this.warn("NaN values are not allowed by the new constructor (" + constructor.name + ") while it was allowed by the previous one (" + this._typedArrayClass.name + ")");
+      this.warn('NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')');
     }
 
     if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
-      this.warn("You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.");
+      this.warn('You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.');
     }
 
     this._typedArrayClass = constructor;
@@ -1774,11 +1774,11 @@ class Waveform {
 
   prepend(x, y) {
 
-    if (typeof x == "function") {
+    if (typeof x == 'function') {
       x = x(this);
     }
 
-    if (typeof y == "function") {
+    if (typeof y == 'function') {
       y = y(this);
     }
 
@@ -1798,11 +1798,11 @@ class Waveform {
 
   append(x, y) {
 
-    if (typeof x == "function") {
+    if (typeof x == 'function') {
       x = x(this);
     }
 
-    if (typeof y == "function") {
+    if (typeof y == 'function') {
       y = y(this);
     }
 
@@ -1944,7 +1944,7 @@ class Waveform {
 
     position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
 
-    if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY") {
+    if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateY') {
       // In case of aggregation, round to the closest element of 4.
       return position - position % 4;
     }
@@ -1970,7 +1970,7 @@ class Waveform {
       position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
     }
 
-    if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
+    if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
       // In case of aggregation, round to the closest element of 4.
       return position - position % 4;
     }
@@ -2033,7 +2033,7 @@ class Waveform {
 
     if (!this.isMonotoneous()) {
       console.trace();
-      throw "Impossible to get the index from a non-monotoneous wave !";
+      throw 'Impossible to get the index from a non-monotoneous wave !';
     }
 
     val -= this.getShift();
@@ -2345,7 +2345,7 @@ class Waveform {
 
   requireMonotonicity() {
     if (!this.isMonotoneous()) {
-      throw "The wave must be monotonic";
+      throw 'The wave must be monotonic';
     }
   }
 
@@ -2401,11 +2401,11 @@ class Waveform {
     const l = this.getLength();
 
     if (!options.xPosition) {
-      throw "No position calculation method provided";
+      throw 'No position calculation method provided';
     }
 
     if (!options.resampleToPx) {
-      throw "No \"resampleToPx\" method was provided. Unit: px per point";
+      throw 'No "resampleToPx" method was provided. Unit: px per point';
     }
 
     if (options.minX > options.maxX) {
@@ -2488,7 +2488,7 @@ class Waveform {
       resampleMax = Math.max(resampleMax, dataY[i]);
     }
 
-    this.dataInUseType = "resampled";
+    this.dataInUseType = 'resampled';
     this.dataInUse = data;
     return dataMinMax;
   }
@@ -2533,7 +2533,7 @@ class Waveform {
   getMonotoneousAscending() {
 
     if (!this.isMonotoneous()) {
-      return "The waveform is not monotoneous";
+      return 'The waveform is not monotoneous';
     }
 
     return this._monotoneousAscending;
@@ -2744,7 +2744,7 @@ class Waveform {
 
     if (this._dataAggregated[level]) {
 
-      this.dataInUseType = "aggregate" + this._dataAggregationDirection;
+      this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
       this.dataInUse = this._dataAggregated[level];
       return;
     } else if (this._dataAggregating) {
@@ -2752,7 +2752,7 @@ class Waveform {
       return this._dataAggregating;
     }
 
-    this.dataInUseType = "none";
+    this.dataInUseType = 'none';
     this.dataInUse = {
       y: this.data,
       x: this.getXWaveform().data
@@ -2881,7 +2881,7 @@ class Waveform {
   }
 
   getUnit() {
-    return this.unit || "";
+    return this.unit || '';
   }
 
   getXUnit() {
@@ -2889,7 +2889,7 @@ class Waveform {
       return this.xdata.getUnit();
     }
 
-    return this.xunit | "";
+    return this.xunit | '';
   }
 
   hasXUnit() {
@@ -2956,7 +2956,7 @@ class Waveform {
       box++;
     }
 
-    if (options.direction == "descending") {
+    if (options.direction == 'descending') {
       i = options.rangeP[1], l = options.rangeP[0], increment = -1;
     } else {
       i = options.rangeP[0], l = options.rangeP[1], increment = +1;
@@ -2964,7 +2964,7 @@ class Waveform {
 
     for (;; i += increment) {
 
-      if (options.direction == "descending") {
+      if (options.direction == 'descending') {
         if (i < l) {
           break;
         }
@@ -3448,7 +3448,7 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
   while (true) {
     i++;
     if (i > 100) {
-      throw new Error("Error loop");
+      throw new Error('Error loop');
     }
 
     seedInt = Math.floor((seedA + seedB) / 2);
@@ -5964,7 +5964,7 @@ class Graph$1 extends EventEmitter {
 
         if (schemaSerie.lineStyle) {
 
-          let lineStyle;
+          let lineStyle = schemaSerie.lineStyle;
 
           if (Array.isArray(lineStyle)) {
             lineStyle = {
@@ -6851,6 +6851,7 @@ function doDom() {
 
   try {
     setAttributeTo(this.dom, {
+      // eslint-disable-next-line no-undef
       'data-jsgraph-version': 'v<%= pkg.version %>'
     });
   } catch (e) {
@@ -14879,7 +14880,7 @@ class SerieLine extends Serie {
         indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
       } catch (e) {
         console.log(e);
-        throw new Error(`Error while finding the closest index`);
+        throw new Error('Error while finding the closest index');
         return {};
       }
 
