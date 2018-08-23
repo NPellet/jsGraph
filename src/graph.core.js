@@ -2495,7 +2495,7 @@ class Graph extends EventEmitter {
 
         if ( schemaSerie.lineStyle ) {
 
-          let lineStyle;
+          let lineStyle = schemaSerie.lineStyle;
 
           if ( Array.isArray( lineStyle ) ) {
             lineStyle = {
