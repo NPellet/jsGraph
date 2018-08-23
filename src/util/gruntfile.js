@@ -2,8 +2,8 @@ const path = require( 'path' );
 const babel = require( 'rollup-plugin-babel' );
 
 const distPath = path.resolve( __dirname, './dist/' );
-const nodeResolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
+const nodeResolve = require( 'rollup-plugin-node-resolve' );
+const commonjs = require( 'rollup-plugin-commonjs' );
 
 
 module.exports = function ( grunt ) {

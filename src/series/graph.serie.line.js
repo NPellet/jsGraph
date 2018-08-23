@@ -1192,7 +1192,7 @@ class SerieLine extends Serie {
 
       } catch ( e ) {
         console.log( e );
-        throw new Error( `Error while finding the closest index` );
+        throw new Error( 'Error while finding the closest index' );
         return {};
       }
 
