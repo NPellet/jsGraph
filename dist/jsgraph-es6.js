@@ -6126,7 +6126,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.0.92'
+        'data-jsgraph-version': 'v2.0.93'
       });
     } catch (e) {
       // ignore
@@ -7406,6 +7406,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.isXMonotoneous()) {
         // X lookup only
+
+        if (this.getXMin() > xval || this.getXMax() < xval) {
+          return false;
+        }
 
         if (this.hasXWaveform()) {
           // The x value HAS to be rescaled
@@ -10126,6 +10130,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           console.log(e);
           throw new Error('Error while finding the closest index');
           return {};
+        }
+
+        if (!indexX) {
+          return false;
         }
 
         let returnObj = {};

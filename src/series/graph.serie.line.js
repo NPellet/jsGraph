@@ -1196,10 +1196,10 @@ class SerieLine extends Serie {
         return {};
       }
 
-      if( ! indexX ) {
+      if ( !indexX ) {
         return false;
       }
-      
+
       let returnObj = {};
 
       let direction;

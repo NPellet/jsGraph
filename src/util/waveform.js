@@ -444,7 +444,7 @@ class Waveform {
 
     if ( this.isXMonotoneous() ) { // X lookup only
 
-      if( this.getXMin() > xval || this.getXMax() < xval ) {
+      if ( this.getXMin() > xval ||  this.getXMax() < xval ) {
         return false;
       }
 
