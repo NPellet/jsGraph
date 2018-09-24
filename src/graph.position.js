@@ -132,7 +132,7 @@ class Position {
         if ( i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined ) {
 
           if ( !serie ) {
-            throw new Error( `Error. No serie exists. Cannot find y value` );
+            throw new Error( 'Error. No serie exists. Cannot find y value' );
             return;
           }
 

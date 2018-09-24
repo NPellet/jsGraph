@@ -44,3 +44,16 @@ rules:
   no-loop-func: warn
   no-self-compare: warn
   no-new: warn
+  computed-property-spacing: off
+  padded-blocks: off
+  array-bracket-newline: off
+  symbol-description: warn
+  object-curly-spacing: off
+  spaced-comment: off
+  prefer-rest-params: off
+  template-curly-spacing: off
+  handle-callback-err: off
+  no-useless-constructor: off
+  prefer-spread: off
+  no-tabs: warn
+  no-irregular-whitespace: warn
