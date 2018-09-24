@@ -444,6 +444,10 @@ class Waveform {
 
     if ( this.isXMonotoneous() ) { // X lookup only
 
+      if( this.getXMin() > xval || this.getXMax() < xval ) {
+        return false;
+      }
+
       if ( this.hasXWaveform() ) { // The x value HAS to be rescaled
         position = this.xdata.getIndexFromData( xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod );
 
