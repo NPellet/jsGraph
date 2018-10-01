@@ -95,25 +95,24 @@ mouseActions: mouseActions || []
 
 graph.resize( 400, 300 );
 
-var data = [];
+const wave1 = Graph.newWaveform();
+
 for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
-data.push( i );
-data.push( Math.sin( i ) );
+  wave1.append( Math.sin( i ), i );
 }
 
-var serie = graph.newSerie( "firstSerie" ).autoAxis().setData( data );
+var serie = graph.newSerie( "firstSerie" ).autoAxis().setWaveform( wave1 );
 
 if( secondSerie ) {
 
   serie.setLineColor('ForestGreen').setOption('selectableOnClick', true);
 
-  var data = [];
+  const wave = Graph.newWaveform();
   for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
-  data.push( i );
-  data.push( Math.cos( i ) );
+    wave.append( Math.cos( i ), i );
   }
 
-  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setData( data ).setLineColor('crimson').setOption('selectableOnClick', true);
+  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setWaveform( wave ).setLineColor('crimson').setOption('selectableOnClick', true);
 
   graph.getRightAxis( 0 ).turnGridsOff();
 
@@ -140,7 +139,7 @@ return { Graph: graph }
   <span class="p">}</span>
 <span class="p">});</span></code></pre></figure>
 
-<h3 id="features">Features</h3>
+<h3 id="a-idfeaturesafeatures"><a id="features"></a>Features</h3>
 
 <p>Here are a few features that the zoom plugin can provide you:</p>
 
@@ -155,7 +154,7 @@ return { Graph: graph }
 
 <h3 id="a-idbasicsabasics"><a id="basics"></a>Basics</h3>
 
-<p>We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option <code class="highlighter-rouge">mouseAction</code> of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let’s take the following code as it is:</p>
+<p>We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option <code class="highlighter-rouge">mouseActions</code> of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let’s take the following code as it is:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domID"</span><span class="p">,</span> <span class="p">{</span>  
   <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
@@ -165,7 +164,7 @@ return { Graph: graph }
       <span class="p">}</span>
   <span class="p">},</span>
 
-  <span class="na">mouseAction</span><span class="p">:</span> <span class="p">[</span>
+  <span class="na">mouseActions</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span> <span class="na">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="na">shift</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="na">ctrl</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">});</span></code></pre></figure>
@@ -389,7 +388,7 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 
 <h3 id="a-idmousewheelamouse-wheel"><a id="mousewheel"></a>Mouse wheel</h3>
 
-<p>The mousewheel behavior is set in the <code class="highlighter-rouge">mouseAction</code> array of the graph instance. Options include:</p>
+<p>The mousewheel behavior is set in the <code class="highlighter-rouge">mouseActions</code> array of the graph instance. Options include:</p>
 
 <ul>
   <li><code class="highlighter-rouge">baseline</code> sets the zero of the scaling</li>

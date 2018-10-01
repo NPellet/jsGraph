@@ -6126,7 +6126,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.0.93'
+        'data-jsgraph-version': 'v2.0.95'
       });
     } catch (e) {
       // ignore
@@ -27440,7 +27440,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.series = new Map();
     }
 
-    static defaults() {
+    static default() {
 
       return {
         axes: {

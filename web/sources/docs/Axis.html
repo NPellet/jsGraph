@@ -90,7 +90,7 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
 
     <ul>
-        <li>EventEmitter</li>
+        <li><a href="EventEmitter.html">EventEmitter</a></li>
     </ul>
 
 
@@ -447,29 +447,6 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
             
 
             <td class="description last">Scales the axis label by 10^(exponentialFactor)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ticklabelratio</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Scaling factor on the labels under each primary ticks</td>
         </tr>
 
     
@@ -1291,6 +1268,8 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -1316,6 +1295,10 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
             <td class="description last">The maximum value of the axis</td>
         </tr>
@@ -1338,6 +1321,12 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
             
 
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
             
 
             <td class="description last">```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value</td>
@@ -1439,6 +1428,8 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -1464,6 +1455,10 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
             <td class="description last">The minimum value of the axis</td>
         </tr>
@@ -1487,8 +1482,14 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
             
 
             
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
 
-            <td class="description last">```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value</td>
+            <td class="description last">```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value. Defaults to ```false```</td>
         </tr>
 
     
@@ -1989,6 +1990,158 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 	
 
     The current minimum value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDataMax"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getDataMax</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the maximum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The maximum possible value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDataMin"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getDataMin</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the minimum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The minimum possible value of the axis
 </div>
 
         
@@ -4788,6 +4941,54 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
     
 
+    <h4 class="doc-code" id="gridsOn"><span class="type-signature"></span><span></span><span class="doc-name">gridsOn</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="gridsOn"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">gridsOn</span><span class="doc-signature">( )</span></h4>
 
 
@@ -4850,54 +5051,6 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="gridsOn"><span class="type-signature"></span><span></span><span class="doc-name">gridsOn</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 
@@ -6470,6 +6623,177 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
     
 
+    <h4 class="doc-code" id="setColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the axis, the ticks and the label
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    black
+                
+                </td>
+            
+
+            <td class="description last">The new color of the primary ticks</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>2.0.82</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="setCurrentMax"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setCurrentMax</span><span class="doc-signature">( <span class="doc-type">Number</span> val )</span></h4>
 
 
@@ -7294,6 +7618,131 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
     
 
+    <h4 class="doc-code" id="setHighestMax"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setHighestMax</span><span class="doc-signature">( <span class="doc-type">Number</span> max )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the highest maximum value of the axis.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The maximum value of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="setLabel"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLabel</span><span class="doc-signature">( <span class="doc-type">Number</span> label )</span></h4>
 
 
@@ -7582,7 +8031,7 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
     
 
-    <h4 class="doc-code" id="setLineAt0"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLineAt0</span><span class="doc-signature">( <span class="doc-type">Boolean</span> lineAt0 )</span></h4>
+    <h4 class="doc-code" id="setLineAt"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLineAt</span><span class="doc-signature">( <span class="doc-type">Array.&lt;Number></span> atValues )</span></h4>
 
 
 
@@ -7628,13 +8077,13 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
         <tr>
             
-                <td class="name"><code>lineAt0</code></td>
+                <td class="name"><code>atValues</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">Array.&lt;Number></span>
 
 
             
@@ -7644,7 +8093,7 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
             
 
-            <td class="description last">true to display the line, false not to.</td>
+            <td class="description last">An array of x or y values where the lines are displayed</td>
         </tr>
 
     
@@ -7819,6 +8268,131 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
 
     
 </dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLowestMin"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLowestMin</span><span class="doc-signature">( <span class="doc-type">Number</span> max )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the highest maximum value of the axis.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The maximum value of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
 
 
     
@@ -10692,6 +11266,169 @@ graph.setBottomAxis( new myAxis( { } ) );{% endhighlight %}
     
     <dt class="tag-since">Since:</dt>
     <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setUnitInTicks"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setUnitInTicks</span><span class="doc-signature">( <span class="doc-type">Boolean</span> bool )</span></h4>
+
+
+
+
+<div class="description">
+    Places the unit in every tick
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bool</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">```true``` to place the unit, ```false``` otherwise</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>2.0.44</li></ul></dd>
     
 
     

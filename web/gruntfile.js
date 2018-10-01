@@ -141,7 +141,7 @@ module.exports = function(grunt) {
         if( found == false ) {
           tutoConfig['Others'].push( obj );
         }
-        
+        console.log( file );
         var text = '---\nlayout: page-sidemenu\n' + inner;
         fs.writeFileSync('./sources/tutorials/' + file.replace('.html', '' ) + ".md", text );
       });

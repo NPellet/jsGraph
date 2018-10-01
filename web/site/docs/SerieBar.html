@@ -108,6 +108,12 @@
   			
   			  
   			  <li >
+            <a class="page-link" href="/docs/EventEmitter.html">EventEmitter</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
             <a class="page-link" href="/docs/Legend.html">Legend</a>
           </li>
   			  
@@ -169,6 +175,14 @@
 			
 			  
 			  <li >
+			  	<a class="page-link" href="/docs/SerieLine3D.html">
+			  		Line3D
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
 			  	<a class="page-link" href="/docs/SerieLineColor.html">
 			  		LineColor
 			  	</a>
@@ -187,6 +201,14 @@
 			  <li >
 			  	<a class="page-link" href="/docs/SerieZone.html">
 			  		Zone
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieZone3D.html">
+			  		Zone3D
 			  	</a>
 			  </li>
 			  
@@ -210,8 +232,8 @@
     
         <h2>SerieBar</h2>
         
-            <div class="class-description">Represents a bar serie.  
-   Needs to be used exclusively with a bar axis (<a href="AxisXBar.html">AxisXBar</a>).  
+            <div class="class-description">Represents a bar serie.
+   Needs to be used exclusively with a bar axis (<a href="AxisXBar.html">AxisXBar</a>).
    Supports error bars, line color, line width, fill color, fill opacity.</div>
         
     
@@ -1019,6 +1041,98 @@
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="axisCheck"><span class="type-signature"></span><span></span><span class="doc-name">axisCheck</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Checks that axes assigned to the serie have been defined and have proper values
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#axisCheck">Serie#axisCheck</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -3842,13 +3956,13 @@
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -3920,6 +4034,30 @@
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
 
     
 

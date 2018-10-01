@@ -19,25 +19,24 @@ mouseActions: mouseActions || []
 
 graph.resize( 400, 300 );
 
-var data = [];
+const wave1 = Graph.newWaveform();
+
 for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
-data.push( i );
-data.push( Math.sin( i ) );
+  wave1.append( Math.sin( i ), i );
 }
 
-var serie = graph.newSerie( "firstSerie" ).autoAxis().setData( data );
+var serie = graph.newSerie( "firstSerie" ).autoAxis().setWaveform( wave1 );
 
 if( secondSerie ) {
 
   serie.setLineColor('ForestGreen').setOption('selectableOnClick', true);
 
-  var data = [];
+  const wave = Graph.newWaveform();
   for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
-  data.push( i );
-  data.push( Math.cos( i ) );
+    wave.append( Math.cos( i ), i );
   }
 
-  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setData( data ).setLineColor('crimson').setOption('selectableOnClick', true);
+  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setWaveform( wave ).setLineColor('crimson').setOption('selectableOnClick', true);
 
   graph.getRightAxis( 0 ).turnGridsOff();
 
@@ -67,7 +66,7 @@ new Graph( "domID", {
 });
 {% endhighlight %}
 
-### Features
+### <a id="features"></a>Features
 
 Here are a few features that the zoom plugin can provide you:
 
@@ -81,7 +80,7 @@ Here are a few features that the zoom plugin can provide you:
 
 ### <a id="basics"></a>Basics
 
-We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option ```mouseAction``` of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let's take the following code as it is:
+We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option ```mouseActions``` of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let's take the following code as it is:
 
 {% highlight javascript %}
 new Graph( "domID", {  
@@ -92,7 +91,7 @@ new Graph( "domID", {
       }
   },
 
-  mouseAction: [
+  mouseActions: [
     { plugin: 'zoom', shift: false, ctrl: false }
   ]
 });
@@ -326,7 +325,7 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 
 ### <a id="mousewheel"></a>Mouse wheel
 
-The mousewheel behavior is set in the ```mouseAction``` array of the graph instance. Options include:
+The mousewheel behavior is set in the ```mouseActions``` array of the graph instance. Options include:
 
 * ```baseline``` sets the zero of the scaling
 * ```direction``` (```y``` or ```x```) sets the direction of the zooming

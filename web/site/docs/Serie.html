@@ -108,6 +108,12 @@
   			
   			  
   			  <li >
+            <a class="page-link" href="/docs/EventEmitter.html">EventEmitter</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
             <a class="page-link" href="/docs/Legend.html">Legend</a>
           </li>
   			  
@@ -169,6 +175,14 @@
 			
 			  
 			  <li >
+			  	<a class="page-link" href="/docs/SerieLine3D.html">
+			  		Line3D
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
 			  	<a class="page-link" href="/docs/SerieLineColor.html">
 			  		LineColor
 			  	</a>
@@ -187,6 +201,14 @@
 			  <li >
 			  	<a class="page-link" href="/docs/SerieZone.html">
 			  		Zone
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieZone3D.html">
+			  		Zone3D
 			  	</a>
 			  </li>
 			  
@@ -285,6 +307,419 @@
     
         <h3 class="subsection-title">Methods</h3>
 
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".getMaxX"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxX</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Highest x value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".getMaxY"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxY</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Highest y value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".getMinX"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMinX</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Lowest x value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".getMinY"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMinY</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Lowest y value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".getX"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getX</span><span class="doc-signature">( <span class="doc-type">Number</span> val )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the x position of a certain value in pixels position, based on the serie's axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to convert to pixels position</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The x position in px corresponding to the x value
+</div>
+
+        
+
+    
+
+    </div>
+</div>
         
             
 
@@ -481,6 +916,58 @@
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="axisCheck"><span class="type-signature"></span><span></span><span class="doc-name">axisCheck</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Checks that axes assigned to the serie have been defined and have proper values
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -808,6 +1295,54 @@
 
     
 
+    <h4 class="doc-code" id="getFlip"><span class="type-signature"></span><span></span><span class="doc-name">getFlip</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="getFlip"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">getFlip</span><span class="doc-signature">( )</span></h4>
 
 
@@ -866,54 +1401,6 @@
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getFlip"><span class="type-signature"></span><span></span><span class="doc-name">getFlip</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 
@@ -2537,13 +3024,13 @@
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -2575,6 +3062,30 @@
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
 
     
 
@@ -2898,7 +3409,7 @@
 
     
 
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] [ , <span class="doc-type">String</span> type ] )</span></h4>
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] )</span></h4>
 
 
 
@@ -3022,45 +3533,6 @@
             
 
             <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    float
-                
-                </td>
-            
-
-            <td class="description last">Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).</td>
         </tr>
 
     
@@ -3702,6 +4174,54 @@
 
     
 
+    <h4 class="doc-code" id="setLegendSymbolStyle"><span class="type-signature"></span><span></span><span class="doc-name">setLegendSymbolStyle</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="setLegendSymbolStyle"><span class="type-signature"></span><span>{<span class="doc-return">SVGElement</span>} </span><span class="doc-name">setLegendSymbolStyle</span><span class="doc-signature">( )</span></h4>
 
 
@@ -3798,54 +4318,6 @@
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="setLegendSymbolStyle"><span class="type-signature"></span><span></span><span class="doc-name">setLegendSymbolStyle</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 

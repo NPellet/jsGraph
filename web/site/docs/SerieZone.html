@@ -108,6 +108,12 @@
   			
   			  
   			  <li >
+            <a class="page-link" href="/docs/EventEmitter.html">EventEmitter</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
             <a class="page-link" href="/docs/Legend.html">Legend</a>
           </li>
   			  
@@ -169,6 +175,14 @@
 			
 			  
 			  <li >
+			  	<a class="page-link" href="/docs/SerieLine3D.html">
+			  		Line3D
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
 			  	<a class="page-link" href="/docs/SerieLineColor.html">
 			  		LineColor
 			  	</a>
@@ -187,6 +201,14 @@
 			  <li  class="active" >
 			  	<a class="page-link" href="/docs/SerieZone.html">
 			  		Zone
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieZone3D.html">
+			  		Zone3D
 			  	</a>
 			  </li>
 			  
@@ -767,519 +789,6 @@
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getMax"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMax</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
-
-
-
-
-<div class="description">
-    Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>startX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The start of the x values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The end of the x values</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Maximal y value in between startX and endX
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getMin"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMin</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
-
-
-
-
-<div class="description">
-    Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>startX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The start of the x values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The end of the x values</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Maximal y value in between startX and endX
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="searchClosestValue"><span class="type-signature"></span><span>{<span class="doc-return">Object</span>} </span><span class="doc-name">searchClosestValue</span><span class="doc-signature">( <span class="doc-type">Number</span> valX )</span></h4>
-
-
-
-
-<div class="description">
-    Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>valX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The x value to search for</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Object</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Sets the data
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Serie.html#setData">Serie#setData</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 
@@ -1911,6 +1420,144 @@
     </div>
 </div>
         
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setWaveform"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieZone.html">SerieZone</a></span>} </span><span class="doc-name">setWaveform</span><span class="doc-signature">( <span class="doc-type">Waveform</span> &hellip;waveforms )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns a collection of waveforms that make up the zone
+The waveforms will appended one after the other, without break
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>waveforms</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Waveform</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The collection of waveforms</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="SerieZone.html">SerieZone</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    - The current serie zone instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
     
 
 
@@ -2193,6 +1840,98 @@
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="axisCheck"><span class="type-signature"></span><span></span><span class="doc-name">axisCheck</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Checks that axes assigned to the serie have been defined and have proper values
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#axisCheck">Serie#axisCheck</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -5016,13 +4755,13 @@
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -5094,6 +4833,30 @@
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
 
     
 
@@ -5488,6 +5251,223 @@
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets data to the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Array.&lt;Array></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The data of the serie</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>oneDimensional</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setData">Serie#setData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Examples</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Faster</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">,</span> <span class="nx">x</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nx">y</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">...]</span> <span class="p">],</span> <span class="kc">true</span> <span class="p">)</span> <span class="c1">// 1D array with a gap in the middle</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="nx">x0</span><span class="p">,</span> <span class="na">dx</span><span class="p">:</span> <span class="nx">spacing</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">[</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="nx">y3</span><span class="p">,</span> <span class="nx">y4</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Data with equal x separation. Fastest way</span></code></pre></figure>
 
     
 

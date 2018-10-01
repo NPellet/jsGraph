@@ -13,6 +13,7 @@
 			"url": "AxisY"
 		}
 	],
+	"EventEmitter": [],
 	"Core": [],
 	"Legend": [],
 	"Plugin": [
@@ -23,6 +24,14 @@
 		{
 			"title": "Drag",
 			"url": "PluginDrag"
+		},
+		{
+			"title": "MakeTracesDifferent",
+			"url": "PluginMakeTracesDifferent"
+		},
+		{
+			"title": "PeakPicking",
+			"url": "PluginPeakPicking"
 		},
 		{
 			"title": "SelectScatter",
@@ -64,6 +73,10 @@
 			"url": "SerieLine"
 		},
 		{
+			"title": "Line3D",
+			"url": "SerieLine3D"
+		},
+		{
 			"title": "LineColor",
 			"url": "SerieLineColor"
 		},
@@ -74,6 +87,10 @@
 		{
 			"title": "Zone",
 			"url": "SerieZone"
+		},
+		{
+			"title": "Zone3D",
+			"url": "SerieZone3D"
 		}
 	],
 	"Shape": [
@@ -88,6 +105,10 @@
 		{
 			"title": "Ellipse",
 			"url": "ShapeEllipse"
+		},
+		{
+			"title": "HTML",
+			"url": "ShapeHTML"
 		},
 		{
 			"title": "Label",
@@ -106,8 +127,8 @@
 			"url": "ShapePeakBoundaries"
 		},
 		{
-			"title": "Polyline",
-			"url": "ShapePolyline"
+			"title": "PolyLine",
+			"url": "ShapePolyLine"
 		},
 		{
 			"title": "Rectangle",

@@ -17,25 +17,24 @@ mouseActions: mouseActions || []
 
 graph.resize( 400, 300 );
 
-var data = [];
+const wave1 = Graph.newWaveform();
+
 for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
-data.push( i );
-data.push( Math.sin( i ) );
+  wave1.append( Math.sin( i ), i );
 }
 
-var serie = graph.newSerie( "firstSerie" ).autoAxis().setData( data );
+var serie = graph.newSerie( "firstSerie" ).autoAxis().setWaveform( wave1 );
 
 if( secondSerie ) {
 
   serie.setLineColor('ForestGreen').setOption('selectableOnClick', true);
 
-  var data = [];
+  const wave = Graph.newWaveform();
   for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
-  data.push( i );
-  data.push( Math.cos( i ) );
+    wave.append( Math.cos( i ), i );
   }
 
-  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setData( data ).setLineColor('crimson').setOption('selectableOnClick', true);
+  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setWaveform( wave ).setLineColor('crimson').setOption('selectableOnClick', true);
 
   graph.getRightAxis( 0 ).turnGridsOff();
 

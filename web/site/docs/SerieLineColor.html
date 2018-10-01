@@ -108,6 +108,12 @@
   			
   			  
   			  <li >
+            <a class="page-link" href="/docs/EventEmitter.html">EventEmitter</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
             <a class="page-link" href="/docs/Legend.html">Legend</a>
           </li>
   			  
@@ -168,6 +174,14 @@
 			  
 			
 			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieLine3D.html">
+			  		Line3D
+			  	</a>
+			  </li>
+			  
+			
+			  
 			  <li  class="active" >
 			  	<a class="page-link" href="/docs/SerieLineColor.html">
 			  		LineColor
@@ -187,6 +201,14 @@
 			  <li >
 			  	<a class="page-link" href="/docs/SerieZone.html">
 			  		Zone
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieZone3D.html">
+			  		Zone3D
 			  	</a>
 			  </li>
 			  
@@ -821,6 +843,98 @@
 
     
 
+    <h4 class="doc-code" id="axisCheck"><span class="type-signature"></span><span></span><span class="doc-name">axisCheck</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Checks that axes assigned to the serie have been defined and have proper values
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#axisCheck">Serie#axisCheck</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="clearData"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">clearData</span><span class="doc-signature">( )</span></h4>
 
 
@@ -1053,7 +1167,7 @@
 
     
 
-    <h4 class="doc-code" id="degrade"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">degrade</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+    <h4 class="doc-code" id="degrade"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">degrade</span><span class="doc-signature">( )</span></h4>
 
 
 
@@ -1061,8 +1175,8 @@
 <div class="description">
     Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
 For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-<code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
-It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
+<code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range
+Starting from jsGraph 2.0, it does not calculate the minimum and maximum and creates the zone serie anymore
 </div>
 
 
@@ -1075,55 +1189,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     
 
     
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A object containing the options to set</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
     
 
@@ -1203,7 +1268,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 		</span>
 	
 
-    The newly created zone serie
+    The current serie instance
 </div>
 
         
@@ -1212,8 +1277,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
         <h5>Example</h5>
         
 
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">zone</span> <span class="o">=</span> <span class="nx">serie</span><span class="p">.</span><span class="nx">degrade</span><span class="p">(</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">{</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'rgba(100, 100, 100, 0.2'</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Will display 2 points per pixels</span>
-<span class="nx">zone</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span></code></pre></figure>
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">degrade</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span> <span class="c1">// Will display 2 points per pixels</span></code></pre></figure>
 
     
 
@@ -4294,98 +4358,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
-    <h4 class="doc-code" id="hidePeakPicking"><span class="type-signature"></span><span></span><span class="doc-name">hidePeakPicking</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Hides the automatic peak picking (see the autoPeakPicking option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#hidePeakPicking">SerieLine#hidePeakPicking</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
     <h4 class="doc-code" id="hideTrackingMarker"><span class="type-signature"></span><span></span><span class="doc-name">hideTrackingMarker</span><span class="doc-signature">( )</span></h4>
 
 
@@ -4422,98 +4394,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
         <a href="SerieLine.html#hideTrackingMarker">SerieLine#hideTrackingMarker</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="init"><span class="type-signature"></span><span></span><span class="doc-name">init</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Initializes the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#init">SerieLine#init</a>
     </li></ul></dd>
     
 
@@ -4802,13 +4682,13 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -4880,6 +4760,30 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
 
     
 
@@ -5949,7 +5853,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] [ , <span class="doc-type">String</span> type ] )</span></h4>
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] )</span></h4>
 
 
 
@@ -6073,45 +5977,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
             
 
             <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    float
-                
-                </td>
-            
-
-            <td class="description last">Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).</td>
         </tr>
 
     
@@ -7889,98 +7754,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="showPeakPicking"><span class="type-signature"></span><span></span><span class="doc-name">showPeakPicking</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Shows the automatic peak picking (see the autoPeakPicking option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#showPeakPicking">SerieLine#showPeakPicking</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 

@@ -24806,7 +24806,7 @@ class PluginAxisSplitting extends Plugin {
     this.series = new Map();
   }
 
-  static defaults() {
+  static default() {
 
     return {
       axes: {

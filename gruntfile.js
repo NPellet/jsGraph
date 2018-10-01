@@ -275,7 +275,9 @@ module.exports = function ( grunt ) {
 
     grunt.registerTask( 'buildExamples', 'Builds new examples', function () {
 
+
         var examples = [];
+console.log( fs.readFileSync( 'examples/list.json', 'utf8' ) );
         var list = JSON.parse( fs.readFileSync( 'examples/list.json', 'utf8' ) );
 
         for ( var i = 0, l = list.length; i < l; i++ ) {

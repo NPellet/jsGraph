@@ -145,35 +145,6 @@ subtitle: 'SerieDensityMap'
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-
-
-<div class="doc-member">
-<h4 class="doc-code" id=".SerieDensityMapDefaultOptions"><span class="type-signature">(static) </span><span class="doc-name">SerieDensityMapDefaultOptions</span><span class="type-signature"></span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-
-
-
-
-
-
-
-
-
-</div>
-</div>
-        
-
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -2162,7 +2133,7 @@ As of now, all the colors in colorStops will be places at equal distances from e
         
 
     {% highlight JavaScript %}// In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
-serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); {% endhighlight %}
+serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );{% endhighlight %}
 
     
 
@@ -2334,6 +2305,269 @@ serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); {% endhighligh
         
 
     {% highlight JavaScript %}serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );{% endhighlight %}
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setDensityMap"><span class="type-signature"></span><span>{<span class="doc-return">Array</span>} </span><span class="doc-name">setDensityMap</span><span class="doc-signature">( <span class="doc-type">Array</span> densitymap , <span class="doc-type">Number</span> fromX , <span class="doc-type">Number</span> deltaX , <span class="doc-type">Number</span> fromY , <span class="doc-type">Number</span> deltaY )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the density map from a precalculated data set
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>densitymap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A 2D-array containing the map</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fromX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The first x element to consider</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>deltaX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x spacing between two bins</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fromY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The first y element to consider</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>deltaY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The y spacing between two bins</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="SerieDensityMap.html#autoBins">SerieDensityMap#autoBins</a></li>
+        
+            <li><a href="SerieDensityMap.html#autoColorMapBinBoundaries">SerieDensityMap#autoColorMapBinBoundaries</a></li>
+        
+            <li><a href="SerieDensityMap.html#setPxPerBin">SerieDensityMap#setPxPerBin</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The generated density map
+</div>
+
+        
 
     
 
@@ -2526,7 +2760,7 @@ serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); {% endhighligh
 
 
 <div class="description">
-    Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into 
+    Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into
 the calculation of the density map. In this method, the color map spans on the full scale of the density map values (i.e. a subrange cannot be defined, like you would do using <a href="SerieDensityMap.html#setColorMapBinBoundaries">SerieDensityMap#setColorMapBinBoundaries</a>).
 </div>
 
@@ -3008,6 +3242,98 @@ the calculation of the density map. In this method, the color map spans on the f
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="axisCheck"><span class="type-signature"></span><span></span><span class="doc-name">axisCheck</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Checks that axes assigned to the serie have been defined and have proper values
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#axisCheck">Serie#axisCheck</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -5831,13 +6157,13 @@ the calculation of the density map. In this method, the color map spans on the f
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -5909,6 +6235,30 @@ the calculation of the density map. In this method, the color map spans on the f
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
 
     
 

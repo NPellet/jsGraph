@@ -1,6 +1,3 @@
-import Graph from '../../dist/jsgraph-module.js'
-const domGraph = 'graph';
-
 
 var graph = new Graph( domGraph, { }, { } );
 

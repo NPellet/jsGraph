@@ -33,7 +33,7 @@ subtitle: 'Graph'
     <h2>Constructor</h2>
     
 
-    <h4 class="doc-code" id="Graph"><span class="type-signature"></span>new <span></span><span class="doc-name">Graph</span><span class="doc-signature">( <span class="doc-type">HTMLElement, String</span> wrapper [ , <span class="doc-type">GraphOptions</span> options ] [ , <span class="doc-type">Object</span> axis ] )</span></h4>
+    <h4 class="doc-code" id="Graph"><span class="type-signature"></span>new <span></span><span class="doc-name">Graph</span><span class="doc-signature">( [ , <span class="doc-type">HTMLElement, String</span> wrapper ] [ , <span class="doc-type">GraphOptions</span> options ] [ , <span class="doc-type">Object</span> axis ] )</span></h4>
 
 
 
@@ -99,6 +99,8 @@ subtitle: 'Graph'
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -108,7 +110,7 @@ subtitle: 'Graph'
 
             
 
-            <td class="description last">The DOM Wrapper element or the element ```id``` where it can be found</td>
+            <td class="description last">The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method</td>
         </tr>
 
     
@@ -374,7 +376,7 @@ subtitle: 'Graph'
 
 
     <ul>
-        <li>EventEmitter</li>
+        <li><a href="EventEmitter.html">EventEmitter</a></li>
     </ul>
 
 
@@ -694,6 +696,29 @@ subtitle: 'Graph'
 
         <tr>
             
+                <td class="name"><code>keyActions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Defines what happens when keys are pressed</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>wheel</code></td>
             
 
@@ -893,7 +918,7 @@ Access directly the options of the graph using this public object.</li>
 
     
 
-    <h4 class="doc-code" id=".fromSchema"><span class="type-signature">(static) </span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">fromSchema</span><span class="doc-signature">( <span class="doc-type">Object</span> schema , <span class="doc-type">HTMLElement</span> wrapper )</span></h4>
+    <h4 class="doc-code" id=".fromJSON"><span class="type-signature">(static) </span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">fromJSON</span><span class="doc-signature">( <span class="doc-type">Object</span> schema , <span class="doc-type">HTMLElement</span> wrapper )</span></h4>
 
 
 
@@ -1041,7 +1066,7 @@ Access directly the options of the graph using this public object.</li>
 
     
 
-    <h4 class="doc-code" id=".getConstructor"><span class="type-signature">(static) </span><span>{<span class="doc-return">function</span>} </span><span class="doc-name">getConstructor</span><span class="doc-signature">( <span class="doc-type">String</span> constructorName )</span></h4>
+    <h4 class="doc-code" id=".getConstructor"><span class="type-signature">(static) </span><span>{<span class="doc-return">function</span>} </span><span class="doc-name">getConstructor</span><span class="doc-signature">( <span class="doc-type">String</span> constructorName [ , <span class="doc-type">Boolean</span> softFail ] )</span></h4>
 
 
 
@@ -1075,7 +1100,11 @@ Access directly the options of the graph using this public object.</li>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -1100,10 +1129,61 @@ Access directly the options of the graph using this public object.</li>
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">The constructor name to look for</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>softFail</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Fails silently if the constructor doesn't exist, and returns false</td>
         </tr>
 
     
@@ -1578,14 +1658,205 @@ If func is a function, the function will be called with the axis, its type and p
 
     
 
-    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="allSeries"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;<a href="Serie.html">Serie</a>></span>} </span><span class="doc-name">allSeries</span><span class="doc-signature">( <span class="doc-type">Symbol</span> &hellip;type )</span></h4>
 
 
 
 
 <div class="description">
-    Autoscales the x and y axes of the graph<br />
-Repains the canvas
+    Returns all the series that correspond to one or multiple types
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The serie types to select</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;<a href="Serie.html">Serie</a>></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An array of all the series
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    {% highlight JavaScript %}graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );{% endhighlight %}
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Autoscales the x and y axes of the graph.
+Does not repaint the canvas
 </div>
 
 
@@ -1617,6 +1888,251 @@ Repains the canvas
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoScaleAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">autoScaleAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> The )</span></h4>
+
+
+
+
+<div class="description">
+    Autoscales a particular axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>The</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">axis to rescale</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
 
     
 
@@ -1727,6 +2243,129 @@ If performance becomes a critical issue in your application, <code>cacheOffset()
 
     
 
+    <h4 class="doc-code" id="delayUpdate"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">delayUpdate</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Prevents the graph, the series and the legend from redrawing automatically. Valid until <a href="Graph.html#resumeUpdate">Graph#resumeUpdate</a> is called
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.16.19</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#resumeUpdate">Graph#resumeUpdate</a></li>
+        
+            <li><a href="Graph.html#doUpdate">Graph#doUpdate</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="displayTitle"><span class="type-signature"></span><span></span><span class="doc-name">displayTitle</span><span class="doc-signature">( )</span></h4>
 
 
@@ -1765,6 +2404,129 @@ If performance becomes a critical issue in your application, <code>cacheOffset()
     
 
     
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="doUpdate"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">doUpdate</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Forces legend and graph update, even is <a href="Graph.html#delayUpdate">Graph#delayUpdate</a> has been called before.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.16.19</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#delayUpdate">Graph#delayUpdate</a></li>
+        
+            <li><a href="Graph.html#resumeUpdate">Graph#resumeUpdate</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
 
     
 
@@ -5716,7 +6478,7 @@ Caution ! The <code>options</code> parameter will only be effective if an axis i
 
     
 
-    <h4 class="doc-code" id="newPosition"><span class="type-signature"></span><span></span><span class="doc-name">newPosition</span><span class="doc-signature">( <span class="doc-type">*</span> &hellip;var_args )</span></h4>
+    <h4 class="doc-code" id="newPosition"><span class="type-signature"></span><span></span><span class="doc-name">newPosition</span><span class="doc-signature">( <span class="doc-type">*</span> &hellip;varArgs )</span></h4>
 
 
 
@@ -5764,7 +6526,7 @@ Caution ! The <code>options</code> parameter will only be effective if an axis i
 
         <tr>
             
-                <td class="name"><code>var_args</code></td>
+                <td class="name"><code>varArgs</code></td>
             
 
             <td class="type">
@@ -6572,6 +7334,10 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+<div class="description">
+    Removes all series from the graph
+</div>
+
 
 <div class="doc-details">
 
@@ -6619,10 +7385,6 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
-
-<div class="description">
-    Removes all series from the graph
-</div>
 
 
 <div class="doc-details">
@@ -6916,6 +7678,129 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 	
 
     The current graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="resumeUpdate"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">resumeUpdate</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Cancels the effect of <a href="Graph.html#delayUpdate">Graph#delayUpdate</a>, but does not redraw the graph automatically
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.16.19</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#delayUpdate">Graph#delayUpdate</a></li>
+        
+            <li><a href="Graph.html#doUpdate">Graph#doUpdate</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
 </div>
 
         
@@ -7678,6 +8563,131 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setKatexRenderer"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">setKatexRenderer</span><span class="doc-signature">( <span class="doc-type">function</span> renderer )</span></h4>
+
+
+
+
+<div class="description">
+    Pass here the katex.render method to be used later
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>renderer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">katexRendered - renderer</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
 
     
 
@@ -9177,6 +10187,110 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
     
 
+    <h4 class="doc-code" id="trackingLine"><span class="type-signature"></span><span></span><span class="doc-name">trackingLine</span><span class="doc-signature">( <span class="doc-type">Object, Boolean</span> options )</span></h4>
+
+
+
+
+<div class="description">
+    Enables the line tracking
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="uncacheOffset"><span class="type-signature"></span><span></span><span class="doc-name">uncacheOffset</span><span class="doc-signature">( )</span></h4>
 
 
@@ -9735,13 +10849,13 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
     
 
-    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span></span><span class="doc-name">updateLegend</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">updateLegend</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> onlyIfRequired ] )</span></h4>
 
 
 
 
 <div class="description">
-    Redraw the legend
+    Redraws the legend if it exists
 </div>
 
 
@@ -9756,6 +10870,75 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onlyIfRequired</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">```true``` to redraw the legend only when it actually needs to be updated</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
 
     
 
@@ -9773,6 +10956,30 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The graph instance
+</div>
+
+        
 
     
 
