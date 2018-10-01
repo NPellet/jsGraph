@@ -3922,6 +3922,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       this.series.push(serie);
+
+      serie.postInit();
       this.emit('newSerie', serie);
       return serie;
     }
@@ -6126,7 +6128,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.0.95'
+        'data-jsgraph-version': 'v2.0.96'
       });
     } catch (e) {
       // ignore
@@ -9033,7 +9035,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         lineWidth: 3
       };
 
-      this.extendStyles();
       this.markersDom = new Map();
 
       this.shown = true;
@@ -9055,7 +9056,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       this.groupLines = document.createElementNS(this.graph.ns, 'g');
       this.domMarker = document.createElementNS(this.graph.ns, 'path');
-      this.domMarker.style.cursor = 'pointer';
+
+      if (!this.domMarker.style) {
+        this.domMarker.style = {
+          cursor: 'pointer'
+        };
+      } else {
+        this.domMarker.style.cursor = 'pointer';
+      }
 
       this.groupMain = document.createElementNS(this.graph.ns, 'g');
       this.additionalData = {};
@@ -9112,6 +9120,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (this.options.markers) {
         this.setMarkers(this.options.markers, 'unselected');
       }
+    }
+
+    postInit() {
+      this.extendStyles();
     }
 
     /**
@@ -11712,6 +11724,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       //console.log( new.target.default() );
       //}
     }
+
+    postInit() {}
 
     draw() {}
 
@@ -27342,14 +27356,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.subSeries = [];
     }
 
-    setData() {
-      super.setData(...arguments);
-      this.subSeries.map(sub => {
-        sub.data = this.data;
-      });
-      return this;
-    }
-
     draw() {
       this.eraseMarkers();
       return this;
@@ -27377,14 +27383,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     constructor() {
       super(...arguments);
       this.subSeries = [];
-    }
-
-    setData() {
-      super.setData(...arguments);
-      this.subSeries.map(sub => {
-        sub.data = this.data;
-      });
-      return this;
     }
 
     draw() {
@@ -27423,6 +27421,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var args = arguments;
         this.subSeries.map(subSerie => {
+          console.log(j);
           subSerie[j](...args);
         });
       };
@@ -27552,7 +27551,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           s.excludedFromLegend = true;
           s.styles = serie.styles;
-          s.data = serie.data; // Copy data
+          s.waveform = serie.waveform; // Copy data
 
           if (serie.getType() == _graphCore2.default.SERIE_LINE) {
             s.markerPoints = serie.markerPoints;
@@ -27560,6 +27559,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           serie.subSeries.push(s);
+          serie.postInit();
         }
 
         while (serie.subSeries.length > splits) {
@@ -27644,10 +27644,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     newLineSerie(name, options) {
       var serieObj = {
         type: 'lineSerie',
-        serie: new SerieLineExtended(name, options, 'line')
+        serie: new SerieLineExtended(this.graph, name, options, 'line')
       };
       this.series.set(name, serieObj);
-      serieObj.serie.init(this.graph, name, options);
       this.graph.series.push(serieObj.serie);
       return serieObj.serie;
     }
@@ -27661,10 +27660,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     newScatterSerie(name, options) {
       var serieObj = {
         type: 'scatterSerie',
-        serie: new SerieScatterExtended(name, options, 'scatter')
+        serie: new SerieScatterExtended(this.graph, name, options, 'scatter')
       };
       this.series.set(name, serieObj);
-      serieObj.serie.init(this.graph, options);
       this.graph.series.push(serieObj.serie);
       return serieObj.serie;
     }

@@ -1166,6 +1166,8 @@ class Graph extends EventEmitter {
     }
 
     this.series.push( serie );
+
+    serie.postInit();
     this.emit( 'newSerie', serie );
     return serie;
   }

@@ -30,6 +30,8 @@ class Serie extends EventEmitter {
 
   }
 
+  postInit() {}
+
   draw() {}
 
   beforeDraw() {}

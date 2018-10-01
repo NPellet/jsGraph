@@ -14,14 +14,6 @@ class SerieLineExtended extends SerieLine {
     this.subSeries = [];
   }
 
-  setData() {
-    super.setData( ...arguments );
-    this.subSeries.map( ( sub ) => {
-      sub.data = this.data;
-    } );
-    return this;
-  }
-
   draw() {
     this.eraseMarkers();
     return this;
@@ -49,14 +41,6 @@ class SerieScatterExtended extends SerieScatter {
   constructor() {
     super( ...arguments );
     this.subSeries = [];
-  }
-
-  setData() {
-    super.setData( ...arguments );
-    this.subSeries.map( ( sub ) => {
-      sub.data = this.data;
-    } );
-    return this;
   }
 
   draw() {
@@ -113,6 +97,7 @@ Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( func
 
       var args = arguments;
       this.subSeries.map( ( subSerie ) => {
+        console.log( j );
         subSerie[ j ]( ...args );
       } );
     };
@@ -244,7 +229,7 @@ class PluginAxisSplitting extends Plugin {
 
         s.excludedFromLegend = true;
         s.styles = serie.styles;
-        s.data = serie.data; // Copy data
+        s.waveform = serie.waveform; // Copy data
 
         if ( serie.getType() == Graph.SERIE_LINE ) {
           s.markerPoints = serie.markerPoints;
@@ -252,6 +237,7 @@ class PluginAxisSplitting extends Plugin {
         }
 
         serie.subSeries.push( s );
+        serie.postInit();
       }
 
       while ( serie.subSeries.length > splits ) {
@@ -339,10 +325,9 @@ class PluginAxisSplitting extends Plugin {
   newLineSerie( name, options ) {
     var serieObj = {
       type: 'lineSerie',
-      serie: new SerieLineExtended( name, options, 'line' )
+      serie: new SerieLineExtended( this.graph, name, options, 'line' )
     };
     this.series.set( name, serieObj );
-    serieObj.serie.init( this.graph, name, options );
     this.graph.series.push( serieObj.serie );
     return serieObj.serie;
   }
@@ -356,10 +341,9 @@ class PluginAxisSplitting extends Plugin {
   newScatterSerie( name, options ) {
     var serieObj = {
       type: 'scatterSerie',
-      serie: new SerieScatterExtended( name, options, 'scatter' )
+      serie: new SerieScatterExtended( this.graph, name, options, 'scatter' )
     };
     this.series.set( name, serieObj );
-    serieObj.serie.init( this.graph, options );
     this.graph.series.push( serieObj.serie );
     return serieObj.serie;
   }

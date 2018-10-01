@@ -64,7 +64,6 @@ class SerieLine extends Serie {
       lineWidth: 3
     };
 
-    this.extendStyles();
     this.markersDom = new Map();
 
     this.shown = true;
@@ -86,7 +85,14 @@ class SerieLine extends Serie {
 
     this.groupLines = document.createElementNS( this.graph.ns, 'g' );
     this.domMarker = document.createElementNS( this.graph.ns, 'path' );
-    this.domMarker.style.cursor = 'pointer';
+
+    if ( !this.domMarker.style ) {
+      this.domMarker.style = {
+        cursor: 'pointer'
+      };
+    } else {
+      this.domMarker.style.cursor = 'pointer';
+    }
 
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
     this.additionalData = {};
@@ -145,6 +151,10 @@ class SerieLine extends Serie {
       this.setMarkers( this.options.markers, 'unselected' );
     }
 
+  }
+
+  postInit() {
+    this.extendStyles();
   }
 
   /**

@@ -4694,6 +4694,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this.series.push(serie);
+
+        serie.postInit();
         this.emit('newSerie', serie);
         return serie;
       }
@@ -6886,7 +6888,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.0.95'
+        'data-jsgraph-version': 'v2.0.96'
       });
     } catch (e) {
       // ignore
@@ -10168,7 +10170,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         lineWidth: 3
       };
 
-      _this.extendStyles();
       _this.markersDom = new Map();
 
       _this.shown = true;
@@ -10190,7 +10191,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       _this.groupLines = document.createElementNS(_this.graph.ns, 'g');
       _this.domMarker = document.createElementNS(_this.graph.ns, 'path');
-      _this.domMarker.style.cursor = 'pointer';
+
+      if (!_this.domMarker.style) {
+        _this.domMarker.style = {
+          cursor: 'pointer'
+        };
+      } else {
+        _this.domMarker.style.cursor = 'pointer';
+      }
 
       _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
       _this.additionalData = {};
@@ -10251,16 +10259,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return _this;
     }
 
-    /**
-     * Sets the options of the serie
-     * @see SerieLineDefaultOptions
-     * @param {Object} options - A object containing the options to set
-     * @return {SerieLine} The current serie
-     * @memberof SerieLine
-     */
-
-
     _createClass(SerieLine, [{
+      key: 'postInit',
+      value: function postInit() {
+        this.extendStyles();
+      }
+    }, {
       key: 'setOptions',
       value: function setOptions(options) {
         this.options = util.extend(true, {}, SerieLine.prototype.defaults, options || {});
@@ -12939,6 +12943,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     _createClass(Serie, [{
+      key: 'postInit',
+      value: function postInit() {}
+    }, {
       key: 'draw',
       value: function draw() {}
     }, {
@@ -37120,6 +37127,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
   }
 
+  var _get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
   function _toConsumableArray(arr) {
     if (Array.isArray(arr)) {
       for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
@@ -37162,31 +37194,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return call && (typeof call === "object" || typeof call === "function") ? call : self;
   }
 
-  var _get = function get(object, property, receiver) {
-    if (object === null) object = Function.prototype;
-    var desc = Object.getOwnPropertyDescriptor(object, property);
-
-    if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);
-
-      if (parent === null) {
-        return undefined;
-      } else {
-        return get(parent, property, receiver);
-      }
-    } else if ("value" in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;
-
-      if (getter === undefined) {
-        return undefined;
-      }
-
-      return getter.call(receiver);
-    }
-  };
-
   function _inherits(subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
@@ -37216,17 +37223,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     _createClass(SerieLineExtended, [{
-      key: 'setData',
-      value: function setData() {
-        var _this2 = this;
-
-        _get(SerieLineExtended.prototype.__proto__ || Object.getPrototypeOf(SerieLineExtended.prototype), 'setData', this).apply(this, arguments);
-        this.subSeries.map(function (sub) {
-          sub.data = _this2.data;
-        });
-        return this;
-      }
-    }, {
       key: 'draw',
       value: function draw() {
         this.eraseMarkers();
@@ -37261,24 +37257,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function SerieScatterExtended() {
       _classCallCheck(this, SerieScatterExtended);
 
-      var _this3 = _possibleConstructorReturn(this, (SerieScatterExtended.__proto__ || Object.getPrototypeOf(SerieScatterExtended)).apply(this, arguments));
+      var _this2 = _possibleConstructorReturn(this, (SerieScatterExtended.__proto__ || Object.getPrototypeOf(SerieScatterExtended)).apply(this, arguments));
 
-      _this3.subSeries = [];
-      return _this3;
+      _this2.subSeries = [];
+      return _this2;
     }
 
     _createClass(SerieScatterExtended, [{
-      key: 'setData',
-      value: function setData() {
-        var _this4 = this;
-
-        _get(SerieScatterExtended.prototype.__proto__ || Object.getPrototypeOf(SerieScatterExtended.prototype), 'setData', this).apply(this, arguments);
-        this.subSeries.map(function (sub) {
-          sub.data = _this4.data;
-        });
-        return this;
-      }
-    }, {
       key: 'draw',
       value: function draw() {
         return this;
@@ -37321,6 +37306,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var args = arguments;
         this.subSeries.map(function (subSerie) {
+          console.log(j);
           subSerie[j].apply(subSerie, _toConsumableArray(args));
         });
       };
@@ -37338,10 +37324,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function PluginAxisSplitting(options) {
       _classCallCheck(this, PluginAxisSplitting);
 
-      var _this5 = _possibleConstructorReturn(this, (PluginAxisSplitting.__proto__ || Object.getPrototypeOf(PluginAxisSplitting)).apply(this, arguments));
+      var _this3 = _possibleConstructorReturn(this, (PluginAxisSplitting.__proto__ || Object.getPrototypeOf(PluginAxisSplitting)).apply(this, arguments));
 
-      _this5.series = new Map();
-      return _this5;
+      _this3.series = new Map();
+      return _this3;
     }
 
     _createClass(PluginAxisSplitting, [{
@@ -37395,7 +37381,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'preDraw',
       value: function preDraw() {
-        var _this6 = this;
+        var _this4 = this;
 
         var xAxis, yAxis;
 
@@ -37421,11 +37407,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             var name = serie.getName() + '_' + serie.subSeries.length;
 
-            var s = _this6.graph.newSerie(name, {}, serie.getType() || _graphCore2.default.SERIE_LINE);
+            var s = _this4.graph.newSerie(name, {}, serie.getType() || _graphCore2.default.SERIE_LINE);
 
             s.excludedFromLegend = true;
             s.styles = serie.styles;
-            s.data = serie.data; // Copy data
+            s.waveform = serie.waveform; // Copy data
 
             if (serie.getType() == _graphCore2.default.SERIE_LINE) {
               s.markerPoints = serie.markerPoints;
@@ -37433,11 +37419,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
 
             serie.subSeries.push(s);
+            serie.postInit();
           }
 
           while (serie.subSeries.length > splits) {
 
-            var subserie = _this6.graph.getSerie(serie.getName() + '_' + (serie.subSeries.length - 1));
+            var subserie = _this4.graph.getSerie(serie.getName() + '_' + (serie.subSeries.length - 1));
 
             if (subserie && subserie.kill) {
               subserie.kill();
@@ -37509,10 +37496,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function newLineSerie(name, options) {
         var serieObj = {
           type: 'lineSerie',
-          serie: new SerieLineExtended(name, options, 'line')
+          serie: new SerieLineExtended(this.graph, name, options, 'line')
         };
         this.series.set(name, serieObj);
-        serieObj.serie.init(this.graph, name, options);
         this.graph.series.push(serieObj.serie);
         return serieObj.serie;
       }
@@ -37521,10 +37507,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function newScatterSerie(name, options) {
         var serieObj = {
           type: 'scatterSerie',
-          serie: new SerieScatterExtended(name, options, 'scatter')
+          serie: new SerieScatterExtended(this.graph, name, options, 'scatter')
         };
         this.series.set(name, serieObj);
-        serieObj.serie.init(this.graph, options);
         this.graph.series.push(serieObj.serie);
         return serieObj.serie;
       }
@@ -37569,14 +37554,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         _classCallCheck(this, SplitAxis);
 
-        var _this7 = _possibleConstructorReturn(this, (SplitAxis.__proto__ || Object.getPrototypeOf(SplitAxis)).call(this, graph, position, options));
+        var _this5 = _possibleConstructorReturn(this, (SplitAxis.__proto__ || Object.getPrototypeOf(SplitAxis)).call(this, graph, position, options));
 
-        _this7.axes = [];
-        _this7.position = position;
-        _this7.constructorOptions = util.extend(true, {}, defaultAxisConstructorOptions, options);
+        _this5.axes = [];
+        _this5.position = position;
+        _this5.constructorOptions = util.extend(true, {}, defaultAxisConstructorOptions, options);
 
-        _this7._splitVal = [];
-        return _this7;
+        _this5._splitVal = [];
+        return _this5;
       }
 
       /**
@@ -37820,7 +37805,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }, {
         key: 'draw',
         value: function draw() {
-          var _this8 = this;
+          var _this6 = this;
 
           if (this.autoSpread) {
             this._splitSpread();
@@ -37856,7 +37841,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
 
             if (axis._mean !== undefined) {
-              var _width = (axis.getSpan()[1] - axis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * _this8._baseWidthVal;
+              var _width = (axis.getSpan()[1] - axis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * _this6._baseWidthVal;
               axis.forceMin(axis._mean - _width / 2);
               axis.forceMax(axis._mean + _width / 2);
             }
@@ -38028,10 +38013,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function SplitXAxis(graph, topbottom, options) {
       _classCallCheck(this, SplitXAxis);
 
-      var _this9 = _possibleConstructorReturn(this, (SplitXAxis.__proto__ || Object.getPrototypeOf(SplitXAxis)).apply(this, arguments));
+      var _this7 = _possibleConstructorReturn(this, (SplitXAxis.__proto__ || Object.getPrototypeOf(SplitXAxis)).apply(this, arguments));
 
-      _this9.topbottom = topbottom;
-      return _this9;
+      _this7.topbottom = topbottom;
+      return _this7;
     }
 
     _createClass(SplitXAxis, [{

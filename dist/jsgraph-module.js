@@ -4656,6 +4656,8 @@ class Graph$1 extends EventEmitter {
     }
 
     this.series.push(serie);
+
+    serie.postInit();
     this.emit('newSerie', serie);
     return serie;
   }
@@ -12660,6 +12662,8 @@ class Serie extends EventEmitter {
     //}
   }
 
+  postInit() {}
+
   draw() {}
 
   beforeDraw() {}
@@ -13791,7 +13795,6 @@ class SerieLine extends Serie {
       lineWidth: 3
     };
 
-    this.extendStyles();
     this.markersDom = new Map();
 
     this.shown = true;
@@ -13813,7 +13816,14 @@ class SerieLine extends Serie {
 
     this.groupLines = document.createElementNS(this.graph.ns, 'g');
     this.domMarker = document.createElementNS(this.graph.ns, 'path');
-    this.domMarker.style.cursor = 'pointer';
+
+    if (!this.domMarker.style) {
+      this.domMarker.style = {
+        cursor: 'pointer'
+      };
+    } else {
+      this.domMarker.style.cursor = 'pointer';
+    }
 
     this.groupMain = document.createElementNS(this.graph.ns, 'g');
     this.additionalData = {};
@@ -13870,6 +13880,10 @@ class SerieLine extends Serie {
     if (this.options.markers) {
       this.setMarkers(this.options.markers, 'unselected');
     }
+  }
+
+  postInit() {
+    this.extendStyles();
   }
 
   /**
@@ -24708,14 +24722,6 @@ class SerieLineExtended extends SerieLine {
     this.subSeries = [];
   }
 
-  setData() {
-    super.setData(...arguments);
-    this.subSeries.map(sub => {
-      sub.data = this.data;
-    });
-    return this;
-  }
-
   draw() {
     this.eraseMarkers();
     return this;
@@ -24743,14 +24749,6 @@ class SerieScatterExtended extends SerieScatter {
   constructor() {
     super(...arguments);
     this.subSeries = [];
-  }
-
-  setData() {
-    super.setData(...arguments);
-    this.subSeries.map(sub => {
-      sub.data = this.data;
-    });
-    return this;
   }
 
   draw() {
@@ -24789,6 +24787,7 @@ Object.getOwnPropertyNames(SerieLine.prototype).concat(addMethods).map(function 
 
       var args = arguments;
       this.subSeries.map(subSerie => {
+        console.log(j);
         subSerie[j](...args);
       });
     };
@@ -24918,7 +24917,7 @@ class PluginAxisSplitting extends Plugin {
 
         s.excludedFromLegend = true;
         s.styles = serie.styles;
-        s.data = serie.data; // Copy data
+        s.waveform = serie.waveform; // Copy data
 
         if (serie.getType() == Graph$1.SERIE_LINE) {
           s.markerPoints = serie.markerPoints;
@@ -24926,6 +24925,7 @@ class PluginAxisSplitting extends Plugin {
         }
 
         serie.subSeries.push(s);
+        serie.postInit();
       }
 
       while (serie.subSeries.length > splits) {
@@ -25010,10 +25010,9 @@ class PluginAxisSplitting extends Plugin {
   newLineSerie(name, options) {
     var serieObj = {
       type: 'lineSerie',
-      serie: new SerieLineExtended(name, options, 'line')
+      serie: new SerieLineExtended(this.graph, name, options, 'line')
     };
     this.series.set(name, serieObj);
-    serieObj.serie.init(this.graph, name, options);
     this.graph.series.push(serieObj.serie);
     return serieObj.serie;
   }
@@ -25027,10 +25026,9 @@ class PluginAxisSplitting extends Plugin {
   newScatterSerie(name, options) {
     var serieObj = {
       type: 'scatterSerie',
-      serie: new SerieScatterExtended(name, options, 'scatter')
+      serie: new SerieScatterExtended(this.graph, name, options, 'scatter')
     };
     this.series.set(name, serieObj);
-    serieObj.serie.init(this.graph, options);
     this.graph.series.push(serieObj.serie);
     return serieObj.serie;
   }
