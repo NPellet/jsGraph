@@ -6888,7 +6888,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.0'
+        'data-jsgraph-version': 'v2.1.1'
       });
     } catch (e) {
       // ignore
@@ -10126,6 +10126,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   }
 
+  var type = 'line';
+
   var defaultOptions = {
     /**
      * @name SerieLineDefaultOptions
@@ -10168,7 +10170,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var _this = _possibleConstructorReturn(this, (SerieLine.__proto__ || Object.getPrototypeOf(SerieLine)).call(this, graph, name, options, util.extend(true, {}, defaultOptions, defaultInherited)));
 
       _this.selectionType = 'unselected';
-
+      _this._type = type;
       util.mapEventEmission(_this.options, _this); // Register events
 
       // Creates an empty style variable
@@ -10324,6 +10326,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.selected = false;
 
         return this.select('unselected');
+      }
+    }, {
+      key: 'getSymbolForLegend',
+      value: function getSymbolForLegend() {
+
+        var container = this._getSymbolForLegendContainer();
+
+        if (!this.lineForLegend) {
+
+          var line = document.createElementNS(this.graph.ns, 'line');
+          this.applyLineStyle(line);
+
+          line.setAttribute('x1', 5);
+          line.setAttribute('x2', 25);
+          line.setAttribute('y1', 0);
+          line.setAttribute('y2', 0);
+
+          line.setAttribute('cursor', 'pointer');
+
+          this.lineForLegend = line;
+          container.appendChild(this.lineForLegend);
+        }
+
+        _get(SerieLine.prototype.__proto__ || Object.getPrototypeOf(SerieLine.prototype), 'getSymbolForLegend', this).call(this);
+
+        return this.lineForLegend;
       }
     }, {
       key: 'degrade',
@@ -15018,6 +15046,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       _this.graph = graph;
       _this.name = name;
       _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
+
+      _this._symbolLegendContainer = document.createElementNS(_this.graph.ns, 'g');
       return _this;
     }
 
@@ -15379,6 +15409,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         return this.lineForLegend;
+      }
+    }, {
+      key: '_getSymbolForLegendContainer',
+      value: function _getSymbolForLegendContainer() {
+        return this._symbolLegendContainer;
       }
     }, {
       key: 'setLegendSymbolStyle',
@@ -17316,6 +17351,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return call && (typeof call === "object" || typeof call === "function") ? call : self;
   }
 
+  var _get = function get(object, property, receiver) {
+    if (object === null) object = Function.prototype;
+    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+    if (desc === undefined) {
+      var parent = Object.getPrototypeOf(object);
+
+      if (parent === null) {
+        return undefined;
+      } else {
+        return get(parent, property, receiver);
+      }
+    } else if ("value" in desc) {
+      return desc.value;
+    } else {
+      var getter = desc.get;
+
+      if (getter === undefined) {
+        return undefined;
+      }
+
+      return getter.call(receiver);
+    }
+  };
+
   function _inherits(subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
@@ -17476,23 +17536,26 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'getSymbolForLegend',
       value: function getSymbolForLegend() {
 
-        if (this.symbol) {
-          return this.symbol;
+        if (!this.markers) {
+          return;
         }
 
-        var g = document.createElementNS(this.graph.ns, 'g');
+        var container = _get(SerieScatter.prototype.__proto__ || Object.getPrototypeOf(SerieScatter.prototype), '_getSymbolForLegendContainer', this).call(this);
 
-        var shape = this._makeMarker(g, this.options.markerStyles.unselected.default);
+        if (!this.shapeLegend) {
+          this.shapeLegend = this._makeMarker(container, this.options.markerStyles.unselected.default);
+          container.appendChild(this.shapeLegend);
+        }
+
         var style = this.getMarkerStyle('unselected', -1, true);
-
         for (var i in style[-1]) {
           if (i == 'shape') {
             continue;
           }
-          shape.setAttribute(i, style[-1][i]);
+          this.shapeLegend.setAttribute(i, style[-1][i]);
         }
 
-        return g;
+        return container;
       }
     }, {
       key: 'setMarkerStyle',
@@ -17781,7 +17844,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
         this.options.markers = bln;
-        console.log(this.options, bln);
+
         return this;
       }
     }, {
@@ -17794,18 +17857,27 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this.options.markers = true;
         this.groupMarkers.setAttribute('display', 'initial');
+
+        if (this.shapeLegend) {
+          this.shapeLegend.setAttribute('display', 'initial');
+        }
+
         return this;
       }
     }, {
       key: 'hideMarkers',
       value: function hideMarkers() {
-        return;
+
         if (!this.options.markers) {
           return;
         }
 
         this.options.markers = false;
         this.groupMarkers.setAttribute('display', 'none');
+
+        if (this.shapeLegend) {
+          this.shapeLegend.setAttribute('display', 'none');
+        }
         return this;
       }
     }, {
@@ -27131,7 +27203,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             g.appendChild(rect);
 
-            var line = series[j].getSymbolForLegend();
+            series[i].getSymbolForLegend();
+
+            var line = series[i]._getSymbolForLegendContainer();
             var marker = series[j].getMarkerForLegend();
             var text = series[j].getTextForLegend();
 
@@ -34889,7 +34963,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (options.baseline == 'mousePosition') {
           baseline = this.graph.getYAxis().getVal(coordY);
-          console.log(baseline);
         }
 
         /*var serie;
@@ -36630,26 +36703,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _createClass(SerieLineExtended, [{
       key: 'draw',
       value: function draw() {
-        this.eraseMarkers();
         return this;
-      }
-    }, {
-      key: 'getSymbolForLegend',
-      value: function getSymbolForLegend() {
-        if (!this.subSeries[0]) {
-          return false;
-        }
-
-        return this.subSeries[0].getSymbolForLegend();
-      }
-    }, {
-      key: 'getMarkerForLegend',
-      value: function getMarkerForLegend() {
-        if (!this.subSeries[0]) {
-          return false;
-        }
-
-        return this.subSeries[0].getMarkerForLegend();
       }
     }]);
 
@@ -36674,15 +36728,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return this;
       }
     }, {
-      key: 'getSymbolForLegend',
-      value: function getSymbolForLegend() {
-        if (!this.subSeries[0]) {
-          return false;
-        }
-
-        return this.subSeries[0].getSymbolForLegend();
-      }
-    }, {
       key: 'getMarkerForLegend',
       value: function getMarkerForLegend() {
         if (!this.subSeries[0]) {
@@ -36696,7 +36741,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return SerieScatterExtended;
   }(_graphSerieScatter2.default);
 
-  var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'showMarkers', 'hideMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints'];
+  var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints', 'getSymbolForLegend', '_getSymbolForLegendContainer'];
   var addMethods = [];
 
   Object.getOwnPropertyNames(_graphSerieLine2.default.prototype).concat(addMethods).map(function (i) {
@@ -36711,11 +36756,65 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var args = arguments;
         this.subSeries.map(function (subSerie) {
-          console.log(j);
           subSerie[j].apply(subSerie, _toConsumableArray(args));
         });
       };
     }(i);
+  });
+
+  var returnMethods = ['getSymbolForLegend'];
+
+  var addMethods = ['_getSymbolForLegendContainer'];
+
+  Object.getOwnPropertyNames(_graphSerieLine2.default.prototype).map(function (i) {
+
+    if (returnMethods.indexOf(i) == -1) {
+      return;
+    }
+
+    SerieLineExtended.prototype[i] = function (j) {
+
+      return function () {
+        var _subSeries$;
+
+        console.log(j);
+        var args = arguments;
+        return (_subSeries$ = this.subSeries[0])[j].apply(_subSeries$, _toConsumableArray(args));
+      };
+    }(i);
+
+    SerieScatterExtended.prototype[i] = function (j) {
+
+      return function () {
+        var _subSeries$2;
+
+        var args = arguments;
+        return (_subSeries$2 = this.subSeries[0])[j].apply(_subSeries$2, _toConsumableArray(args));
+      };
+    }(i);
+  });
+
+  addMethods.map(function (method) {
+
+    SerieLineExtended.prototype[method] = function (j) {
+
+      return function () {
+        var _subSeries$3;
+
+        var args = arguments;
+        return (_subSeries$3 = this.subSeries[0])[j].apply(_subSeries$3, _toConsumableArray(args));
+      };
+    }(method);
+
+    SerieScatterExtended.prototype[method] = function (j) {
+
+      return function () {
+        var _subSeries$4;
+
+        var args = arguments;
+        return (_subSeries$4 = this.subSeries[0])[j].apply(_subSeries$4, _toConsumableArray(args));
+      };
+    }(method);
   });
 
   /**

@@ -85,7 +85,6 @@ Ok, let us first display ```serie1``` on a new graph.
 var g = new Graph("example-1") // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 
-
 var s = g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
  .setWaveform( wave1 ); // Assigns the data to the serie
@@ -146,6 +145,11 @@ g.draw();
 
 </script>
 
+
+### <a id="doc-multipleseries"></a>Customizing markers
+
+#### <a id="doc-multipleseries"></a>Marker default style
+
 However, we'd like to change the style of the default markers:
 
 {% highlight javascript %}
@@ -188,6 +192,8 @@ s = g.newSerie()
 g.draw();
 
 </script>
+
+#### <a id="doc-markermodifiers"></a>Marker modifiers
 
 But that's a lot of markers, we can barely see the line. Let's rather display a marker every 5 points. For this, we can use the second argument of ```setMarkerStyle``` which specifies modifiers, i.e. styles that differ from the general marker style and that apply to specific points. More specifically, we can feed in a function that would look like that:
 
@@ -241,12 +247,24 @@ g.draw();
 </script>
 
 More advanced marker description will be covered in an advanced tutorial.
+
+
+### <a id="doc-labelingaxes"></a>Labeling axes
+
 We will cover the axes in more details in the following text, but for now, you might be interesting in simply labeling your axis and setting units:
 
 {% highlight javascript %}
 g.getXAxis().setLabel( "Voltage (V)" );
 g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
 {% endhighlight %}
+
+We can also use the method ```setUnitWrapper( before, after )``` to display parentheses or square braces around the unit:
+
+{% highlight javascript %}
+g.getXAxis().setUnitWrapper( "(", ")" );
+g.getYAxis().setUnitWrapper( "(", ")" );
+{% endhighlight %}
+
 
 <div id="example-4" class="jsgraph-example"></div>
 <script>
@@ -272,8 +290,8 @@ s = g.newSerie()
 	fill: 'white'
  }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
 
-g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
-g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
+g.getXAxis().setLabel( "Voltage" ).setUnit( "V" ).setUnitWrapper("(", ")");
+g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" ).setUnitWrapper("(", ")");
 
 g.draw();
 
@@ -357,8 +375,8 @@ var pV = g.newSerie( "pV" ) // Note the same of the serie
  .autoAxis()
  .setWaveform( wave2 )
 
-g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
-g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
+g.getXAxis().setLabel( "Voltage" ).setUnit( "V" ).setUnitWrapper("(", ")");
+g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" ).setUnitWrapper("(", ")");
 
 
 g.draw();
@@ -435,8 +453,8 @@ Here it is the ```1``` that makes all the difference. The first axis was indexed
 	 .setYAxis( g.getLeftAxis( 1 ) )
 	 .setWaveform( wave2 )
 
-	g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
-	g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
+	g.getXAxis().setLabel( "Voltage" ).setUnit( "V" ).setUnitWrapper("(", ")");
+	g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" ).setUnitWrapper("(", ")");
 
 	g.draw();
 })();
@@ -468,18 +486,18 @@ var jV = g
  	lineWidth: 2,
  	markers: true,
  	markerStyles: {
- 	  unselected: {
- 	    default: {
+    unselected: {
+      default: {
         shape: 'rect',
-				strokeWidth: 1,
-				x: -2,
-				y: -2,
-				width: 4,
-				height: 4,
-				stroke: 'rgb( 200, 0, 0 )',
-				fill: 'white'		
- 			},
-	 		modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+        strokeWidth: 1,
+        x: -2,
+        y: -2,
+        width: 4,
+        height: 4,
+        stroke: 'rgb( 200, 0, 0 )',
+        fill: 'white'		
+      },
+      modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
  		}
  	}
  } )
@@ -555,18 +573,21 @@ g.draw();
 	g
 	 .getXAxis()
 	 .setUnit( "V" )
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Voltage" )
 	 .secondaryGridOff();
 
 	g
 	 .getLeftAxis()
 	 .setUnit("mA cm^-2")
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Current density" )
 	 .secondaryGridOff();
 
 	g
 	 .getRightAxis()
 	 .setUnit("mW cm^-2")
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Power density" )
 	 .gridsOff();
 
@@ -646,12 +667,14 @@ g
 	g
 	 .getXAxis()
 	 .setUnit( "V" )
+   .setUnitWrapper("(", ")");
 	 .setLabel( "Voltage" )
 	 .secondaryGridOff();
 
 	g
 	 .getLeftAxis()
 	 .setUnit("mA cm^-2")
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Current density" )
 	 .secondaryGridOff()
 	 .forceMin( -25 )
@@ -660,6 +683,7 @@ g
 	g
 	 .getRightAxis()
 	 .setUnit("mW cm^-2")
+   .setUnitWrapper("(", ")");
 	 .setLabel( "Power density" )
 	 .gridsOff()
 	 .forceMax( 5 );
@@ -720,12 +744,14 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 	g
 	 .getXAxis()
 	 .setUnit( "V" )
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Voltage" )
 	 .secondaryGridOff();
 
 	g
 	 .getLeftAxis()
 	 .setUnit("mA cm^-2")
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Current density" )
 	 .secondaryGridOff()
 	 .forceMin( -25 )
@@ -734,6 +760,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 	g
 	 .getRightAxis()
 	 .setUnit("mW cm^-2")
+   .setUnitWrapper("(", ")")
 	 .setLabel( "Power density" )
 	 .gridsOff()
 	 .forceMax( 5 );
@@ -785,7 +812,7 @@ g
 						fill: 'white'		
 		 			}
 		 		},
-               modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+        modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
 		 	}
 		 } )
 		 .autoAxis()
@@ -800,12 +827,14 @@ g
 		g
 		 .getXAxis()
 		 .setUnit( "V" )
+     .setUnitWrapper("(", ")")
 		 .setLabel( "Voltage" )
 		 .secondaryGridOff();
 
 		g
 		 .getLeftAxis()
 		 .setUnit("mA cm^-2")
+     .setUnitWrapper("(", ")")
 		 .setLabel( "Current density" )
 		 .secondaryGridOff()
 		 .forceMin( -25 )
@@ -814,6 +843,7 @@ g
 		g
 		 .getRightAxis()
 		 .setUnit("mW cm^-2")
+     .setUnitWrapper("(", ")")
 		 .setLabel( "Power density" )
 		 .gridsOff()
 		 .forceMax( 5 );

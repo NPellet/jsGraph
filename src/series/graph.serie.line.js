@@ -5,6 +5,8 @@ import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 import Waveform from '../util/waveform.js';
 
+const type = 'line';
+
 const defaultOptions = {
   /**
    * @name SerieLineDefaultOptions
@@ -44,7 +46,7 @@ class SerieLine extends SerieScatter {
     super( graph, name, options, util.extend( true, {}, defaultOptions, defaultInherited ) );
 
     this.selectionType = 'unselected';
-
+    this._type = type;
     util.mapEventEmission( this.options, this ); // Register events
 
     // Creates an empty style variable
@@ -218,6 +220,37 @@ class SerieLine extends SerieScatter {
     this.selected = false;
 
     return this.select( 'unselected' );
+  }
+
+  /**
+   * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+   * @returns {SVGElement}
+   * @memberof SerieLine
+   */
+  getSymbolForLegend() {
+
+    const container = this._getSymbolForLegendContainer();
+
+    if ( !this.lineForLegend ) {
+
+      var line = document.createElementNS( this.graph.ns, 'line' );
+      this.applyLineStyle( line );
+
+      line.setAttribute( 'x1', 5 );
+      line.setAttribute( 'x2', 25 );
+      line.setAttribute( 'y1', 0 );
+      line.setAttribute( 'y2', 0 );
+
+      line.setAttribute( 'cursor', 'pointer' );
+
+      this.lineForLegend = line;
+      container.appendChild( this.lineForLegend );
+    }
+
+    super.getSymbolForLegend();
+
+    return this.lineForLegend;
+
   }
 
   /**

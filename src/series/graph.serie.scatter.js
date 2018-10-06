@@ -120,24 +120,26 @@ class SerieScatter extends Serie {
 
   getSymbolForLegend() {
 
-    if ( this.symbol ) {
-      return this.symbol;
+    if ( !this.markers ) {
+      return;
     }
 
-    var g = document.createElementNS( this.graph.ns, 'g' );
+    const container = super._getSymbolForLegendContainer();
 
-    var shape = this._makeMarker( g, this.options.markerStyles.unselected.default );
+    if ( !this.shapeLegend ) {
+      this.shapeLegend = this._makeMarker( container, this.options.markerStyles.unselected.default );
+      container.appendChild( this.shapeLegend );
+    }
+
     var style = this.getMarkerStyle( 'unselected', -1, true );
-
     for ( var i in style[ -1 ] ) {
       if ( i == 'shape' ) {
         continue;
       }
-      shape.setAttribute( i, style[ -1 ][ i ] );
+      this.shapeLegend.setAttribute( i, style[ -1 ][ i ] );
     }
 
-    return g;
-
+    return container;
   }
 
   /**
@@ -359,6 +361,7 @@ class SerieScatter extends Serie {
         this.shapes[ index ] = this._makeMarker( g, styles[ index ] );
         this.groupMarkers.appendChild( g );
         shape = this.shapes[ index ];
+
       }
 
       if ( !noSetPosition && this.shapesDetails[ index ][ 0 ] === this.shapesDetails[ index ][ 0 ] && this.shapesDetails[ index ][ 1 ] === this.shapesDetails[ index ][ 1 ] ) {
@@ -449,7 +452,7 @@ class SerieScatter extends Serie {
   setMarkers( bln = true ) {
 
     this.options.markers = bln;
-    console.log( this.options, bln );
+
     return this;
   }
 
@@ -461,17 +464,26 @@ class SerieScatter extends Serie {
 
     this.options.markers = true;
     this.groupMarkers.setAttribute( 'display', 'initial' );
+
+    if ( this.shapeLegend ) {
+      this.shapeLegend.setAttribute( 'display', 'initial' );
+    }
+
     return this;
   }
 
   hideMarkers() {
-    return;
+
     if ( !this.options.markers ) {
       return;
     }
 
     this.options.markers = false;
     this.groupMarkers.setAttribute( 'display', 'none' );
+
+    if ( this.shapeLegend ) {
+      this.shapeLegend.setAttribute( 'display', 'none' );
+    }
     return this;
   }
 

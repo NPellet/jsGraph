@@ -387,7 +387,9 @@ class Legend {
 
         g.appendChild( rect );
 
-        var line = series[ j ].getSymbolForLegend();
+        series[ i ].getSymbolForLegend();
+
+        var line = series[ i ]._getSymbolForLegendContainer();
         var marker = series[ j ].getMarkerForLegend();
         var text = series[ j ].getTextForLegend();
 

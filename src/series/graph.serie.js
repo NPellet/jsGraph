@@ -22,6 +22,8 @@ class Serie extends EventEmitter {
     this.graph = graph;
     this.name = name;
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+
+    this._symbolLegendContainer = document.createElementNS( this.graph.ns, 'g' );
   }
 
   postInit() {}
@@ -490,6 +492,10 @@ class Serie extends EventEmitter {
 
     return this.lineForLegend;
 
+  }
+
+  _getSymbolForLegendContainer() {
+    return this._symbolLegendContainer;
   }
 
   /**

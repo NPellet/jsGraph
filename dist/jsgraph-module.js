@@ -8035,7 +8035,9 @@ class Legend {
 
         g.appendChild(rect);
 
-        var line = series[j].getSymbolForLegend();
+        series[i].getSymbolForLegend();
+
+        var line = series[i]._getSymbolForLegendContainer();
         var marker = series[j].getMarkerForLegend();
         var text = series[j].getTextForLegend();
 
@@ -12668,6 +12670,8 @@ class Serie extends EventEmitter {
     this.graph = graph;
     this.name = name;
     this.groupMain = document.createElementNS(this.graph.ns, 'g');
+
+    this._symbolLegendContainer = document.createElementNS(this.graph.ns, 'g');
   }
 
   postInit() {}
@@ -13129,6 +13133,10 @@ class Serie extends EventEmitter {
     }
 
     return this.lineForLegend;
+  }
+
+  _getSymbolForLegendContainer() {
+    return this._symbolLegendContainer;
   }
 
   /**
@@ -13745,7 +13753,7 @@ var ErrorBarMixin = {
   }
 };
 
-var type = 'scatter';
+var type$1 = 'scatter';
 
 const defaultOptions$1 = {
 
@@ -13784,7 +13792,7 @@ class SerieScatter extends Serie {
 
     super(graph, name, options, extend(true, {}, defaultOptions$1, defaultInherited));
 
-    this._type = type;
+    this._type = type$1;
     mapEventEmission(this.options, this);
 
     this.shapes = []; // Stores all shapes
@@ -13857,23 +13865,26 @@ class SerieScatter extends Serie {
 
   getSymbolForLegend() {
 
-    if (this.symbol) {
-      return this.symbol;
+    if (!this.markers) {
+      return;
     }
 
-    var g = document.createElementNS(this.graph.ns, 'g');
+    const container = super._getSymbolForLegendContainer();
 
-    var shape = this._makeMarker(g, this.options.markerStyles.unselected.default);
+    if (!this.shapeLegend) {
+      this.shapeLegend = this._makeMarker(container, this.options.markerStyles.unselected.default);
+      container.appendChild(this.shapeLegend);
+    }
+
     var style = this.getMarkerStyle('unselected', -1, true);
-
     for (var i in style[-1]) {
       if (i == 'shape') {
         continue;
       }
-      shape.setAttribute(i, style[-1][i]);
+      this.shapeLegend.setAttribute(i, style[-1][i]);
     }
 
-    return g;
+    return container;
   }
 
   /**
@@ -14165,7 +14176,7 @@ class SerieScatter extends Serie {
   setMarkers(bln = true) {
 
     this.options.markers = bln;
-    console.log(this.options, bln);
+
     return this;
   }
 
@@ -14177,17 +14188,26 @@ class SerieScatter extends Serie {
 
     this.options.markers = true;
     this.groupMarkers.setAttribute('display', 'initial');
+
+    if (this.shapeLegend) {
+      this.shapeLegend.setAttribute('display', 'initial');
+    }
+
     return this;
   }
 
   hideMarkers() {
-    return;
+
     if (!this.options.markers) {
       return;
     }
 
     this.options.markers = false;
     this.groupMarkers.setAttribute('display', 'none');
+
+    if (this.shapeLegend) {
+      this.shapeLegend.setAttribute('display', 'none');
+    }
     return this;
   }
 
@@ -14203,6 +14223,8 @@ class SerieScatter extends Serie {
 }
 
 mix(SerieScatter, ErrorBarMixin);
+
+const type = 'line';
 
 const defaultOptions = {
   /**
@@ -14243,7 +14265,7 @@ class SerieLine extends SerieScatter {
     super(graph, name, options, extend(true, {}, defaultOptions, defaultInherited));
 
     this.selectionType = 'unselected';
-
+    this._type = type;
     mapEventEmission(this.options, this); // Register events
 
     // Creates an empty style variable
@@ -14415,6 +14437,36 @@ class SerieLine extends SerieScatter {
     this.selected = false;
 
     return this.select('unselected');
+  }
+
+  /**
+   * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+   * @returns {SVGElement}
+   * @memberof SerieLine
+   */
+  getSymbolForLegend() {
+
+    const container = this._getSymbolForLegendContainer();
+
+    if (!this.lineForLegend) {
+
+      var line = document.createElementNS(this.graph.ns, 'line');
+      this.applyLineStyle(line);
+
+      line.setAttribute('x1', 5);
+      line.setAttribute('x2', 25);
+      line.setAttribute('y1', 0);
+      line.setAttribute('y2', 0);
+
+      line.setAttribute('cursor', 'pointer');
+
+      this.lineForLegend = line;
+      container.appendChild(this.lineForLegend);
+    }
+
+    super.getSymbolForLegend();
+
+    return this.lineForLegend;
   }
 
   /**
@@ -22878,7 +22930,6 @@ class PluginZoom extends Plugin {
 
     if (options.baseline == 'mousePosition') {
       baseline = this.graph.getYAxis().getVal(coordY);
-      console.log(baseline);
     }
 
     /*var serie;
@@ -24116,34 +24167,20 @@ class SerieLineExtended extends SerieLine {
 
   constructor() {
     super(...arguments);
+
     this.subSeries = [];
   }
 
   draw() {
-    this.eraseMarkers();
     return this;
   }
 
-  getSymbolForLegend() {
-    if (!this.subSeries[0]) {
-      return false;
-    }
-
-    return this.subSeries[0].getSymbolForLegend();
-  }
-
-  getMarkerForLegend() {
-    if (!this.subSeries[0]) {
-      return false;
-    }
-
-    return this.subSeries[0].getMarkerForLegend();
-  }
 }
 
 class SerieScatterExtended extends SerieScatter {
 
   constructor() {
+
     super(...arguments);
     this.subSeries = [];
   }
@@ -24152,14 +24189,6 @@ class SerieScatterExtended extends SerieScatter {
     return this;
   }
 
-  getSymbolForLegend() {
-    if (!this.subSeries[0]) {
-      return false;
-    }
-
-    return this.subSeries[0].getSymbolForLegend();
-  }
-
   getMarkerForLegend() {
     if (!this.subSeries[0]) {
       return false;
@@ -24169,7 +24198,7 @@ class SerieScatterExtended extends SerieScatter {
   }
 }
 
-var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'showMarkers', 'hideMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints'];
+var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints', 'getSymbolForLegend', '_getSymbolForLegendContainer'];
 var addMethods = [];
 
 Object.getOwnPropertyNames(SerieLine.prototype).concat(addMethods).map(function (i) {
@@ -24184,11 +24213,57 @@ Object.getOwnPropertyNames(SerieLine.prototype).concat(addMethods).map(function 
 
       var args = arguments;
       this.subSeries.map(subSerie => {
-        console.log(j);
         subSerie[j](...args);
       });
     };
   }(i);
+});
+
+var returnMethods = ['getSymbolForLegend'];
+
+var addMethods = ['_getSymbolForLegendContainer'];
+
+Object.getOwnPropertyNames(SerieLine.prototype).map(function (i) {
+
+  if (returnMethods.indexOf(i) == -1) {
+    return;
+  }
+
+  SerieLineExtended.prototype[i] = function (j) {
+
+    return function () {
+      console.log(j);
+      var args = arguments;
+      return this.subSeries[0][j](...args);
+    };
+  }(i);
+
+  SerieScatterExtended.prototype[i] = function (j) {
+
+    return function () {
+      var args = arguments;
+      return this.subSeries[0][j](...args);
+    };
+  }(i);
+});
+
+addMethods.map(method => {
+
+  SerieLineExtended.prototype[method] = function (j) {
+
+    return function () {
+      var args = arguments;
+      return this.subSeries[0][j](...args);
+    };
+  }(method);
+
+  SerieScatterExtended.prototype[method] = function (j) {
+
+    return function () {
+      var args = arguments;
+      return this.subSeries[0][j](...args);
+    };
+  }(method);
 });
 
 /**
