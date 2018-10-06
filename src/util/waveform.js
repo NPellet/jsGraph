@@ -768,6 +768,18 @@ class Waveform {
     return this.average();
   }
 
+  stddev() {
+    let num = 0,
+      denom = 0;
+    const mean = this.mean();
+    for ( var i = 0; i < this.getLength(); i++ ) {
+      num += ( this.getY( i ) - mean ) ** 2
+      denom += this.getY( i );
+    }
+
+    return num ** 0.5 / denom;
+  }
+
   getAverageP( from, to ) {
     var sum = this._integrateP( from, to );
     return sum[ 0 ] / sum[ 2 ];

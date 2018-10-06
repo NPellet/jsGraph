@@ -10,20 +10,25 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+    
+    <script src="/dist/jsgraph-es6.js"></script> <!-- jsGraph should load first -->
 
-    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    <script src="/web/site/js/jquery/dist/jquery.min.js"></script>
+    <script src="/web/site/js/bootstrap/dist/js/bootstrap.min.js"></script> <!-- jQuery 
+    
+
+    should load first -->
     
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-        var baseUrl = "/";
+        var baseUrl = "/web/site/";
     </script>
 
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/theme.css">
-    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-10_basic.html">
+    <link rel="stylesheet" href="/web/site/css/main.css">
+    <link rel="stylesheet" href="/web/site/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000//web/site//tutorials/tutorial-10_basic.html">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </head>
 
@@ -53,10 +58,10 @@
         <ul class="nav navbar-nav">
 
 
-          <li><a href="/getting-started.html">Getting started</a></li>
-          <li><a href="/tutorials.html">Tutorials</a></li>
-          <li><a href="/docs/Graph.html">Documentation</a></li>
-          <li><a href="/examples.html">Examples</a></li>
+          <li><a href="/web/site/getting-started.html">Getting started</a></li>
+          <li><a href="/web/site/tutorials.html">Tutorials</a></li>
+          <li><a href="/web/site/docs/Graph.html">Documentation</a></li>
+          <li><a href="/web/site/examples.html">Examples</a></li>
         </ul>
       </div>
     </div>
@@ -150,10 +155,9 @@ Ok, let us first display <code class="highlighter-rouge">serie1</code> on a new 
 <script>
 var g = new Graph("example-1") // Creates a new graph
 
-g.newSerie() // Creates a new seire
+g.newSerie() // Creates a new serie
  .autoAxis() // Assigns automatic axes to the serie
  .setWaveform( wave1 ); // Assigns the data to the serie
-
 
 g.resize( 400, 300 ); // Resizes the graph
 
@@ -176,7 +180,7 @@ g.draw();
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span>
  <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s1">'red'</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span>
- <span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="p">);</span>
+ <span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
 
 <span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
@@ -194,7 +198,7 @@ s = g.newSerie() // Creates a new seire
 s
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers( );
+ .setMarkers( true );
 
 g.draw();
 
@@ -202,10 +206,15 @@ g.draw();
 
 <p>However, we’d like to change the style of the default markers:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span><span class="p">.</span><span class="nx">setMarkers</span><span class="p">({</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span><span class="p">.</span><span class="nx">setMarkerStyle</span><span class="p">({</span>
+	<span class="na">shape</span><span class="p">:</span> <span class="s1">'rect'</span><span class="p">,</span>
 	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-	<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
-	<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'white'</span>
+	<span class="na">stroke</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+	<span class="na">x</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+	<span class="na">y</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+	<span class="na">width</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="na">height</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="na">fill</span><span class="p">:</span> <span class="s1">'white'</span>
 <span class="p">});</span></code></pre></figure>
 
 <div id="example-3" class="jsgraph-example"></div>
@@ -220,11 +229,63 @@ s = g.newSerie()
  .setWaveform( wave1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyle({
+	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
  });
+
+g.draw();
+
+</script>
+
+<p>But that’s a lot of markers, we can barely see the line. Let’s rather display a marker every 5 points. For this, we can use the second argument of <code class="highlighter-rouge">setMarkerStyle</code> which specifies modifiers, i.e. styles that differ from the general marker style and that apply to specific points. More specifically, we can feed in a function that would look like that:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setMarkerStyle</span><span class="p">(</span> <span class="nx">defaultStyle</span><span class="p">,</span> <span class="p">(</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">domShape</span><span class="p">,</span> <span class="nx">generalStyle</span> <span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="k">return</span> <span class="p">{</span> <span class="cm">/* some new style */</span> <span class="p">}</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<p>The function should return an object, which will extend the default style, or <code class="highlighter-rouge">false</code> which cancels the marker appearance.
+In this particular application, let’s write:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">.</span><span class="nx">setMarkerStyle</span><span class="p">({</span>
+	<span class="na">shape</span><span class="p">:</span> <span class="s1">'rect'</span><span class="p">,</span>
+	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+	<span class="na">x</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+	<span class="na">y</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+	<span class="na">width</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="na">height</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="na">stroke</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+	<span class="na">fill</span><span class="p">:</span> <span class="s1">'white'</span>
+ <span class="p">},</span> <span class="p">(</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">domShape</span><span class="p">,</span> <span class="nx">style</span> <span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">index</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">?</span> <span class="nx">style</span> <span class="p">:</span> <span class="kc">false</span> <span class="p">);</span></code></pre></figure>
+
+<div id="example-3.1" class="jsgraph-example"></div>
+<script>
+
+var g = new Graph("example-3.1") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+s = g.newSerie()
+ .autoAxis()
+ .setWaveform( wave1 )
+ .setLineColor( 'red' )
+ .setLineWidth( 2 )
+ .setMarkers( true )
+ .setMarkerStyle({
+	shape: 'rect',
+	strokeWidth: 1,
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false );
 
 g.draw();
 
@@ -248,11 +309,17 @@ s = g.newSerie()
  .setWaveform( wave1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyle( {
+	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
- });
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
 
 g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
 g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
@@ -286,11 +353,17 @@ g.draw();
  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie1</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s1">'red'</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span>
- <span class="p">.</span><span class="nx">setMarkers</span><span class="p">({</span>
+ <span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setMarkerStyles</span><span class="p">({</span>
+	<span class="na">shape</span><span class="p">:</span> <span class="s1">'rect'</span><span class="p">,</span>
 	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-	<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
-	<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'white'</span>
- <span class="p">});</span>
+	<span class="na">x</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+	<span class="na">y</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+	<span class="na">width</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="na">height</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="na">stroke</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+	<span class="na">fill</span><span class="p">:</span> <span class="s1">'white'</span>
+ <span class="p">},</span> <span class="p">(</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">domShape</span><span class="p">,</span> <span class="nx">style</span> <span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">index</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">?</span> <span class="nx">style</span> <span class="p">:</span> <span class="kc">false</span><span class="p">);</span>
 
 <span class="kd">var</span> <span class="nx">pV</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"pV"</span> <span class="p">)</span> <span class="c1">// Note the same of the serie</span>
  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
@@ -300,7 +373,7 @@ g.draw();
 
 <div id="example-5" class="jsgraph-example"></div>
 <script>
-
+(() => {
 var g = new Graph("example-5") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
@@ -310,11 +383,19 @@ var jV = g.newSerie( "jV" ) // Note the same of the serie
  .setWaveform( wave1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyle({
+ 	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
- });
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
+
+ console.log( jV.options );
 
 var pV = g.newSerie( "pV" ) // Note the same of the serie
  .autoAxis()
@@ -325,6 +406,7 @@ g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
 
 
 g.draw();
+})();
 
 </script>
 
@@ -354,13 +436,13 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">pV</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"pV"</span> <span class="p">)</span> <span class="c1">// Note the name of the serie</span>
  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="c1">// Use the left axis at index 1</span>
- <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">)</span></code></pre></figure>
+ <span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span> <span class="nx">wave2</span> <span class="p">)</span></code></pre></figure>
 
 <p>Here it is the <code class="highlighter-rouge">1</code> that makes all the difference. The first axis was indexed at <code class="highlighter-rouge">0</code>, so <code class="highlighter-rouge">g.getLeftAxis( 1 )</code> will actually create a new axis on the left side of the graph (See <a href="Graph.html#getLeftAxis">Graph#getLeftAxis</a> and related for more details).</p>
 
 <div id="example-6" class="jsgraph-example"></div>
 <script>
-
+( () => {
 	var g = new Graph("example-6") // Creates a new graph
 
 	g.resize( 400, 300 ); // Resizes the graph
@@ -370,11 +452,17 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
 	 .setWaveform( wave1 )
 	 .setLineColor( 'red' )
 	 .setLineWidth( 2 )
-	 .setMarkers({
+	 .setMarkers( true )
+	 .setMarkerStyle({
+		shape: 'rect',
 		strokeWidth: 1,
-		strokeColor: 'rgb( 200, 0, 0 )',
-		fillColor: 'white'
-	 });
+		x: -2,
+		y: -2,
+		width: 4,
+		height: 4,
+		stroke: 'rgb( 200, 0, 0 )',
+		fill: 'white'
+	 }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
 
 	var pV = g.newSerie( "pV" ) // Note the same of the serie
 	 .setXAxis( g.getXAxis() )
@@ -385,7 +473,7 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
 	g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
 
 	g.draw();
-
+})();
 </script>
 
 <p>Now things are getting really ugly. This is because primary grids and secondary grids exist for all the axes. For the y axis this leads to the superimposition of too many lines. Let’s just turn off some of those grids. While we are at it, let’s use a right axis for the power density instead of a left axis to clear up some space.</p>
@@ -409,20 +497,32 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
  <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"jV"</span><span class="p">,</span> <span class="p">{</span>
  	<span class="na">lineColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span>
  	<span class="na">lineWidth</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
- 	<span class="na">markers</span><span class="p">:</span> <span class="p">{</span>
- 		<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-		<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
-		<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'white'</span>
+ 	<span class="na">markers</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+ 	<span class="na">markerStyles</span><span class="p">:</span> <span class="p">{</span>
+ 	  <span class="na">unselected</span><span class="p">:</span> <span class="p">{</span>
+ 	    <span class="na">default</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">shape</span><span class="p">:</span> <span class="s1">'rect'</span><span class="p">,</span>
+				<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+				<span class="na">x</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+				<span class="na">y</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+				<span class="na">width</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+				<span class="na">height</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+				<span class="na">stroke</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+				<span class="na">fill</span><span class="p">:</span> <span class="s1">'white'</span>		
+ 			<span class="p">},</span>
+	 		<span class="na">modifiers</span><span class="p">:</span> <span class="p">(</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">domShape</span><span class="p">,</span> <span class="nx">style</span> <span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">index</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">?</span> <span class="nx">style</span> <span class="p">:</span> <span class="kc">false</span>
+ 		<span class="p">}</span>
  	<span class="p">}</span>
  <span class="p">}</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
- <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie1</span> <span class="p">)</span>
- 
+ <span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span> <span class="nx">wave1</span> <span class="p">)</span>
+
+
 <span class="kd">var</span> <span class="nx">pV</span> <span class="o">=</span> <span class="nx">g</span>
  <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"pV"</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span> <span class="p">)</span>
  <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">(</span> <span class="p">)</span> <span class="p">)</span>
- <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">);</span>
+ <span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span> <span class="nx">wave2</span> <span class="p">);</span>
 
 <span class="nx">g</span>
  <span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span>
@@ -446,7 +546,7 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
 
 <div id="example-7" class="jsgraph-example"></div>
 <script>
-
+( () => {
 	var g = new Graph("example-7");
 
 	g.resize( 400, 300 );
@@ -455,15 +555,27 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
 	 .newSerie( "jV", {
 	 	lineColor: 'red',
 	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
+	 	markers: true,
+	 	markerStyles: {
+	 		unselected: {
+	 			default: {
+	 				shape: 'rect',
+					strokeWidth: 1,
+					x: -2,
+					y: -2,
+					width: 4,
+					height: 4,
+					stroke: 'rgb( 200, 0, 0 )',
+					fill: 'white'		
+	 			},
+	 			modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+	 		}
 	 	}
 	 } )
 	 .autoAxis()
 	 .setWaveform( wave1 )
-	 
+	
+	
 	var pV = g
 	 .newSerie( "pV" )
 	 .setXAxis( g.getXAxis() )
@@ -489,7 +601,7 @@ By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like 
 	 .gridsOff();
 
 	g.draw();
-
+})();
 </script>
 
 <p>Good ! Let’s now see what we can do with the axes.</p>
@@ -522,7 +634,7 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 
 <div id="example-8" class="jsgraph-example"></div>
 <script>
-
+( () => {
 	var g = new Graph("example-8");
 
 	g.resize( 400, 300 );
@@ -531,10 +643,21 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 	 .newSerie( "jV", {
 	 	lineColor: 'red',
 	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
+	 	markers: true,
+	 	markerStyles: {
+	 		unselected: {
+	 			default: {
+	 				shape: 'rect',
+					strokeWidth: 1,
+					x: -2,
+					y: -2,
+					width: 4,
+					height: 4,
+					stroke: 'rgb( 200, 0, 0 )',
+					fill: 'white'		
+	 			},
+	 			modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+	 		}
 	 	}
 	 } )
 	 .autoAxis()
@@ -570,7 +693,7 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
 
 	g.draw();
-
+})();
 </script>
 
 <h4 id="a-iddoc-alignmentaaligning-the-axes"><a id="doc-alignment"></a>Aligning the axes</h4>
@@ -582,6 +705,7 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 <div id="example-9" class="jsgraph-example"></div>
 <script>
 
+	( () => {
 	var g = new Graph("example-9");
 
 	g.resize( 400, 300 );
@@ -590,10 +714,21 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 	 .newSerie( "jV", {
 	 	lineColor: 'red',
 	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
+	 	markers: true,
+	 	markerStyles: {
+	 		unselected: {
+	 			default: {
+	 				shape: 'rect',
+					strokeWidth: 1,
+					x: -2,
+					y: -2,
+					width: 4,
+					height: 4,
+					stroke: 'rgb( 200, 0, 0 )',
+					fill: 'white'		
+	 			},
+	 			modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+	 		}
 	 	}
 	 } )
 	 .autoAxis()
@@ -630,7 +765,7 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 	g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
 
 	g.draw();
-
+} ) ();
 </script>
 
 <h4 id="a-iddoc-coloringacoloring-the-axes"><a id="doc-coloring"></a>Coloring the axes</h4>
@@ -647,63 +782,75 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
 
 <div id="example-10" class="jsgraph-example"></div>
 <script>
+	( () => {
+		var g = new Graph("example-10");
 
-	var g = new Graph("example-10");
+		g.resize( 400, 300 );
 
-	g.resize( 400, 300 );
+		var jV = g
+		 .newSerie( "jV", {
+		 	lineColor: 'red',
+		 	lineWidth: 2,
+		 	markers: true,
+		 	markerStyles: {
+		 		unselected: {
+		 			default: {
+		 				shape: 'rect',
+						strokeWidth: 1,
+						x: -2,
+						y: -2,
+						width: 4,
+						height: 4,
+						stroke: 'rgb( 200, 0, 0 )',
+						fill: 'white'		
+		 			}
+		 		},
+               modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+		 	}
+		 } )
+		 .autoAxis()
+		 .setWaveform( wave1 )
+		 
+		var pV = g
+		 .newSerie( "pV" )
+		 .setXAxis( g.getXAxis() )
+		 .setYAxis( g.getRightAxis( ) )
+		 .setWaveform( wave2 );
 
-	var jV = g
-	 .newSerie( "jV", {
-	 	lineColor: 'red',
-	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
-	 	}
-	 } )
-	 .autoAxis()
-	 .setWaveform( wave1 )
-	 
-	var pV = g
-	 .newSerie( "pV" )
-	 .setXAxis( g.getXAxis() )
-	 .setYAxis( g.getRightAxis( ) )
-	 .setWaveform( wave2 );
+		g
+		 .getXAxis()
+		 .setUnit( "V" )
+		 .setLabel( "Voltage" )
+		 .secondaryGridOff();
 
-	g
-	 .getXAxis()
-	 .setUnit( "V" )
-	 .setLabel( "Voltage" )
-	 .secondaryGridOff();
+		g
+		 .getLeftAxis()
+		 .setUnit("mA cm^-2")
+		 .setLabel( "Current density" )
+		 .secondaryGridOff()
+		 .forceMin( -25 )
+	 	 .forceMax( 60 );
 
-	g
-	 .getLeftAxis()
-	 .setUnit("mA cm^-2")
-	 .setLabel( "Current density" )
-	 .secondaryGridOff()
-	 .forceMin( -25 )
- 	 .forceMax( 60 );
+		g
+		 .getRightAxis()
+		 .setUnit("mW cm^-2")
+		 .setLabel( "Power density" )
+		 .gridsOff()
+		 .forceMax( 5 );
 
-	g
-	 .getRightAxis()
-	 .setUnit("mW cm^-2")
-	 .setLabel( "Power density" )
-	 .gridsOff()
-	 .forceMax( 5 );
+		g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
+		g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
 
-	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
-	g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
+		g
+		 .getLeftAxis()
+		 .setAxisColor('red')
+		 .setPrimaryTicksColor('red')
+		 .setSecondaryTicksColor('rgba( 150, 10, 10, 0.9 )')
+		 .setTicksLabelColor('#880000')
+		 .setLabelColor('red');
 
-	g
-	 .getLeftAxis()
-	 .setAxisColor('red')
-	 .setPrimaryTicksColor('red')
-	 .setSecondaryTicksColor('rgba( 150, 10, 10, 0.9 )')
-	 .setTicksLabelColor('#880000')
-	 .setLabelColor('red');
-
-	g.draw();
+		g.draw();
+	}) ();
 
 </script>
 
@@ -713,7 +860,7 @@ By default, there is a 10% margin on each side of the serie, so that the serie d
   	</div>
     <footer class="site-footer">
 
-  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+  <script src="/web/site/js/requirejs/require.js" data-main="/web/site/js/main.js"></script>
 
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

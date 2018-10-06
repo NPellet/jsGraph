@@ -2314,6 +2314,18 @@ class Waveform {
     return this.average();
   }
 
+  stddev() {
+    let num = 0,
+        denom = 0;
+    const mean = this.mean();
+    for (var i = 0; i < this.getLength(); i++) {
+      num += Math.pow(this.getY(i) - mean, 2);
+      denom += this.getY(i);
+    }
+
+    return Math.pow(num, 0.5) / denom;
+  }
+
   getAverageP(from, to) {
     var sum = this._integrateP(from, to);
     return sum[0] / sum[2];
@@ -12637,29 +12649,25 @@ class GraphTimeAxis extends Axis {
 
 }
 
+const defaultOptions$2 = {
+  redrawShapesAfterDraw: false
+};
+
 /**
  * Serie class to be extended
  * @static
  */
 class Serie extends EventEmitter {
 
-  static default() {
-
-    return {
-      redrawShapesAfterDraw: false
-    };
-  }
-
-  constructor(graph, name, options) {
+  constructor(graph, name, options, defaultInherited) {
 
     super(...arguments);
+    console.log(defaultInherited, options);
+    this.options = extend(true, {}, defaultOptions$2, defaultInherited, options);
+    console.log(this.options);
     this.graph = graph;
     this.name = name;
-    this.options = Object.assign({}, Serie.default(), this.constructor.default(), options);
-
-    //if( new.target.default ) {
-    //console.log( new.target.default() );
-    //}
+    this.groupMain = document.createElementNS(this.graph.ns, 'g');
   }
 
   postInit() {}
@@ -13737,46 +13745,504 @@ var ErrorBarMixin = {
   }
 };
 
+var type = 'scatter';
+
+const defaultOptions$1 = {
+
+  markers: true,
+
+  markerStyles: {
+
+    unselected: {
+      default: {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: 'black'
+      }
+    },
+
+    selected: {
+      default: {
+        r: 4
+      }
+    }
+  }
+};
+
+/**
+ * @static
+ * @augments Serie
+ * @example graph.newSerie( name, options, "scatter" );
+ * @see Graph#newSerie
+ */
+class SerieScatter extends Serie {
+
+  constructor(graph, name, options, defaultInherited) {
+
+    super(graph, name, options, extend(true, {}, defaultOptions$1, defaultInherited));
+
+    this._type = type;
+    mapEventEmission(this.options, this);
+
+    this.shapes = []; // Stores all shapes
+    this.shapesDetails = [];
+    this.shapes = [];
+
+    this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
+    this.groupMain.appendChild(this.groupMarkers);
+
+    this.selectedStyleGeneral = {};
+    this.selectedStyleModifiers = {};
+
+    this.groupMarkers.addEventListener('mouseenter', e => {
+
+      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
+      if (isNaN(id)) {
+        return;
+      }
+
+      if (this.options.selectMarkerOnHover) {
+        this.selectMarker(id, "selected");
+      }
+
+      this.emit('mouseOverMarker', id, this.waveform.getX(id), this.waveform.getY(id));
+    }, true);
+
+    this.groupMarkers.addEventListener('mouseout', e => {
+
+      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
+      if (isNaN(id)) {
+        return;
+      }
+
+      if (this.options.selectMarkerOnHover) {
+        this.selectMarker(id, "unselected");
+      }
+
+      this.emit('mouseOutMarker', id, this.waveform.getX(id), this.waveform.getY(id));
+    });
+  }
+
+  /**
+   * Applies for x as the category axis
+   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
+   */
+  setDataCategory(data) {
+
+    for (let dataCategory of data) {
+
+      this._checkY(dataCategory.y.getMaxY());
+      this._checkY(dataCategory.y.getMinY());
+    }
+
+    this.data = data;
+    this.dataHasChanged();
+    this.graph.updateDataMinMaxAxes();
+    return this;
+  }
+
+  /**
+   * Removes all DOM points
+   * @private
+   */
+  empty() {
+
+    while (this.groupMarkers.firstChild) {
+      this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+    }
+  }
+
+  getSymbolForLegend() {
+
+    if (this.symbol) {
+      return this.symbol;
+    }
+
+    var g = document.createElementNS(this.graph.ns, 'g');
+
+    var shape = this._makeMarker(g, this.options.markerStyles.unselected.default);
+    var style = this.getMarkerStyle('unselected', -1, true);
+
+    for (var i in style[-1]) {
+      if (i == 'shape') {
+        continue;
+      }
+      shape.setAttribute(i, style[-1][i]);
+    }
+
+    return g;
+  }
+
+  /**
+   * Sets style to the scatter points
+   * First argument is the style applied by default to all points
+   * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+   * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+   *
+   * @example
+   * var modifiers = [];
+   * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+   * serie.setMarkerStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
+   *
+   * @param {Object} allStyles - The general style for all markers
+   * @param {Object} [ modifiers ] - The general style for all markers
+   * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
+   *
+   */
+  setMarkerStyle(all, modifiers, mode = 'unselected') {
+
+    if (typeof modifiers == 'string') {
+      mode = modifiers;
+      modifiers = false;
+    }
+
+    this.options.markerStyles[mode] = this.options.markerStyles[mode] || {};
+    this.options.markerStyles[mode].all = all;
+    this.options.markerStyles[mode].modifiers = modifiers;
+
+    this.styleHasChanged(mode);
+
+    return this;
+  }
+
+  /**
+   * Redraws the serie
+   * @private
+   * @param {force} Boolean - Forces redraw even if the data hasn't changed
+   */
+  draw(force) {
+    // Serie redrawing
+
+    if (!force && !this.hasDataChanged() && !this.hasStyleChanged('unselected') || !this.options.markers) {
+      return;
+    }
+
+    let xpx, ypx, j;
+    const isCategory = this.getXAxis().getType() == 'category';
+    const keys = [];
+
+    this.dataHasChanged(false);
+    this.styleHasChanged(false);
+
+    // Removes the marker group from the main DOM for operation (avoids browser repaint)
+    this.groupMain.removeChild(this.groupMarkers);
+
+    j = 0;
+    if (this.hasErrors()) {
+      this.errorDrawInit();
+    }
+
+    if (isCategory) {
+
+      let k = 0;
+
+      for (; j < this.data.length; j++) {
+
+        if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
+          continue;
+        }
+
+        if (this.error) {
+          //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
+        }
+
+        for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
+
+          //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+
+          ypx = this.getY(this.data[j].y.getY(n));
+          xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
+          n++;
+
+          this.shapesDetails[k] = this.shapesDetails[k] || [];
+          this.shapesDetails[k][0] = xpx;
+          this.shapesDetails[k][1] = ypx;
+          keys.push(k);
+          k++;
+        }
+      }
+    } else {
+
+      for (; j < this.waveform.getLength(); j++) {
+
+        if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
+
+          if (this.shapes[j]) {
+            this.shapes[j].setAttribute('display', 'none');
+            this.shapes[j]._hidden = true;
+          }
+          continue;
+        } else if (this.shapes[j] && this.shapes[j]._hidden) {
+          this.shapes[j].setAttribute('display', 'initial');
+          this.shapes[j]._hidden = false;
+        }
+
+        xpx = this.getX(this.waveform.getX(j));
+        ypx = this.getY(this.waveform.getY(j));
+
+        if (this.hasErrors()) {
+          this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
+        }
+
+        this.shapesDetails[j] = this.shapesDetails[j] || [];
+        this.shapesDetails[j][0] = xpx;
+        this.shapesDetails[j][1] = ypx;
+        keys.push(j);
+
+        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
+      }
+    }
+
+    if (this.hasErrors()) {
+      this.errorDraw();
+    }
+
+    // This will automatically create the shapes
+    this.applyMarkerStyle('unselected', keys);
+
+    this.groupMain.appendChild(this.groupMarkers);
+  }
+
+  _makeMarker(group, shape) {
+    var el = document.createElementNS(this.graph.ns, shape.shape);
+    group.appendChild(el);
+    return el;
+  }
+
+  getMarkerStyle(selection, index, noSetPosition) {
+
+    var selection = selection || 'unselected';
+    var indices;
+
+    var styles = {};
+
+    if (typeof index == 'number') {
+      indices = [index];
+    } else if (Array.isArray(index)) {
+      indices = index;
+    }
+
+    var shape, index, modifier, style; // loop variables
+    var styleAll = this.options.markerStyles[selection].all;
+
+    if (!styleAll) {
+      styleAll = this.options.markerStyles[selection].default;
+    }
+
+    if (typeof styleAll == 'function') {
+      styleAll = styleAll();
+    }
+
+    styleAll = Object.assign(this.options.markerStyles[selection].default, styleAll);
+
+    var i = 0,
+        l = indices.length;
+
+    for (; i < l; i++) {
+
+      index = indices[i];
+      shape = this.shapes[index];
+
+      if ((modifier = this.options.markerStyles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
+
+        if (typeof modifier == 'function') {
+
+          style = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
+          if (style === false) {
+            continue;
+          }
+        } else if (modifier[index]) {
+
+          style = modifier[index];
+        }
+
+        styles[index] = Object.assign({}, styleAll, style);
+      } else if (styleAll !== undefined) {
+
+        styles[index] = styleAll;
+      } else {
+
+        styles[index] = this.options.markerStyles[selection].default;
+      }
+
+      if (!styles[index]) {
+        styles[index] = styleAll;
+      }
+
+      if (!shape) {
+        // Shape doesn't exist, let's create it
+
+        if (!styles[index].shape) {
+          console.error(style);
+          throw 'No shape was defined with this style.';
+        }
+
+        var g = document.createElementNS(this.graph.ns, 'g');
+        g.setAttribute('data-shapeid', index);
+
+        this.shapes[index] = this._makeMarker(g, styles[index]);
+        this.groupMarkers.appendChild(g);
+        shape = this.shapes[index];
+      }
+
+      if (!noSetPosition && this.shapesDetails[index][0] === this.shapesDetails[index][0] && this.shapesDetails[index][1] === this.shapesDetails[index][1]) {
+
+        shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
+      }
+    }
+
+    return styles;
+  }
+
+  applyMarkerStyle(selection, index, noSetPosition) {
+
+    var i, j;
+    var styles = this.getMarkerStyle(selection, index, noSetPosition);
+
+    for (i in styles) {
+
+      for (j in styles[i]) {
+
+        if (j !== 'shape' && this.shapes[i]) {
+
+          if (styles[i][j]) {
+
+            this.shapes[i].setAttribute(j, styles[i][j]);
+          } else {
+
+            this.shapes[i].removeAttribute(j);
+          }
+        }
+      }
+    }
+  }
+
+  unselectMarker(index) {
+    this.selectMarker(index, false);
+  }
+
+  selectMarker(index, setOn, selectionType) {
+
+    if (this.shapesDetails[index][2] && this.shapesDetails[index][2] == selectionType) {
+      return;
+    }
+
+    if (typeof setOn == 'string') {
+      selectionType = setOn;
+      setOn = undefined;
+    }
+
+    if (Array.isArray(index)) {
+      return this.selectMarkers(index);
+    }
+
+    if (this.shapes[index] && this.shapesDetails[index]) {
+
+      if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
+
+        var selectionStyle = this.shapesDetails[index][2];
+        this.shapesDetails[index][2] = false;
+
+        var allStyles = this.getMarkerStyle(selectionStyle, index, true);
+        for (var i in allStyles[index]) {
+          this.shapes[index].removeAttribute(i);
+        }
+
+        this.applyMarkerStyle('unselected', index, true);
+      } else {
+
+        selectionType = selectionType || 'selected';
+        this.shapesDetails[index][2] = selectionType;
+
+        this.applyMarkerStyle(selectionType, index, true);
+      }
+    }
+  }
+
+  setMarkers(bln = true) {
+
+    this.options.markers = bln;
+    console.log(this.options, bln);
+    return this;
+  }
+
+  showMarkers() {
+
+    if (this.options.markers) {
+      return;
+    }
+
+    this.options.markers = true;
+    this.groupMarkers.setAttribute('display', 'initial');
+    return this;
+  }
+
+  hideMarkers() {
+    return;
+    if (!this.options.markers) {
+      return;
+    }
+
+    this.options.markers = false;
+    this.groupMarkers.setAttribute('display', 'none');
+    return this;
+  }
+
+  getUsedCategories() {
+
+    if (typeof this.data[0] == 'object') {
+      return this.data.map(d => d.x);
+    }
+
+    return [];
+  }
+
+}
+
+mix(SerieScatter, ErrorBarMixin);
+
+const defaultOptions = {
+  /**
+   * @name SerieLineDefaultOptions
+   * @object
+   * @static
+   * @memberof SerieLine
+   */
+
+  // Extends scatterSerie
+  markers: false,
+
+  lineColor: 'black',
+  lineStyle: 1,
+  flip: false,
+  label: '',
+  lineWidth: 1,
+
+  trackMouse: false,
+  trackMouseLabel: false,
+  trackMouseLabelRouding: 1,
+  lineToZero: false,
+  selectableOnClick: false,
+  overflowX: false,
+  overflowY: false
+};
+
 /**
  * Serie line
  * @example graph.newSerie( name, options, "line" );
  * @see Graph#newSerie
  * @extends Serie
  */
-class SerieLine extends Serie {
+class SerieLine extends SerieScatter {
 
-  static default() {
-    /**
-     * @name SerieLineDefaultOptions
-     * @object
-     * @static
-     * @memberof SerieLine
-     */
-    return {
+  constructor(graph, name, options, defaultInherited) {
 
-      lineColor: 'black',
-      lineStyle: 1,
-      flip: false,
-      label: '',
-      lineWidth: 1,
-      markers: false,
-      trackMouse: false,
-      trackMouseLabel: false,
-      trackMouseLabelRouding: 1,
-      lineToZero: false,
-      selectableOnClick: false,
-      markersIndependant: false,
-      overflowX: false,
-      overflowY: false
-    };
-  }
-
-  constructor(graph, name, options) {
-
-    super(...arguments);
+    super(graph, name, options, extend(true, {}, defaultOptions, defaultInherited));
 
     this.selectionType = 'unselected';
-    this.markerFamilies = {};
 
     mapEventEmission(this.options, this); // Register events
 
@@ -13787,15 +14253,12 @@ class SerieLine extends Serie {
     this.styles.unselected = {
       lineColor: this.options.lineColor,
       lineStyle: this.options.lineStyle,
-      lineWidth: this.options.lineWidth,
-      markers: this.options.markers
+      lineWidth: this.options.lineWidth
     };
 
     this.styles.selected = {
       lineWidth: 3
     };
-
-    this.markersDom = new Map();
 
     this.shown = true;
 
@@ -13825,7 +14288,6 @@ class SerieLine extends Serie {
       this.domMarker.style.cursor = 'pointer';
     }
 
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
     this.additionalData = {};
 
     this.marker = document.createElementNS(this.graph.ns, 'circle');
@@ -13855,9 +14317,6 @@ class SerieLine extends Serie {
     this.groupMain.appendChild(this.markerLabelSquare);
     this.groupMain.appendChild(this.markerLabel);
 
-    this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
-    this.groupMain.appendChild(this.groupMarkers);
-
     this.independantMarkers = [];
 
     if (this.initExtended1) {
@@ -13876,10 +14335,6 @@ class SerieLine extends Serie {
         }
       }
     });
-
-    if (this.options.markers) {
-      this.setMarkers(this.options.markers, 'unselected');
-    }
   }
 
   postInit() {
@@ -13894,142 +14349,15 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   setOptions(options) {
-    this.options = extend(true, {}, SerieLine.prototype.defaults, options || {});
+    //this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
     // Unselected style
-    this.styles.unselected = {
+    /*this.styles.unselected = {
       lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle,
-      markers: this.options.markers
+      lineStyle: this.options.lineStyle
     };
-
+    */
     this.applyLineStyles();
     return this;
-  }
-
-  onMouseOverMarker(e, index) {
-
-    var toggledOn = this.toggleMarker(index, true, true);
-
-    if (this.options.onMouseOverMarker) {
-
-      this.options.onMouseOverMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
-    }
-  }
-
-  onMouseOutMarker(e, index) {
-    this.markersOffHover();
-
-    if (this.options.onMouseOutMarker) {
-      this.options.onMouseOutMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
-    }
-  }
-
-  /**
-   * Selects one of the markers of the serie
-   * @param {Number} index - The point index to select (starting at 0)
-   * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
-   * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
-   * @returns {Boolean} The new state of the marker
-   * @memberof SerieLine
-   */
-  toggleMarker(index, force, hover) {
-
-    let i = index;
-
-    var _on;
-    if (typeof force === 'undefined') {
-      _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
-    }
-    var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
-
-    if (_on || force === true) {
-
-      if (!el[index]) {
-
-        var dom = document.createElementNS(this.graph.ns, 'path');
-
-        this.setMarkerStyleTo(dom, this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)]);
-        this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
-        this.groupMarkerSelected.appendChild(dom);
-      } else {
-        dom = el[index];
-      }
-
-      let x = this.getX(this.waveform.getX(i)),
-          y = this.getY(this.waveform.getY(i));
-
-      dom.setAttribute('d', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
-
-      if (hover) {
-        this.markerHovered++;
-      }
-    } else if (!_on || force === false) {
-
-      if (hover && this.domMarkerHover[index] && !this.domMarkerSelect[index] || this.domMarkerSelect[index]) {
-
-        if (!el[index]) {
-          return;
-        }
-
-        this.groupMarkerSelected.removeChild(el[index]);
-
-        delete el[index];
-
-        if (hover) this.markerHovered--;
-      }
-    }
-
-    return _on;
-  }
-
-  /**
-   * Toggles off markers that have the hover mode "on"
-   * @returns {SerieLine} The current serie
-   * @memberof SerieLine
-   */
-  markersOffHover() {
-
-    for (var i in this.domMarkerHover) {
-      this.toggleMarker(i.split(','), false, true);
-    }
-    return this;
-  }
-
-  /**
-   * Toggles off markers that have the select mode "on"
-   * @returns {SerieLine} The current serie
-   * @memberof SerieLine
-   */
-  markersOffSelect() {
-
-    for (var i in this.domMarkerSelect) {
-      this.toggleMarker(i.split(','), false, false);
-    }
-    return this;
-  }
-
-  onClickOnMarker(e, index) {
-
-    var toggledOn = this.toggleMarker(index);
-
-    if (toggledOn && this.options.onSelectMarker) {
-      this.options.onSelectMarker(index, this.infos ? this.infos[index[0]] || false : false);
-    }
-
-    if (!toggledOn && this.options.onUnselectMarker) {
-      this.options.onUnselectMarker(index, this.infos ? this.infos[index[0]] || false : false);
-    }
-
-    if (this.options.onToggleMarker) {
-      this.options.onToggleMarker(index, this.infos ? this.infos[index[0]] || false : false, toggledOn);
-    }
-  }
-
-  _getMarkerIndexFromEvent(e) {
-    var px = this.graph._getXY(e);
-
-    //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
-    return this.searchIndexByPxXY(px.x - this.graph.getPaddingLeft(), px.y - this.graph.getPaddingTop());
   }
 
   onMouseWheel() {}
@@ -14202,13 +14530,14 @@ class SerieLine extends Serie {
   draw(force) {
     // Serie redrawing
 
-    super.draw(...arguments);
-
     if (!this.getXAxis() || !this.getYAxis()) {
       throw 'No axes were defined for this serie';
     }
 
     if (force || this.hasDataChanged()) {
+
+      super.draw();
+
       if (!this.drawInit(force)) {
         return;
       }
@@ -14218,12 +14547,9 @@ class SerieLine extends Serie {
           slotToUse = this._slotToUse;
 
       this.removeLinesGroup();
-      this.eraseMarkers();
 
       this.lookForMaxima = true;
       this.lookForMinima = false;
-
-      this.markerFamily = this.markerFamilies[this.selectionType || 'unselected'];
 
       this.pos0 = this.getYAxis().getPos(0);
 
@@ -14238,7 +14564,7 @@ class SerieLine extends Serie {
       }
 
       this.removeExtraLines();
-      this.insertMarkers();
+
       this.insertLinesGroup();
     }
 
@@ -14308,8 +14634,7 @@ class SerieLine extends Serie {
     let lastPointOutside = false;
     let pointOnAxis;
 
-    let _monotoneous = this.isMonotoneous(),
-        _markersShown = this.markersShown();
+    let _monotoneous = this.isMonotoneous();
 
     let i = 0,
         l = waveform.getLength();
@@ -14363,10 +14688,6 @@ class SerieLine extends Serie {
       }
 
       this.counter2 = i;
-
-      if (_markersShown) {
-        this.getMarkerCurrentFamily(this.counter2);
-      }
 
       xpx2 = this.getX(x);
       ypx2 = this.getY(y);
@@ -14555,60 +14876,6 @@ class SerieLine extends Serie {
     super.kill();
   }
 
-  /**
-   * @param {Number} k - Index of the point for which we should get the family
-   * @memberof SerieLine
-   */
-  getMarkerCurrentFamily(k) {
-
-    if (!this.markerPoints || !this.markerPoints[this.selectionType]) {
-      return;
-    }
-
-    var family;
-
-    for (var z = 0; z < this.markerPoints[this.selectionType].length; z++) {
-      if (this.markerPoints[this.selectionType][z][0] <= k) {
-        // This one is a possibility !
-        if (this.markerPoints[this.selectionType][z][1] >= k) {
-          // Verify that it's in the boundary
-          this.markerCurrentFamily = this.markerPoints[this.selectionType][z][2];
-          family = this.markerFamilies[this.selectionType][this.markerCurrentFamily];
-        }
-      } else {
-        break;
-      }
-    }
-
-    if (!family) {
-      return false;
-    }
-    this.getMarkerDom(family);
-    return this.markerCurrentFamily;
-  }
-
-  setMarkerStyleTo(dom, family) {
-
-    if (!dom || !family) {
-      console.trace();
-      throw 'Cannot set marker style. DOM does not exist.';
-    }
-
-    dom.setAttribute('fill', family.fillColor || 'transparent');
-    dom.setAttribute('stroke', family.strokeColor || this.getLineColor());
-    dom.setAttribute('stroke-width', family.strokeWidth || 1);
-  }
-
-  /**
-   * Hides the tracking marker (see the trackMouse option)
-   * @memberof SerieLine
-   */
-  hideTrackingMarker() {
-    this.marker.setAttribute('display', 'none');
-    this.markerLabel.setAttribute('display', 'none');
-    this.markerLabelSquare.setAttribute('display', 'none');
-  }
-
   _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
 
     /*if( ! this.currentLineId ) {
@@ -14647,16 +14914,6 @@ class SerieLine extends Serie {
 
     if (this.hasErrors()) {
       this.errorAddPoint(j, x, y, xpx, ypx);
-    }
-
-    if (!this.markerPoints) {
-      this.counter++;
-
-      return;
-    }
-
-    if (this.markersShown() && allowMarker !== false && this.markerFamily) {
-      drawMarkerXY(this, this.markerFamily[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(this.markerFamily[this.markerCurrentFamily]));
     }
 
     this.counter++;
@@ -14784,70 +15041,6 @@ class SerieLine extends Serie {
     return el.join(' ');
   }
 
-  // Revised August 2014. Ok
-  getMarkerDom(family) {
-
-    var self = this;
-
-    if (!this.markersDom.has(family)) {
-
-      var dom = document.createElementNS(this.graph.ns, 'path');
-      this.setMarkerStyleTo(dom, family);
-      this.markersDom.set(family, {
-        dom: dom,
-        path: ''
-      });
-
-      dom.addEventListener('mouseover', function (e) {
-        var closest = self._getMarkerIndexFromEvent(e);
-        self.onMouseOverMarker(e, closest);
-      });
-
-      dom.addEventListener('mouseout', function (e) {
-        var closest = self._getMarkerIndexFromEvent(e);
-        self.onMouseOutMarker(e, closest);
-      });
-
-      dom.addEventListener('click', function (e) {
-        var closest = self._getMarkerIndexFromEvent(e);
-        self.onClickOnMarker(e, closest);
-      });
-    }
-
-    return family.dom;
-  }
-
-  // In case markers are not grouped in families but independant
-  getMarkerDomIndependent(index, family) {
-
-    if (!this.independantMarkers[index]) {
-
-      var dom = document.createElementNS(this.graph.ns, 'path');
-      this.setMarkerStyleTo(dom, family);
-
-      dom.addEventListener('mouseover', e => {
-
-        this.onMouseOverMarker(e, index);
-      });
-
-      dom.addEventListener('mouseout', e => {
-
-        this.onMouseOutMarker(e, index);
-      });
-
-      dom.addEventListener('click', e => {
-
-        this.onClickOnMarker(e, index);
-      });
-
-      this.independantMarkers[index] = dom;
-    }
-
-    this.groupMarkers.appendChild(this.independantMarkers[index]);
-
-    return this.independantMarkers[index];
-  }
-
   /**
    * Searches the closest point pair (x,y) to the a pair of pixel position
    * @param {Number} x - The x position in pixels (from the left)
@@ -14958,44 +15151,6 @@ class SerieLine extends Serie {
       if (value.xMin == undefined) {
 
         return false;
-      } else {
-
-        if (!this.marker) {
-          return;
-        }
-
-        var x = this.getX(this.getFlip() ? value.yClosest : value.xClosest);
-        var y = this.getY(this.getFlip() ? value.xClosest : value.yClosest);
-
-        if (isNaN(x) || isNaN(y)) {
-          return;
-        }
-
-        this.marker.setAttribute('display', 'block');
-        this.marker.setAttribute('cx', x);
-        this.marker.setAttribute('cy', y);
-
-        this.markerLabel.setAttribute('display', 'block');
-        this.markerLabelSquare.setAttribute('display', 'block');
-
-        switch (this.options.trackMouseLabel) {
-
-          case false:
-
-            break;
-
-          default:
-            this.markerLabel.textContent = this.options.trackMouseLabel.replace('<x>', valX.toFixed(this.options.trackMouseLabelRouding)).replace('<y>', intY.toFixed(this.options.trackMouseLabelRouding));
-            break;
-        }
-
-        this.markerLabel.setAttribute('x', x + 5);
-        this.markerLabel.setAttribute('y', y - 5);
-
-        this.markerLabelSquare.setAttribute('x', x + 5);
-        this.markerLabelSquare.setAttribute('y', y - 5 - this.graph.options.fontSize);
-        this.markerLabelSquare.setAttribute('width', this.markerLabel.getComputedTextLength() + 2);
-        this.markerLabelSquare.setAttribute('height', this.graph.options.fontSize + 2);
       }
     }
 
@@ -15200,16 +15355,7 @@ class SerieLine extends Serie {
 
   extendStyle(styleTarget, styleOrigin) {
     var s = this.styles[styleTarget];
-
     this.styles[styleTarget] = extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
-
-    this.styles[styleTarget].markers.map(function (marker) {
-      if (marker.dom) {
-        marker.dom = '';
-      }
-    });
-
-    this._recalculateMarkerPoints(styleTarget, this.styles[styleTarget].markers);
     this.styleHasChanged(styleTarget);
   }
 
@@ -15261,256 +15407,6 @@ class SerieLine extends Serie {
   /* * @memberof SerieLine
    */
 
-  /* MARKERS * @memberof SerieLine
-   */
-  showMarkers(selectionType, redraw) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].showMarkers = true;
-
-    if (redraw && this._drawn) {
-      this.draw(true);
-    } else {
-      this.styleHasChanged(selectionType);
-    }
-
-    return this;
-  }
-
-  hideMarkers(selectionType, redraw) {
-
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType].showMarkers = false;
-
-    if (redraw && this._drawn) {
-      this.draw(true);
-    } else {
-      this.styleHasChanged(selectionType);
-    }
-    return this;
-  }
-
-  markersShown(selectionType) {
-    return this.getStyle(selectionType).showMarkers !== false;
-  }
-
-  areMarkersShown() {
-    return this.markersShown.apply(this, arguments);
-  }
-
-  isMarkersShown() {
-    return this.markersShown.apply(this, arguments);
-  }
-
-  // Multiple markers
-  setMarkers(families, selectionType, applyToSelected) {
-    // Family has to be an object
-    // Family looks like
-    /*
-    {
-    	type: 1,
-    	zoom: 1,
-    	strokeWidth: 1,
-    	strokeColor: '',
-    	fillColor: '',
-          points: []
-    }
-    * @memberof SerieLine
-    */
-
-    this.styles[selectionType || 'unselected'] = this.styles[selectionType || 'unselected'] || {};
-
-    this.showMarkers(selectionType, false);
-
-    if (!Array.isArray(families) && typeof families == 'object') {
-      families = [families];
-    } else if (!families) {
-
-      families = [{
-        type: 1,
-        zoom: 1,
-        points: 'all'
-      }];
-    }
-
-    this.styles[selectionType || 'unselected'].markers = families;
-
-    if (applyToSelected) {
-      this.styles.selected.markers = extend(true, {}, families);
-    }
-
-    this._recalculateMarkerPoints(selectionType, families);
-    this.styleHasChanged(selectionType);
-    this.dataHasChanged(true); // Data has not really changed, but marker placing is performed during the draw method
-    return this;
-  }
-
-  setMarkersPoints(points, family, selectionType) {
-    this._extendMarkers('points', points, family, selectionType, true);
-  }
-
-  setMarkersColor(color, family, selectionType) {
-    this._extendMarkers('color', color, family, selectionType);
-  }
-
-  setMarkersType(type, family, selectionType) {
-    this._extendMarkers('type', type, family, selectionType);
-  }
-
-  setMarkersZoom(zoom, family, selectionType) {
-    this._extendMarkers('zoom', zoom, family, selectionType);
-  }
-
-  setMarkersStrokeColor(strokeColor, family, selectionType) {
-    this._extendMarkers('strokeColor', strokeColor, family, selectionType);
-  }
-
-  setMarkersStrokeWidth(strokeWidth, family, selectionType) {
-    this._extendMarkers('strokeWidth', strokeWidth, family, selectionType);
-  }
-
-  setMarkersFillColor(fillColor, family, selectionType) {
-    this._extendMarkers('fillColor', fillColor, family, selectionType);
-  }
-
-  _extendMarkers(type, value, family, selectionType, recalculatePoints) {
-
-    family = family || 0;
-    selectionType = selectionType || 'unselected';
-
-    if (!this.styles[selectionType] || !this.styles[selectionType].markers) {
-      return;
-    }
-
-    this.styles[selectionType].markers[family][type] = value;
-
-    if (recalculatePoints) {
-      this._recalculateMarkerPoints(selectionType, this.styles[selectionType].markers);
-    }
-
-    if (!this.markersDom[this.styles[selectionType].markers[family]]) {
-      // DOM doesn't exist yet.
-      return;
-    }
-
-    this.setMarkerStyleTo(this.markersDom[this.styles[selectionType].markers[family]].dom, this.styles[selectionType].markers[family]);
-  }
-
-  _recalculateMarkerPoints(selectionType, families) {
-
-    var markerPoints = [];
-    // Overwriting any other undefined families
-    markerPoints.push([0, Infinity, null]);
-
-    for (var i = 0, k = families.length; i < k; i++) {
-
-      families[i].markerPath = this.getMarkerPath(families[i]);
-
-      if (!families[i].points) {
-        families[i].points = 'all';
-      }
-
-      if (!Array.isArray(families[i].points)) {
-        families[i].points = [families[i].points];
-      }
-
-      for (var j = 0, l = families[i].points.length; j < l; j++) {
-
-        if (families[i].points[j] == 'all') {
-
-          markerPoints.push([0, Infinity, i]);
-        } else if (!Array.isArray(families[i].points[j])) {
-
-          markerPoints.push([families[i].points[j], families[i].points[j], i]);
-          //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
-        } else {
-
-          markerPoints.push([families[i].points[j][0], families[i].points[j][1], i]);
-        }
-      }
-    }
-
-    this.markerFamilies[selectionType || 'unselected'] = families;
-
-    // Let's sort if by the first index.
-    markerPoints.sort(function (a, b) {
-      return a[0] - b[0] || (a[2] == null ? -1 : 1);
-    });
-
-    this.markerPoints[selectionType || 'unselected'] = markerPoints;
-  }
-
-  insertMarkers(selectionType) {
-
-    if (!this.markerFamilies || !this.markerFamilies[selectionType || this.selectionType] || this.options.markersIndependant) {
-      return;
-    }
-
-    for (var i = 0, l = this.markerFamilies[selectionType || this.selectionType].length; i < l; i++) {
-
-      if (!this.markersDom.has(this.markerFamilies[selectionType || this.selectionType][i])) {
-        continue;
-      }
-
-      let dom = this.markersDom.get(this.markerFamilies[selectionType || this.selectionType][i]);
-
-      dom.dom.setAttribute('d', dom.path);
-
-      this.groupMarkers.appendChild(dom.dom);
-      this.currentMarkersSelectionType = this.selectionType;
-    }
-  }
-
-  getMarkerForLegend() {
-
-    if (!this.markerPoints || !this.markerPoints[this.selectionType]) {
-      return;
-    }
-
-    if (!this.markerForLegend) {
-
-      var marker = document.createElementNS(this.graph.ns, 'path');
-      this.setMarkerStyleTo(marker, this.markerFamilies[this.selectionType][0]);
-
-      marker.setAttribute('d', 'M 14 0 ' + this.getMarkerPath(this.markerFamilies[this.selectionType][0]));
-
-      this.markerForLegend = marker;
-    }
-
-    return this.markerForLegend;
-  }
-
-  eraseMarkers() {
-
-    var self = this;
-
-    if (this.options.markersIndependant) {
-
-      for (var i in this.independantMarkers) {
-        self.groupMarkers.removeChild(this.independantMarkers[i]);
-      }
-
-      this.independantMarkers = {};
-    } else if (this.currentMarkersSelectionType) {
-
-      this.markersDom.forEach(function (el) {
-
-        if (!el.dom) {
-          return;
-        }
-
-        if (el.dom.parentNode !== self.groupMarkers) {
-          return;
-        }
-
-        self.groupMarkers.removeChild(el.dom);
-        el.path = '';
-      });
-
-      this.currentMarkersSelectionType = false;
-    }
-  }
-
   isMonotoneous() {
     if (this.waveform) {
       return this.waveform.isMonotoneous();
@@ -15528,25 +15424,6 @@ class SerieLine extends Serie {
     return this.waveform.findLocalMinMax(xRef, xWithin, type);
   }
 
-}
-
-function drawMarkerXY(graph, family, x, y, markerDom) {
-
-  if (!family) {
-    return;
-  }
-
-  if (graph.options.markersIndependant) {
-    var dom = graph.getMarkerDomIndependent(graph.counter2, family);
-    var p = 'M ' + x + ' ' + y + ' ';
-    p += family.markerPath + ' ';
-
-    dom.setAttribute('d', p);
-  }
-
-  markerDom.path = markerDom.path || '';
-  markerDom.path += 'M ' + x + ' ' + y + ' ';
-  markerDom.path += family.markerPath + ' ';
 }
 
 mix(SerieLine, ErrorBarMixin);
@@ -15707,8 +15584,6 @@ class SerieBar extends SerieLine {
   constructor(graph, name, options) {
 
     super(...arguments);
-
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
     this.pathDom = document.createElementNS(this.graph.ns, 'path');
     this.groupMain.appendChild(this.pathDom);
@@ -15898,8 +15773,6 @@ class SerieBox extends Serie {
   constructor(graph, name, options) {
 
     super(...arguments);
-
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
     this.pathDom = document.createElementNS(this.graph.ns, 'path');
     this.groupMain.appendChild(this.pathDom);
@@ -16879,479 +16752,6 @@ class SerieLineColor extends SerieLine {
   }
 }
 
-var type = 'scatter';
-
-/**
- * @static
- * @augments Serie
- * @example graph.newSerie( name, options, "scatter" );
- * @see Graph#newSerie
- */
-class SerieScatter extends Serie {
-
-  constructor(graph, name, options) {
-
-    super(...arguments);
-    this.id = Math.random() + Date.now();
-    this.shapes = []; // Stores all shapes
-    this.shown = true;
-    this.data = [];
-
-    this.shapesDetails = [];
-    this.shapes = [];
-
-    this._type = type;
-
-    mapEventEmission(this.options, this);
-
-    this._isMinOrMax = {
-      x: {
-        min: false,
-        max: false
-      },
-      y: {
-        min: false,
-        max: false
-      }
-    };
-
-    this.groupPoints = document.createElementNS(this.graph.ns, 'g');
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
-
-    this.additionalData = {};
-
-    this.selectedStyleGeneral = {};
-    this.selectedStyleModifiers = {};
-
-    this.groupPoints.addEventListener('mouseover', e => {
-      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-      this.emit('mouseover', id, this.waveform.getX(id), this.waveform.getY(id));
-    });
-
-    this.groupPoints.addEventListener('mouseout', e => {
-      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-      this.emit('mouseout', id, this.waveform.getX(id), this.waveform.getY(id));
-    });
-
-    this.minX = Number.MAX_VALUE;
-    this.minY = Number.MAX_VALUE;
-    this.maxX = Number.MIN_VALUE;
-    this.maxY = Number.MIN_VALUE;
-
-    this.groupMain.appendChild(this.groupPoints);
-    this.currentAction = false;
-
-    if (this.initExtended1) {
-      this.initExtended1();
-    }
-
-    this.styles = {};
-    this.styles.unselected = {};
-    this.styles.selected = {};
-
-    this.styles.unselected.default = {
-      shape: 'circle',
-      cx: 0,
-      cy: 0,
-      r: 3,
-      stroke: 'transparent',
-      fill: 'black'
-    };
-
-    this.styles.selected.default = {
-      shape: 'circle',
-      cx: 0,
-      cy: 0,
-      r: 4,
-      stroke: 'transparent',
-      fill: 'black'
-    };
-  }
-
-  /**
-   * Applies for x as the category axis
-   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
-   */
-  setDataCategory(data) {
-
-    for (let dataCategory of data) {
-
-      this._checkY(dataCategory.y.getMaxY());
-      this._checkY(dataCategory.y.getMinY());
-    }
-
-    this.data = data;
-    this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
-    return this;
-  }
-
-  /**
-   * Removes all DOM points
-   * @private
-   */
-  empty() {
-
-    while (this.groupPoints.firstChild) {
-      this.groupPoints.removeChild(this.groupPoints.firstChild);
-    }
-  }
-
-  getSymbolForLegend() {
-
-    if (this.symbol) {
-      return this.symbol;
-    }
-
-    var g = document.createElementNS(this.graph.ns, 'g');
-    g.setAttribute('data-shapeid', -1);
-    var shape = this.doShape(g, this.styles.unselected.default);
-
-    var style = this.getStyle('unselected', -1, true);
-
-    for (var i in style[-1]) {
-      if (i == 'shape') {
-        continue;
-      }
-      shape.setAttribute(i, style[-1][i]);
-    }
-
-    return g;
-  }
-
-  /**
-   * Sets style to the scatter points
-   * First argument is the style applied by default to all points
-   * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
-   * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
-   *
-   * @example
-   * var modifiers = [];
-   * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
-   * serie.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
-   *
-   * @param {Object} allStyles - The general style for all markers
-   * @param {Object} [ modifiers ] - The general style for all markers
-   * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
-   *
-   */
-  setStyle(all, modifiers, mode = 'unselected') {
-
-    if (typeof modifiers == 'string') {
-      mode = modifiers;
-      modifiers = false;
-    }
-
-    /*
-    if( ! this.styles[ mode ] ) {
-     }
-     if ( mode !== "selected" && mode !== "unselected" ) {
-      throw "Style mode is not correct. Should be selected or unselected";
-    }
-    */
-
-    this.styles[mode] = this.styles[mode] || {};
-    this.styles[mode].all = all;
-    this.styles[mode].modifiers = modifiers;
-
-    this.styleHasChanged(mode);
-
-    return this;
-  }
-
-  /**
-   * Redraws the serie
-   * @private
-   * @param {force} Boolean - Forces redraw even if the data hasn't changed
-   */
-  draw(force) {
-    // Serie redrawing
-
-    if (!force && !this.hasDataChanged() && !this.hasStyleChanged('unselected')) {
-      return;
-    }
-
-    var x,
-        y,
-        xpx,
-        ypx,
-        j = 0;
-
-    var isCategory = this.getXAxis().getType() == 'category';
-
-    this._drawn = true;
-
-    this.dataHasChanged(false);
-    this.styleHasChanged(false);
-    this.groupMain.removeChild(this.groupPoints);
-
-    var keys = [];
-
-    j = 0;
-    if (this.hasErrors()) {
-      this.errorDrawInit();
-    }
-
-    if (isCategory) {
-
-      let k = 0;
-
-      for (; j < this.data.length; j++) {
-
-        if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
-          continue;
-        }
-
-        if (this.error) {
-          //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
-        }
-
-        for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
-
-          //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
-
-          ypx = this.getY(this.data[j].y.getY(n));
-          xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
-          n++;
-
-          this.shapesDetails[k] = this.shapesDetails[k] || [];
-          this.shapesDetails[k][0] = xpx;
-          this.shapesDetails[k][1] = ypx;
-          keys.push(k);
-          k++;
-        }
-      }
-    } else {
-
-      for (; j < this.waveform.getLength(); j++) {
-
-        if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
-
-          if (this.shapes[j]) {
-            this.shapes[j].setAttribute('display', 'none');
-          }
-          continue;
-        }
-
-        if (this.shapes[j]) {
-          this.shapes[j].setAttribute('display', 'initial');
-        }
-
-        xpx = this.getX(this.waveform.getX(j));
-        ypx = this.getY(this.waveform.getY(j));
-
-        if (this.hasErrors()) {
-          this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
-        }
-
-        this.shapesDetails[j] = this.shapesDetails[j] || [];
-        this.shapesDetails[j][0] = xpx;
-        this.shapesDetails[j][1] = ypx;
-        keys.push(j);
-
-        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
-      }
-    }
-
-    if (this.hasErrors()) {
-      this.errorDraw();
-    }
-
-    // This will automatically create the shapes
-    this.applyStyle('unselected', keys);
-
-    this.groupMain.appendChild(this.groupPoints);
-  }
-
-  _addPoint(xpx, ypx, k) {
-
-    let shape;
-    let g = document.createElementNS(this.graph.ns, 'g');
-    g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
-    g.setAttribute('data-shapeid', k);
-
-    if (this.extraStyle && this.extraStyle[k]) {
-
-      shape = this.doShape(g, this.extraStyle[k]);
-    } else if (this.stdStylePerso) {
-
-      shape = this.doShape(g, this.stdStylePerso);
-    } else {
-
-      shape = this.doShape(g, this.stdStyle);
-    }
-
-    this.shapes[k] = shape;
-    this.groupPoints.appendChild(g);
-  }
-
-  doShape(group, shape) {
-    var el = document.createElementNS(this.graph.ns, shape.shape);
-    group.appendChild(el);
-    return el;
-  }
-
-  getStyle(selection, index, noSetPosition) {
-
-    var selection = selection || 'unselected';
-    var indices;
-
-    var styles = {};
-
-    if (typeof index == 'number') {
-      indices = [index];
-    } else if (Array.isArray(index)) {
-      indices = index;
-    }
-
-    var shape, index, modifier, style; // loop variables
-    var styleAll;
-
-    if (this.styles[selection].all !== undefined) {
-
-      styleAll = this.styles[selection].all;
-
-      if (typeof styleAll == 'function') {
-
-        styleAll = styleAll();
-      } else if (styleAll === false) {
-
-        styleAll = {};
-      }
-    }
-
-    var i = 0,
-        l = indices.length;
-
-    for (; i < l; i++) {
-
-      index = indices[i];
-      shape = this.shapes[index];
-
-      if ((modifier = this.styles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
-
-        if (typeof modifier == 'function') {
-
-          style = modifier(index, shape);
-        } else if (modifier[index]) {
-
-          style = modifier[index];
-        }
-
-        styles[index] = Object.assign({}, styleAll, style);
-      } else if (styleAll !== undefined) {
-
-        styles[index] = styleAll;
-      } else {
-
-        styles[index] = this.styles[selection].default;
-      }
-
-      if (!styles[index]) {
-        styles[index] = styleAll;
-      }
-
-      if (!shape) {
-        // Shape doesn't exist, let's create it
-
-        if (!styles[index].shape) {
-          console.error(style);
-          throw 'No shape was defined with this style.';
-        }
-
-        var g = document.createElementNS(this.graph.ns, 'g');
-        g.setAttribute('data-shapeid', index);
-        this.shapes[index] = this.doShape(g, styles[index]);
-        this.groupPoints.appendChild(g);
-        shape = this.shapes[index];
-      }
-
-      if (!noSetPosition) {
-        shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
-      }
-    }
-
-    return styles;
-  }
-
-  applyStyle(selection, index, noSetPosition) {
-
-    var i, j;
-    var styles = this.getStyle(selection, index, noSetPosition);
-
-    for (i in styles) {
-
-      for (j in styles[i]) {
-
-        if (j !== 'shape') {
-
-          if (styles[i][j]) {
-
-            this.shapes[i].setAttribute(j, styles[i][j]);
-          } else {
-
-            this.shapes[i].removeAttribute(j);
-          }
-        }
-      }
-    }
-  }
-
-  unselectPoint(index) {
-    this.selectPoint(index, false);
-  }
-
-  selectPoint(index, setOn, selectionType) {
-
-    if (this.shapesDetails[index][2] && this.shapesDetails[index][2] == selectionType) {
-      return;
-    }
-
-    if (typeof setOn == 'string') {
-      selectionType = setOn;
-      setOn = undefined;
-    }
-
-    if (Array.isArray(index)) {
-      return this.selectPoints(index);
-    }
-
-    if (this.shapes[index] && this.shapesDetails[index]) {
-
-      if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
-
-        var selectionStyle = this.shapesDetails[index][2];
-        this.shapesDetails[index][2] = false;
-
-        var allStyles = this.getStyle(selectionStyle, index, true);
-        for (var i in allStyles[index]) {
-          this.shapes[index].removeAttribute(i);
-        }
-
-        this.applyStyle('unselected', index, true);
-      } else {
-
-        selectionType = selectionType || 'selected';
-        this.shapesDetails[index][2] = selectionType;
-
-        this.applyStyle(selectionType, index, true);
-      }
-    }
-  }
-
-  getUsedCategories() {
-
-    if (typeof this.data[0] == 'object') {
-      return this.data.map(d => d.x);
-    }
-
-    return [];
-  }
-
-}
-
-mix(SerieScatter, ErrorBarMixin);
-
 /**
  * @static
  * @extends Serie
@@ -17374,7 +16774,6 @@ class SerieZone extends Serie {
     this.id = guid();
 
     this.groupZones = document.createElementNS(this.graph.ns, 'g');
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
     this.lineZone = document.createElementNS(this.graph.ns, 'path');
     this.lineZone.setAttribute('stroke', 'black');
     this.lineZone.setAttribute('stroke-width', '1px');
@@ -17730,8 +17129,6 @@ class SerieDensityMap extends Serie {
 
     super(...arguments);
     mapEventEmission(this.options, this); // Register events
-
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
     this.rects = [];
     this.paths = [];

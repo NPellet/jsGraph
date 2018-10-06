@@ -14,8 +14,6 @@ class SerieDensityMap extends Serie {
     super( ...arguments );
     util.mapEventEmission( this.options, this ); // Register events
 
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
     this.rects = [];
     this.paths = [];
 

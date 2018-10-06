@@ -4,7 +4,7 @@ description: >
   jsGraph allows you to display your scientific data in any modern browser. 
   Generated in SVG, the graphs can be exported for publication in high resolution.
   jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
-baseurl: "/" # the subpath of your site, e.g. /blog/
+baseurl: "/web/site/" # the subpath of your site, e.g. /blog/
 url: "http://localhost:8000/" # the base hostname & protocol for your site
 # Build settings
 markdown: kramdown

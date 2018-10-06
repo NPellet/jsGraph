@@ -4,16 +4,16 @@ requirejs.config( {
 	baseUrl: '/',
 
 	paths: {
-		jquery: 'js/jquery/dist/jquery.min',
-		bootstrap: 'js/bootstrap/dist/js/bootstrap.min'
+		//jquery: 'js/jquery/dist/jquery.min',
+		//bootstrap: ''
 	},
 	shim: {
-		'bootstrap': { deps: [ 'jquery' ] }
+		//'bootstrap': { deps: [ 'jquery' ] }
 	}
 
 })
 
-require( [ 'bootstrap' ], function( ) {
+require( [ ], function( ) {
 	
 	$(".doc-method, .doc-member").each( function() {
 //console.log( $( this ).children('.doc-method-details').get( 0 ).innerHTML.length );

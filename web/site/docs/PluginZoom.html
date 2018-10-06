@@ -10,20 +10,25 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+    
+    <script src="/dist/jsgraph-es6.js"></script> <!-- jsGraph should load first -->
 
-    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    <script src="/web/site/js/jquery/dist/jquery.min.js"></script>
+    <script src="/web/site/js/bootstrap/dist/js/bootstrap.min.js"></script> <!-- jQuery 
+    
+
+    should load first -->
     
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-        var baseUrl = "/";
+        var baseUrl = "/web/site/";
     </script>
 
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/theme.css">
-    <link rel="canonical" href="http://localhost:8000///docs/PluginZoom.html">
+    <link rel="stylesheet" href="/web/site/css/main.css">
+    <link rel="stylesheet" href="/web/site/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000//web/site//docs/PluginZoom.html">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </head>
 
@@ -53,10 +58,10 @@
         <ul class="nav navbar-nav">
 
 
-          <li><a href="/getting-started.html">Getting started</a></li>
-          <li><a href="/tutorials.html">Tutorials</a></li>
-          <li><a href="/docs/Graph.html">Documentation</a></li>
-          <li><a href="/examples.html">Examples</a></li>
+          <li><a href="/web/site/getting-started.html">Getting started</a></li>
+          <li><a href="/web/site/tutorials.html">Tutorials</a></li>
+          <li><a href="/web/site/docs/Graph.html">Documentation</a></li>
+          <li><a href="/web/site/examples.html">Examples</a></li>
         </ul>
       </div>
     </div>
@@ -78,49 +83,49 @@
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Graph.html">Core</a>
+            <a class="page-link" href="/web/site/docs/Graph.html">Core</a>
           </li>
   			  
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Serie.html">Serie</a>
+            <a class="page-link" href="/web/site/docs/Serie.html">Serie</a>
           </li>
   			  
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Axis.html">Axis</a>
+            <a class="page-link" href="/web/site/docs/Axis.html">Axis</a>
           </li>
   			  
   			
   			  
   			  <li  class="active" >
-            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+            <a class="page-link" href="/web/site/docs/Plugin.html">Plugin</a>
           </li>
   			  
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Shape.html">Shape</a>
+            <a class="page-link" href="/web/site/docs/Shape.html">Shape</a>
           </li>
   			  
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/EventEmitter.html">EventEmitter</a>
+            <a class="page-link" href="/web/site/docs/EventEmitter.html">EventEmitter</a>
           </li>
   			  
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Legend.html">Legend</a>
+            <a class="page-link" href="/web/site/docs/Legend.html">Legend</a>
           </li>
   			  
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Position.html">Position</a>
+            <a class="page-link" href="/web/site/docs/Position.html">Position</a>
           </li>
   			  
   			
@@ -143,7 +148,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginAxisSplitting.html">
+			  	<a class="page-link" href="/web/site/docs/PluginAxisSplitting.html">
 			  		AxisSplitting
 			  	</a>
 			  </li>
@@ -151,7 +156,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginDrag.html">
+			  	<a class="page-link" href="/web/site/docs/PluginDrag.html">
 			  		Drag
 			  	</a>
 			  </li>
@@ -159,7 +164,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginMakeTracesDifferent.html">
+			  	<a class="page-link" href="/web/site/docs/PluginMakeTracesDifferent.html">
 			  		MakeTracesDifferent
 			  	</a>
 			  </li>
@@ -167,7 +172,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginPeakPicking.html">
+			  	<a class="page-link" href="/web/site/docs/PluginPeakPicking.html">
 			  		PeakPicking
 			  	</a>
 			  </li>
@@ -175,7 +180,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginSelectScatter.html">
+			  	<a class="page-link" href="/web/site/docs/PluginSelectScatter.html">
 			  		SelectScatter
 			  	</a>
 			  </li>
@@ -183,7 +188,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginSerieLineDifference.html">
+			  	<a class="page-link" href="/web/site/docs/PluginSerieLineDifference.html">
 			  		SerieLineDifference
 			  	</a>
 			  </li>
@@ -191,7 +196,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginShape.html">
+			  	<a class="page-link" href="/web/site/docs/PluginShape.html">
 			  		Shape
 			  	</a>
 			  </li>
@@ -199,7 +204,7 @@
 			
 			  
 			  <li >
-			  	<a class="page-link" href="/docs/PluginTimeSerieManager.html">
+			  	<a class="page-link" href="/web/site/docs/PluginTimeSerieManager.html">
 			  		TimeSerieManager
 			  	</a>
 			  </li>
@@ -207,7 +212,7 @@
 			
 			  
 			  <li  class="active" >
-			  	<a class="page-link" href="/docs/PluginZoom.html">
+			  	<a class="page-link" href="/web/site/docs/PluginZoom.html">
 			  		Zoom
 			  	</a>
 			  </li>
@@ -362,7 +367,7 @@
   	</div>
     <footer class="site-footer">
 
-  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+  <script src="/web/site/js/requirejs/require.js" data-main="/web/site/js/main.js"></script>
 
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

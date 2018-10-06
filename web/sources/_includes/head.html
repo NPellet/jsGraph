@@ -6,9 +6,14 @@
     <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
     <meta name="description" content="{{ site.description }}">
 
-    <script src="{{ "js/node-jsgraph/dist/jsgraph.js" | prepend: site.baseurl }}"></script> <!-- jsGraph should load first -->
+    
+    <script src="/dist/jsgraph-es6.js"></script> <!-- jsGraph should load first -->
 
-    <script src="{{ "js/jquery/dist/jquery.min.js" | prepend: site.baseurl }}"></script> <!-- jQuery should load first -->
+    <script src="{{ "js/jquery/dist/jquery.min.js" | prepend: site.baseurl }}"></script>
+    <script src="{{ "js/bootstrap/dist/js/bootstrap.min.js" | prepend: site.baseurl }}"></script> <!-- jQuery 
+    
+
+    should load first -->
     
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

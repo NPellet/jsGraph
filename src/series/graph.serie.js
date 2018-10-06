@@ -3,31 +3,25 @@ import * as util from '../graph.util.js';
 
 import Waveform from '../util/waveform.js';
 
+const defaultOptions = {
+  redrawShapesAfterDraw: false
+};
+
 /**
  * Serie class to be extended
  * @static
  */
 class Serie extends EventEmitter {
 
-  static
-  default () {
-
-    return {
-      redrawShapesAfterDraw: false
-    };
-  }
-
-  constructor( graph, name, options ) {
+  constructor( graph, name, options, defaultInherited ) {
 
     super( ...arguments );
+    console.log( defaultInherited, options );
+    this.options = util.extend( true, {}, defaultOptions, defaultInherited, options );
+    console.log( this.options );
     this.graph = graph;
     this.name = name;
-    this.options = Object.assign( {}, Serie.default(), this.constructor.default(), options );
-
-    //if( new.target.default ) {
-    //console.log( new.target.default() );
-    //}
-
+    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
   }
 
   postInit() {}

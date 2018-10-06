@@ -1,9 +1,35 @@
 import Graph from '../graph.core.js';
-import Serie from './graph.serie.js';
+import SerieScatter from './graph.serie.scatter.js';
 
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 import Waveform from '../util/waveform.js';
+
+const defaultOptions = {
+  /**
+   * @name SerieLineDefaultOptions
+   * @object
+   * @static
+   * @memberof SerieLine
+   */
+
+  // Extends scatterSerie
+  markers: false,
+
+  lineColor: 'black',
+  lineStyle: 1,
+  flip: false,
+  label: '',
+  lineWidth: 1,
+
+  trackMouse: false,
+  trackMouseLabel: false,
+  trackMouseLabelRouding: 1,
+  lineToZero: false,
+  selectableOnClick: false,
+  overflowX: false,
+  overflowY: false
+};
 
 /**
  * Serie line
@@ -11,41 +37,13 @@ import Waveform from '../util/waveform.js';
  * @see Graph#newSerie
  * @extends Serie
  */
-class SerieLine extends Serie {
+class SerieLine extends SerieScatter {
 
-  static
-  default () {
-    /**
-     * @name SerieLineDefaultOptions
-     * @object
-     * @static
-     * @memberof SerieLine
-     */
-    return {
+  constructor( graph, name, options, defaultInherited ) {
 
-      lineColor: 'black',
-      lineStyle: 1,
-      flip: false,
-      label: '',
-      lineWidth: 1,
-      markers: false,
-      trackMouse: false,
-      trackMouseLabel: false,
-      trackMouseLabelRouding: 1,
-      lineToZero: false,
-      selectableOnClick: false,
-      markersIndependant: false,
-      overflowX: false,
-      overflowY: false
-    };
-  }
-
-  constructor( graph, name, options ) {
-
-    super( ...arguments );
+    super( graph, name, options, util.extend( true, {}, defaultOptions, defaultInherited ) );
 
     this.selectionType = 'unselected';
-    this.markerFamilies = {};
 
     util.mapEventEmission( this.options, this ); // Register events
 
@@ -56,15 +54,12 @@ class SerieLine extends Serie {
     this.styles.unselected = {
       lineColor: this.options.lineColor,
       lineStyle: this.options.lineStyle,
-      lineWidth: this.options.lineWidth,
-      markers: this.options.markers
+      lineWidth: this.options.lineWidth
     };
 
     this.styles.selected = {
       lineWidth: 3
     };
-
-    this.markersDom = new Map();
 
     this.shown = true;
 
@@ -94,7 +89,6 @@ class SerieLine extends Serie {
       this.domMarker.style.cursor = 'pointer';
     }
 
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
     this.additionalData = {};
 
     this.marker = document.createElementNS( this.graph.ns, 'circle' );
@@ -124,9 +118,6 @@ class SerieLine extends Serie {
     this.groupMain.appendChild( this.markerLabelSquare );
     this.groupMain.appendChild( this.markerLabel );
 
-    this.groupMarkers = document.createElementNS( this.graph.ns, 'g' );
-    this.groupMain.appendChild( this.groupMarkers );
-
     this.independantMarkers = [];
 
     if ( this.initExtended1 ) {
@@ -147,10 +138,6 @@ class SerieLine extends Serie {
       }
     } );
 
-    if ( this.options.markers ) {
-      this.setMarkers( this.options.markers, 'unselected' );
-    }
-
   }
 
   postInit() {
@@ -165,151 +152,15 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   setOptions( options ) {
-    this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
+    //this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
     // Unselected style
-    this.styles.unselected = {
+    /*this.styles.unselected = {
       lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle,
-      markers: this.options.markers
+      lineStyle: this.options.lineStyle
     };
-
+*/
     this.applyLineStyles();
     return this;
-  }
-
-  onMouseOverMarker( e, index ) {
-
-    var toggledOn = this.toggleMarker( index, true, true );
-
-    if ( this.options.onMouseOverMarker ) {
-
-      this.options.onMouseOverMarker(
-        index,
-        this.infos ? ( this.infos[ index ] || false ) : false, [ this.waveform.getX( index ), this.waveform.getY( index ) ] );
-    }
-  }
-
-  onMouseOutMarker( e, index ) {
-    this.markersOffHover();
-
-    if ( this.options.onMouseOutMarker ) {
-      this.options.onMouseOutMarker(
-        index,
-        this.infos ? ( this.infos[ index ] || false ) : false, [ this.waveform.getX( index ), this.waveform.getY( index ) ]
-      );
-    }
-  }
-
-  /**
-   * Selects one of the markers of the serie
-   * @param {Number} index - The point index to select (starting at 0)
-   * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
-   * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
-   * @returns {Boolean} The new state of the marker
-   * @memberof SerieLine
-   */
-  toggleMarker( index, force, hover ) {
-
-    let i = index;
-
-    var _on;
-    if ( typeof force === 'undefined' ) {
-      _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
-    }
-    var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
-
-    if ( _on || force === true ) {
-
-      if ( !el[ index ] ) {
-
-        var dom = document.createElementNS( this.graph.ns, 'path' );
-
-        this.setMarkerStyleTo( dom, this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ] );
-        this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
-        this.groupMarkerSelected.appendChild( dom );
-
-      } else {
-        dom = el[ index ];
-      }
-
-      let x = this.getX( this.waveform.getX( i ) ),
-        y = this.getY( this.waveform.getY( i ) );
-
-      dom.setAttribute( 'd', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
-
-      if ( hover ) {
-        this.markerHovered++;
-      }
-
-    } else if ( !_on || force === false ) {
-
-      if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
-
-        if ( !el[ index ] ) {
-          return;
-        }
-
-        this.groupMarkerSelected.removeChild( el[ index ] );
-
-        delete el[ index ];
-
-        if ( hover )
-          this.markerHovered--;
-      }
-
-    }
-
-    return _on;
-  }
-
-  /**
-   * Toggles off markers that have the hover mode "on"
-   * @returns {SerieLine} The current serie
-   * @memberof SerieLine
-   */
-  markersOffHover() {
-
-    for ( var i in this.domMarkerHover ) {
-      this.toggleMarker( i.split( ',' ), false, true );
-    }
-    return this;
-  }
-
-  /**
-   * Toggles off markers that have the select mode "on"
-   * @returns {SerieLine} The current serie
-   * @memberof SerieLine
-   */
-  markersOffSelect() {
-
-    for ( var i in this.domMarkerSelect ) {
-      this.toggleMarker( i.split( ',' ), false, false );
-    }
-    return this;
-  }
-
-  onClickOnMarker( e, index ) {
-
-    var toggledOn = this.toggleMarker( index );
-
-    if ( toggledOn && this.options.onSelectMarker ) {
-      this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] || false ) : false );
-    }
-
-    if ( !toggledOn && this.options.onUnselectMarker ) {
-      this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] || false ) : false );
-    }
-
-    if ( this.options.onToggleMarker ) {
-      this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] || false ) : false, toggledOn );
-    }
-  }
-
-  _getMarkerIndexFromEvent( e ) {
-    var px = this.graph._getXY( e );
-
-    //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
-    return this.searchIndexByPxXY( ( px.x - this.graph.getPaddingLeft() ), ( px.y - this.graph.getPaddingTop() ) );
   }
 
   onMouseWheel() {}
@@ -489,13 +340,14 @@ class SerieLine extends Serie {
    */
   draw( force ) { // Serie redrawing
 
-    super.draw( ...arguments );
-
     if ( !this.getXAxis() || !this.getYAxis() ) {
       throw 'No axes were defined for this serie';
     }
 
     if ( force || this.hasDataChanged() ) {
+
+      super.draw();
+
       if ( !this.drawInit( force ) ) {
         return;
       }
@@ -505,12 +357,9 @@ class SerieLine extends Serie {
         slotToUse = this._slotToUse;
 
       this.removeLinesGroup();
-      this.eraseMarkers();
 
       this.lookForMaxima = true;
       this.lookForMinima = false;
-
-      this.markerFamily = this.markerFamilies[ this.selectionType || 'unselected' ];
 
       this.pos0 = this.getYAxis().getPos( 0 );
 
@@ -525,7 +374,7 @@ class SerieLine extends Serie {
       }
 
       this.removeExtraLines();
-      this.insertMarkers();
+
       this.insertLinesGroup();
     }
 
@@ -595,8 +444,7 @@ class SerieLine extends Serie {
     let lastPointOutside = false;
     let pointOnAxis;
 
-    let _monotoneous = this.isMonotoneous(),
-      _markersShown = this.markersShown();
+    let _monotoneous = this.isMonotoneous();
 
     let i = 0,
       l = waveform.getLength();
@@ -650,10 +498,6 @@ class SerieLine extends Serie {
       }
 
       this.counter2 = i;
-
-      if ( _markersShown ) {
-        this.getMarkerCurrentFamily( this.counter2 );
-      }
 
       xpx2 = this.getX( x );
       ypx2 = this.getY( y );
@@ -847,58 +691,6 @@ class SerieLine extends Serie {
     super.kill();
   }
 
-  /**
-   * @param {Number} k - Index of the point for which we should get the family
-   * @memberof SerieLine
-   */
-  getMarkerCurrentFamily( k ) {
-
-    if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
-      return;
-    }
-
-    var family;
-
-    for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
-      if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k ) { // This one is a possibility !
-        if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
-          this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
-          family = this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ];
-        }
-      } else {
-        break;
-      }
-    }
-
-    if ( !family ) {
-      return false;
-    }
-    this.getMarkerDom( family );
-    return this.markerCurrentFamily;
-  }
-
-  setMarkerStyleTo( dom, family ) {
-
-    if ( !dom || !family ) {
-      console.trace();
-      throw 'Cannot set marker style. DOM does not exist.';
-    }
-
-    dom.setAttribute( 'fill', family.fillColor || 'transparent' );
-    dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
-    dom.setAttribute( 'stroke-width', family.strokeWidth || 1 );
-  }
-
-  /**
-   * Hides the tracking marker (see the trackMouse option)
-   * @memberof SerieLine
-   */
-  hideTrackingMarker() {
-    this.marker.setAttribute( 'display', 'none' );
-    this.markerLabel.setAttribute( 'display', 'none' );
-    this.markerLabelSquare.setAttribute( 'display', 'none' );
-  }
-
   _addPoint( xpx, ypx, x, y, j, move, allowMarker ) {
 
     /*if( ! this.currentLineId ) {
@@ -938,22 +730,6 @@ class SerieLine extends Serie {
 
     if ( this.hasErrors() ) {
       this.errorAddPoint( j, x, y, xpx, ypx );
-    }
-
-    if ( !this.markerPoints ) {
-      this.counter++;
-
-      return;
-    }
-
-    if ( this.markersShown() && allowMarker !== false && this.markerFamily ) {
-      drawMarkerXY(
-        this,
-        this.markerFamily[ this.markerCurrentFamily ],
-        xpx,
-        ypx,
-        this.markersDom.get( this.markerFamily[ this.markerCurrentFamily ] )
-      );
     }
 
     this.counter++;
@@ -1083,74 +859,6 @@ class SerieLine extends Serie {
 
   }
 
-  // Revised August 2014. Ok
-  getMarkerDom( family ) {
-
-    var self = this;
-
-    if ( !this.markersDom.has( family ) ) {
-
-      var dom = document.createElementNS( this.graph.ns, 'path' );
-      this.setMarkerStyleTo( dom, family );
-      this.markersDom.set( family, {
-        dom: dom,
-        path: ''
-      } );
-
-      dom.addEventListener( 'mouseover', function( e ) {
-        var closest = self._getMarkerIndexFromEvent( e );
-        self.onMouseOverMarker( e, closest );
-      } );
-
-      dom.addEventListener( 'mouseout', function( e ) {
-        var closest = self._getMarkerIndexFromEvent( e );
-        self.onMouseOutMarker( e, closest );
-      } );
-
-      dom.addEventListener( 'click', function( e ) {
-        var closest = self._getMarkerIndexFromEvent( e );
-        self.onClickOnMarker( e, closest );
-      } );
-
-    }
-
-    return family.dom;
-  }
-
-  // In case markers are not grouped in families but independant
-  getMarkerDomIndependent( index, family ) {
-
-    if ( !this.independantMarkers[ index ] ) {
-
-      var dom = document.createElementNS( this.graph.ns, 'path' );
-      this.setMarkerStyleTo( dom, family );
-
-      dom.addEventListener( 'mouseover', ( e ) => {
-
-        this.onMouseOverMarker( e, index );
-
-      } );
-
-      dom.addEventListener( 'mouseout', ( e ) => {
-
-        this.onMouseOutMarker( e, index );
-
-      } );
-
-      dom.addEventListener( 'click', ( e ) => {
-
-        this.onClickOnMarker( e, index );
-
-      } );
-
-      this.independantMarkers[ index ] = dom;
-    }
-
-    this.groupMarkers.appendChild( this.independantMarkers[ index ] );
-
-    return this.independantMarkers[ index ];
-  }
-
   /**
    * Searches the closest point pair (x,y) to the a pair of pixel position
    * @param {Number} x - The x position in pixels (from the left)
@@ -1268,47 +976,6 @@ class SerieLine extends Serie {
       if ( value.xMin == undefined ) {
 
         return false;
-
-      } else {
-
-        if ( !this.marker ) {
-          return;
-        }
-
-        var x = this.getX( this.getFlip() ? value.yClosest : value.xClosest );
-        var y = this.getY( this.getFlip() ? value.xClosest : value.yClosest );
-
-        if ( isNaN( x ) || isNaN( y ) ) {
-          return;
-        }
-
-        this.marker.setAttribute( 'display', 'block' );
-        this.marker.setAttribute( 'cx', x );
-        this.marker.setAttribute( 'cy', y );
-
-        this.markerLabel.setAttribute( 'display', 'block' );
-        this.markerLabelSquare.setAttribute( 'display', 'block' );
-
-        switch ( this.options.trackMouseLabel ) {
-
-          case false:
-
-            break;
-
-          default:
-            this.markerLabel.textContent = this.options.trackMouseLabel
-              .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
-              .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
-            break;
-        }
-
-        this.markerLabel.setAttribute( 'x', x + 5 );
-        this.markerLabel.setAttribute( 'y', y - 5 );
-
-        this.markerLabelSquare.setAttribute( 'x', x + 5 );
-        this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
-        this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
-        this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
       }
     }
 
@@ -1509,16 +1176,7 @@ class SerieLine extends Serie {
 
   extendStyle( styleTarget, styleOrigin ) {
     var s = this.styles[ styleTarget ];
-
     this.styles[ styleTarget ] = util.extend( true, {}, this.styles[ styleOrigin || 'unselected' ], s || {} );
-
-    this.styles[ styleTarget ].markers.map( function( marker ) {
-      if ( marker.dom ) {
-        marker.dom = '';
-      }
-    } );
-
-    this._recalculateMarkerPoints( styleTarget, this.styles[ styleTarget ].markers );
     this.styleHasChanged( styleTarget );
   }
 
@@ -1570,266 +1228,6 @@ class SerieLine extends Serie {
   /* * @memberof SerieLine
    */
 
-  /* MARKERS * @memberof SerieLine
-   */
-  showMarkers( selectionType, redraw ) {
-    selectionType = selectionType || 'unselected';
-    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ].showMarkers = true;
-
-    if ( redraw && this._drawn ) {
-      this.draw( true );
-    } else {
-      this.styleHasChanged( selectionType );
-    }
-
-    return this;
-  }
-
-  hideMarkers( selectionType, redraw ) {
-
-    selectionType = selectionType || 'unselected';
-    this.styles[ selectionType ].showMarkers = false;
-
-    if ( redraw && this._drawn ) {
-      this.draw( true );
-    } else {
-      this.styleHasChanged( selectionType );
-    }
-    return this;
-  }
-
-  markersShown( selectionType ) {
-    return this.getStyle( selectionType ).showMarkers !== false;
-  }
-
-  areMarkersShown() {
-    return this.markersShown.apply( this, arguments );
-  }
-
-  isMarkersShown() {
-    return this.markersShown.apply( this, arguments );
-  }
-
-  // Multiple markers
-  setMarkers( families, selectionType, applyToSelected ) {
-    // Family has to be an object
-    // Family looks like
-    /*
-				{
-					type: 1,
-					zoom: 1,
-					strokeWidth: 1,
-					strokeColor: '',
-					fillColor: '',
-          points: []
-				}
-			* @memberof SerieLine
-*/
-
-    this.styles[ selectionType || 'unselected' ] = this.styles[ selectionType || 'unselected' ] || {};
-
-    this.showMarkers( selectionType, false );
-
-    if ( !Array.isArray( families ) && typeof families == 'object' ) {
-      families = [ families ];
-    } else if ( !families ) {
-
-      families = [ {
-        type: 1,
-        zoom: 1,
-        points: 'all'
-      } ];
-    }
-
-    this.styles[ selectionType || 'unselected' ].markers = families;
-
-    if ( applyToSelected ) {
-      this.styles.selected.markers = util.extend( true, {}, families );
-    }
-
-    this._recalculateMarkerPoints( selectionType, families );
-    this.styleHasChanged( selectionType );
-    this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
-    return this;
-  }
-
-  setMarkersPoints( points, family, selectionType ) {
-    this._extendMarkers( 'points', points, family, selectionType, true );
-  }
-
-  setMarkersColor( color, family, selectionType ) {
-    this._extendMarkers( 'color', color, family, selectionType );
-  }
-
-  setMarkersType( type, family, selectionType ) {
-    this._extendMarkers( 'type', type, family, selectionType );
-  }
-
-  setMarkersZoom( zoom, family, selectionType ) {
-    this._extendMarkers( 'zoom', zoom, family, selectionType );
-  }
-
-  setMarkersStrokeColor( strokeColor, family, selectionType ) {
-    this._extendMarkers( 'strokeColor', strokeColor, family, selectionType );
-  }
-
-  setMarkersStrokeWidth( strokeWidth, family, selectionType ) {
-    this._extendMarkers( 'strokeWidth', strokeWidth, family, selectionType );
-  }
-
-  setMarkersFillColor( fillColor, family, selectionType ) {
-    this._extendMarkers( 'fillColor', fillColor, family, selectionType );
-  }
-
-  _extendMarkers( type, value, family, selectionType, recalculatePoints ) {
-
-    family = family || 0;
-    selectionType = selectionType || 'unselected';
-
-    if ( !this.styles[ selectionType ] || !this.styles[ selectionType ].markers ) {
-      return;
-    }
-
-    this.styles[ selectionType ].markers[ family ][ type ] = value;
-
-    if ( recalculatePoints ) {
-      this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
-    }
-
-    if ( !this.markersDom[ this.styles[ selectionType ].markers[ family ] ] ) { // DOM doesn't exist yet.
-      return;
-    }
-
-    this.setMarkerStyleTo( this.markersDom[ this.styles[ selectionType ].markers[ family ] ].dom, this.styles[ selectionType ].markers[ family ] );
-
-  }
-
-  _recalculateMarkerPoints( selectionType, families ) {
-
-    var markerPoints = [];
-    // Overwriting any other undefined families
-    markerPoints.push( [ 0, Infinity, null ] );
-
-    for ( var i = 0, k = families.length; i < k; i++ ) {
-
-      families[ i ].markerPath = this.getMarkerPath( families[ i ] );
-
-      if ( !families[ i ].points ) {
-        families[ i ].points = 'all';
-      }
-
-      if ( !Array.isArray( families[ i ].points ) ) {
-        families[ i ].points = [ families[ i ].points ];
-      }
-
-      for ( var j = 0, l = families[ i ].points.length; j < l; j++ ) {
-
-        if ( families[ i ].points[ j ] == 'all' ) {
-
-          markerPoints.push( [ 0, Infinity, i ] );
-
-        } else if ( !Array.isArray( families[ i ].points[ j ] ) ) {
-
-          markerPoints.push( [ families[ i ].points[ j ], families[ i ].points[ j ], i ] );
-          //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
-        } else {
-
-          markerPoints.push( [ families[ i ].points[ j ][ 0 ], families[ i ].points[ j ][ 1 ], i ] );
-
-        }
-      }
-    }
-
-    this.markerFamilies[ selectionType || 'unselected' ] = families;
-
-    // Let's sort if by the first index.
-    markerPoints.sort( function( a, b ) {
-      return ( a[ 0 ] - b[ 0 ] ) || ( a[ 2 ] == null ? -1 : 1 );
-    } );
-
-    this.markerPoints[ selectionType || 'unselected' ] = markerPoints;
-  }
-
-  insertMarkers( selectionType ) {
-
-    if ( !this.markerFamilies || !this.markerFamilies[ selectionType || this.selectionType ] || this.options.markersIndependant ) {
-      return;
-    }
-
-    for ( var i = 0, l = this.markerFamilies[ selectionType || this.selectionType ].length; i < l; i++ ) {
-
-      if ( !this.markersDom.has( this.markerFamilies[ selectionType || this.selectionType ][ i ] ) ) {
-        continue;
-      }
-
-      let dom =
-        this
-        .markersDom
-        .get( this.markerFamilies[ selectionType || this.selectionType ][ i ] );
-
-      dom.dom
-        .setAttribute(
-          'd',
-          dom.path );
-
-      this.groupMarkers.appendChild( dom.dom );
-      this.currentMarkersSelectionType = this.selectionType;
-    }
-  }
-
-  getMarkerForLegend() {
-
-    if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
-      return;
-    }
-
-    if ( !this.markerForLegend ) {
-
-      var marker = document.createElementNS( this.graph.ns, 'path' );
-      this.setMarkerStyleTo( marker, this.markerFamilies[ this.selectionType ][ 0 ] );
-
-      marker.setAttribute( 'd', 'M 14 0 ' + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
-
-      this.markerForLegend = marker;
-    }
-
-    return this.markerForLegend;
-  }
-
-  eraseMarkers() {
-
-    var self = this;
-
-    if ( this.options.markersIndependant ) {
-
-      for ( var i in this.independantMarkers ) {
-        self.groupMarkers.removeChild( this.independantMarkers[ i ] );
-      }
-
-      this.independantMarkers = {};
-
-    } else if ( this.currentMarkersSelectionType ) {
-
-      this.markersDom.forEach( function( el ) {
-
-        if ( !el.dom ) {
-          return;
-        }
-
-        if ( el.dom.parentNode !== self.groupMarkers ) {
-          return;
-        }
-
-        self.groupMarkers.removeChild( el.dom );
-        el.path = '';
-      } );
-
-      this.currentMarkersSelectionType = false;
-    }
-
-  }
-
   isMonotoneous() {
     if ( this.waveform ) {
       return this.waveform.isMonotoneous();
@@ -1847,25 +1245,6 @@ class SerieLine extends Serie {
     return this.waveform.findLocalMinMax( xRef, xWithin, type );
   }
 
-}
-
-function drawMarkerXY( graph, family, x, y, markerDom ) {
-
-  if ( !family ) {
-    return;
-  }
-
-  if ( graph.options.markersIndependant ) {
-    var dom = graph.getMarkerDomIndependent( graph.counter2, family );
-    var p = 'M ' + x + ' ' + y + ' ';
-    p += family.markerPath + ' ';
-
-    dom.setAttribute( 'd', p );
-  }
-
-  markerDom.path = markerDom.path || '';
-  markerDom.path += 'M ' + x + ' ' + y + ' ';
-  markerDom.path += family.markerPath + ' ';
 }
 
 util.mix( SerieLine, ErrorBarMixin );

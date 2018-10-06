@@ -15,8 +15,6 @@ class SerieBar extends Serie {
 
     super( ...arguments );
 
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
     this.pathDom = document.createElementNS( this.graph.ns, 'path' );
     this.groupMain.appendChild( this.pathDom );
 

@@ -6128,7 +6128,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.0.96'
+        'data-jsgraph-version': 'v2.1.0'
       });
     } catch (e) {
       // ignore
@@ -6932,7 +6932,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(13), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(14), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -7729,6 +7729,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     mean() {
       return this.average();
+    }
+
+    stddev() {
+      let num = 0,
+          denom = 0;
+      const mean = this.mean();
+      for (var i = 0; i < this.getLength(); i++) {
+        num += Math.pow(this.getY(i) - mean, 2);
+        denom += this.getY(i);
+      }
+
+      return Math.pow(num, 0.5) / denom;
     }
 
     getAverageP(from, to) {
@@ -8924,20 +8936,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(8), __webpack_require__(0), __webpack_require__(10), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(12), __webpack_require__(0), __webpack_require__(10), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.core.js'), require('./graph.serie.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('../util/waveform.js'));
+    factory(module, exports, require('../graph.core.js'), require('./graph.serie.scatter.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('../util/waveform.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphCore, global.graphSerie, global.graphUtil, global.graphMixinErrorbars, global.waveform);
+    factory(mod, mod.exports, global.graphCore, global.graphSerieScatter, global.graphUtil, global.graphMixinErrorbars, global.waveform);
     global.graphSerieLine = mod.exports;
   }
-})(this, function (module, exports, _graphCore, _graphSerie, _graphUtil, _graphMixinErrorbars, _waveform) {
+})(this, function (module, exports, _graphCore, _graphSerieScatter, _graphUtil, _graphMixinErrorbars, _waveform) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -8946,7 +8958,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _graphCore2 = _interopRequireDefault(_graphCore);
 
-  var _graphSerie2 = _interopRequireDefault(_graphSerie);
+  var _graphSerieScatter2 = _interopRequireDefault(_graphSerieScatter);
 
   var util = _interopRequireWildcard(_graphUtil);
 
@@ -8977,46 +8989,45 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
   }
 
+  const defaultOptions = {
+    /**
+     * @name SerieLineDefaultOptions
+     * @object
+     * @static
+     * @memberof SerieLine
+     */
+
+    // Extends scatterSerie
+    markers: false,
+
+    lineColor: 'black',
+    lineStyle: 1,
+    flip: false,
+    label: '',
+    lineWidth: 1,
+
+    trackMouse: false,
+    trackMouseLabel: false,
+    trackMouseLabelRouding: 1,
+    lineToZero: false,
+    selectableOnClick: false,
+    overflowX: false,
+    overflowY: false
+  };
+
   /**
    * Serie line
    * @example graph.newSerie( name, options, "line" );
    * @see Graph#newSerie
    * @extends Serie
    */
-  class SerieLine extends _graphSerie2.default {
+  class SerieLine extends _graphSerieScatter2.default {
 
-    static default() {
-      /**
-       * @name SerieLineDefaultOptions
-       * @object
-       * @static
-       * @memberof SerieLine
-       */
-      return {
+    constructor(graph, name, options, defaultInherited) {
 
-        lineColor: 'black',
-        lineStyle: 1,
-        flip: false,
-        label: '',
-        lineWidth: 1,
-        markers: false,
-        trackMouse: false,
-        trackMouseLabel: false,
-        trackMouseLabelRouding: 1,
-        lineToZero: false,
-        selectableOnClick: false,
-        markersIndependant: false,
-        overflowX: false,
-        overflowY: false
-      };
-    }
-
-    constructor(graph, name, options) {
-
-      super(...arguments);
+      super(graph, name, options, util.extend(true, {}, defaultOptions, defaultInherited));
 
       this.selectionType = 'unselected';
-      this.markerFamilies = {};
 
       util.mapEventEmission(this.options, this); // Register events
 
@@ -9027,15 +9038,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.styles.unselected = {
         lineColor: this.options.lineColor,
         lineStyle: this.options.lineStyle,
-        lineWidth: this.options.lineWidth,
-        markers: this.options.markers
+        lineWidth: this.options.lineWidth
       };
 
       this.styles.selected = {
         lineWidth: 3
       };
-
-      this.markersDom = new Map();
 
       this.shown = true;
 
@@ -9065,7 +9073,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.domMarker.style.cursor = 'pointer';
       }
 
-      this.groupMain = document.createElementNS(this.graph.ns, 'g');
       this.additionalData = {};
 
       this.marker = document.createElementNS(this.graph.ns, 'circle');
@@ -9095,9 +9102,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.groupMain.appendChild(this.markerLabelSquare);
       this.groupMain.appendChild(this.markerLabel);
 
-      this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
-      this.groupMain.appendChild(this.groupMarkers);
-
       this.independantMarkers = [];
 
       if (this.initExtended1) {
@@ -9116,10 +9120,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         }
       });
-
-      if (this.options.markers) {
-        this.setMarkers(this.options.markers, 'unselected');
-      }
     }
 
     postInit() {
@@ -9134,142 +9134,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @memberof SerieLine
      */
     setOptions(options) {
-      this.options = util.extend(true, {}, SerieLine.prototype.defaults, options || {});
+      //this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
       // Unselected style
-      this.styles.unselected = {
+      /*this.styles.unselected = {
         lineColor: this.options.lineColor,
-        lineStyle: this.options.lineStyle,
-        markers: this.options.markers
+        lineStyle: this.options.lineStyle
       };
-
+      */
       this.applyLineStyles();
       return this;
-    }
-
-    onMouseOverMarker(e, index) {
-
-      var toggledOn = this.toggleMarker(index, true, true);
-
-      if (this.options.onMouseOverMarker) {
-
-        this.options.onMouseOverMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
-      }
-    }
-
-    onMouseOutMarker(e, index) {
-      this.markersOffHover();
-
-      if (this.options.onMouseOutMarker) {
-        this.options.onMouseOutMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
-      }
-    }
-
-    /**
-     * Selects one of the markers of the serie
-     * @param {Number} index - The point index to select (starting at 0)
-     * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
-     * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
-     * @returns {Boolean} The new state of the marker
-     * @memberof SerieLine
-     */
-    toggleMarker(index, force, hover) {
-
-      let i = index;
-
-      var _on;
-      if (typeof force === 'undefined') {
-        _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
-      }
-      var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
-
-      if (_on || force === true) {
-
-        if (!el[index]) {
-
-          var dom = document.createElementNS(this.graph.ns, 'path');
-
-          this.setMarkerStyleTo(dom, this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)]);
-          this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
-          this.groupMarkerSelected.appendChild(dom);
-        } else {
-          dom = el[index];
-        }
-
-        let x = this.getX(this.waveform.getX(i)),
-            y = this.getY(this.waveform.getY(i));
-
-        dom.setAttribute('d', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
-
-        if (hover) {
-          this.markerHovered++;
-        }
-      } else if (!_on || force === false) {
-
-        if (hover && this.domMarkerHover[index] && !this.domMarkerSelect[index] || this.domMarkerSelect[index]) {
-
-          if (!el[index]) {
-            return;
-          }
-
-          this.groupMarkerSelected.removeChild(el[index]);
-
-          delete el[index];
-
-          if (hover) this.markerHovered--;
-        }
-      }
-
-      return _on;
-    }
-
-    /**
-     * Toggles off markers that have the hover mode "on"
-     * @returns {SerieLine} The current serie
-     * @memberof SerieLine
-     */
-    markersOffHover() {
-
-      for (var i in this.domMarkerHover) {
-        this.toggleMarker(i.split(','), false, true);
-      }
-      return this;
-    }
-
-    /**
-     * Toggles off markers that have the select mode "on"
-     * @returns {SerieLine} The current serie
-     * @memberof SerieLine
-     */
-    markersOffSelect() {
-
-      for (var i in this.domMarkerSelect) {
-        this.toggleMarker(i.split(','), false, false);
-      }
-      return this;
-    }
-
-    onClickOnMarker(e, index) {
-
-      var toggledOn = this.toggleMarker(index);
-
-      if (toggledOn && this.options.onSelectMarker) {
-        this.options.onSelectMarker(index, this.infos ? this.infos[index[0]] || false : false);
-      }
-
-      if (!toggledOn && this.options.onUnselectMarker) {
-        this.options.onUnselectMarker(index, this.infos ? this.infos[index[0]] || false : false);
-      }
-
-      if (this.options.onToggleMarker) {
-        this.options.onToggleMarker(index, this.infos ? this.infos[index[0]] || false : false, toggledOn);
-      }
-    }
-
-    _getMarkerIndexFromEvent(e) {
-      var px = this.graph._getXY(e);
-
-      //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
-      return this.searchIndexByPxXY(px.x - this.graph.getPaddingLeft(), px.y - this.graph.getPaddingTop());
     }
 
     onMouseWheel() {}
@@ -9444,13 +9317,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     draw(force) {
       // Serie redrawing
 
-      super.draw(...arguments);
-
       if (!this.getXAxis() || !this.getYAxis()) {
         throw 'No axes were defined for this serie';
       }
 
       if (force || this.hasDataChanged()) {
+
+        super.draw();
+
         if (!this.drawInit(force)) {
           return;
         }
@@ -9460,12 +9334,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             slotToUse = this._slotToUse;
 
         this.removeLinesGroup();
-        this.eraseMarkers();
 
         this.lookForMaxima = true;
         this.lookForMinima = false;
-
-        this.markerFamily = this.markerFamilies[this.selectionType || 'unselected'];
 
         this.pos0 = this.getYAxis().getPos(0);
 
@@ -9480,7 +9351,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this.removeExtraLines();
-        this.insertMarkers();
+
         this.insertLinesGroup();
       }
 
@@ -9550,8 +9421,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       let lastPointOutside = false;
       let pointOnAxis;
 
-      let _monotoneous = this.isMonotoneous(),
-          _markersShown = this.markersShown();
+      let _monotoneous = this.isMonotoneous();
 
       let i = 0,
           l = waveform.getLength();
@@ -9605,10 +9475,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this.counter2 = i;
-
-        if (_markersShown) {
-          this.getMarkerCurrentFamily(this.counter2);
-        }
 
         xpx2 = this.getX(x);
         ypx2 = this.getY(y);
@@ -9797,60 +9663,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       super.kill();
     }
 
-    /**
-     * @param {Number} k - Index of the point for which we should get the family
-     * @memberof SerieLine
-     */
-    getMarkerCurrentFamily(k) {
-
-      if (!this.markerPoints || !this.markerPoints[this.selectionType]) {
-        return;
-      }
-
-      var family;
-
-      for (var z = 0; z < this.markerPoints[this.selectionType].length; z++) {
-        if (this.markerPoints[this.selectionType][z][0] <= k) {
-          // This one is a possibility !
-          if (this.markerPoints[this.selectionType][z][1] >= k) {
-            // Verify that it's in the boundary
-            this.markerCurrentFamily = this.markerPoints[this.selectionType][z][2];
-            family = this.markerFamilies[this.selectionType][this.markerCurrentFamily];
-          }
-        } else {
-          break;
-        }
-      }
-
-      if (!family) {
-        return false;
-      }
-      this.getMarkerDom(family);
-      return this.markerCurrentFamily;
-    }
-
-    setMarkerStyleTo(dom, family) {
-
-      if (!dom || !family) {
-        console.trace();
-        throw 'Cannot set marker style. DOM does not exist.';
-      }
-
-      dom.setAttribute('fill', family.fillColor || 'transparent');
-      dom.setAttribute('stroke', family.strokeColor || this.getLineColor());
-      dom.setAttribute('stroke-width', family.strokeWidth || 1);
-    }
-
-    /**
-     * Hides the tracking marker (see the trackMouse option)
-     * @memberof SerieLine
-     */
-    hideTrackingMarker() {
-      this.marker.setAttribute('display', 'none');
-      this.markerLabel.setAttribute('display', 'none');
-      this.markerLabelSquare.setAttribute('display', 'none');
-    }
-
     _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
 
       /*if( ! this.currentLineId ) {
@@ -9889,16 +9701,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.hasErrors()) {
         this.errorAddPoint(j, x, y, xpx, ypx);
-      }
-
-      if (!this.markerPoints) {
-        this.counter++;
-
-        return;
-      }
-
-      if (this.markersShown() && allowMarker !== false && this.markerFamily) {
-        drawMarkerXY(this, this.markerFamily[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(this.markerFamily[this.markerCurrentFamily]));
       }
 
       this.counter++;
@@ -10026,70 +9828,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return el.join(' ');
     }
 
-    // Revised August 2014. Ok
-    getMarkerDom(family) {
-
-      var self = this;
-
-      if (!this.markersDom.has(family)) {
-
-        var dom = document.createElementNS(this.graph.ns, 'path');
-        this.setMarkerStyleTo(dom, family);
-        this.markersDom.set(family, {
-          dom: dom,
-          path: ''
-        });
-
-        dom.addEventListener('mouseover', function (e) {
-          var closest = self._getMarkerIndexFromEvent(e);
-          self.onMouseOverMarker(e, closest);
-        });
-
-        dom.addEventListener('mouseout', function (e) {
-          var closest = self._getMarkerIndexFromEvent(e);
-          self.onMouseOutMarker(e, closest);
-        });
-
-        dom.addEventListener('click', function (e) {
-          var closest = self._getMarkerIndexFromEvent(e);
-          self.onClickOnMarker(e, closest);
-        });
-      }
-
-      return family.dom;
-    }
-
-    // In case markers are not grouped in families but independant
-    getMarkerDomIndependent(index, family) {
-
-      if (!this.independantMarkers[index]) {
-
-        var dom = document.createElementNS(this.graph.ns, 'path');
-        this.setMarkerStyleTo(dom, family);
-
-        dom.addEventListener('mouseover', e => {
-
-          this.onMouseOverMarker(e, index);
-        });
-
-        dom.addEventListener('mouseout', e => {
-
-          this.onMouseOutMarker(e, index);
-        });
-
-        dom.addEventListener('click', e => {
-
-          this.onClickOnMarker(e, index);
-        });
-
-        this.independantMarkers[index] = dom;
-      }
-
-      this.groupMarkers.appendChild(this.independantMarkers[index]);
-
-      return this.independantMarkers[index];
-    }
-
     /**
      * Searches the closest point pair (x,y) to the a pair of pixel position
      * @param {Number} x - The x position in pixels (from the left)
@@ -10205,44 +9943,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (value.xMin == undefined) {
 
           return false;
-        } else {
-
-          if (!this.marker) {
-            return;
-          }
-
-          var x = this.getX(this.getFlip() ? value.yClosest : value.xClosest);
-          var y = this.getY(this.getFlip() ? value.xClosest : value.yClosest);
-
-          if (isNaN(x) || isNaN(y)) {
-            return;
-          }
-
-          this.marker.setAttribute('display', 'block');
-          this.marker.setAttribute('cx', x);
-          this.marker.setAttribute('cy', y);
-
-          this.markerLabel.setAttribute('display', 'block');
-          this.markerLabelSquare.setAttribute('display', 'block');
-
-          switch (this.options.trackMouseLabel) {
-
-            case false:
-
-              break;
-
-            default:
-              this.markerLabel.textContent = this.options.trackMouseLabel.replace('<x>', valX.toFixed(this.options.trackMouseLabelRouding)).replace('<y>', intY.toFixed(this.options.trackMouseLabelRouding));
-              break;
-          }
-
-          this.markerLabel.setAttribute('x', x + 5);
-          this.markerLabel.setAttribute('y', y - 5);
-
-          this.markerLabelSquare.setAttribute('x', x + 5);
-          this.markerLabelSquare.setAttribute('y', y - 5 - this.graph.options.fontSize);
-          this.markerLabelSquare.setAttribute('width', this.markerLabel.getComputedTextLength() + 2);
-          this.markerLabelSquare.setAttribute('height', this.graph.options.fontSize + 2);
         }
       }
 
@@ -10447,16 +10147,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     extendStyle(styleTarget, styleOrigin) {
       var s = this.styles[styleTarget];
-
       this.styles[styleTarget] = util.extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
-
-      this.styles[styleTarget].markers.map(function (marker) {
-        if (marker.dom) {
-          marker.dom = '';
-        }
-      });
-
-      this._recalculateMarkerPoints(styleTarget, this.styles[styleTarget].markers);
       this.styleHasChanged(styleTarget);
     }
 
@@ -10508,256 +10199,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /* * @memberof SerieLine
      */
 
-    /* MARKERS * @memberof SerieLine
-     */
-    showMarkers(selectionType, redraw) {
-      selectionType = selectionType || 'unselected';
-      this.styles[selectionType] = this.styles[selectionType] || {};
-      this.styles[selectionType].showMarkers = true;
-
-      if (redraw && this._drawn) {
-        this.draw(true);
-      } else {
-        this.styleHasChanged(selectionType);
-      }
-
-      return this;
-    }
-
-    hideMarkers(selectionType, redraw) {
-
-      selectionType = selectionType || 'unselected';
-      this.styles[selectionType].showMarkers = false;
-
-      if (redraw && this._drawn) {
-        this.draw(true);
-      } else {
-        this.styleHasChanged(selectionType);
-      }
-      return this;
-    }
-
-    markersShown(selectionType) {
-      return this.getStyle(selectionType).showMarkers !== false;
-    }
-
-    areMarkersShown() {
-      return this.markersShown.apply(this, arguments);
-    }
-
-    isMarkersShown() {
-      return this.markersShown.apply(this, arguments);
-    }
-
-    // Multiple markers
-    setMarkers(families, selectionType, applyToSelected) {
-      // Family has to be an object
-      // Family looks like
-      /*
-      {
-      	type: 1,
-      	zoom: 1,
-      	strokeWidth: 1,
-      	strokeColor: '',
-      	fillColor: '',
-            points: []
-      }
-      * @memberof SerieLine
-      */
-
-      this.styles[selectionType || 'unselected'] = this.styles[selectionType || 'unselected'] || {};
-
-      this.showMarkers(selectionType, false);
-
-      if (!Array.isArray(families) && typeof families == 'object') {
-        families = [families];
-      } else if (!families) {
-
-        families = [{
-          type: 1,
-          zoom: 1,
-          points: 'all'
-        }];
-      }
-
-      this.styles[selectionType || 'unselected'].markers = families;
-
-      if (applyToSelected) {
-        this.styles.selected.markers = util.extend(true, {}, families);
-      }
-
-      this._recalculateMarkerPoints(selectionType, families);
-      this.styleHasChanged(selectionType);
-      this.dataHasChanged(true); // Data has not really changed, but marker placing is performed during the draw method
-      return this;
-    }
-
-    setMarkersPoints(points, family, selectionType) {
-      this._extendMarkers('points', points, family, selectionType, true);
-    }
-
-    setMarkersColor(color, family, selectionType) {
-      this._extendMarkers('color', color, family, selectionType);
-    }
-
-    setMarkersType(type, family, selectionType) {
-      this._extendMarkers('type', type, family, selectionType);
-    }
-
-    setMarkersZoom(zoom, family, selectionType) {
-      this._extendMarkers('zoom', zoom, family, selectionType);
-    }
-
-    setMarkersStrokeColor(strokeColor, family, selectionType) {
-      this._extendMarkers('strokeColor', strokeColor, family, selectionType);
-    }
-
-    setMarkersStrokeWidth(strokeWidth, family, selectionType) {
-      this._extendMarkers('strokeWidth', strokeWidth, family, selectionType);
-    }
-
-    setMarkersFillColor(fillColor, family, selectionType) {
-      this._extendMarkers('fillColor', fillColor, family, selectionType);
-    }
-
-    _extendMarkers(type, value, family, selectionType, recalculatePoints) {
-
-      family = family || 0;
-      selectionType = selectionType || 'unselected';
-
-      if (!this.styles[selectionType] || !this.styles[selectionType].markers) {
-        return;
-      }
-
-      this.styles[selectionType].markers[family][type] = value;
-
-      if (recalculatePoints) {
-        this._recalculateMarkerPoints(selectionType, this.styles[selectionType].markers);
-      }
-
-      if (!this.markersDom[this.styles[selectionType].markers[family]]) {
-        // DOM doesn't exist yet.
-        return;
-      }
-
-      this.setMarkerStyleTo(this.markersDom[this.styles[selectionType].markers[family]].dom, this.styles[selectionType].markers[family]);
-    }
-
-    _recalculateMarkerPoints(selectionType, families) {
-
-      var markerPoints = [];
-      // Overwriting any other undefined families
-      markerPoints.push([0, Infinity, null]);
-
-      for (var i = 0, k = families.length; i < k; i++) {
-
-        families[i].markerPath = this.getMarkerPath(families[i]);
-
-        if (!families[i].points) {
-          families[i].points = 'all';
-        }
-
-        if (!Array.isArray(families[i].points)) {
-          families[i].points = [families[i].points];
-        }
-
-        for (var j = 0, l = families[i].points.length; j < l; j++) {
-
-          if (families[i].points[j] == 'all') {
-
-            markerPoints.push([0, Infinity, i]);
-          } else if (!Array.isArray(families[i].points[j])) {
-
-            markerPoints.push([families[i].points[j], families[i].points[j], i]);
-            //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
-          } else {
-
-            markerPoints.push([families[i].points[j][0], families[i].points[j][1], i]);
-          }
-        }
-      }
-
-      this.markerFamilies[selectionType || 'unselected'] = families;
-
-      // Let's sort if by the first index.
-      markerPoints.sort(function (a, b) {
-        return a[0] - b[0] || (a[2] == null ? -1 : 1);
-      });
-
-      this.markerPoints[selectionType || 'unselected'] = markerPoints;
-    }
-
-    insertMarkers(selectionType) {
-
-      if (!this.markerFamilies || !this.markerFamilies[selectionType || this.selectionType] || this.options.markersIndependant) {
-        return;
-      }
-
-      for (var i = 0, l = this.markerFamilies[selectionType || this.selectionType].length; i < l; i++) {
-
-        if (!this.markersDom.has(this.markerFamilies[selectionType || this.selectionType][i])) {
-          continue;
-        }
-
-        let dom = this.markersDom.get(this.markerFamilies[selectionType || this.selectionType][i]);
-
-        dom.dom.setAttribute('d', dom.path);
-
-        this.groupMarkers.appendChild(dom.dom);
-        this.currentMarkersSelectionType = this.selectionType;
-      }
-    }
-
-    getMarkerForLegend() {
-
-      if (!this.markerPoints || !this.markerPoints[this.selectionType]) {
-        return;
-      }
-
-      if (!this.markerForLegend) {
-
-        var marker = document.createElementNS(this.graph.ns, 'path');
-        this.setMarkerStyleTo(marker, this.markerFamilies[this.selectionType][0]);
-
-        marker.setAttribute('d', 'M 14 0 ' + this.getMarkerPath(this.markerFamilies[this.selectionType][0]));
-
-        this.markerForLegend = marker;
-      }
-
-      return this.markerForLegend;
-    }
-
-    eraseMarkers() {
-
-      var self = this;
-
-      if (this.options.markersIndependant) {
-
-        for (var i in this.independantMarkers) {
-          self.groupMarkers.removeChild(this.independantMarkers[i]);
-        }
-
-        this.independantMarkers = {};
-      } else if (this.currentMarkersSelectionType) {
-
-        this.markersDom.forEach(function (el) {
-
-          if (!el.dom) {
-            return;
-          }
-
-          if (el.dom.parentNode !== self.groupMarkers) {
-            return;
-          }
-
-          self.groupMarkers.removeChild(el.dom);
-          el.path = '';
-        });
-
-        this.currentMarkersSelectionType = false;
-      }
-    }
-
     isMonotoneous() {
       if (this.waveform) {
         return this.waveform.isMonotoneous();
@@ -10775,25 +10216,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return this.waveform.findLocalMinMax(xRef, xWithin, type);
     }
 
-  }
-
-  function drawMarkerXY(graph, family, x, y, markerDom) {
-
-    if (!family) {
-      return;
-    }
-
-    if (graph.options.markersIndependant) {
-      var dom = graph.getMarkerDomIndependent(graph.counter2, family);
-      var p = 'M ' + x + ' ' + y + ' ';
-      p += family.markerPath + ' ';
-
-      dom.setAttribute('d', p);
-    }
-
-    markerDom.path = markerDom.path || '';
-    markerDom.path += 'M ' + x + ' ' + y + ' ';
-    markerDom.path += family.markerPath + ' ';
   }
 
   util.mix(SerieLine, _graphMixinErrorbars2.default);
@@ -11647,878 +11069,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(0), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../dependencies/eventEmitter/EventEmitter.js'), require('../graph.util.js'), require('../util/waveform.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports, global.EventEmitter, global.graphUtil, global.waveform);
-    global.graphSerie = mod.exports;
-  }
-})(this, function (module, exports, _EventEmitter, _graphUtil, _waveform) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _EventEmitter2 = _interopRequireDefault(_EventEmitter);
-
-  var util = _interopRequireWildcard(_graphUtil);
-
-  var _waveform2 = _interopRequireDefault(_waveform);
-
-  function _interopRequireWildcard(obj) {
-    if (obj && obj.__esModule) {
-      return obj;
-    } else {
-      var newObj = {};
-
-      if (obj != null) {
-        for (var key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-        }
-      }
-
-      newObj.default = obj;
-      return newObj;
-    }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  /**
-   * Serie class to be extended
-   * @static
-   */
-  class Serie extends _EventEmitter2.default {
-
-    static default() {
-
-      return {
-        redrawShapesAfterDraw: false
-      };
-    }
-
-    constructor(graph, name, options) {
-
-      super(...arguments);
-      this.graph = graph;
-      this.name = name;
-      this.options = Object.assign({}, Serie.default(), this.constructor.default(), options);
-
-      //if( new.target.default ) {
-      //console.log( new.target.default() );
-      //}
-    }
-
-    postInit() {}
-
-    draw() {}
-
-    beforeDraw() {}
-
-    afterDraw() {
-
-      if (this.options.redrawShapesAfterDraw) {
-        this.graph.getShapesOfSerie(this).forEach(shape => {
-          shape.redraw();
-        });
-      }
-
-      this.emit('draw');
-    }
-
-    /**
-     * Sets data to the serie
-     * @memberof Serie
-     * @param {(Object|Array|Array[])} data - The data of the serie
-     * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
-     * @param{String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
-     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
-     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
-     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
-     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
-     */
-    setData(data, oneDimensional, type) {
-
-      if (data instanceof _waveform2.default) {
-        return this.setWaveform(data);
-      }
-
-      throw 'Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class.';
-    }
-
-    _addData(type, howmany) {
-      return [];
-    }
-
-    /**
-     * Removes all the data from the serie, without redrawing
-     * @returns {Serie} The current serie
-     */
-    clearData() {
-      this.setData(new _waveform2.default());
-      return this;
-    }
-
-    /**
-     * Returns the data in its current form
-     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
-     * @memberof Serie
-     */
-    getData() {
-      return this.data;
-    }
-
-    /**
-     * Sets the options of the serie (no extension of default options)
-     * @param {Object} options - The options of the serie
-     * @memberof Serie
-     */
-    setOptions(options) {
-      this.options = options || {};
-    }
-
-    /**
-     * Sets the options of the serie (no extension of default options)
-     * @param {String} name - The option name
-     * @param value - The option value
-     * @memberof Serie
-     * @example serie.setOption('selectableOnClick', true );
-     */
-    setOption(name, value) {
-      this.options[name] = value;
-    }
-
-    /**
-     * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
-     * @return {Serie} The current serie instance
-     * @memberof Serie
-     */
-    kill(noLegendUpdate) {
-
-      this.graph.removeSerieFromDom(this);
-      this.graph._removeSerie(this);
-
-      if (this.graph.legend && !noLegendUpdate) {
-
-        this.graph.legend.update();
-      }
-
-      this.graph = undefined;
-      return this;
-    }
-
-    /**
-     * Hides the serie
-     * @memberof Serie
-     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
-     * @returns {Serie} The current serie
-     */
-    hide(hideShapes, mute = false) {
-
-      this.hidden = true;
-      this.groupMain.setAttribute('display', 'none');
-
-      this.getSymbolForLegend().setAttribute('opacity', 0.5);
-      this.getTextForLegend().setAttribute('opacity', 0.5);
-
-      this.hideImpl();
-
-      if (hideShapes) {
-        var shapes = this.graph.getShapesOfSerie(this);
-        for (var i = 0, l = shapes.length; i < l; i++) {
-          shapes[i].hide();
-        }
-      }
-
-      if (!mute) {
-        this.emit('hide');
-      }
-
-      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
-        this.graph.draw(true);
-      }
-
-      if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
-        this.graph.getPlugin('peakPicking').hidePeakPicking();
-      }
-
-      return this;
-    }
-
-    /**
-     * Shows the serie
-     * @memberof Serie
-     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
-     * @returns {Serie} The current serie
-     */
-    show(showShapes, mute = false) {
-
-      this.hidden = false;
-      this.groupMain.setAttribute('display', 'block');
-
-      this.getSymbolForLegend().setAttribute('opacity', 1);
-      this.getTextForLegend().setAttribute('opacity', 1);
-
-      this.showImpl();
-
-      this.draw(true);
-
-      if (showShapes) {
-        var shapes = this.graph.getShapesOfSerie(this);
-        for (var i = 0, l = shapes.length; i < l; i++) {
-          shapes[i].show();
-        }
-      }
-
-      if (!mute) {
-        this.emit('show');
-      }
-
-      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
-        this.graph.draw(true);
-      }
-
-      if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
-        this.graph.getPlugin('peakPicking').showPeakPicking();
-      }
-
-      return this;
-    }
-
-    hideImpl() {}
-    showImpl() {}
-
-    /**
-     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
-     * @memberof Serie
-     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
-     * @returns {Serie} The current serie
-     */
-    toggleDisplay() {
-
-      if (!this.isShown()) {
-        this.show();
-      } else {
-        this.hide();
-      }
-
-      return this;
-    }
-
-    /**
-     * Determines if the serie is currently visible
-     * @memberof Serie
-     * @returns {Boolean} The current visibility status of the serie
-     */
-    isShown() {
-      return !this.hidden;
-    }
-
-    /**
-     * Checks that axes assigned to the serie have been defined and have proper values
-     * @memberof Serie
-     */
-    axisCheck() {
-
-      if (!this.getXAxis() || !this.getYAxis()) {
-        throw 'No axis exist for this serie. Check that they were properly assigned';
-      }
-
-      if (isNaN(this.getXAxis().getCurrentMin()) || isNaN(this.getXAxis().getCurrentMax()) || isNaN(this.getYAxis().getCurrentMin()) || isNaN(this.getYAxis().getCurrentMax())) {
-        throw 'Axis min and max values are not defined. Try autoscaling';
-      }
-    }
-    /**
-     * Returns the x position of a certain value in pixels position, based on the serie's axis
-     * @memberof Serie
-     * @param {Number} val - Value to convert to pixels position
-     * @returns {Number} The x position in px corresponding to the x value
-     */
-    getX(val) {
-      return (val = this.getXAxis().getPx(val)) - val % 0.2;
-    }
-
-    /**
-     * Returns the y position of a certain value in pixels position, based on the serie's axis
-     * @memberof Serie
-     * @param {Number} val - Value to convert to pixels position
-     * @returns {Number} The y position in px corresponding to the y value
-     */
-    getY(val) {
-      return (val = this.getYAxis().getPx(val)) - val % 0.2;
-    }
-
-    /**
-     * Returns the selection state of the serie. Generic for most serie types
-     * @memberof Serie
-     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
-     */
-    isSelected() {
-      return this.selected || this.selectionType !== 'unselected';
-    }
-
-    _checkX(val) {
-      this.minX = Math.min(this.minX, val);
-      this.maxX = Math.max(this.maxX, val);
-    }
-
-    _checkY(val) {
-      this.minY = Math.min(this.minY, val);
-      this.maxY = Math.max(this.maxY, val);
-    }
-
-    /**
-     * Getter for the serie name
-     * @memberof Serie
-     * @returns {String} The serie name
-     */
-    getName() {
-      return this.name;
-    }
-
-    /* AXIS */
-
-    /**
-     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
-     * @memberof Serie
-     * @returns {Serie} The current serie
-     */
-    autoAxis() {
-
-      if (this.isFlipped()) {
-
-        this.setXAxis(this.graph.getYAxis());
-        this.setYAxis(this.graph.getXAxis());
-      } else {
-
-        this.setXAxis(this.graph.getXAxis());
-        this.setYAxis(this.graph.getYAxis());
-      }
-
-      // After axes have been assigned, the graph axes should update their min/max
-      this.graph.updateDataMinMaxAxes();
-      return this;
-    }
-
-    autoAxes() {
-      return this.autoAxis(...arguments);
-    }
-
-    /**
-     * Assigns an x axis to the serie
-     * @memberof Serie
-     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
-     * @returns {Serie} The current serie
-     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
-     */
-    setXAxis(axis) {
-
-      if (typeof axis == 'number') {
-        this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
-      } else {
-        this.xaxis = axis;
-      }
-
-      this.graph.updateDataMinMaxAxes();
-
-      return this;
-    }
-
-    /**
-     * Assigns an y axis to the serie
-     * @memberof Serie
-     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
-     * @returns {Serie} The current serie
-     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
-     */
-    setYAxis(axis) {
-      if (typeof axis == 'number') {
-        this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
-      } else {
-        this.yaxis = axis;
-      }
-
-      this.graph.updateDataMinMaxAxes();
-
-      return this;
-    }
-
-    /**
-     * Assigns two axes to the serie
-     * @param {GraphAxis} axis1 - First axis to assign to the serie (x or y)
-     * @param {GraphAxis} axis2 - Second axis to assign to the serie (y or x)
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    setAxes() {
-
-      for (var i = 0; i < 2; i++) {
-
-        if (arguments[i]) {
-          this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
-        }
-      }
-
-      this.graph.updateDataMinMaxAxes();
-
-      return this;
-    }
-
-    /**
-     * @returns {GraphAxis} The x axis assigned to the serie
-     * @memberof Serie
-     */
-    getXAxis() {
-      return this.xaxis;
-    }
-
-    /**
-     * @returns {GraphAxis} The y axis assigned to the serie
-     * @memberof Serie
-     */
-    getYAxis() {
-      return this.yaxis;
-    }
-
-    /* */
-
-    /* DATA MIN MAX */
-
-    /**
-     * @returns {Number} Lowest x value of the serie's data
-     * @memberof Serie
-     */
-    getMinX() {
-      return this.minX;
-    }
-
-    /**
-     * @returns {Number} Highest x value of the serie's data
-     * @memberof Serie
-     */
-    getMaxX() {
-      return this.maxX;
-    }
-
-    /**
-     * @returns {Number} Lowest y value of the serie's data
-     * @memberof Serie
-     */
-    getMinY() {
-      return this.minY;
-    }
-
-    /**
-     * @returns {Number} Highest y value of the serie's data
-     * @memberof Serie
-     */
-    getMaxY() {
-      return this.maxY;
-    }
-
-    getWaveform() {
-      return this.waveform;
-    }
-
-    getWaveforms() {
-      return [this.waveform];
-    }
-
-    setWaveform(waveform) {
-
-      if (!(waveform instanceof _waveform2.default)) {
-        console.trace();
-        console.error(waveform);
-        throw new Error('Cannot assign waveform to serie. Waveform is not of the proper Waveform instance');
-      }
-
-      this.waveform = waveform;
-
-      this.minX = this.waveform.getXMin();
-      this.maxX = this.waveform.getXMax();
-      this.minY = this.waveform.getMin();
-      this.maxY = this.waveform.getMax();
-
-      this.graph.updateDataMinMaxAxes();
-      this.dataHasChanged();
-
-      return this;
-    }
-
-    /**
-     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
-     * @returns {SVGElement}
-     * @memberof Serie
-     */
-    getSymbolForLegend() {
-
-      if (!this.lineForLegend) {
-
-        var line = document.createElementNS(this.graph.ns, 'line');
-        this.applyLineStyle(line);
-
-        line.setAttribute('x1', 5);
-        line.setAttribute('x2', 25);
-        line.setAttribute('y1', 0);
-        line.setAttribute('y2', 0);
-
-        line.setAttribute('cursor', 'pointer');
-
-        this.lineForLegend = line;
-      }
-
-      return this.lineForLegend;
-    }
-
-    /**
-     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
-     * @see Serie#getSymbolForLegend
-     * @returns {SVGElement}
-     * @memberof Serie
-     */
-    setLegendSymbolStyle() {
-      this.applyLineStyle(this.getSymbolForLegend());
-    }
-
-    /**
-     * @alias Serie#setLegendSymbolStyle
-     * @memberof Serie
-     */
-    updateStyle() {
-      this.setLegendSymbolStyle();
-      this.graph.updateLegend();
-    }
-
-    /**
-     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
-     * @returns {SVGElement}
-     * @memberof Serie
-     * @see Serie#getLabel
-     */
-    getTextForLegend() {
-
-      if (!this.textForLegend) {
-
-        var text = document.createElementNS(this.graph.ns, 'text');
-        text.setAttribute('cursor', 'pointer');
-        text.textContent = this.getLabel();
-
-        this.textForLegend = text;
-      }
-
-      return this.textForLegend;
-    }
-
-    /**
-     * @returns {Number} The current index of the serie
-     * @memberof Serie
-     */
-    getIndex() {
-      return this.graph.series.indexOf(this);
-    }
-
-    /**
-     * @returns {String} The label or, alternatively - the name of the serie
-     * @memberof Serie
-     */
-    getLabel() {
-      return this.options.label || this.name;
-    }
-
-    /**
-     * Sets the label of the serie. Note that this does not automatically updates the legend
-     * @param {String} label - The new label of the serie
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    setLabel(label) {
-      this.options.label = label;
-
-      if (this.textForLegend) {
-        this.textForLegend.textContent = label;
-      }
-
-      this.graph.requireLegendUpdate();
-      return this;
-    }
-
-    /* FLIP */
-
-    /**
-     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
-     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    setFlip(flipped) {
-      this.options.flip = flipped;
-      return this;
-    }
-
-    /**
-     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
-     * @memberof Serie
-     */
-    getFlip() {
-      return this.options.flip;
-    }
-
-    /**
-     * @alias Serie#getFlip
-     * @memberof Serie
-     */
-    isFlipped() {
-      return this.options.flip;
-    }
-
-    /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
-     * @memberof Serie
-     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
-     * @returns {Serie} The current serie
-     */
-    setLayer(layerIndex) {
-      let newLayer = parseInt(layerIndex) || 1;
-
-      if (newLayer !== this.options.layer) {
-        this.options.layer = newLayer;
-        this.graph.appendSerieToDom(this);
-      }
-
-      return this;
-    }
-
-    /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
-     * @memberof Serie
-     * @returns {Nunber} The index of the layer into which the serie will be drawn
-     */
-    getLayer() {
-      return this.options.layer || 1;
-    }
-
-    setStyle(style, selectionType = 'unselected') {
-      this.styles[selectionType] = style;
-      this.styleHasChanged(selectionType);
-    }
-
-    /**
-     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
-     * @param {String} selectionType - The selection for which the style may have changed
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    styleHasChanged(selectionType = 'unselected') {
-      this._changedStyles = this._changedStyles || {};
-
-      if (selectionType === false) {
-        for (var i in this._changedStyles) {
-          this._changedStyles[i] = false;
-        }
-      } else {
-        this._changedStyles[selectionType || 'unselected'] = true;
-      }
-
-      this.graph.requireLegendUpdate();
-      return this;
-    }
-
-    /**
-     * Checks if the style has changed for a selection type
-     * @param {String} selectionType - The selection for which the style may have changed
-     * @returns {Boolean} <code>true</code> if the style has changed
-     * @private
-     * @memberof Serie
-     */
-    hasStyleChanged(selectionType) {
-      this._changedStyles = this._changedStyles || {};
-      return this._changedStyles[selectionType || 'unselected'];
-    }
-
-    /**
-     * Notifies jsGraph that the data of the serie has changed
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    dataHasChanged(arg) {
-      this._dataHasChanged = arg === undefined || arg;
-      return this;
-    }
-
-    /**
-     * Checks if the data has changed
-     * @returns {Boolean} <code>true</code> if the data has changed
-     * @private
-     * @memberof Serie
-     */
-    hasDataChanged() {
-      return this._dataHasChanged;
-    }
-
-    /**
-     * Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
-     * @param {String} prop - The property
-     * @param value - The value
-     * @returns {Serie} The current serie
-     * @see Serie#getInfo
-     * @memberof Serie
-     */
-    setInfo(prop, value) {
-      this.infos = this.infos || {};
-      this.infos[prop] = value;
-      return this;
-    }
-
-    /**
-     * Retrives an information value from its key
-     * @param {String} prop - The property
-     * @returns The value associated to the prop parameter
-     * @see Serie#setInfo
-     * @memberof Serie
-     */
-    getInfo(prop, value) {
-      return (this.infos || {})[prop];
-    }
-
-    /**
-     * @deprecated
-     * @memberof Serie
-     */
-    setAdditionalData(data) {
-      this.additionalData = data;
-      return this;
-    }
-
-    /**
-     * @deprecated
-     * @memberof Serie
-     */
-    getAdditionalData() {
-      return this.additionalData;
-    }
-
-    /**
-     * Flags the serie as selected
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    select() {
-      this.selected = true;
-      return this;
-    }
-
-    /**
-     * Flags the serie as unselected
-     * @returns {Serie} The current serie
-     * @memberof Serie
-     */
-    unselect() {
-      this.selected = false;
-      return this;
-    }
-
-    /**
-     * Allows mouse tracking of the serie
-     * @memberof Serie
-     * @returns {Serie} The current serie
-     * @param {Function} hoverCallback - Function to be called when the mouse enters the serie area
-     * @param {Function} outCallback - Function to be called when the mouse exits the serie area
-     * @private
-     */
-    enableTracking(hoverCallback, outCallback) {
-      this._tracker = true;
-      this._trackingCallback = hoverCallback;
-      this._trackingOutCallback = outCallback;
-
-      return this;
-    }
-
-    /**
-     * Disables mouse tracking of the serie
-     * @memberof Serie
-     * @returns {Serie} The current serie
-     * @private
-     */
-    disableTracking() {
-
-      if (this._trackerDom) {
-        this._trackerDom.remove();
-        this._trackerDom = null;
-      }
-
-      this._tracker = false;
-      this._trackingCallback = null;
-      return this;
-    }
-
-    /**
-     *  Allows mouse tracking of the serie
-     *  @memberof Serie
-     *  @param {Object} options - The tracking line options
-     *  @returns {Serie} The current serie
-     */
-    allowTrackingLine(options) {
-
-      options = options || {};
-      this.graph.addSerieToTrackingLine(this, options);
-    }
-
-    getMarkerForLegend() {
-      return false;
-    }
-
-    get type() {
-      return this._type;
-    }
-
-    getType() {
-      return this._type;
-    }
-
-    set excludedFromLegend(bln) {
-      this._excludedFromLegend = bln;
-    }
-
-    get excludedFromLegend() {
-      return !!this._excludedFromLegend;
-    }
-
-    setDataIndices(categories, nb) {
-      this.categoryIndices = categories;
-      this.nbCategories = nb;
-    }
-
-    hasErrors() {
-      if (!this.waveform) {
-        return false;
-      }
-
-      return this.waveform.hasErrorBars();
-    }
-  }
-
-  exports.default = Serie;
-  module.exports = exports['default'];
-});
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -15186,6 +13736,874 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(0), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports, require('../dependencies/eventEmitter/EventEmitter.js'), require('../graph.util.js'), require('../util/waveform.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports, global.EventEmitter, global.graphUtil, global.waveform);
+    global.graphSerie = mod.exports;
+  }
+})(this, function (module, exports, _EventEmitter, _graphUtil, _waveform) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _EventEmitter2 = _interopRequireDefault(_EventEmitter);
+
+  var util = _interopRequireWildcard(_graphUtil);
+
+  var _waveform2 = _interopRequireDefault(_waveform);
+
+  function _interopRequireWildcard(obj) {
+    if (obj && obj.__esModule) {
+      return obj;
+    } else {
+      var newObj = {};
+
+      if (obj != null) {
+        for (var key in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+        }
+      }
+
+      newObj.default = obj;
+      return newObj;
+    }
+  }
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  const defaultOptions = {
+    redrawShapesAfterDraw: false
+  };
+
+  /**
+   * Serie class to be extended
+   * @static
+   */
+  class Serie extends _EventEmitter2.default {
+
+    constructor(graph, name, options, defaultInherited) {
+
+      super(...arguments);
+      console.log(defaultInherited, options);
+      this.options = util.extend(true, {}, defaultOptions, defaultInherited, options);
+      console.log(this.options);
+      this.graph = graph;
+      this.name = name;
+      this.groupMain = document.createElementNS(this.graph.ns, 'g');
+    }
+
+    postInit() {}
+
+    draw() {}
+
+    beforeDraw() {}
+
+    afterDraw() {
+
+      if (this.options.redrawShapesAfterDraw) {
+        this.graph.getShapesOfSerie(this).forEach(shape => {
+          shape.redraw();
+        });
+      }
+
+      this.emit('draw');
+    }
+
+    /**
+     * Sets data to the serie
+     * @memberof Serie
+     * @param {(Object|Array|Array[])} data - The data of the serie
+     * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
+     * @param{String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
+     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
+     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
+     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
+     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
+     */
+    setData(data, oneDimensional, type) {
+
+      if (data instanceof _waveform2.default) {
+        return this.setWaveform(data);
+      }
+
+      throw 'Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class.';
+    }
+
+    _addData(type, howmany) {
+      return [];
+    }
+
+    /**
+     * Removes all the data from the serie, without redrawing
+     * @returns {Serie} The current serie
+     */
+    clearData() {
+      this.setData(new _waveform2.default());
+      return this;
+    }
+
+    /**
+     * Returns the data in its current form
+     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
+     * @memberof Serie
+     */
+    getData() {
+      return this.data;
+    }
+
+    /**
+     * Sets the options of the serie (no extension of default options)
+     * @param {Object} options - The options of the serie
+     * @memberof Serie
+     */
+    setOptions(options) {
+      this.options = options || {};
+    }
+
+    /**
+     * Sets the options of the serie (no extension of default options)
+     * @param {String} name - The option name
+     * @param value - The option value
+     * @memberof Serie
+     * @example serie.setOption('selectableOnClick', true );
+     */
+    setOption(name, value) {
+      this.options[name] = value;
+    }
+
+    /**
+     * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+     * @return {Serie} The current serie instance
+     * @memberof Serie
+     */
+    kill(noLegendUpdate) {
+
+      this.graph.removeSerieFromDom(this);
+      this.graph._removeSerie(this);
+
+      if (this.graph.legend && !noLegendUpdate) {
+
+        this.graph.legend.update();
+      }
+
+      this.graph = undefined;
+      return this;
+    }
+
+    /**
+     * Hides the serie
+     * @memberof Serie
+     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
+    hide(hideShapes, mute = false) {
+
+      this.hidden = true;
+      this.groupMain.setAttribute('display', 'none');
+
+      this.getSymbolForLegend().setAttribute('opacity', 0.5);
+      this.getTextForLegend().setAttribute('opacity', 0.5);
+
+      this.hideImpl();
+
+      if (hideShapes) {
+        var shapes = this.graph.getShapesOfSerie(this);
+        for (var i = 0, l = shapes.length; i < l; i++) {
+          shapes[i].hide();
+        }
+      }
+
+      if (!mute) {
+        this.emit('hide');
+      }
+
+      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
+        this.graph.draw(true);
+      }
+
+      if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
+        this.graph.getPlugin('peakPicking').hidePeakPicking();
+      }
+
+      return this;
+    }
+
+    /**
+     * Shows the serie
+     * @memberof Serie
+     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
+    show(showShapes, mute = false) {
+
+      this.hidden = false;
+      this.groupMain.setAttribute('display', 'block');
+
+      this.getSymbolForLegend().setAttribute('opacity', 1);
+      this.getTextForLegend().setAttribute('opacity', 1);
+
+      this.showImpl();
+
+      this.draw(true);
+
+      if (showShapes) {
+        var shapes = this.graph.getShapesOfSerie(this);
+        for (var i = 0, l = shapes.length; i < l; i++) {
+          shapes[i].show();
+        }
+      }
+
+      if (!mute) {
+        this.emit('show');
+      }
+
+      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
+        this.graph.draw(true);
+      }
+
+      if (this.graph.hasPlugin('peakPicking') && this.graph.getPlugin('peakPicking').getSerie() == this) {
+        this.graph.getPlugin('peakPicking').showPeakPicking();
+      }
+
+      return this;
+    }
+
+    hideImpl() {}
+    showImpl() {}
+
+    /**
+     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
+     * @memberof Serie
+     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
+    toggleDisplay() {
+
+      if (!this.isShown()) {
+        this.show();
+      } else {
+        this.hide();
+      }
+
+      return this;
+    }
+
+    /**
+     * Determines if the serie is currently visible
+     * @memberof Serie
+     * @returns {Boolean} The current visibility status of the serie
+     */
+    isShown() {
+      return !this.hidden;
+    }
+
+    /**
+     * Checks that axes assigned to the serie have been defined and have proper values
+     * @memberof Serie
+     */
+    axisCheck() {
+
+      if (!this.getXAxis() || !this.getYAxis()) {
+        throw 'No axis exist for this serie. Check that they were properly assigned';
+      }
+
+      if (isNaN(this.getXAxis().getCurrentMin()) || isNaN(this.getXAxis().getCurrentMax()) || isNaN(this.getYAxis().getCurrentMin()) || isNaN(this.getYAxis().getCurrentMax())) {
+        throw 'Axis min and max values are not defined. Try autoscaling';
+      }
+    }
+    /**
+     * Returns the x position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The x position in px corresponding to the x value
+     */
+    getX(val) {
+      return (val = this.getXAxis().getPx(val)) - val % 0.2;
+    }
+
+    /**
+     * Returns the y position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The y position in px corresponding to the y value
+     */
+    getY(val) {
+      return (val = this.getYAxis().getPx(val)) - val % 0.2;
+    }
+
+    /**
+     * Returns the selection state of the serie. Generic for most serie types
+     * @memberof Serie
+     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
+     */
+    isSelected() {
+      return this.selected || this.selectionType !== 'unselected';
+    }
+
+    _checkX(val) {
+      this.minX = Math.min(this.minX, val);
+      this.maxX = Math.max(this.maxX, val);
+    }
+
+    _checkY(val) {
+      this.minY = Math.min(this.minY, val);
+      this.maxY = Math.max(this.maxY, val);
+    }
+
+    /**
+     * Getter for the serie name
+     * @memberof Serie
+     * @returns {String} The serie name
+     */
+    getName() {
+      return this.name;
+    }
+
+    /* AXIS */
+
+    /**
+     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
+     * @memberof Serie
+     * @returns {Serie} The current serie
+     */
+    autoAxis() {
+
+      if (this.isFlipped()) {
+
+        this.setXAxis(this.graph.getYAxis());
+        this.setYAxis(this.graph.getXAxis());
+      } else {
+
+        this.setXAxis(this.graph.getXAxis());
+        this.setYAxis(this.graph.getYAxis());
+      }
+
+      // After axes have been assigned, the graph axes should update their min/max
+      this.graph.updateDataMinMaxAxes();
+      return this;
+    }
+
+    autoAxes() {
+      return this.autoAxis(...arguments);
+    }
+
+    /**
+     * Assigns an x axis to the serie
+     * @memberof Serie
+     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+     * @returns {Serie} The current serie
+     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
+     */
+    setXAxis(axis) {
+
+      if (typeof axis == 'number') {
+        this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
+      } else {
+        this.xaxis = axis;
+      }
+
+      this.graph.updateDataMinMaxAxes();
+
+      return this;
+    }
+
+    /**
+     * Assigns an y axis to the serie
+     * @memberof Serie
+     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+     * @returns {Serie} The current serie
+     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
+     */
+    setYAxis(axis) {
+      if (typeof axis == 'number') {
+        this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
+      } else {
+        this.yaxis = axis;
+      }
+
+      this.graph.updateDataMinMaxAxes();
+
+      return this;
+    }
+
+    /**
+     * Assigns two axes to the serie
+     * @param {GraphAxis} axis1 - First axis to assign to the serie (x or y)
+     * @param {GraphAxis} axis2 - Second axis to assign to the serie (y or x)
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    setAxes() {
+
+      for (var i = 0; i < 2; i++) {
+
+        if (arguments[i]) {
+          this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
+        }
+      }
+
+      this.graph.updateDataMinMaxAxes();
+
+      return this;
+    }
+
+    /**
+     * @returns {GraphAxis} The x axis assigned to the serie
+     * @memberof Serie
+     */
+    getXAxis() {
+      return this.xaxis;
+    }
+
+    /**
+     * @returns {GraphAxis} The y axis assigned to the serie
+     * @memberof Serie
+     */
+    getYAxis() {
+      return this.yaxis;
+    }
+
+    /* */
+
+    /* DATA MIN MAX */
+
+    /**
+     * @returns {Number} Lowest x value of the serie's data
+     * @memberof Serie
+     */
+    getMinX() {
+      return this.minX;
+    }
+
+    /**
+     * @returns {Number} Highest x value of the serie's data
+     * @memberof Serie
+     */
+    getMaxX() {
+      return this.maxX;
+    }
+
+    /**
+     * @returns {Number} Lowest y value of the serie's data
+     * @memberof Serie
+     */
+    getMinY() {
+      return this.minY;
+    }
+
+    /**
+     * @returns {Number} Highest y value of the serie's data
+     * @memberof Serie
+     */
+    getMaxY() {
+      return this.maxY;
+    }
+
+    getWaveform() {
+      return this.waveform;
+    }
+
+    getWaveforms() {
+      return [this.waveform];
+    }
+
+    setWaveform(waveform) {
+
+      if (!(waveform instanceof _waveform2.default)) {
+        console.trace();
+        console.error(waveform);
+        throw new Error('Cannot assign waveform to serie. Waveform is not of the proper Waveform instance');
+      }
+
+      this.waveform = waveform;
+
+      this.minX = this.waveform.getXMin();
+      this.maxX = this.waveform.getXMax();
+      this.minY = this.waveform.getMin();
+      this.maxY = this.waveform.getMax();
+
+      this.graph.updateDataMinMaxAxes();
+      this.dataHasChanged();
+
+      return this;
+    }
+
+    /**
+     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+     * @returns {SVGElement}
+     * @memberof Serie
+     */
+    getSymbolForLegend() {
+
+      if (!this.lineForLegend) {
+
+        var line = document.createElementNS(this.graph.ns, 'line');
+        this.applyLineStyle(line);
+
+        line.setAttribute('x1', 5);
+        line.setAttribute('x2', 25);
+        line.setAttribute('y1', 0);
+        line.setAttribute('y2', 0);
+
+        line.setAttribute('cursor', 'pointer');
+
+        this.lineForLegend = line;
+      }
+
+      return this.lineForLegend;
+    }
+
+    /**
+     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
+     * @see Serie#getSymbolForLegend
+     * @returns {SVGElement}
+     * @memberof Serie
+     */
+    setLegendSymbolStyle() {
+      this.applyLineStyle(this.getSymbolForLegend());
+    }
+
+    /**
+     * @alias Serie#setLegendSymbolStyle
+     * @memberof Serie
+     */
+    updateStyle() {
+      this.setLegendSymbolStyle();
+      this.graph.updateLegend();
+    }
+
+    /**
+     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
+     * @returns {SVGElement}
+     * @memberof Serie
+     * @see Serie#getLabel
+     */
+    getTextForLegend() {
+
+      if (!this.textForLegend) {
+
+        var text = document.createElementNS(this.graph.ns, 'text');
+        text.setAttribute('cursor', 'pointer');
+        text.textContent = this.getLabel();
+
+        this.textForLegend = text;
+      }
+
+      return this.textForLegend;
+    }
+
+    /**
+     * @returns {Number} The current index of the serie
+     * @memberof Serie
+     */
+    getIndex() {
+      return this.graph.series.indexOf(this);
+    }
+
+    /**
+     * @returns {String} The label or, alternatively - the name of the serie
+     * @memberof Serie
+     */
+    getLabel() {
+      return this.options.label || this.name;
+    }
+
+    /**
+     * Sets the label of the serie. Note that this does not automatically updates the legend
+     * @param {String} label - The new label of the serie
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    setLabel(label) {
+      this.options.label = label;
+
+      if (this.textForLegend) {
+        this.textForLegend.textContent = label;
+      }
+
+      this.graph.requireLegendUpdate();
+      return this;
+    }
+
+    /* FLIP */
+
+    /**
+     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
+     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    setFlip(flipped) {
+      this.options.flip = flipped;
+      return this;
+    }
+
+    /**
+     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
+     * @memberof Serie
+     */
+    getFlip() {
+      return this.options.flip;
+    }
+
+    /**
+     * @alias Serie#getFlip
+     * @memberof Serie
+     */
+    isFlipped() {
+      return this.options.flip;
+    }
+
+    /**
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+     * @memberof Serie
+     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
+     * @returns {Serie} The current serie
+     */
+    setLayer(layerIndex) {
+      let newLayer = parseInt(layerIndex) || 1;
+
+      if (newLayer !== this.options.layer) {
+        this.options.layer = newLayer;
+        this.graph.appendSerieToDom(this);
+      }
+
+      return this;
+    }
+
+    /**
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+     * @memberof Serie
+     * @returns {Nunber} The index of the layer into which the serie will be drawn
+     */
+    getLayer() {
+      return this.options.layer || 1;
+    }
+
+    setStyle(style, selectionType = 'unselected') {
+      this.styles[selectionType] = style;
+      this.styleHasChanged(selectionType);
+    }
+
+    /**
+     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
+     * @param {String} selectionType - The selection for which the style may have changed
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    styleHasChanged(selectionType = 'unselected') {
+      this._changedStyles = this._changedStyles || {};
+
+      if (selectionType === false) {
+        for (var i in this._changedStyles) {
+          this._changedStyles[i] = false;
+        }
+      } else {
+        this._changedStyles[selectionType || 'unselected'] = true;
+      }
+
+      this.graph.requireLegendUpdate();
+      return this;
+    }
+
+    /**
+     * Checks if the style has changed for a selection type
+     * @param {String} selectionType - The selection for which the style may have changed
+     * @returns {Boolean} <code>true</code> if the style has changed
+     * @private
+     * @memberof Serie
+     */
+    hasStyleChanged(selectionType) {
+      this._changedStyles = this._changedStyles || {};
+      return this._changedStyles[selectionType || 'unselected'];
+    }
+
+    /**
+     * Notifies jsGraph that the data of the serie has changed
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    dataHasChanged(arg) {
+      this._dataHasChanged = arg === undefined || arg;
+      return this;
+    }
+
+    /**
+     * Checks if the data has changed
+     * @returns {Boolean} <code>true</code> if the data has changed
+     * @private
+     * @memberof Serie
+     */
+    hasDataChanged() {
+      return this._dataHasChanged;
+    }
+
+    /**
+     * Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
+     * @param {String} prop - The property
+     * @param value - The value
+     * @returns {Serie} The current serie
+     * @see Serie#getInfo
+     * @memberof Serie
+     */
+    setInfo(prop, value) {
+      this.infos = this.infos || {};
+      this.infos[prop] = value;
+      return this;
+    }
+
+    /**
+     * Retrives an information value from its key
+     * @param {String} prop - The property
+     * @returns The value associated to the prop parameter
+     * @see Serie#setInfo
+     * @memberof Serie
+     */
+    getInfo(prop, value) {
+      return (this.infos || {})[prop];
+    }
+
+    /**
+     * @deprecated
+     * @memberof Serie
+     */
+    setAdditionalData(data) {
+      this.additionalData = data;
+      return this;
+    }
+
+    /**
+     * @deprecated
+     * @memberof Serie
+     */
+    getAdditionalData() {
+      return this.additionalData;
+    }
+
+    /**
+     * Flags the serie as selected
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    select() {
+      this.selected = true;
+      return this;
+    }
+
+    /**
+     * Flags the serie as unselected
+     * @returns {Serie} The current serie
+     * @memberof Serie
+     */
+    unselect() {
+      this.selected = false;
+      return this;
+    }
+
+    /**
+     * Allows mouse tracking of the serie
+     * @memberof Serie
+     * @returns {Serie} The current serie
+     * @param {Function} hoverCallback - Function to be called when the mouse enters the serie area
+     * @param {Function} outCallback - Function to be called when the mouse exits the serie area
+     * @private
+     */
+    enableTracking(hoverCallback, outCallback) {
+      this._tracker = true;
+      this._trackingCallback = hoverCallback;
+      this._trackingOutCallback = outCallback;
+
+      return this;
+    }
+
+    /**
+     * Disables mouse tracking of the serie
+     * @memberof Serie
+     * @returns {Serie} The current serie
+     * @private
+     */
+    disableTracking() {
+
+      if (this._trackerDom) {
+        this._trackerDom.remove();
+        this._trackerDom = null;
+      }
+
+      this._tracker = false;
+      this._trackingCallback = null;
+      return this;
+    }
+
+    /**
+     *  Allows mouse tracking of the serie
+     *  @memberof Serie
+     *  @param {Object} options - The tracking line options
+     *  @returns {Serie} The current serie
+     */
+    allowTrackingLine(options) {
+
+      options = options || {};
+      this.graph.addSerieToTrackingLine(this, options);
+    }
+
+    getMarkerForLegend() {
+      return false;
+    }
+
+    get type() {
+      return this._type;
+    }
+
+    getType() {
+      return this._type;
+    }
+
+    set excludedFromLegend(bln) {
+      this._excludedFromLegend = bln;
+    }
+
+    get excludedFromLegend() {
+      return !!this._excludedFromLegend;
+    }
+
+    setDataIndices(categories, nb) {
+      this.categoryIndices = categories;
+      this.nbCategories = nb;
+    }
+
+    hasErrors() {
+      if (!this.waveform) {
+        return false;
+      }
+
+      return this.waveform.hasErrorBars();
+    }
+  }
+
+  exports.default = Serie;
+  module.exports = exports['default'];
+});
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15530,7 +14948,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -15822,6 +15240,531 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9), __webpack_require__(0), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports, require('./graph.serie.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports, global.graphSerie, global.graphUtil, global.graphMixinErrorbars);
+    global.graphSerieScatter = mod.exports;
+  }
+})(this, function (module, exports, _graphSerie, _graphUtil, _graphMixinErrorbars) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _graphSerie2 = _interopRequireDefault(_graphSerie);
+
+  var util = _interopRequireWildcard(_graphUtil);
+
+  var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
+
+  function _interopRequireWildcard(obj) {
+    if (obj && obj.__esModule) {
+      return obj;
+    } else {
+      var newObj = {};
+
+      if (obj != null) {
+        for (var key in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+        }
+      }
+
+      newObj.default = obj;
+      return newObj;
+    }
+  }
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  const defaults = {};
+
+  var type = 'scatter';
+
+  const defaultOptions = {
+
+    markers: true,
+
+    markerStyles: {
+
+      unselected: {
+        default: {
+          shape: 'circle',
+          cx: 0,
+          cy: 0,
+          r: 3,
+          stroke: 'transparent',
+          fill: 'black'
+        }
+      },
+
+      selected: {
+        default: {
+          r: 4
+        }
+      }
+    }
+  };
+
+  /**
+   * @static
+   * @augments Serie
+   * @example graph.newSerie( name, options, "scatter" );
+   * @see Graph#newSerie
+   */
+  class SerieScatter extends _graphSerie2.default {
+
+    constructor(graph, name, options, defaultInherited) {
+
+      super(graph, name, options, util.extend(true, {}, defaultOptions, defaultInherited));
+
+      this._type = type;
+      util.mapEventEmission(this.options, this);
+
+      this.shapes = []; // Stores all shapes
+      this.shapesDetails = [];
+      this.shapes = [];
+
+      this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
+      this.groupMain.appendChild(this.groupMarkers);
+
+      this.selectedStyleGeneral = {};
+      this.selectedStyleModifiers = {};
+
+      this.groupMarkers.addEventListener('mouseenter', e => {
+
+        var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
+        if (isNaN(id)) {
+          return;
+        }
+
+        if (this.options.selectMarkerOnHover) {
+          this.selectMarker(id, "selected");
+        }
+
+        this.emit('mouseOverMarker', id, this.waveform.getX(id), this.waveform.getY(id));
+      }, true);
+
+      this.groupMarkers.addEventListener('mouseout', e => {
+
+        var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
+        if (isNaN(id)) {
+          return;
+        }
+
+        if (this.options.selectMarkerOnHover) {
+          this.selectMarker(id, "unselected");
+        }
+
+        this.emit('mouseOutMarker', id, this.waveform.getX(id), this.waveform.getY(id));
+      });
+    }
+
+    /**
+     * Applies for x as the category axis
+     * @example serie.setDataCategory( { x: "someName", y: Waveform } );
+     */
+    setDataCategory(data) {
+
+      let minY = +Infinity;
+      let maxY = -Infinity;
+
+      for (let dataCategory of data) {
+
+        this._checkY(dataCategory.y.getMaxY());
+        this._checkY(dataCategory.y.getMinY());
+      }
+
+      this.data = data;
+      this.dataHasChanged();
+      this.graph.updateDataMinMaxAxes();
+      return this;
+    }
+
+    /**
+     * Removes all DOM points
+     * @private
+     */
+    empty() {
+
+      while (this.groupMarkers.firstChild) {
+        this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+      }
+    }
+
+    getSymbolForLegend() {
+
+      if (this.symbol) {
+        return this.symbol;
+      }
+
+      var g = document.createElementNS(this.graph.ns, 'g');
+
+      var shape = this._makeMarker(g, this.options.markerStyles.unselected.default);
+      var style = this.getMarkerStyle('unselected', -1, true);
+
+      for (var i in style[-1]) {
+        if (i == 'shape') {
+          continue;
+        }
+        shape.setAttribute(i, style[-1][i]);
+      }
+
+      return g;
+    }
+
+    /**
+     * Sets style to the scatter points
+     * First argument is the style applied by default to all points
+     * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+     * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+     *
+     * @example
+     * var modifiers = [];
+     * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+     * serie.setMarkerStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
+     *
+     * @param {Object} allStyles - The general style for all markers
+     * @param {Object} [ modifiers ] - The general style for all markers
+     * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
+     *
+     */
+    setMarkerStyle(all, modifiers, mode = 'unselected') {
+
+      if (typeof modifiers == 'string') {
+        mode = modifiers;
+        modifiers = false;
+      }
+
+      this.options.markerStyles[mode] = this.options.markerStyles[mode] || {};
+      this.options.markerStyles[mode].all = all;
+      this.options.markerStyles[mode].modifiers = modifiers;
+
+      this.styleHasChanged(mode);
+
+      return this;
+    }
+
+    /**
+     * Redraws the serie
+     * @private
+     * @param {force} Boolean - Forces redraw even if the data hasn't changed
+     */
+    draw(force) {
+      // Serie redrawing
+
+      if (!force && !this.hasDataChanged() && !this.hasStyleChanged('unselected') || !this.options.markers) {
+        return;
+      }
+
+      let xpx, ypx, j, k, m;
+      const isCategory = this.getXAxis().getType() == 'category';
+      const keys = [];
+
+      this.dataHasChanged(false);
+      this.styleHasChanged(false);
+
+      // Removes the marker group from the main DOM for operation (avoids browser repaint)
+      this.groupMain.removeChild(this.groupMarkers);
+
+      j = 0;
+      k = 0;
+
+      if (this.hasErrors()) {
+        this.errorDrawInit();
+      }
+
+      if (isCategory) {
+
+        let k = 0;
+
+        for (; j < this.data.length; j++) {
+
+          if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
+            continue;
+          }
+
+          if (this.error) {
+            //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
+          }
+
+          for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
+
+            //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+
+            ypx = this.getY(this.data[j].y.getY(n));
+            xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
+            n++;
+
+            this.shapesDetails[k] = this.shapesDetails[k] || [];
+            this.shapesDetails[k][0] = xpx;
+            this.shapesDetails[k][1] = ypx;
+            keys.push(k);
+            k++;
+          }
+        }
+      } else {
+
+        for (; j < this.waveform.getLength(); j++) {
+
+          if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
+
+            if (this.shapes[j]) {
+              this.shapes[j].setAttribute('display', 'none');
+              this.shapes[j]._hidden = true;
+            }
+            continue;
+          } else if (this.shapes[j] && this.shapes[j]._hidden) {
+            this.shapes[j].setAttribute('display', 'initial');
+            this.shapes[j]._hidden = false;
+          }
+
+          xpx = this.getX(this.waveform.getX(j));
+          ypx = this.getY(this.waveform.getY(j));
+
+          if (this.hasErrors()) {
+            this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
+          }
+
+          this.shapesDetails[j] = this.shapesDetails[j] || [];
+          this.shapesDetails[j][0] = xpx;
+          this.shapesDetails[j][1] = ypx;
+          keys.push(j);
+
+          //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
+        }
+      }
+
+      if (this.hasErrors()) {
+        this.errorDraw();
+      }
+
+      // This will automatically create the shapes
+      this.applyMarkerStyle('unselected', keys);
+
+      this.groupMain.appendChild(this.groupMarkers);
+    }
+
+    _makeMarker(group, shape) {
+      var el = document.createElementNS(this.graph.ns, shape.shape);
+      group.appendChild(el);
+      return el;
+    }
+
+    getMarkerStyle(selection, index, noSetPosition) {
+
+      var selection = selection || 'unselected';
+      var indices;
+
+      var styles = {};
+
+      if (typeof index == 'number') {
+        indices = [index];
+      } else if (Array.isArray(index)) {
+        indices = index;
+      }
+
+      var shape, index, modifier, style, j; // loop variables
+      var styleAll = this.options.markerStyles[selection].all;
+
+      if (!styleAll) {
+        styleAll = this.options.markerStyles[selection].default;
+      }
+
+      if (typeof styleAll == 'function') {
+        styleAll = styleAll();
+      }
+
+      styleAll = Object.assign(this.options.markerStyles[selection].default, styleAll);
+
+      var i = 0,
+          l = indices.length;
+
+      for (; i < l; i++) {
+
+        index = indices[i];
+        shape = this.shapes[index];
+
+        if ((modifier = this.options.markerStyles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
+
+          if (typeof modifier == 'function') {
+
+            style = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
+            if (style === false) {
+              continue;
+            }
+          } else if (modifier[index]) {
+
+            style = modifier[index];
+          }
+
+          styles[index] = Object.assign({}, styleAll, style);
+        } else if (styleAll !== undefined) {
+
+          styles[index] = styleAll;
+        } else {
+
+          styles[index] = this.options.markerStyles[selection].default;
+        }
+
+        if (!styles[index]) {
+          styles[index] = styleAll;
+        }
+
+        if (!shape) {
+          // Shape doesn't exist, let's create it
+
+          if (!styles[index].shape) {
+            console.error(style);
+            throw 'No shape was defined with this style.';
+          }
+
+          var g = document.createElementNS(this.graph.ns, 'g');
+          g.setAttribute('data-shapeid', index);
+
+          this.shapes[index] = this._makeMarker(g, styles[index]);
+          this.groupMarkers.appendChild(g);
+          shape = this.shapes[index];
+        }
+
+        if (!noSetPosition && this.shapesDetails[index][0] === this.shapesDetails[index][0] && this.shapesDetails[index][1] === this.shapesDetails[index][1]) {
+
+          shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
+        }
+      }
+
+      return styles;
+    }
+
+    applyMarkerStyle(selection, index, noSetPosition) {
+
+      var i, j;
+      var styles = this.getMarkerStyle(selection, index, noSetPosition);
+
+      for (i in styles) {
+
+        for (j in styles[i]) {
+
+          if (j !== 'shape' && this.shapes[i]) {
+
+            if (styles[i][j]) {
+
+              this.shapes[i].setAttribute(j, styles[i][j]);
+            } else {
+
+              this.shapes[i].removeAttribute(j);
+            }
+          }
+        }
+      }
+    }
+
+    unselectMarker(index) {
+      this.selectMarker(index, false);
+    }
+
+    selectMarker(index, setOn, selectionType) {
+
+      if (this.shapesDetails[index][2] && this.shapesDetails[index][2] == selectionType) {
+        return;
+      }
+
+      if (typeof setOn == 'string') {
+        selectionType = setOn;
+        setOn = undefined;
+      }
+
+      if (Array.isArray(index)) {
+        return this.selectMarkers(index);
+      }
+
+      if (this.shapes[index] && this.shapesDetails[index]) {
+
+        if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
+
+          var selectionStyle = this.shapesDetails[index][2];
+          this.shapesDetails[index][2] = false;
+
+          var allStyles = this.getMarkerStyle(selectionStyle, index, true);
+          for (var i in allStyles[index]) {
+            this.shapes[index].removeAttribute(i);
+          }
+
+          this.applyMarkerStyle('unselected', index, true);
+        } else {
+
+          selectionType = selectionType || 'selected';
+          this.shapesDetails[index][2] = selectionType;
+
+          this.applyMarkerStyle(selectionType, index, true);
+        }
+      }
+    }
+
+    setMarkers(bln = true) {
+
+      this.options.markers = bln;
+      console.log(this.options, bln);
+      return this;
+    }
+
+    showMarkers() {
+
+      if (this.options.markers) {
+        return;
+      }
+
+      this.options.markers = true;
+      this.groupMarkers.setAttribute('display', 'initial');
+      return this;
+    }
+
+    hideMarkers() {
+      return;
+      if (!this.options.markers) {
+        return;
+      }
+
+      this.options.markers = false;
+      this.groupMarkers.setAttribute('display', 'none');
+      return this;
+    }
+
+    getUsedCategories() {
+
+      if (typeof this.data[0] == 'object') {
+        return this.data.map(d => d.x);
+      }
+
+      return [];
+    }
+
+  }
+
+  util.mix(SerieScatter, _graphMixinErrorbars2.default);
+
+  exports.default = SerieScatter;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
@@ -16065,7 +16008,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -16521,12 +16464,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -16930,7 +16873,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -17069,555 +17012,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports, global.graphSerie, global.graphUtil, global.graphMixinErrorbars);
-    global.graphSerieScatter = mod.exports;
-  }
-})(this, function (module, exports, _graphSerie, _graphUtil, _graphMixinErrorbars) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
-  var util = _interopRequireWildcard(_graphUtil);
-
-  var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
-
-  function _interopRequireWildcard(obj) {
-    if (obj && obj.__esModule) {
-      return obj;
-    } else {
-      var newObj = {};
-
-      if (obj != null) {
-        for (var key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-        }
-      }
-
-      newObj.default = obj;
-      return newObj;
-    }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  const defaults = {};
-
-  var type = 'scatter';
-
-  /**
-   * @static
-   * @augments Serie
-   * @example graph.newSerie( name, options, "scatter" );
-   * @see Graph#newSerie
-   */
-  class SerieScatter extends _graphSerie2.default {
-
-    constructor(graph, name, options) {
-
-      super(...arguments);
-      this.id = Math.random() + Date.now();
-      this.shapes = []; // Stores all shapes
-      this.shown = true;
-      this.data = [];
-
-      this.shapesDetails = [];
-      this.shapes = [];
-
-      this._type = type;
-
-      util.mapEventEmission(this.options, this);
-
-      this._isMinOrMax = {
-        x: {
-          min: false,
-          max: false
-        },
-        y: {
-          min: false,
-          max: false
-        }
-      };
-
-      this.groupPoints = document.createElementNS(this.graph.ns, 'g');
-      this.groupMain = document.createElementNS(this.graph.ns, 'g');
-
-      this.additionalData = {};
-
-      this.selectedStyleGeneral = {};
-      this.selectedStyleModifiers = {};
-
-      this.groupPoints.addEventListener('mouseover', e => {
-        var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-        this.emit('mouseover', id, this.waveform.getX(id), this.waveform.getY(id));
-      });
-
-      this.groupPoints.addEventListener('mouseout', e => {
-        var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-        this.emit('mouseout', id, this.waveform.getX(id), this.waveform.getY(id));
-      });
-
-      this.minX = Number.MAX_VALUE;
-      this.minY = Number.MAX_VALUE;
-      this.maxX = Number.MIN_VALUE;
-      this.maxY = Number.MIN_VALUE;
-
-      this.groupMain.appendChild(this.groupPoints);
-      this.currentAction = false;
-
-      if (this.initExtended1) {
-        this.initExtended1();
-      }
-
-      this.styles = {};
-      this.styles.unselected = {};
-      this.styles.selected = {};
-
-      this.styles.unselected.default = {
-        shape: 'circle',
-        cx: 0,
-        cy: 0,
-        r: 3,
-        stroke: 'transparent',
-        fill: 'black'
-      };
-
-      this.styles.selected.default = {
-        shape: 'circle',
-        cx: 0,
-        cy: 0,
-        r: 4,
-        stroke: 'transparent',
-        fill: 'black'
-      };
-    }
-
-    /**
-     * Applies for x as the category axis
-     * @example serie.setDataCategory( { x: "someName", y: Waveform } );
-     */
-    setDataCategory(data) {
-
-      let minY = +Infinity;
-      let maxY = -Infinity;
-
-      for (let dataCategory of data) {
-
-        this._checkY(dataCategory.y.getMaxY());
-        this._checkY(dataCategory.y.getMinY());
-      }
-
-      this.data = data;
-      this.dataHasChanged();
-      this.graph.updateDataMinMaxAxes();
-      return this;
-    }
-
-    /**
-     * Removes all DOM points
-     * @private
-     */
-    empty() {
-
-      while (this.groupPoints.firstChild) {
-        this.groupPoints.removeChild(this.groupPoints.firstChild);
-      }
-    }
-
-    getSymbolForLegend() {
-
-      if (this.symbol) {
-        return this.symbol;
-      }
-
-      var g = document.createElementNS(this.graph.ns, 'g');
-      g.setAttribute('data-shapeid', -1);
-      var shape = this.doShape(g, this.styles.unselected.default);
-
-      var style = this.getStyle('unselected', -1, true);
-
-      for (var i in style[-1]) {
-        if (i == 'shape') {
-          continue;
-        }
-        shape.setAttribute(i, style[-1][i]);
-      }
-
-      return g;
-    }
-
-    /**
-     * Sets style to the scatter points
-     * First argument is the style applied by default to all points
-     * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
-     * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
-     *
-     * @example
-     * var modifiers = [];
-     * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
-     * serie.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
-     *
-     * @param {Object} allStyles - The general style for all markers
-     * @param {Object} [ modifiers ] - The general style for all markers
-     * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
-     *
-     */
-    setStyle(all, modifiers, mode = 'unselected') {
-
-      if (typeof modifiers == 'string') {
-        mode = modifiers;
-        modifiers = false;
-      }
-
-      /*
-      if( ! this.styles[ mode ] ) {
-       }
-       if ( mode !== "selected" && mode !== "unselected" ) {
-        throw "Style mode is not correct. Should be selected or unselected";
-      }
-      */
-
-      this.styles[mode] = this.styles[mode] || {};
-      this.styles[mode].all = all;
-      this.styles[mode].modifiers = modifiers;
-
-      this.styleHasChanged(mode);
-
-      return this;
-    }
-
-    /**
-     * Redraws the serie
-     * @private
-     * @param {force} Boolean - Forces redraw even if the data hasn't changed
-     */
-    draw(force) {
-      // Serie redrawing
-
-      if (!force && !this.hasDataChanged() && !this.hasStyleChanged('unselected')) {
-        return;
-      }
-
-      var x,
-          y,
-          xpx,
-          ypx,
-          j = 0,
-          k,
-          m,
-          currentLine,
-          max;
-
-      var isCategory = this.getXAxis().getType() == 'category';
-
-      this._drawn = true;
-
-      this.dataHasChanged(false);
-      this.styleHasChanged(false);
-      this.groupMain.removeChild(this.groupPoints);
-
-      var keys = [];
-
-      j = 0;
-      k = 0;
-
-      if (this.hasErrors()) {
-        this.errorDrawInit();
-      }
-
-      if (isCategory) {
-
-        let k = 0;
-
-        for (; j < this.data.length; j++) {
-
-          if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
-            continue;
-          }
-
-          if (this.error) {
-            //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
-          }
-
-          for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
-
-            //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
-
-            ypx = this.getY(this.data[j].y.getY(n));
-            xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
-            n++;
-
-            this.shapesDetails[k] = this.shapesDetails[k] || [];
-            this.shapesDetails[k][0] = xpx;
-            this.shapesDetails[k][1] = ypx;
-            keys.push(k);
-            k++;
-          }
-        }
-      } else {
-
-        for (; j < this.waveform.getLength(); j++) {
-
-          if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
-
-            if (this.shapes[j]) {
-              this.shapes[j].setAttribute('display', 'none');
-            }
-            continue;
-          }
-
-          if (this.shapes[j]) {
-            this.shapes[j].setAttribute('display', 'initial');
-          }
-
-          xpx = this.getX(this.waveform.getX(j));
-          ypx = this.getY(this.waveform.getY(j));
-
-          if (this.hasErrors()) {
-            this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
-          }
-
-          this.shapesDetails[j] = this.shapesDetails[j] || [];
-          this.shapesDetails[j][0] = xpx;
-          this.shapesDetails[j][1] = ypx;
-          keys.push(j);
-
-          //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
-        }
-      }
-
-      if (this.hasErrors()) {
-        this.errorDraw();
-      }
-
-      // This will automatically create the shapes
-      this.applyStyle('unselected', keys);
-
-      this.groupMain.appendChild(this.groupPoints);
-    }
-
-    _addPoint(xpx, ypx, k) {
-
-      let shape;
-      let g = document.createElementNS(this.graph.ns, 'g');
-      g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
-      g.setAttribute('data-shapeid', k);
-
-      if (this.extraStyle && this.extraStyle[k]) {
-
-        shape = this.doShape(g, this.extraStyle[k]);
-      } else if (this.stdStylePerso) {
-
-        shape = this.doShape(g, this.stdStylePerso);
-      } else {
-
-        shape = this.doShape(g, this.stdStyle);
-      }
-
-      this.shapes[k] = shape;
-      this.groupPoints.appendChild(g);
-    }
-
-    doShape(group, shape) {
-      var el = document.createElementNS(this.graph.ns, shape.shape);
-      group.appendChild(el);
-      return el;
-    }
-
-    getStyle(selection, index, noSetPosition) {
-
-      var selection = selection || 'unselected';
-      var indices;
-
-      var styles = {};
-
-      if (typeof index == 'number') {
-        indices = [index];
-      } else if (Array.isArray(index)) {
-        indices = index;
-      }
-
-      var shape, index, modifier, style, j; // loop variables
-      var styleAll;
-
-      if (this.styles[selection].all !== undefined) {
-
-        styleAll = this.styles[selection].all;
-
-        if (typeof styleAll == 'function') {
-
-          styleAll = styleAll();
-        } else if (styleAll === false) {
-
-          styleAll = {};
-        }
-      }
-
-      var i = 0,
-          l = indices.length;
-
-      for (; i < l; i++) {
-
-        index = indices[i];
-        shape = this.shapes[index];
-
-        if ((modifier = this.styles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
-
-          if (typeof modifier == 'function') {
-
-            style = modifier(index, shape);
-          } else if (modifier[index]) {
-
-            style = modifier[index];
-          }
-
-          styles[index] = Object.assign({}, styleAll, style);
-        } else if (styleAll !== undefined) {
-
-          styles[index] = styleAll;
-        } else {
-
-          styles[index] = this.styles[selection].default;
-        }
-
-        if (!styles[index]) {
-          styles[index] = styleAll;
-        }
-
-        if (!shape) {
-          // Shape doesn't exist, let's create it
-
-          if (!styles[index].shape) {
-            console.error(style);
-            throw 'No shape was defined with this style.';
-          }
-
-          var g = document.createElementNS(this.graph.ns, 'g');
-          g.setAttribute('data-shapeid', index);
-          this.shapes[index] = this.doShape(g, styles[index]);
-          this.groupPoints.appendChild(g);
-          shape = this.shapes[index];
-        }
-
-        if (!noSetPosition) {
-          shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
-        }
-      }
-
-      return styles;
-    }
-
-    applyStyle(selection, index, noSetPosition) {
-
-      var i, j;
-      var styles = this.getStyle(selection, index, noSetPosition);
-
-      for (i in styles) {
-
-        for (j in styles[i]) {
-
-          if (j !== 'shape') {
-
-            if (styles[i][j]) {
-
-              this.shapes[i].setAttribute(j, styles[i][j]);
-            } else {
-
-              this.shapes[i].removeAttribute(j);
-            }
-          }
-        }
-      }
-    }
-
-    unselectPoint(index) {
-      this.selectPoint(index, false);
-    }
-
-    selectPoint(index, setOn, selectionType) {
-
-      if (this.shapesDetails[index][2] && this.shapesDetails[index][2] == selectionType) {
-        return;
-      }
-
-      if (typeof setOn == 'string') {
-        selectionType = setOn;
-        setOn = undefined;
-      }
-
-      if (Array.isArray(index)) {
-        return this.selectPoints(index);
-      }
-
-      if (this.shapes[index] && this.shapesDetails[index]) {
-
-        if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
-
-          var selectionStyle = this.shapesDetails[index][2];
-          this.shapesDetails[index][2] = false;
-
-          var allStyles = this.getStyle(selectionStyle, index, true);
-          for (var i in allStyles[index]) {
-            this.shapes[index].removeAttribute(i);
-          }
-
-          this.applyStyle('unselected', index, true);
-        } else {
-
-          selectionType = selectionType || 'selected';
-          this.shapesDetails[index][2] = selectionType;
-
-          this.applyStyle(selectionType, index, true);
-        }
-      }
-    }
-
-    getUsedCategories() {
-
-      if (typeof this.data[0] == 'object') {
-        return this.data.map(d => d.x);
-      }
-
-      return [];
-    }
-
-  }
-
-  util.mix(SerieScatter, _graphMixinErrorbars2.default);
-
-  exports.default = SerieScatter;
-  module.exports = exports['default'];
-});
-
-/***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(4), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9), __webpack_require__(4), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -17669,7 +17069,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.id = (0, _graphUtil.guid)();
 
       this.groupZones = document.createElementNS(this.graph.ns, 'g');
-      this.groupMain = document.createElementNS(this.graph.ns, 'g');
       this.lineZone = document.createElementNS(this.graph.ns, 'path');
       this.lineZone.setAttribute('stroke', 'black');
       this.lineZone.setAttribute('stroke-width', '1px');
@@ -18430,7 +17829,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(6), __webpack_require__(20), __webpack_require__(11), __webpack_require__(14), __webpack_require__(21), __webpack_require__(22), __webpack_require__(5), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(16), __webpack_require__(17), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(1), __webpack_require__(30), __webpack_require__(31), __webpack_require__(49), __webpack_require__(32), __webpack_require__(33), __webpack_require__(12), __webpack_require__(34), __webpack_require__(35), __webpack_require__(18), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(2), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(4), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(6), __webpack_require__(20), __webpack_require__(11), __webpack_require__(15), __webpack_require__(21), __webpack_require__(22), __webpack_require__(5), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(12), __webpack_require__(17), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(1), __webpack_require__(30), __webpack_require__(31), __webpack_require__(49), __webpack_require__(32), __webpack_require__(33), __webpack_require__(13), __webpack_require__(34), __webpack_require__(35), __webpack_require__(18), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(2), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(4), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -19536,7 +18935,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -20530,7 +19929,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(5), __webpack_require__(4), __webpack_require__(15), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(5), __webpack_require__(4), __webpack_require__(16), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -20687,8 +20086,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     constructor(graph, name, options) {
 
       super(...arguments);
-
-      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
       this.pathDom = document.createElementNS(this.graph.ns, 'path');
       this.groupMain.appendChild(this.pathDom);
@@ -20847,7 +20244,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -20918,8 +20315,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     constructor(graph, name, options) {
 
       super(...arguments);
-
-      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
       this.pathDom = document.createElementNS(this.graph.ns, 'path');
       this.groupMain.appendChild(this.pathDom);
@@ -22056,7 +21451,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(17), __webpack_require__(4), __webpack_require__(15), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(17), __webpack_require__(4), __webpack_require__(16), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -22152,7 +21547,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(9), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -22211,8 +21606,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       super(...arguments);
       util.mapEventEmission(this.options, this); // Register events
-
-      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
       this.rects = [];
       this.paths = [];
@@ -23573,7 +22966,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -24471,7 +23864,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -27290,7 +26683,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(14), __webpack_require__(0), __webpack_require__(5), __webpack_require__(16), __webpack_require__(2), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(15), __webpack_require__(0), __webpack_require__(5), __webpack_require__(12), __webpack_require__(2), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));

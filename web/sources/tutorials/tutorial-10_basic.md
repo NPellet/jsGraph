@@ -97,10 +97,9 @@ g.draw(); // Draws the whole thing
 <script>
 var g = new Graph("example-1") // Creates a new graph
 
-g.newSerie() // Creates a new seire
+g.newSerie() // Creates a new serie
  .autoAxis() // Assigns automatic axes to the serie
  .setWaveform( wave1 ); // Assigns the data to the serie
-
 
 g.resize( 400, 300 ); // Resizes the graph
 
@@ -122,7 +121,7 @@ Let us do some styling of the serie now. For instance, we shall display the seri
 s
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers( );
+ .setMarkers( true );
 
 g.draw();
 {% endhighlight %}
@@ -141,7 +140,7 @@ s = g.newSerie() // Creates a new seire
 s
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers( );
+ .setMarkers( true );
 
 g.draw();
 
@@ -150,10 +149,15 @@ g.draw();
 However, we'd like to change the style of the default markers:
 
 {% highlight javascript %}
-s.setMarkers({
+s.setMarkerStyle({
+	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
+	stroke: 'rgb( 200, 0, 0 )',
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	fill: 'white'
 });
 {% endhighlight %}
 
@@ -169,11 +173,68 @@ s = g.newSerie()
  .setWaveform( wave1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyle({
+	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
  });
+
+g.draw();
+
+</script>
+
+But that's a lot of markers, we can barely see the line. Let's rather display a marker every 5 points. For this, we can use the second argument of ```setMarkerStyle``` which specifies modifiers, i.e. styles that differ from the general marker style and that apply to specific points. More specifically, we can feed in a function that would look like that:
+
+{% highlight javascript %}
+serie.setMarkerStyle( defaultStyle, ( x, y, index, domShape, generalStyle ) => { return { /* some new style */ } } );
+{% endhighlight %}
+
+The function should return an object, which will extend the default style, or ```false``` which cancels the marker appearance.
+In this particular application, let's write:
+
+{% highlight javascript %}
+.setMarkerStyle({
+	shape: 'rect',
+	strokeWidth: 1,
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false );
+{% endhighlight %}
+
+
+<div id="example-3.1" class="jsgraph-example"></div>
+<script>
+
+var g = new Graph("example-3.1") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+s = g.newSerie()
+ .autoAxis()
+ .setWaveform( wave1 )
+ .setLineColor( 'red' )
+ .setLineWidth( 2 )
+ .setMarkers( true )
+ .setMarkerStyle({
+	shape: 'rect',
+	strokeWidth: 1,
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false );
 
 g.draw();
 
@@ -199,11 +260,17 @@ s = g.newSerie()
  .setWaveform( wave1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyle( {
+	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
- });
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
 
 g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
 g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
@@ -241,11 +308,17 @@ var jV = g.newSerie( "jV" ) // Note the same of the serie
  .setData( serie1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyles({
+	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
- });
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
 
 var pV = g.newSerie( "pV" ) // Note the same of the serie
  .autoAxis()
@@ -256,7 +329,7 @@ g.draw();
 
 <div id="example-5" class="jsgraph-example"></div>
 <script>
-
+(() => {
 var g = new Graph("example-5") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
@@ -266,11 +339,19 @@ var jV = g.newSerie( "jV" ) // Note the same of the serie
  .setWaveform( wave1 )
  .setLineColor( 'red' )
  .setLineWidth( 2 )
- .setMarkers({
+ .setMarkers( true )
+ .setMarkerStyle({
+ 	shape: 'rect',
 	strokeWidth: 1,
-	strokeColor: 'rgb( 200, 0, 0 )',
-	fillColor: 'white'
- });
+	x: -2,
+	y: -2,
+	width: 4,
+	height: 4,
+	stroke: 'rgb( 200, 0, 0 )',
+	fill: 'white'
+ }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
+
+ console.log( jV.options );
 
 var pV = g.newSerie( "pV" ) // Note the same of the serie
  .autoAxis()
@@ -281,6 +362,7 @@ g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
 
 
 g.draw();
+})();
 
 </script>
 
@@ -317,7 +399,7 @@ g.getAxis( n ) // n being the index of the axis, starting at 0
 var pV = g.newSerie( "pV" ) // Note the name of the serie
  .setXAxis( g.getXAxis() )
  .setYAxis( g.getLeftAxis( 1 ) ) // Use the left axis at index 1
- .setData( serie2 )
+ .setWaveform( wave2 )
 {% endhighlight %}
 
 Here it is the ```1``` that makes all the difference. The first axis was indexed at ```0```, so ```g.getLeftAxis( 1 )``` will actually create a new axis on the left side of the graph (See <a href="Graph.html#getLeftAxis">Graph#getLeftAxis</a> and related for more details).
@@ -326,7 +408,7 @@ Here it is the ```1``` that makes all the difference. The first axis was indexed
 
 <div id="example-6" class="jsgraph-example"></div>
 <script>
-
+( () => {
 	var g = new Graph("example-6") // Creates a new graph
 
 	g.resize( 400, 300 ); // Resizes the graph
@@ -336,11 +418,17 @@ Here it is the ```1``` that makes all the difference. The first axis was indexed
 	 .setWaveform( wave1 )
 	 .setLineColor( 'red' )
 	 .setLineWidth( 2 )
-	 .setMarkers({
+	 .setMarkers( true )
+	 .setMarkerStyle({
+		shape: 'rect',
 		strokeWidth: 1,
-		strokeColor: 'rgb( 200, 0, 0 )',
-		fillColor: 'white'
-	 });
+		x: -2,
+		y: -2,
+		width: 4,
+		height: 4,
+		stroke: 'rgb( 200, 0, 0 )',
+		fill: 'white'
+	 }, ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false);
 
 	var pV = g.newSerie( "pV" ) // Note the same of the serie
 	 .setXAxis( g.getXAxis() )
@@ -351,7 +439,7 @@ Here it is the ```1``` that makes all the difference. The first axis was indexed
 	g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
 
 	g.draw();
-
+})();
 </script>
 
 Now things are getting really ugly. This is because primary grids and secondary grids exist for all the axes. For the y axis this leads to the superimposition of too many lines. Let's just turn off some of those grids. While we are at it, let's use a right axis for the power density instead of a left axis to clear up some space.
@@ -378,20 +466,32 @@ var jV = g
  .newSerie( "jV", {
  	lineColor: 'red',
  	lineWidth: 2,
- 	markers: {
- 		strokeWidth: 1,
-		strokeColor: 'rgb( 200, 0, 0 )',
-		fillColor: 'white'
+ 	markers: true,
+ 	markerStyles: {
+ 	  unselected: {
+ 	    default: {
+        shape: 'rect',
+				strokeWidth: 1,
+				x: -2,
+				y: -2,
+				width: 4,
+				height: 4,
+				stroke: 'rgb( 200, 0, 0 )',
+				fill: 'white'		
+ 			},
+	 		modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+ 		}
  	}
  } )
  .autoAxis()
- .setData( serie1 )
- 
+ .setWaveform( wave1 )
+
+
 var pV = g
  .newSerie( "pV" )
  .setXAxis( g.getXAxis() )
  .setYAxis( g.getRightAxis( ) )
- .setData( serie2 );
+ .setWaveform( wave2 );
 
 g
  .getXAxis()
@@ -416,7 +516,7 @@ g.draw();
 
 <div id="example-7" class="jsgraph-example"></div>
 <script>
-
+( () => {
 	var g = new Graph("example-7");
 
 	g.resize( 400, 300 );
@@ -425,15 +525,27 @@ g.draw();
 	 .newSerie( "jV", {
 	 	lineColor: 'red',
 	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
+	 	markers: true,
+	 	markerStyles: {
+	 		unselected: {
+	 			default: {
+	 				shape: 'rect',
+					strokeWidth: 1,
+					x: -2,
+					y: -2,
+					width: 4,
+					height: 4,
+					stroke: 'rgb( 200, 0, 0 )',
+					fill: 'white'		
+	 			},
+	 			modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+	 		}
 	 	}
 	 } )
 	 .autoAxis()
 	 .setWaveform( wave1 )
-	 
+	
+	
 	var pV = g
 	 .newSerie( "pV" )
 	 .setXAxis( g.getXAxis() )
@@ -459,7 +571,7 @@ g.draw();
 	 .gridsOff();
 
 	g.draw();
-
+})();
 </script>
 
 Good ! Let's now see what we can do with the axes.
@@ -496,7 +608,7 @@ g
 
 <div id="example-8" class="jsgraph-example"></div>
 <script>
-
+( () => {
 	var g = new Graph("example-8");
 
 	g.resize( 400, 300 );
@@ -505,10 +617,21 @@ g
 	 .newSerie( "jV", {
 	 	lineColor: 'red',
 	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
+	 	markers: true,
+	 	markerStyles: {
+	 		unselected: {
+	 			default: {
+	 				shape: 'rect',
+					strokeWidth: 1,
+					x: -2,
+					y: -2,
+					width: 4,
+					height: 4,
+					stroke: 'rgb( 200, 0, 0 )',
+					fill: 'white'		
+	 			},
+	 			modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+	 		}
 	 	}
 	 } )
 	 .autoAxis()
@@ -544,7 +667,7 @@ g
 	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
 
 	g.draw();
-
+})();
 </script>
 
 #### <a id="doc-alignment"></a>Aligning the axes
@@ -559,6 +682,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 <div id="example-9" class="jsgraph-example"></div>
 <script>
 
+	( () => {
 	var g = new Graph("example-9");
 
 	g.resize( 400, 300 );
@@ -567,10 +691,21 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 	 .newSerie( "jV", {
 	 	lineColor: 'red',
 	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
+	 	markers: true,
+	 	markerStyles: {
+	 		unselected: {
+	 			default: {
+	 				shape: 'rect',
+					strokeWidth: 1,
+					x: -2,
+					y: -2,
+					width: 4,
+					height: 4,
+					stroke: 'rgb( 200, 0, 0 )',
+					fill: 'white'		
+	 			},
+	 			modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+	 		}
 	 	}
 	 } )
 	 .autoAxis()
@@ -607,7 +742,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 	g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
 
 	g.draw();
-
+} ) ();
 </script>
 
 #### <a id="doc-coloring"></a>Coloring the axes
@@ -627,62 +762,74 @@ g
 
 <div id="example-10" class="jsgraph-example"></div>
 <script>
+	( () => {
+		var g = new Graph("example-10");
 
-	var g = new Graph("example-10");
+		g.resize( 400, 300 );
 
-	g.resize( 400, 300 );
+		var jV = g
+		 .newSerie( "jV", {
+		 	lineColor: 'red',
+		 	lineWidth: 2,
+		 	markers: true,
+		 	markerStyles: {
+		 		unselected: {
+		 			default: {
+		 				shape: 'rect',
+						strokeWidth: 1,
+						x: -2,
+						y: -2,
+						width: 4,
+						height: 4,
+						stroke: 'rgb( 200, 0, 0 )',
+						fill: 'white'		
+		 			}
+		 		},
+               modifiers: ( x, y, index, domShape, style ) => index % 5 == 0 ? style : false
+		 	}
+		 } )
+		 .autoAxis()
+		 .setWaveform( wave1 )
+		 
+		var pV = g
+		 .newSerie( "pV" )
+		 .setXAxis( g.getXAxis() )
+		 .setYAxis( g.getRightAxis( ) )
+		 .setWaveform( wave2 );
 
-	var jV = g
-	 .newSerie( "jV", {
-	 	lineColor: 'red',
-	 	lineWidth: 2,
-	 	markers: {
-	 		strokeWidth: 1,
-			strokeColor: 'rgb( 200, 0, 0 )',
-			fillColor: 'white'
-	 	}
-	 } )
-	 .autoAxis()
-	 .setWaveform( wave1 )
-	 
-	var pV = g
-	 .newSerie( "pV" )
-	 .setXAxis( g.getXAxis() )
-	 .setYAxis( g.getRightAxis( ) )
-	 .setWaveform( wave2 );
+		g
+		 .getXAxis()
+		 .setUnit( "V" )
+		 .setLabel( "Voltage" )
+		 .secondaryGridOff();
 
-	g
-	 .getXAxis()
-	 .setUnit( "V" )
-	 .setLabel( "Voltage" )
-	 .secondaryGridOff();
+		g
+		 .getLeftAxis()
+		 .setUnit("mA cm^-2")
+		 .setLabel( "Current density" )
+		 .secondaryGridOff()
+		 .forceMin( -25 )
+	 	 .forceMax( 60 );
 
-	g
-	 .getLeftAxis()
-	 .setUnit("mA cm^-2")
-	 .setLabel( "Current density" )
-	 .secondaryGridOff()
-	 .forceMin( -25 )
- 	 .forceMax( 60 );
+		g
+		 .getRightAxis()
+		 .setUnit("mW cm^-2")
+		 .setLabel( "Power density" )
+		 .gridsOff()
+		 .forceMax( 5 );
 
-	g
-	 .getRightAxis()
-	 .setUnit("mW cm^-2")
-	 .setLabel( "Power density" )
-	 .gridsOff()
-	 .forceMax( 5 );
+		g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
+		g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
 
-	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
-	g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
+		g
+		 .getLeftAxis()
+		 .setAxisColor('red')
+		 .setPrimaryTicksColor('red')
+		 .setSecondaryTicksColor('rgba( 150, 10, 10, 0.9 )')
+		 .setTicksLabelColor('#880000')
+		 .setLabelColor('red');
 
-	g
-	 .getLeftAxis()
-	 .setAxisColor('red')
-	 .setPrimaryTicksColor('red')
-	 .setSecondaryTicksColor('rgba( 150, 10, 10, 0.9 )')
-	 .setTicksLabelColor('#880000')
-	 .setLabelColor('red');
-
-	g.draw();
+		g.draw();
+	}) ();
 
 </script>

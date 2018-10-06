@@ -28,7 +28,6 @@ class SerieZone extends Serie {
     this.id = guid();
 
     this.groupZones = document.createElementNS( this.graph.ns, 'g' );
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
     this.lineZone = document.createElementNS( this.graph.ns, 'path' );
     this.lineZone.setAttribute( 'stroke', 'black' );
     this.lineZone.setAttribute( 'stroke-width', '1px' );
