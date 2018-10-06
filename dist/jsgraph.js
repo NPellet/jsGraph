@@ -10376,7 +10376,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var _this = _possibleConstructorReturn(this, (SerieLine.__proto__ || Object.getPrototypeOf(SerieLine)).call(this, graph, name, options, util.extend(true, {}, defaultOptions, defaultInherited)));
 
-      console.trace();
       _this.selectionType = 'unselected';
       _this._type = type;
       util.mapEventEmission(_this.options, _this); // Register events
@@ -29536,14 +29535,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
   }
 
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
   var _createClass = function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
@@ -29562,6 +29553,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
   }();
 
+  function _possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+  }
+
   function _inherits(subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
@@ -29578,48 +29577,52 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   }
 
+  var defaultOptions = {
+    orientation: 'y',
+    maxBoxWidth: 20,
+
+    defaultStyle: {
+
+      meanLineColor: 'rgb( 100, 0, 0 )',
+      meanLineWidth: 2,
+
+      boxAboveLineWidth: 1,
+      boxAboveLineColor: 'rgb( 0, 0, 0 )',
+      boxAboveFillColor: 'transparent',
+      boxAboveFillOpacity: 1,
+      boxBelowLineWidth: 1,
+      boxBelowLineColor: 'rgb( 0, 0, 0 )',
+      boxBelowFillColor: 'transparent',
+      boxBelowFillOpacity: 1,
+
+      barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+      barAboveLineWidth: 1,
+      barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+      barBelowLineWidth: 1,
+
+      outlierLineWidth: 1,
+      outlierLineColor: 'rgb( 255, 255, 255 )',
+      outlierFillColor: 'rgb( 0, 0, 0 )',
+      outlierFillOpacity: 1
+    }
+  };
+
+  /**
+   * @static
+   * @extends Serie
+   * @example graph.newSerie( name, options, "scatter" );
+   * @see Graph#newSerie
+   */
+
   var SerieBox = function (_Serie) {
     _inherits(SerieBox, _Serie);
 
-    _createClass(SerieBox, null, [{
-      key: 'default',
-      value: function _default() {
-        return {
-          orientation: 'y',
-          maxBoxWidth: 20,
-
-          defaultStyle: {
-
-            meanLineColor: 'rgb( 100, 0, 0 )',
-            meanLineWidth: 2,
-
-            boxAboveLineWidth: 1,
-            boxAboveLineColor: 'rgb( 0, 0, 0 )',
-            boxAboveFillColor: 'transparent',
-            boxAboveFillOpacity: 1,
-            boxBelowLineWidth: 1,
-            boxBelowLineColor: 'rgb( 0, 0, 0 )',
-            boxBelowFillColor: 'transparent',
-            boxBelowFillOpacity: 1,
-
-            barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
-            barAboveLineWidth: 1,
-            barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
-            barBelowLineWidth: 1,
-
-            outlierLineWidth: 1,
-            outlierLineColor: 'rgb( 255, 255, 255 )',
-            outlierFillColor: 'rgb( 0, 0, 0 )',
-            outlierFillOpacity: 1
-          }
-        };
-      }
-    }]);
-
     function SerieBox(graph, name, options) {
+      var defaultInherited = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+
       _classCallCheck(this, SerieBox);
 
-      var _this = _possibleConstructorReturn(this, (SerieBox.__proto__ || Object.getPrototypeOf(SerieBox)).apply(this, arguments));
+      var _this = _possibleConstructorReturn(this, (SerieBox.__proto__ || Object.getPrototypeOf(SerieBox)).call(this, graph, name, options, (0, _graphUtil.extend)(true, {}, defaultOptions, defaultInherited)));
 
       _this.pathDom = document.createElementNS(_this.graph.ns, 'path');
       _this.groupMain.appendChild(_this.pathDom);
@@ -29701,7 +29704,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (this.data[i].Q3) {
-
             methodval(this.data[i].Q3);
           }
 
@@ -29714,6 +29716,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             if (Array.isArray(this.data[i].whiskers)) {
 
               if (this.data[i].whiskers.length > 0) {
+
                 methodval(this.data[i].whiskers[0]);
               }
 
@@ -30012,7 +30015,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           for (var i = 0, l = this.data.length; i < l - 1; i++) {
 
             //     console.log( Math.abs( axis.getPx( this.data[ i + 1 ].pos ) - axis.getPx( this.data[ i ].pos ) ), axis.getPx( this.data[ i + 1 ].pos ), axis.getPx( this.data[ i ].pos ) );
-            boxOtherDimension = Math.max(5, Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].pos) - axis2.getPx(this.data[i].pos))));
+            boxOtherDimension = Math.max(5, Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].x) - axis2.getPx(this.data[i].x))));
+            console.log(boxOtherDimension, this.data, this.data[i + 1].x, axis2.getPx(this.data[i + 1].x), axis2);
           }
         }
 

@@ -14423,7 +14423,7 @@ class SerieLine extends SerieScatter {
   constructor(graph, name, options, defaultInherited) {
 
     super(graph, name, options, extend(true, {}, defaultOptions, defaultInherited));
-    console.trace();
+
     this.selectionType = 'unselected';
     this._type = type;
     mapEventEmission(this.options, this); // Register events
@@ -15922,6 +15922,36 @@ class SerieBar extends SerieLine {
 
 }
 
+const defaultOptions$3 = {
+  orientation: 'y',
+  maxBoxWidth: 20,
+
+  defaultStyle: {
+
+    meanLineColor: 'rgb( 100, 0, 0 )',
+    meanLineWidth: 2,
+
+    boxAboveLineWidth: 1,
+    boxAboveLineColor: 'rgb( 0, 0, 0 )',
+    boxAboveFillColor: 'transparent',
+    boxAboveFillOpacity: 1,
+    boxBelowLineWidth: 1,
+    boxBelowLineColor: 'rgb( 0, 0, 0 )',
+    boxBelowFillColor: 'transparent',
+    boxBelowFillOpacity: 1,
+
+    barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+    barAboveLineWidth: 1,
+    barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+    barBelowLineWidth: 1,
+
+    outlierLineWidth: 1,
+    outlierLineColor: 'rgb( 255, 255, 255 )',
+    outlierFillColor: 'rgb( 0, 0, 0 )',
+    outlierFillOpacity: 1
+  }
+};
+
 /**
  * @static
  * @extends Serie
@@ -15929,42 +15959,9 @@ class SerieBar extends SerieLine {
  * @see Graph#newSerie
  */
 class SerieBox extends Serie {
+  constructor(graph, name, options, defaultInherited = {}) {
 
-  static default() {
-    return {
-      orientation: 'y',
-      maxBoxWidth: 20,
-
-      defaultStyle: {
-
-        meanLineColor: 'rgb( 100, 0, 0 )',
-        meanLineWidth: 2,
-
-        boxAboveLineWidth: 1,
-        boxAboveLineColor: 'rgb( 0, 0, 0 )',
-        boxAboveFillColor: 'transparent',
-        boxAboveFillOpacity: 1,
-        boxBelowLineWidth: 1,
-        boxBelowLineColor: 'rgb( 0, 0, 0 )',
-        boxBelowFillColor: 'transparent',
-        boxBelowFillOpacity: 1,
-
-        barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
-        barAboveLineWidth: 1,
-        barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
-        barBelowLineWidth: 1,
-
-        outlierLineWidth: 1,
-        outlierLineColor: 'rgb( 255, 255, 255 )',
-        outlierFillColor: 'rgb( 0, 0, 0 )',
-        outlierFillOpacity: 1
-      }
-    };
-  }
-
-  constructor(graph, name, options) {
-
-    super(...arguments);
+    super(graph, name, options, extend(true, {}, defaultOptions$3, defaultInherited));
 
     this.pathDom = document.createElementNS(this.graph.ns, 'path');
     this.groupMain.appendChild(this.pathDom);
@@ -16036,7 +16033,6 @@ class SerieBox extends Serie {
       }
 
       if (this.data[i].Q3) {
-
         methodval(this.data[i].Q3);
       }
 
@@ -16049,6 +16045,7 @@ class SerieBox extends Serie {
         if (Array.isArray(this.data[i].whiskers)) {
 
           if (this.data[i].whiskers.length > 0) {
+
             methodval(this.data[i].whiskers[0]);
           }
 
@@ -16459,7 +16456,8 @@ class SerieBox extends Serie {
       for (var i = 0, l = this.data.length; i < l - 1; i++) {
 
         //     console.log( Math.abs( axis.getPx( this.data[ i + 1 ].pos ) - axis.getPx( this.data[ i ].pos ) ), axis.getPx( this.data[ i + 1 ].pos ), axis.getPx( this.data[ i ].pos ) );
-        boxOtherDimension = Math.max(5, Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].pos) - axis2.getPx(this.data[i].pos))));
+        boxOtherDimension = Math.max(5, Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].x) - axis2.getPx(this.data[i].x))));
+        console.log(boxOtherDimension, this.data, this.data[i + 1].x, axis2.getPx(this.data[i + 1].x), axis2);
       }
     }
 

@@ -44,7 +44,7 @@ class SerieLine extends SerieScatter {
   constructor( graph, name, options, defaultInherited ) {
 
     super( graph, name, options, util.extend( true, {}, defaultOptions, defaultInherited ) );
-    console.trace();
+
     this.selectionType = 'unselected';
     this._type = type;
     util.mapEventEmission( this.options, this ); // Register events
