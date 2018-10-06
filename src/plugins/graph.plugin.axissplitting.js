@@ -56,7 +56,6 @@ var excludingMethods = [
   'getMarkerDom',
   'getMarkerDomIndependant',
   'getMarkerPath',
-  'eraseMarkers',
   '_recalculateMarkerPoints',
   'getSymbolForLegend',
   '_getSymbolForLegendContainer'

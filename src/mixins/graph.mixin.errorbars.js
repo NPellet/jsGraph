@@ -152,11 +152,12 @@ var ErrorBarMixin = {
 
   /**
    *
-   *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
+   *  @example serie.setErrorBarStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
    */
   setErrorBarStyle: function( errorstyle ) {
 
     this.errorbarStyle = this._setErrorStyle( errorstyle );
+
     return this;
   },
 
@@ -245,51 +246,56 @@ var ErrorBarMixin = {
         right: ''
       };
     }
+
   },
 
   errorAddPoint: function( index, dataX, dataY, xpx, ypx ) {
 
     /* eslint-disable no-cond-assign */
     let error;
-    if ( error = this.waveform.getErrorBarXBelow( index ) ) {
-      this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.left += this.makeBarX( this.getX( dataX - error ), xpx, this.errorbarStyle.left );
+
+    if ( this.errorbarStyle ) {
+      if ( ( error = this.waveform.getErrorBarXBelow( index ) ) ) {
+        this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.left += this.makeBarX( this.getX( dataX - error ), xpx, this.errorbarStyle.left );
+      }
+
+      if ( ( error = this.waveform.getErrorBarXAbove( index ) ) ) {
+        this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.right += this.makeBarX( this.getX( dataX + error ), xpx, this.errorbarStyle.right );
+      }
+
+      if ( error = this.waveform.getErrorBarYBelow( index ) ) {
+        this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.bottom += this.makeBarY( this.getY( dataY - error ), ypx, this.errorbarStyle.bottom );
+      }
+
+      if ( error = this.waveform.getErrorBarYAbove( index ) ) {
+        this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.top += this.makeBarY( this.getY( dataY + error ), ypx, this.errorbarStyle.top );
+      }
     }
 
-    if ( error = this.waveform.getErrorBarXAbove( index ) ) {
-      this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.right += this.makeBarX( this.getX( dataX + error ), xpx, this.errorbarStyle.right );
-    }
+    if ( this.errorboxStyle ) {
+      if ( error = this.waveform.getErrorBoxXBelow( index ) ) {
+        this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.left += this.makeBoxX( this.getX( dataX - error ), xpx, this.errorboxStyle.left );
+      }
 
-    if ( error = this.waveform.getErrorBarYBelow( index ) ) {
-      this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.bottom += this.makeBarY( this.getY( dataY - error ), ypx, this.errorbarStyle.bottom );
-    }
+      if ( error = this.waveform.getErrorBoxXAbove( index ) ) {
+        this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.right += this.makeBoxX( this.getX( dataX + error ), xpx, this.errorboxStyle.right );
+      }
 
-    if ( error = this.waveform.getErrorBarYAbove( index ) ) {
-      this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.top += this.makeBarY( this.getY( dataY + error ), ypx, this.errorbarStyle.top );
-    }
+      if ( error = this.waveform.getErrorBoxYBelow( index ) ) {
+        this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.bottom += this.makeBoxY( this.getY( dataY - error ), ypx, this.errorboxStyle.bottom );
+      }
 
-    if ( error = this.waveform.getErrorBoxXBelow( index ) ) {
-      this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.left += this.makeBoxX( this.getX( dataX - error ), xpx, this.errorboxStyle.left );
-    }
-
-    if ( error = this.waveform.getErrorBoxXAbove( index ) ) {
-      this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
-
-      this.errorboxStyle.paths.right += this.makeBoxX( this.getX( dataX + error ), xpx, this.errorboxStyle.right );
-    }
-
-    if ( error = this.waveform.getErrorBoxYBelow( index ) ) {
-      this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.bottom += this.makeBoxY( this.getY( dataY - error ), ypx, this.errorboxStyle.bottom );
-    }
-
-    if ( error = this.waveform.getErrorBoxYAbove( index ) ) {
-      this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.top += this.makeBoxY( this.getY( dataY + error ), ypx, this.errorboxStyle.top );
+      if ( error = this.waveform.getErrorBoxYAbove( index ) ) {
+        this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.top += this.makeBoxY( this.getY( dataY + error ), ypx, this.errorboxStyle.top );
+      }
     }
     /* eslint-enable */
 

@@ -1880,16 +1880,29 @@ class Waveform {
       this._monotoneousAscending = dataY[1] > dataY[0];
     }
 
+    this.data = dataY;
+    this.checkMinMaxErrorBars();
+
+    this.computeXMinMax();
+  }
+
+  checkMinMaxErrorBars() {
+
+    let minY = this.minY,
+        maxY = this.maxY,
+        i = 0,
+        l = this.getLength();
+
     if (this.hasErrorBars()) {
       // If prefer to loop again here
 
       for (i = 0; i < l; i++) {
 
-        if (dataY[i] === dataY[i]) {
+        if (this.data[i] === this.data[i]) {
           // NaN support
 
-          minY = Math.min(minY, dataY[i] - this.getMaxError(i, 'below'));
-          maxY = Math.max(maxY, dataY[i] + this.getMaxError(i, 'above'));
+          minY = Math.min(minY, this.data[i] - this.getMaxError(i, 'below'));
+          maxY = Math.max(maxY, this.data[i] + this.getMaxError(i, 'above'));
         }
       }
 
@@ -1899,10 +1912,6 @@ class Waveform {
       this.minY = minY;
       this.maxY = maxY;
     }
-
-    this.data = dataY;
-
-    this.computeXMinMax();
   }
 
   computeXMinMax() {
@@ -2320,10 +2329,10 @@ class Waveform {
     const mean = this.mean();
     for (var i = 0; i < this.getLength(); i++) {
       num += Math.pow(this.getY(i) - mean, 2);
-      denom += this.getY(i);
+      denom++;
     }
 
-    return Math.pow(num, 0.5) / denom;
+    return Math.pow(num / denom, 0.5);
   }
 
   getAverageP(from, to) {
@@ -3206,8 +3215,8 @@ class Waveform {
     }
     this.errors.nb++;
     this.errors.nb++;
-    this.errors.bars.bottom = waveform;
-    this.errors.bars.top = waveform;
+    this.errors.bars.below = waveform;
+    this.errors.bars.above = waveform;
 
     if (checkMinMax) {
       this._setData();
@@ -3362,17 +3371,18 @@ class Waveform {
 
     let wave;
     if (wave = side == Waveform.ABOVE ? errors.above : errors.below) {
-
-      if (wave == Waveform.ABOVE && side == Waveform.BELOW) {
-        wave = errors.above;
-      } else if (wave == Waveform.BELOW && side == Waveform.ABOVE) {
-        wave = errors.below;
-      }
-
-      if (!wave) {
-        return false;
-      }
-
+      /*console.log( wave );
+            if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
+              wave = errors.above;
+            } else if ( wave == Waveform.BELOW && side == Waveform.ABOVE ) {
+              wave = errors.below;
+            }
+      */
+      /*
+            if ( !wave ) {
+              return false;
+            }
+      */
       return wave.getY(index);
     }
   }
@@ -3507,6 +3517,117 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
 
     nanDirection *= -1;
   }
+}
+
+// Stores key: value
+class WaveformHash extends Waveform {
+
+  hasXWaveform() {
+    return false;
+  }
+
+  setXWaveform(data) {
+    this.xdata = data;
+  }
+
+  getYFromX(xValue) {
+
+    const index = this.xdata.indexOf(xValue);
+    if (index == -1) {
+      throw `Cannot find key ${xValue}`;
+    }
+
+    return this.data[index];
+  }
+
+  getY(index) {
+    return this.data[index];
+  }
+
+  getX(index) {
+    return this.xdata[index];
+  }
+
+  hasXUnit() {
+    return false;
+  }
+
+  errorNotImplemented() {
+    console.trace();
+    throw "Not available in hash waveform";
+  }
+
+  subrangeX() {
+    this.errorNotImplemented();
+  }
+
+  duplicate() {
+    this.errorNotImplemented();
+  }
+
+  aggregate() {
+    this.errorNotImplemented();
+  }
+
+  _waveArithmetic() {
+    this.errorNotImplemented();
+  }
+
+  interpolateIndex_X(index) {
+    this.errorNotImplemented();
+  }
+
+  getXMonotoneousAscending() {
+    this.errorNotImplemented();
+  }
+
+  isXMonotoneousAscending() {
+    this.errorNotImplemented();
+  }
+
+  interpolate() {
+    this.errorNotImplemented();
+  }
+
+  resampleForDisplay() {
+    this.errorNotImplemented();
+  }
+
+  isXMonotoneous() {
+    this.errorNotImplemented();
+  }
+
+  rescaleX() {
+    this.errorNotImplemented();
+  }
+
+  getXMin() {
+    return undefined;
+  }
+
+  getXMax() {
+    return undefined;
+  }
+
+  computeXMinMax() {
+    return;
+  }
+
+  setData(data) {
+
+    this.data = Object.values(data);
+    this.xdata = Object.keys(data);
+
+    this._setData();
+  }
+
+  _setData() {
+    this.minY = Math.min(...this.data);
+    this.maxY = Math.max(...this.data);
+
+    this.checkMinMaxErrorBars();
+  }
+
 }
 
 /**
@@ -4474,6 +4595,7 @@ class Graph$1 extends EventEmitter {
 
     var valSeries = this.getBoundaryAxisFromSeries(axis, minmax, usingZValues);
     //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+
     return valSeries;
     //return Math[ minmax ]( valSeries, valShapes );
   }
@@ -6507,6 +6629,14 @@ class Graph$1 extends EventEmitter {
   static waveform() {
     return new Waveform(...arguments);
   }
+
+  static newWaveformHash() {
+    return new WaveformHash(...arguments);
+  }
+
+  static waveformHash() {
+    return new WaveformHash(...arguments);
+  }
 }
 
 // Adds getConstructor to the prototype. Cannot do that in ES6 classes
@@ -6651,6 +6781,10 @@ function refreshDrawingZone(graph) {
     var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
     axis.setLevel(level);
     shift[position][level] = Math.max(drawn, shift[position][level] || 0);
+
+    if (level < shift[position].length - 1) {
+      shift[position][level] += 10;
+    }
   }, false, false, true);
 
   var shift2 = extend(true, {}, shift);
@@ -9547,8 +9681,11 @@ class Axis extends EventEmitter {
       this.unitTspan.setAttribute('display', 'visible');
       this.unitTspan.setAttribute('dx', 5);
 
-      this.expTspan.setAttribute('display', 'none');
-      this.expTspanExp.setAttribute('display', 'none');
+      //6.10.2018: This was incompatible with the fact that there can be a unit + a *10^x factor, when setUnitDecate( false ) is called (which is also the default behaviour)
+      // We should check if this creates other issues.
+
+      //this.expTspan.setAttribute( 'display', 'none' );
+      //this.expTspanExp.setAttribute( 'display', 'none' );
       this.unitTspan.innerHTML = (this.options.unitWrapperBefore + this.preunit + this.options.unit + this.options.unitWrapperAfter).replace(/\^([-+0-9]*)(.*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan><tspan dy='5' font-size='1em'>$2</tspan>");
     } else {
       this.unitTspan.setAttribute('display', 'none');
@@ -13587,11 +13724,12 @@ var ErrorBarMixin = {
 
   /**
    *
-   *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
+   *  @example serie.setErrorBarStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
    */
   setErrorBarStyle: function (errorstyle) {
 
     this.errorbarStyle = this._setErrorStyle(errorstyle);
+
     return this;
   },
 
@@ -13679,45 +13817,49 @@ var ErrorBarMixin = {
 
     /* eslint-disable no-cond-assign */
     let error;
-    if (error = this.waveform.getErrorBarXBelow(index)) {
-      this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.left += this.makeBarX(this.getX(dataX - error), xpx, this.errorbarStyle.left);
+
+    if (this.errorbarStyle) {
+      if (error = this.waveform.getErrorBarXBelow(index)) {
+        this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.left += this.makeBarX(this.getX(dataX - error), xpx, this.errorbarStyle.left);
+      }
+
+      if (error = this.waveform.getErrorBarXAbove(index)) {
+        this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.right += this.makeBarX(this.getX(dataX + error), xpx, this.errorbarStyle.right);
+      }
+
+      if (error = this.waveform.getErrorBarYBelow(index)) {
+        this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.bottom += this.makeBarY(this.getY(dataY - error), ypx, this.errorbarStyle.bottom);
+      }
+
+      if (error = this.waveform.getErrorBarYAbove(index)) {
+        this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.top += this.makeBarY(this.getY(dataY + error), ypx, this.errorbarStyle.top);
+      }
     }
 
-    if (error = this.waveform.getErrorBarXAbove(index)) {
-      this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.right += this.makeBarX(this.getX(dataX + error), xpx, this.errorbarStyle.right);
-    }
+    if (this.errorboxStyle) {
+      if (error = this.waveform.getErrorBoxXBelow(index)) {
+        this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.left += this.makeBoxX(this.getX(dataX - error), xpx, this.errorboxStyle.left);
+      }
 
-    if (error = this.waveform.getErrorBarYBelow(index)) {
-      this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.bottom += this.makeBarY(this.getY(dataY - error), ypx, this.errorbarStyle.bottom);
-    }
+      if (error = this.waveform.getErrorBoxXAbove(index)) {
+        this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.right += this.makeBoxX(this.getX(dataX + error), xpx, this.errorboxStyle.right);
+      }
 
-    if (error = this.waveform.getErrorBarYAbove(index)) {
-      this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.top += this.makeBarY(this.getY(dataY + error), ypx, this.errorbarStyle.top);
-    }
+      if (error = this.waveform.getErrorBoxYBelow(index)) {
+        this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.bottom += this.makeBoxY(this.getY(dataY - error), ypx, this.errorboxStyle.bottom);
+      }
 
-    if (error = this.waveform.getErrorBoxXBelow(index)) {
-      this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.left += this.makeBoxX(this.getX(dataX - error), xpx, this.errorboxStyle.left);
-    }
-
-    if (error = this.waveform.getErrorBoxXAbove(index)) {
-      this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
-
-      this.errorboxStyle.paths.right += this.makeBoxX(this.getX(dataX + error), xpx, this.errorboxStyle.right);
-    }
-
-    if (error = this.waveform.getErrorBoxYBelow(index)) {
-      this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.bottom += this.makeBoxY(this.getY(dataY - error), ypx, this.errorboxStyle.bottom);
-    }
-
-    if (error = this.waveform.getErrorBoxYAbove(index)) {
-      this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.top += this.makeBoxY(this.getY(dataY + error), ypx, this.errorboxStyle.top);
+      if (error = this.waveform.getErrorBoxYAbove(index)) {
+        this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.top += this.makeBoxY(this.getY(dataY + error), ypx, this.errorboxStyle.top);
+      }
     }
     /* eslint-enable */
   },
@@ -14012,8 +14154,8 @@ class SerieScatter extends Serie {
     }
 
     // This will automatically create the shapes
-    this.applyMarkerStyle('unselected', keys);
-
+    this.applyMarkerStyle(this.selectionType || 'unselected', keys);
+    this.keys = keys;
     this.groupMain.appendChild(this.groupMarkers);
   }
 
@@ -14037,6 +14179,11 @@ class SerieScatter extends Serie {
     }
 
     var shape, index, modifier, style; // loop variables
+
+    if (!this.options.markerStyles[selection]) {
+      selection = 'unselected';
+    }
+
     var styleAll = this.options.markerStyles[selection].all;
 
     if (!styleAll) {
@@ -14047,7 +14194,8 @@ class SerieScatter extends Serie {
       styleAll = styleAll();
     }
 
-    styleAll = Object.assign(this.options.markerStyles[selection].default, styleAll);
+    const defaultStyle = this.options.markerStyles[selection].default ? this.options.markerStyles[selection].default : this.options.markerStyles.unselected.default;
+    styleAll = Object.assign({}, defaultStyle, styleAll);
 
     var i = 0,
         l = indices.length;
@@ -14088,7 +14236,7 @@ class SerieScatter extends Serie {
 
         if (!styles[index].shape) {
           console.error(style);
-          throw 'No shape was defined with this style.';
+          throw `No shape was defined with the style "${style}".`;
         }
 
         var g = document.createElementNS(this.graph.ns, 'g');
@@ -14156,8 +14304,8 @@ class SerieScatter extends Serie {
 
         var selectionStyle = this.shapesDetails[index][2];
         this.shapesDetails[index][2] = false;
-
         var allStyles = this.getMarkerStyle(selectionStyle, index, true);
+
         for (var i in allStyles[index]) {
           this.shapes[index].removeAttribute(i);
         }
@@ -14167,10 +14315,22 @@ class SerieScatter extends Serie {
 
         selectionType = selectionType || 'selected';
         this.shapesDetails[index][2] = selectionType;
-
         this.applyMarkerStyle(selectionType, index, true);
       }
     }
+  }
+
+  select(selectionType) {
+    this.selectionType = selectionType;
+    this.applyMarkerStyle(this.selectionType || 'selected', this.keys);
+    super.select(selectionType);
+  }
+
+  unselect() {
+    this.selectionType = 'unselected';
+    this.applyMarkerStyle(this.selectionType || 'unselected', this.keys);
+
+    super.unselect();
   }
 
   setMarkers(bln = true) {
@@ -14263,7 +14423,7 @@ class SerieLine extends SerieScatter {
   constructor(graph, name, options, defaultInherited) {
 
     super(graph, name, options, extend(true, {}, defaultOptions, defaultInherited));
-
+    console.trace();
     this.selectionType = 'unselected';
     this._type = type;
     mapEventEmission(this.options, this); // Register events
@@ -14411,18 +14571,12 @@ class SerieLine extends SerieScatter {
     selectionType = selectionType || 'selected';
 
     this.selected = selectionType !== 'unselected';
-
-    if (this.areMarkersShown() || this.areMarkersShown(selectionType)) {
-      this.selectionType = selectionType;
-
-      this.draw(true); // Drawing is absolutely required here
-      this.applyLineStyles();
-    } else {
-      this.selectionType = selectionType;
-      this.applyLineStyles();
-    }
-
+    this.selectionType = selectionType;
+    this.applyLineStyles();
     this.applyLineStyle(this.getSymbolForLegend());
+
+    super.select(selectionType);
+
     return this;
   }
 
@@ -14435,7 +14589,7 @@ class SerieLine extends SerieScatter {
   unselect() {
 
     this.selected = false;
-
+    super.unselect();
     return this.select('unselected');
   }
 
@@ -15392,12 +15546,11 @@ class SerieLine extends SerieScatter {
   }
 
   getStyle(selectionType = this.selectionType || 'unselected') {
-    return this.styles[selectionType];
+    return this.styles[selectionType] || this.styles['unselected'];
   }
 
   extendStyles() {
     for (var i in this.styles) {
-
       var s = this.styles[i];
       if (s) {
         this.styles[i] = extend(true, {}, this.styles.unselected, s);
@@ -15655,25 +15808,6 @@ class SerieBar extends SerieLine {
   }
 
   /**
-   *  Sets the data of the bar serie
-   *  @param {Object} data
-   *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
-   *  @return {SerieBar} The current serie instance
-   */
-  setData(data) {
-
-    this.data = data;
-    this.minY = Number.MAX_SAFE_INTEGER;
-    this.maxY = Number.MIN_SAFE_INTEGER;
-
-    for (var i in this.data) {
-      this._checkY(this.data[i]);
-    }
-
-    return this;
-  }
-
-  /**
    *  Sets the fill color
    */
   setFillColor(fillColor, selectionType, applyToSelected) {
@@ -15748,24 +15882,30 @@ class SerieBar extends SerieLine {
   draw() {
 
     var path = '';
-    if (this.error) {
+    if (this.hasErrors()) {
       this.errorDrawInit();
     }
 
-    for (var i in this.data) {
+    var j = 0;
 
-      if (!this.categoryIndices[i]) {
+    for (; j < this.waveform.getLength(); j++) {
+
+      if (!this.categoryIndices[this.waveform.getX(j)]) {
         continue;
       }
 
-      path += 'M ' + this.getXAxis().getPos(this.categoryIndices[i]) + ' ' + this.getYAxis().getPos(0) + ' V ' + this.getYAxis().getPos(this.data[i]) + ' h ' + this.getXAxis().getDeltaPx(1 / this.nbCategories) + ' V ' + this.getYAxis().getPos(0);
+      path += 'M ' + this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)]) + ' ' + this.getYAxis().getPos(this.getYAxis().getCurrentMin()) + ' V ' + this.getYAxis().getPos(this.waveform.getY(j)) + ' h ' + this.getXAxis().getDeltaPx(1 / this.nbCategories) + ' V ' + this.getYAxis().getPos(this.getYAxis().getCurrentMin());
 
-      if (this.error) {
-        this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
+      if (this.hasErrors()) {
+
+        var xpx = this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)]) + this.getXAxis().getDeltaPx(1 / this.nbCategories) / 2;
+        var ypx = this.getYAxis().getPos(this.waveform.getY(j));
+
+        this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
       }
     }
 
-    if (this.error) {
+    if (this.hasErrors()) {
       this.errorDraw();
     }
 
@@ -15777,7 +15917,7 @@ class SerieBar extends SerieLine {
   setMarkers() {}
 
   getUsedCategories() {
-    return Object.keys(this.data);
+    return this.waveform.xdata;
   }
 
 }
@@ -24198,7 +24338,7 @@ class SerieScatterExtended extends SerieScatter {
   }
 }
 
-var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints', 'getSymbolForLegend', '_getSymbolForLegendContainer'];
+var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', '_recalculateMarkerPoints', 'getSymbolForLegend', '_getSymbolForLegendContainer'];
 var addMethods = [];
 
 Object.getOwnPropertyNames(SerieLine.prototype).concat(addMethods).map(function (i) {

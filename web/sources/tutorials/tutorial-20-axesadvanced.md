@@ -5,7 +5,7 @@ subtitle: 'Axes unit and scientific scaling'
 ## Axes unit and scientific scaling
 
 <script>
-	var serie1 = [0, 10000000, 1, 11000000 ];
+	var serie1 = Graph.newWaveform().setData( [ 10000000, 11000000 ], [ 0, 1 ] );
 </script>
 
 ## Using units
@@ -16,7 +16,7 @@ Let's take this simple serie to demonstrate the possibilities of jsGraph:
 
 
 ```
-var serie1 = [0, 10000000, 1, 11000000 ];
+var serie1 = Graph.newWaveform().setData( [ 10000000, 11000000 ], [ 0, 1 ] );
 ```
 
 
@@ -43,7 +43,7 @@ g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
- .setData( serie1 ); // Assigns the data to the serie
+ .setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -69,14 +69,14 @@ g.draw();
 <div id="example-2" class="jsgraph-example"></div>
 <script>
 
-var serie1 = [0, 10000000, 1, 11000000 ];
+var serie1 = Graph.newWaveform().setData( [ 10000000, 11000000 ], [ 0, 1 ] );
 var g = new Graph("example-2") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
- .setData( serie1 ); // Assigns the data to the serie
+ .setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -87,7 +87,7 @@ g.draw();
 
 ## Defined exponential offsetting
 
-If you know exactly of how much your data must be offseted by (for instance, 10^3), because let's say you want to display values in mW and not in W, and this, whatever the value is, then you should use Axis#setScientificScale.
+If you know exactly of how much your data must be offseted by (for instance, 10^3), because let's say you want to display values in mW and not in W, and this, whatever the value is, then you should use <a href="Axis.html#setScientificScaleExponent">Axis#setScientificScaleExponent</a>.
 
 
 ```
@@ -95,7 +95,7 @@ g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
 
 g.getLeftAxis().setScientific( true ); // Turn scientific mode on
-g.getLeftAxis().setScientificScale( 4 ); // Force scientific scaling
+g.getLeftAxis().setScientificScaleExponent( 4 ); // Force scientific scaling
 
 g.draw();
 ```
@@ -103,20 +103,20 @@ g.draw();
 <div id="example-3" class="jsgraph-example"></div>
 <script>
 
-var serie1 = [0, 10000000, 1, 11000000 ];
+var serie1 = Graph.newWaveform().setData( [ 10000000, 11000000 ], [ 0, 1 ] );
 var g = new Graph("example-3") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
- .setData( serie1 ); // Assigns the data to the serie
+ .setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
 
 g.getLeftAxis().setScientific( true ); // Turn scientific mode on
-g.getLeftAxis().setScientificScale( 4 ); // Force scientific scaling
+g.getLeftAxis().setScientificScaleExponent( 4 ); // Force scientific scaling
 
 g.draw();
 </script>
@@ -147,7 +147,7 @@ g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
- .setData( serie1 ); // Assigns the data to the serie
+ .setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -165,7 +165,7 @@ g.draw();
 
 
 <script>
-	var serie1 = [0, 0.00000001, 1, 0.00000002 ];
+	var serie1 = Graph.newWaveform().setData( [ 0.00000001, 0.00000002 ], [ 0, 1 ] );
 </script>
 
 ## Values smaller than 1
@@ -200,7 +200,7 @@ g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
- .setData( serie1 ); // Assigns the data to the serie
+ .setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -235,7 +235,7 @@ g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
  .autoAxis() // Assigns automatic axes to the serie
- .setData( serie1 ); // Assigns the data to the serie
+ .setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");

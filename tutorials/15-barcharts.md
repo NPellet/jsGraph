@@ -51,12 +51,19 @@ axis.setSeries( s1, s2 [, ...] );
 
 ### <a id="data"></a>Setting data
 
-Setting data to the serie takes an object which keys are the names of the categories:
+Every since jsGraph 2.1, the bar chart also takes a ```Waveform``` object to represent it's data. However, since there's no math possible on the x data, we have to use a "reduced" ```Waveform``` object called ```WaveformHash```. Such object is created using
+
 
 {% highlight javascript %}
-s1.setData( { "cat1": 5, "cat2": 12 } );
-s2.setData( { "cat1": 8, "cat2": 10 } );
+const wave = Graph.newWaveformHash(); // Create the waveform
+wave.setData( { "xname1": yVal, "xname2": yVal2 } ); // Setting the data
+serie.setWaveform( wave ); // Assigned the waveform to the serie
+
+// In this example
+wave1.setData( { "cat1": 5, "cat2": 12 } );
+wave2.setData( { "cat1": 8, "cat2": 10 } );
 {% endhighlight %}
+
 
 ### <a id="styling"></a>Styling the series
 
@@ -84,12 +91,12 @@ axis.categories = [ { title: "Category 1", name: "cat1" }, { title: "Category 2"
 
 var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
 s1.autoAxis();
-s1.setData( { "cat1": 5, "cat2": 12 } );
+s1.setWaveform( wave1 );
 s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
 
 var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
 s2.autoAxis();
-s2.setData( { "cat1": 8, "cat2": 10 } );
+s2.setWaveform( wave2 );
 s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
 
 axis.setSeries( s1, s2 );
@@ -98,6 +105,10 @@ graph.draw();
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
+
+	var wave1 = Graph.newWaveformHash( { "cat1": 5, "cat2": 12 } );
+	var wave2 = Graph.newWaveformHash( { "cat1": 8, "cat2": 10 } );
+
 	var graph = new Graph( "example-1" );
 	graph.resize( 400, 300 );
 
@@ -109,68 +120,83 @@ graph.draw();
 
 	var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
 	s1.autoAxis();
-	s1.setData( { "cat1": 5, "cat2": 12 } );
+	s1.setWaveform( wave1 );
 	s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
 
 	var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
 	s2.autoAxis();
-	s2.setData( { "cat1": 8, "cat2": 10 } );
+	s2.setWaveform( wave2 );
 	s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
 
 	axis.setSeries( s1, s2 );
 	graph.draw();
 </script>
+ 
+
 
 ### <a id="errorbars"></a>Adding error bars
-
-Adding error bars in bar charts is similar to the line series. The style has to be defined first using the ```setErrorStyle``` method. Here's an example:
+Adding error bars in bar charts is similar to the line series. The style has to be defined first using the ```setErrorBoxStyle``` and the ```setErrorBarStyle``` method **to the waveform**. Here's an example:
 
 {% highlight javascript %}
-s1.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'black', strokeOpacity: 0.7 } } ] );
+wave1.setErrorBarStyle( { 
+  top: { strokeColor: 'black', strokeOpacity: 0.7 }, 
+  bottom: { strokeColor: 'orange', strokeOpacity: 0.7 } 
+} );
 {% endhighlight %}
 
-The ```y``` key can also be ```top``` or/and ```bottom``` for different styles of the error bar.
-Note that x error bars are technically also possible, but don't make much sense in this example.
+The keys can be ```top``` or/and ```bottom``` or ```all``` to allow you to style only the top one, the bottom one or both of them. With bar charts, no x error is possible.
 
-Setting the error data goes with the following:
-
-
+To add error values, first create a new wave:
 {% highlight javascript %}
-s1.setDataError( { "cat1": [ [ 2, 1 ] ] } );
+// Our original wave
+var wave1 = Graph.newWaveformHash( { "cat1": 5, "cat2": 12 } );
+
+// The error wave
+var errorWave1 = Graph.newWaveformHash( { "cat1": 0.5, "cat2": 3 } );
+
+// Assign the error wave to the original wave
+wave1.setErrorBar( errorWave1, true ); // The second argument recalculates the min/max of wave1
 {% endhighlight %}
 
-Where the first value is the positive error bar value and the second is the negative error bar.
-
-Here is the result of the error bar example:
-
+Here is the complete code of the error bar example:
 
 {% highlight javascript %}
-var graph = new Graph( "example-1" );
+var graph = new Graph( "example-2" );
 graph.resize( 400, 300 );
 
 var axis = new ( Graph.getConstructor( 'graph.axis.x.bar' ) )
 var options = {};
 axis.init( graph, options );
 graph.setBottomAxis( axis, 0 );
-axis.categories = [ { title: "Category 1", name: "cat1" }, { title: "Category 2", name: "cat2" } ];
+
+axis.categories = [ 
+  { title: "Category 1", name: "cat1" }, 
+  { title: "Category 2", name: "cat2" } 
+];
+
+var wave1 = Graph.newWaveformHash( { "cat1": 5, "cat2": 12 } );
+var wave2 = Graph.newWaveformHash( { "cat1": 8, "cat2": 10 } );
+
+var errorWave2_top = Graph.newWaveformHash( { "cat1": 0.5, "cat2": 3 } );
+var errorWave2_bottom = Graph.newWaveformHash( { "cat1": 0.9, "cat2": 0.6 } );
+var errorWave1 = Graph.newWaveformHash( { "cat1": 2, "cat2": 4 } );
+wave1.setErrorBar( errorWave1, true );
+wave2.setErrorBarAbove( errorWave2_top, true );
+wave2.setErrorBarBelow( errorWave2_bottom, true );
 
 var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
 s1.autoAxis();
-s1.setData( { "cat1": 5, "cat2": 12 } );
+
+s1.setWaveform( wave1 );
 s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
+s1.setErrorBarStyle({ all: { strokeColor: 'crimson' } });
 
 var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
 s2.autoAxis();
-s2.setData( { "cat1": 8, "cat2": 10 } );
+
+s2.setWaveform( wave2 );
 s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
-
-s1.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'crimson', strokeOpacity: 0.7 } } ] );
-s1.setDataError( { "cat1": [ [ 2, 1 ] ], "cat2": [ 0.4 ] } );
-
-s2.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'DarkGreen', strokeOpacity: 0.7 } } ] );
-s2.setDataError( { "cat1": [ [ 0.9 ] ] } );
-
-graph.getYAxis().forceMin( 0 );
+s2.setErrorBarStyle({ top: { strokeColor: 'DarkGreen' }, bottom: { strokeWidth: 3, strokeColor: 'DarkGreen' } });
 
 axis.setSeries( s1, s2 );
 graph.draw();
@@ -185,28 +211,48 @@ graph.draw();
 	var options = {};
 	axis.init( graph, options );
 	graph.setBottomAxis( axis, 0 );
-	axis.categories = [ { title: "Category 1", name: "cat1" }, { title: "Category 2", name: "cat2" } ];
+
+	axis.categories = [ 
+		{ title: "Category 1", name: "cat1" }, 
+		{ title: "Category 2", name: "cat2" } 
+	];
+
+	var wave1 = Graph.newWaveformHash( { "cat1": 5, "cat2": 12 } );
+	var wave2 = Graph.newWaveformHash( { "cat1": 8, "cat2": 10 } );
+	var errorWave2_top = Graph.newWaveformHash( { "cat1": 0.5, "cat2": 3 } );
+	var errorWave2_bottom = Graph.newWaveformHash( { "cat1": 0.9, "cat2": 0.6 } );
+	var errorWave1 = Graph.newWaveformHash( { "cat1": 2, "cat2": 4 } );
+	wave1.setErrorBar( errorWave1, true );
+	wave2.setErrorBarAbove( errorWave2_top, true );
+	wave2.setErrorBarBelow( errorWave2_bottom, true );
 
 	var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
 	s1.autoAxis();
-	s1.setData( { "cat1": 5, "cat2": 12 } );
+
+	s1.setWaveform( wave1 );
 	s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
+	s1.setErrorBarStyle({ all: { strokeColor: 'crimson' } });
 
 	var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
 	s2.autoAxis();
-	s2.setData( { "cat1": 8, "cat2": 10 } );
+
+	s2.setWaveform( wave2 );
 	s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
-
-	s1.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'crimson', strokeOpacity: 0.7 } } ] );
-	s1.setDataError( { "cat1": [ [ 2, 1 ] ], "cat2": [ 0.4 ] } );
-
-	s2.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'DarkGreen', strokeOpacity: 0.7 } } ] );
-	s2.setDataError( { "cat1": [ 0.9 ] } );
-
-	graph.getYAxis().forceMin( 0 );
-
-	axis.setSeries( s1, s2 );
+	s2.setErrorBarStyle({ top: { strokeColor: 'DarkGreen' }, bottom: { strokeWidth: 3, strokeColor: 'DarkGreen' } });
+	
+axis.setSeries( s1, s2 );
 	graph.draw();
+/*
+s1.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'crimson', strokeOpacity: 0.7 } } ] );
+
+
+
+s1.setDataError( { "cat1": [ [ 2, 1 ] ], "cat2": [ 0.4 ] } );
+
+s2.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'DarkGreen', strokeOpacity: 0.7 } } ] );
+s2.setDataError( { "cat1": [ 0.9 ] } );
+*/
+
 </script>
 
 

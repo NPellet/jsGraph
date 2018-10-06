@@ -11,9 +11,7 @@
 ">
 
     
-    <script src="/dist/jsgraph-es6.js"></script> <!-- jsGraph should load first -->
-
-    <script src="/js/node-jsgraph/dist/jsgraph.min.js"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
     <script src="/js/jquery/dist/jquery.min.js"></script>
     <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script> <!-- jQuery 
     
@@ -109,11 +107,13 @@ var data = [ 10.0052,116,10.0135,127,10.0219,133,10.0302,114,10.0386,162,10.047
   <span class="p">.</span><span class="nx">turnGridsOff</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
 
-<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"xrd_1"</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"line"</span> <span class="p">).</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">).</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#aa0000"</span> <span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"xrd_1"</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"line"</span> <span class="p">).</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setWaveform</span><span class="p">(</span> <span class="nx">wave</span> <span class="p">).</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#aa0000"</span> <span class="p">);</span>
 <span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
+
+const wave = Graph.newWaveform().setData( data.filter( ( val, index ) => index % 2 == 1 ), data.filter( ( val, index ) => index % 2 == 0 ) );
 
 var g = new Graph("example-1"); // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
@@ -130,7 +130,7 @@ g.getLeftAxis()
 	.turnGridsOff()
 	.dataSpacing(0,0);
 
-g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
+g.newSerie("xrd_1", {}, "line" ).autoAxis().setWaveform( wave ).setLineColor( "#aa0000" );
 
 g.draw();
 </script>
@@ -242,7 +242,7 @@ var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 serie
   .autoAxis()
   .setXAxis( bottom )
-  .setData( data );
+  .setWaveform( wave );
 
 	return { g: g, bottom: bottom, left: g.getLeftAxis(), serie: serie };
 }

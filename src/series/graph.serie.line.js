@@ -44,7 +44,7 @@ class SerieLine extends SerieScatter {
   constructor( graph, name, options, defaultInherited ) {
 
     super( graph, name, options, util.extend( true, {}, defaultOptions, defaultInherited ) );
-
+    console.trace();
     this.selectionType = 'unselected';
     this._type = type;
     util.mapEventEmission( this.options, this ); // Register events
@@ -194,18 +194,12 @@ class SerieLine extends SerieScatter {
     selectionType = selectionType || 'selected';
 
     this.selected = selectionType !== 'unselected';
-
-    if ( this.areMarkersShown() || this.areMarkersShown( selectionType ) ) {
-      this.selectionType = selectionType;
-
-      this.draw( true ); // Drawing is absolutely required here
-      this.applyLineStyles();
-    } else {
-      this.selectionType = selectionType;
-      this.applyLineStyles();
-    }
-
+    this.selectionType = selectionType;
+    this.applyLineStyles();
     this.applyLineStyle( this.getSymbolForLegend() );
+
+    super.select( selectionType );
+
     return this;
   }
 
@@ -218,7 +212,7 @@ class SerieLine extends SerieScatter {
   unselect() {
 
     this.selected = false;
-
+    super.unselect();
     return this.select( 'unselected' );
   }
 
@@ -1190,16 +1184,14 @@ class SerieLine extends SerieScatter {
     }
 
     this.styleHasChanged( selectionType );
-
   }
 
   getStyle( selectionType = this.selectionType || 'unselected' ) {
-    return this.styles[ selectionType ];
+    return this.styles[ selectionType ] ||  this.styles[ 'unselected' ];
   }
 
   extendStyles() {
     for ( var i in this.styles ) {
-
       var s = this.styles[ i ];
       if ( s ) {
         this.styles[ i ] = util.extend( true, {}, this.styles.unselected, s );

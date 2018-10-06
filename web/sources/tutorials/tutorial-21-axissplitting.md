@@ -28,12 +28,14 @@ g.getLeftAxis()
   .turnGridsOff()
   .dataSpacing(0,0);
 
-g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
+g.newSerie("xrd_1", {}, "line" ).autoAxis().setWaveform( wave ).setLineColor( "#aa0000" );
 g.draw();
 {% endhighlight %}
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
+
+const wave = Graph.newWaveform().setData( data.filter( ( val, index ) => index % 2 == 1 ), data.filter( ( val, index ) => index % 2 == 0 ) );
 
 var g = new Graph("example-1"); // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
@@ -50,7 +52,7 @@ g.getLeftAxis()
 	.turnGridsOff()
 	.dataSpacing(0,0);
 
-g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
+g.newSerie("xrd_1", {}, "line" ).autoAxis().setWaveform( wave ).setLineColor( "#aa0000" );
 
 g.draw();
 </script>
@@ -179,7 +181,7 @@ var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 serie
   .autoAxis()
   .setXAxis( bottom )
-  .setData( data );
+  .setWaveform( wave );
 
 	return { g: g, bottom: bottom, left: g.getLeftAxis(), serie: serie };
 }

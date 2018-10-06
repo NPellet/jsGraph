@@ -34,25 +34,6 @@ class SerieBar extends Serie {
   }
 
   /**
-   *  Sets the data of the bar serie
-   *  @param {Object} data
-   *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
-   *  @return {SerieBar} The current serie instance
-   */
-  setData( data ) {
-
-    this.data = data;
-    this.minY = Number.MAX_SAFE_INTEGER;
-    this.maxY = Number.MIN_SAFE_INTEGER;
-
-    for ( var i in this.data ) {
-      this._checkY( this.data[ i ] );
-    }
-
-    return this;
-  }
-
-  /**
    *  Sets the fill color
    */
   setFillColor( fillColor, selectionType, applyToSelected ) {
@@ -130,33 +111,40 @@ class SerieBar extends Serie {
     var categoryNumber,
       position;
 
-    if ( this.error ) {
+    if ( this.hasErrors() ) {
       this.errorDrawInit();
     }
 
-    for ( var i in this.data ) {
+    var j = 0;
 
-      if ( !this.categoryIndices[ i ] ) {
+    for ( ; j < this.waveform.getLength(); j++ ) {
+
+      if ( !this.categoryIndices[ this.waveform.getX( j ) ] ) {
         continue;
       }
 
       path += 'M ' +
-        this.getXAxis().getPos( this.categoryIndices[ i ] ) +
+        this.getXAxis().getPos( this.categoryIndices[ this.waveform.getX( j ) ] ) +
         ' ' +
-        this.getYAxis().getPos( 0 ) +
+        this.getYAxis().getPos( this.getYAxis().getCurrentMin() ) +
         ' V ' +
-        this.getYAxis().getPos( this.data[ i ] ) +
+        this.getYAxis().getPos( this.waveform.getY( j ) ) +
         ' h ' +
         this.getXAxis().getDeltaPx( 1 / this.nbCategories ) +
         ' V ' +
-        this.getYAxis().getPos( 0 );
+        this.getYAxis().getPos( this.getYAxis().getCurrentMin() );
 
-      if ( this.error ) {
-        this.errorAddPointBarChart( i, this.data[ i ], this.getXAxis().getPos( this.categoryIndices[ i ] + 0.5 / this.nbCategories ), this.getYAxis().getPos( this.data[ i ] ) );
+      if ( this.hasErrors() ) {
+
+        var xpx = this.getXAxis().getPos( this.categoryIndices[ this.waveform.getX( j ) ] ) + this.getXAxis().getDeltaPx( 1 / this.nbCategories ) / 2;
+        var ypx = this.getYAxis().getPos( this.waveform.getY( j ) );
+
+        this.errorAddPoint( j, this.waveform.getX( j ), this.waveform.getY( j ), xpx, ypx );
       }
+
     }
 
-    if ( this.error ) {
+    if ( this.hasErrors() ) {
       this.errorDraw();
     }
 
@@ -168,7 +156,7 @@ class SerieBar extends Serie {
   setMarkers() {}
 
   getUsedCategories() {
-    return Object.keys( this.data );
+    return this.waveform.xdata;
   }
 
 }

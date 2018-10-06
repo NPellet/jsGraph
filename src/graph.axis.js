@@ -1253,8 +1253,11 @@ class Axis extends EventEmitter {
       this.unitTspan.setAttribute( 'display', 'visible' );
       this.unitTspan.setAttribute( 'dx', 5 );
 
-      this.expTspan.setAttribute( 'display', 'none' );
-      this.expTspanExp.setAttribute( 'display', 'none' );
+      //6.10.2018: This was incompatible with the fact that there can be a unit + a *10^x factor, when setUnitDecate( false ) is called (which is also the default behaviour)
+      // We should check if this creates other issues.
+
+      //this.expTspan.setAttribute( 'display', 'none' );
+      //this.expTspanExp.setAttribute( 'display', 'none' );
       this.unitTspan.innerHTML = ( this.options.unitWrapperBefore + this.preunit + this.options.unit + this.options.unitWrapperAfter ).replace( /\^([-+0-9]*)(.*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan><tspan dy='5' font-size='1em'>$2</tspan>" );
 
     } else {

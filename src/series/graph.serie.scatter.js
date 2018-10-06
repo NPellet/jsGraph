@@ -273,8 +273,8 @@ class SerieScatter extends Serie {
     }
 
     // This will automatically create the shapes
-    this.applyMarkerStyle( 'unselected', keys );
-
+    this.applyMarkerStyle( this.selectionType ||  'unselected', keys );
+    this.keys = keys;
     this.groupMain.appendChild( this.groupMarkers );
   }
 
@@ -298,6 +298,11 @@ class SerieScatter extends Serie {
     }
 
     var shape, index, modifier, style, j; // loop variables
+
+    if ( !this.options.markerStyles[ selection ] ) {
+      selection = 'unselected';
+    }
+
     var styleAll = this.options.markerStyles[ selection ].all;
 
     if ( !styleAll ) {
@@ -308,7 +313,8 @@ class SerieScatter extends Serie {
       styleAll = styleAll();
     }
 
-    styleAll = Object.assign( this.options.markerStyles[ selection ].default, styleAll );
+    const defaultStyle = this.options.markerStyles[ selection ].default ? this.options.markerStyles[ selection ].default : this.options.markerStyles.unselected.default;
+    styleAll = Object.assign( {}, defaultStyle, styleAll );
 
     var i = 0,
       l = indices.length;
@@ -352,7 +358,7 @@ class SerieScatter extends Serie {
 
         if ( !styles[ index ].shape ) {
           console.error( style );
-          throw 'No shape was defined with this style.';
+          throw `No shape was defined with the style "${ style }".`;
         }
 
         var g = document.createElementNS( this.graph.ns, 'g' );
@@ -428,8 +434,8 @@ class SerieScatter extends Serie {
 
         var selectionStyle = this.shapesDetails[ index ][ 2 ];
         this.shapesDetails[ index ][ 2 ] = false;
-
         var allStyles = this.getMarkerStyle( selectionStyle, index, true );
+
         for ( var i in allStyles[ index ] ) {
           this.shapes[ index ].removeAttribute( i );
         }
@@ -440,13 +446,22 @@ class SerieScatter extends Serie {
 
         selectionType = selectionType || 'selected';
         this.shapesDetails[ index ][ 2 ] = selectionType;
-
         this.applyMarkerStyle( selectionType, index, true );
-
       }
-
     }
+  }
 
+  select( selectionType ) {
+    this.selectionType = selectionType;
+    this.applyMarkerStyle( this.selectionType ||  'selected', this.keys );
+    super.select( selectionType );
+  }
+
+  unselect() {
+    this.selectionType = 'unselected';
+    this.applyMarkerStyle( this.selectionType ||  'unselected', this.keys );
+
+    super.unselect();
   }
 
   setMarkers( bln = true ) {

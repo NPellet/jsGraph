@@ -11,9 +11,7 @@
 ">
 
     
-    <script src="/dist/jsgraph-es6.js"></script> <!-- jsGraph should load first -->
-
-    <script src="/js/node-jsgraph/dist/jsgraph.min.js"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
     <script src="/js/jquery/dist/jquery.min.js"></script>
     <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script> <!-- jQuery 
     
@@ -535,178 +533,6 @@
     
 
     
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieBar.html">SerieBar</a></span>} </span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object</span> data )</span></h4>
-
-
-
-
-<div class="description">
-    Sets the data of the bar serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Serie.html#setData">Serie#setData</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieBar.html">SerieBar</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie instance
-</div>
-
-        
-
-    
-        <h5>Example</h5>
-        
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="nx">val1</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="nx">val2</span><span class="p">,</span> <span class="s2">"cat4"</span><span class="p">:</span> <span class="nx">val4</span> <span class="p">}</span> <span class="p">);</span>
- </code></pre></figure>
 
     
 
@@ -4458,6 +4284,223 @@
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets data to the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Array.&lt;Array></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The data of the serie</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>oneDimensional</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setData">Serie#setData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Examples</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Faster</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">,</span> <span class="nx">x</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nx">y</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">...]</span> <span class="p">],</span> <span class="kc">true</span> <span class="p">)</span> <span class="c1">// 1D array with a gap in the middle</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="nx">x0</span><span class="p">,</span> <span class="na">dx</span><span class="p">:</span> <span class="nx">spacing</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">[</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="nx">y3</span><span class="p">,</span> <span class="nx">y4</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Data with equal x separation. Fastest way</span></code></pre></figure>
 
     
 

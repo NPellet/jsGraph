@@ -328,14 +328,28 @@ class Waveform {
       this._monotoneousAscending = dataY[ 1 ] > dataY[ 0 ];
     }
 
+    this.data = dataY;
+    this.checkMinMaxErrorBars();
+
+    this.computeXMinMax();
+
+  }
+
+  checkMinMaxErrorBars() {
+
+    let minY = this.minY,
+      maxY = this.maxY,
+      i = 0,
+      l = this.getLength();
+
     if ( this.hasErrorBars() ) { // If prefer to loop again here
 
       for ( i = 0; i < l; i++ ) {
 
-        if ( dataY[ i ] === dataY[ i ] ) { // NaN support
+        if ( this.data[ i ] === this.data[ i ] ) { // NaN support
 
-          minY = Math.min( minY, dataY[ i ] - this.getMaxError( i, 'below' ) );
-          maxY = Math.max( maxY, dataY[ i ] + this.getMaxError( i, 'above' ) );
+          minY = Math.min( minY, this.data[ i ] - this.getMaxError( i, 'below' ) );
+          maxY = Math.max( maxY, this.data[ i ] + this.getMaxError( i, 'above' ) );
         }
       }
 
@@ -346,10 +360,6 @@ class Waveform {
       this.minY = minY;
       this.maxY = maxY;
     }
-
-    this.data = dataY;
-
-    this.computeXMinMax();
 
   }
 
@@ -774,10 +784,10 @@ class Waveform {
     const mean = this.mean();
     for ( var i = 0; i < this.getLength(); i++ ) {
       num += ( this.getY( i ) - mean ) ** 2
-      denom += this.getY( i );
+      denom++;
     }
 
-    return num ** 0.5 / denom;
+    return ( num / denom ) ** 0.5;
   }
 
   getAverageP( from, to ) {
@@ -1683,8 +1693,8 @@ class Waveform {
     }
     this.errors.nb++;
     this.errors.nb++;
-    this.errors.bars.bottom = waveform;
-    this.errors.bars.top = waveform;
+    this.errors.bars.below = waveform;
+    this.errors.bars.above = waveform;
 
     if ( checkMinMax ) {
       this._setData();
@@ -1839,17 +1849,18 @@ class Waveform {
 
     let wave;
     if ( ( wave = ( side == Waveform.ABOVE ? errors.above : errors.below ) ) ) {
-
-      if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
-        wave = errors.above;
-      } else if ( wave == Waveform.BELOW && side == Waveform.ABOVE ) {
-        wave = errors.below;
-      }
-
-      if ( !wave ) {
-        return false;
-      }
-
+      /*console.log( wave );
+            if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
+              wave = errors.above;
+            } else if ( wave == Waveform.BELOW && side == Waveform.ABOVE ) {
+              wave = errors.below;
+            }
+      */
+      /*
+            if ( !wave ) {
+              return false;
+            }
+      */
       return wave.getY( index );
     }
   }
@@ -1988,4 +1999,119 @@ function binarySearch( target, haystack, reverse = haystack[ haystack.length - 1
   }
 }
 
-export default Waveform;
+// Stores key: value
+class WaveformHash extends Waveform {
+
+  hasXWaveform() {
+    return false;
+  }
+
+  setXWaveform( data ) {
+    this.xdata = data;
+  }
+
+  getYFromX( xValue ) {
+
+    const index = this.xdata.indexOf( xValue );
+    if ( index == -1 ) {
+      throw `Cannot find key ${ xValue }`
+    }
+
+    return this.data[  index ];
+  }
+
+  getY( index ) {
+    return this.data[ index ]
+  }
+
+  getX( index ) {
+    return this.xdata[ index ];
+  }
+
+  hasXUnit() {
+    return false;
+  }
+
+  errorNotImplemented() {
+    console.trace();
+    throw "Not available in hash waveform";
+  }
+
+  subrangeX() {
+    this.errorNotImplemented();
+  }
+
+  duplicate() {
+    this.errorNotImplemented();
+  }
+
+  aggregate() {
+    this.errorNotImplemented();
+  }
+
+  _waveArithmetic() {
+    this.errorNotImplemented();
+  }
+
+  interpolateIndex_X( index ) {
+    this.errorNotImplemented();
+  }
+
+  getXMonotoneousAscending() {
+    this.errorNotImplemented();
+  }
+
+  isXMonotoneousAscending() {
+    this.errorNotImplemented();
+  }
+
+  interpolate() {
+    this.errorNotImplemented();
+  }
+
+  resampleForDisplay() {
+    this.errorNotImplemented();
+  }
+
+  isXMonotoneous() {
+    this.errorNotImplemented();
+  }
+
+  rescaleX() {
+    this.errorNotImplemented();
+  }
+
+  getXMin() {
+    return undefined;
+  }
+
+  getXMax() {
+    return undefined;
+  }
+
+  computeXMinMax() {
+    return;
+  }
+
+  setData( data ) {
+
+    this.data = Object.values( data );
+    this.xdata = Object.keys( data );
+
+    this._setData();
+  }
+
+  _setData() {
+    this.minY = Math.min( ...this.data );
+    this.maxY = Math.max( ...this.data );
+
+    this.checkMinMaxErrorBars();
+  }
+
+}
+
+export {
+  Waveform,
+  WaveformHash
+};
+export default Waveform

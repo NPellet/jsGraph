@@ -1,7 +1,10 @@
 import GraphPosition from './graph.position.js';
 import * as util from './graph.util.js';
 import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
-import Waveform from './util/waveform.js';
+import {
+  Waveform,
+  WaveformHash
+} from './util/waveform.js';
 
 /**
  * Default graph parameters
@@ -971,6 +974,7 @@ class Graph extends EventEmitter {
 
     var valSeries = this.getBoundaryAxisFromSeries( axis, minmax, usingZValues );
     //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+
     return valSeries;
     //return Math[ minmax ]( valSeries, valShapes );
 
@@ -3029,6 +3033,14 @@ class Graph extends EventEmitter {
   static waveform() {
     return new Waveform( ...arguments );
   }
+
+  static newWaveformHash() {
+    return new WaveformHash( ...arguments );
+  }
+
+  static waveformHash() {
+    return new WaveformHash( ...arguments );
+  }
 }
 
 // Adds getConstructor to the prototype. Cannot do that in ES6 classes
@@ -3178,6 +3190,10 @@ function refreshDrawingZone( graph ) {
     var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
     axis.setLevel( level );
     shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
+
+    if ( level < shift[ position ].length - 1 ) {
+      shift[ position ][ level ] += 10;
+    }
 
   }, false, false, true );
 

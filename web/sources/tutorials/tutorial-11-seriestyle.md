@@ -103,19 +103,22 @@ s.setMarkers( [ {
 <div id="doc-example-1"></div>
 <script>
 
+const data = [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482,  1959, 2644,  1964, 3046, 1969, 3098,  1974, 3273,  1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ];
+const wave = Graph.newWaveform().setData( data.filter( ( el, index ) => index % 2 == 1 ), data.filter( ( el, index ) => index % 2 == 0 ) );
+
 var graph = new Graph("doc-example-1").resize(400, 250);
-var s = graph.newSerie().setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482,  1959, 2644,  1964, 3046, 1969, 3098,  1974, 3273,  1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ] ).autoAxis();
+var s = graph.newSerie().autoAxis().setWaveform( wave );
 
 s.setLineColor( "#0710ad" );
 s.setLineStyle( 2 );
 s.setLineWidth( 2 );
-s.setMarkers( [ {
-	type: 1,
-	zoom: 2,
+s.setMarkers( {
+	shape: 'circle',
 	strokeWidth: 2,
-	strokeColor: 'white',
-	fillColor: '#0710ad',
-} ] );
+	stroke: '#0710ad',
+	fill: '#676cc6'
+} ); // Will apply to "selected"
+
 
 graph.draw();
 
@@ -156,22 +159,6 @@ s.extendStyle( "extended", "unselected" );
 // Overwrites the line width
 s.setLineWidth( 4, "extended" );
 
-// Sets a few marker families for the style "custom1"
-s.setMarkers( [ {
-	type: 4,
-	zoom: 2,
-	strokeWidth: 2,
-	strokeColor: '#0710ad',
-	fillColor: '#676cc6',
-}, {
-	type: 4,
-	zoom: 2,
-	strokeWidth: 2,
-	strokeColor: '#962614',
-	fillColor: '#b76e62',
-	points: [ 1, 4, [ 6, 9 ] ]
-} ], "custom1" );
-
 // Copy "custom1" into the new style "custom2"
 s.extendStyle( "custom2", "custom1" );
 
@@ -200,18 +187,17 @@ graph.draw();
 
 ( function() {
 	var graph = new Graph("doc-example-2").resize(400, 250);
-	var s = graph.newSerie( "serie" ).setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482,  1959, 2644,  1964, 3046, 1969, 3098,  1974, 3273,  1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ] ).autoAxis();
+	var s = graph.newSerie( "serie" ).setWaveform( wave ).autoAxis();
 
 	s.setLineColor( "#0710ad" );
 	s.setLineStyle( 2, false, true );  // Will apply to "selected"
 	s.setLineWidth( 2, false, true );  // Will apply to "selected"
-	s.setMarkers( [ {
-		type: 1,
-		zoom: 2,
+	s.setMarkers( {
+		shape: 'circle',
 		strokeWidth: 2,
-		strokeColor: 'white',
-		fillColor: '#0710ad',
-	} ], false, true ); // Will apply to "selected"
+		stroke: '#0710ad',
+		fill: '#676cc6'
+	}, undefined, "selected" ); // Will apply to "selected"
 
 	s.setLineColor( "#2e7c14", "selected" );
 	s.setLineStyle( 1, "selected" );
@@ -219,24 +205,32 @@ graph.draw();
 	s.extendStyle( "extended", "unselected" );	
 	s.setLineWidth( 4, "extended" );
 
-	s.setMarkers( [ {
-		type: 4,
-		zoom: 2,
+	s.extendStyle( "custom1", "unselected" );
+	s.setMarkerStyle( {
+		shape: 'circle',
 		strokeWidth: 2,
-		strokeColor: '#0710ad',
-		fillColor: '#676cc6',
-	}, {
-		type: 4,
-		zoom: 2,
-		strokeWidth: 2,
-		strokeColor: '#962614',
-		fillColor: '#b76e62',
-		points: [ 1, 4, [ 6, 9 ] ]
-	} ], "custom1" );
+		stroke: '#0710ad',
+		fill: '#676cc6',
+	}, ( x, y, index ) => {
+		if( index == 1 || index == 4 || ( index <= 6 && index <= 9 ) ) {
+			return {
+				strokeWidth: 2,
+				strokeColor: '#962614',
+				fillColor: '#b76e62'
+			}
+		}	
+	}, "custom1" );
+
 
 	s.extendStyle( "custom2", "custom1" );
-	s.setMarkersStrokeColor( "#247c4e", 1, "custom2" );
-	s.setMarkersFillColor( "#6fb590", 1, "custom2" );
+	s.setMarkerStyle( {
+		shape: 'circle',
+		strokeWidth: 2,
+		stroke: '#247c4e',
+		fill: '#6fb590',
+	}, undefined, "custom2" );
+
+
 	graph.draw();
 
 	$("#doc-example-1-btns").on('click', 'button', function() {
