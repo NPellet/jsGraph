@@ -63,7 +63,7 @@ class AxisX extends Axis {
       return;
     }
 
-    this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' );
+    this.group.setAttribute( 'transform', `translate(0 ${ this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) })` );
   }
 
   /**
@@ -187,8 +187,8 @@ class AxisX extends Axis {
     }
 
     var span = this.getSpan();
-    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')' ) );
-    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')' ) );
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : `url(#horionzalsplit_${ this.graph.getId() })` ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : `url(#horionzalsplit_${ this.graph.getId() })` ) );
 
   }
 

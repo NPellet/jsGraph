@@ -160,7 +160,7 @@ class AxisY extends Axis {
   }
 
   placeLabel( y ) {
-    this.label.setAttribute( 'transform', 'translate(' + y + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
+    this.label.setAttribute( 'transform', `translate(${ y }, ${ Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 }) rotate(-90)` );
   }
 
   /**
@@ -188,8 +188,8 @@ class AxisY extends Axis {
     this.line.setAttribute( 'stroke', this.getAxisColor() );
 
     var span = this.getSpan();
-    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')' ) );
-    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')' ) );
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : `url(#verticalsplit_${ this.graph.getId() })` ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : `url(#verticalsplit_${ this.graph.getId() })` ) );
   }
 
   /**
@@ -205,7 +205,7 @@ class AxisY extends Axis {
 
     let xshift = this.shift;
     xshift = this.floating ? xshift : ( this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift );
-    this.group.setAttribute( 'transform', 'translate( ' + xshift + ' 0 )' );
+    this.group.setAttribute( 'transform', `translate( ${ xshift } 0 )` );
     this.drawLabel();
   }
 

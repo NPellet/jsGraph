@@ -1,6 +1,7 @@
-import Serie from './graph.serie.js';
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
+
+import Serie from './graph.serie.js';
 
 const defaults = {};
 
@@ -64,7 +65,7 @@ class SerieScatter extends Serie {
       }
 
       if ( this.options.selectMarkerOnHover ) {
-        this.selectMarker( id, "selected" );
+        this.selectMarker( id, 'selected' );
       }
 
       this.emit( 'mouseOverMarker', id, this.waveform.getX( id ), this.waveform.getY( id ) );
@@ -78,7 +79,7 @@ class SerieScatter extends Serie {
       }
 
       if ( this.options.selectMarkerOnHover ) {
-        this.selectMarker( id, "unselected" );
+        this.selectMarker( id, 'unselected' );
       }
 
       this.emit( 'mouseOutMarker', id, this.waveform.getX( id ), this.waveform.getY( id ) );
@@ -372,7 +373,7 @@ class SerieScatter extends Serie {
 
       if ( !noSetPosition && this.shapesDetails[ index ][ 0 ] === this.shapesDetails[ index ][ 0 ] && this.shapesDetails[ index ][ 1 ] === this.shapesDetails[ index ][ 1 ] ) {
 
-        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
+        shape.parentNode.setAttribute( 'transform', `translate(${ this.shapesDetails[ index ][ 0 ] }, ${ this.shapesDetails[ index ][ 1 ] })` );
       }
 
     }

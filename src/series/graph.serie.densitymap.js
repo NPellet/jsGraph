@@ -1,5 +1,6 @@
-import Serie from './graph.serie.js';
 import * as util from '../graph.util.js';
+
+import Serie from './graph.serie.js';
 
 /**
  * Density map serie
@@ -522,7 +523,7 @@ class SerieDensityMap extends Serie {
         color[ j ] = ( colorStops[ first + 1 ][ j ] - colorStops[ first ][ j ] ) * ratio + colorStops[ first ][ j ];
       }
 
-      colorMap[ k ] = 'hsl(' + color.h + ', ' + Math.round( color.s * 100 ) + '%, ' + Math.round( color.l * 100 ) + '%)'; //this.HSVtoRGB( color.h, color.s, color.v );
+      colorMap[ k ] = `hsl(${ color.h }, ${ Math.round( color.s * 100 ) }%, ${ Math.round( color.l * 100 ) }%)`; //this.HSVtoRGB( color.h, color.s, color.v );
       opacities[ k ] = color.a;
       k++;
     }
@@ -641,7 +642,7 @@ class SerieDensityMap extends Serie {
           this.paths[ colorIndex ] = '';
         }
 
-        this.paths[ colorIndex ] += ' M ' + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + ' ' + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + ' h ' + deltaXPx + ' v ' + deltaYPx + ' h -' + deltaXPx + ' z';
+        this.paths[ colorIndex ] += ` M ${ this.getXAxis().getPx( i * this.deltaX + this.fromX ) } ${ this.getYAxis().getPx( j * this.deltaY + this.fromY ) } h ${ deltaXPx } v ${ deltaYPx } h -${ deltaXPx } z`;
 
       }
     }

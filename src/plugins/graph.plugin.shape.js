@@ -1,5 +1,6 @@
-import Plugin from './graph.plugin.js';
 import * as util from '../graph.util.js';
+
+import Plugin from './graph.plugin.js';
 
 /**
  * @class PluginShape

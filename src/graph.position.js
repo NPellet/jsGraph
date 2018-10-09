@@ -84,7 +84,7 @@ class Position {
 
       var axis = i == 'x' ? xAxis : yAxis;
       var val = this[ i ];
-      var dval = this[ 'd' + i ];
+      var dval = this[ `d${ i}` ];
 
       if ( val === undefined && ( ( dval !== undefined && relativeTo === undefined ) || relativeTo === undefined ) ) {
 
@@ -198,10 +198,10 @@ class Position {
   getDeltaPx( value, axis ) {
     var v;
     if ( ( v = _parsePx( value ) ) !== false ) {
-      return ( v ) + 'px';
+      return `${v }px`;
     } else {
 
-      return ( axis.getRelPx( value ) ) + 'px';
+      return `${axis.getRelPx( value ) }px`;
     }
   }
 
@@ -209,7 +209,7 @@ class Position {
 
     mode = mode == 'y' ? 'y' : 'x';
     var ref = this[ mode ],
-      refd = this[ 'd' + mode ],
+      refd = this[ `d${ mode}` ],
       refPx,
       deltaPx;
 
@@ -217,9 +217,9 @@ class Position {
       if ( ( refPx = _parsePx( ref ) ) !== false ) {
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ mode ] = ( refPx + deltaPx ) + 'px';
+          this[ mode ] = `${refPx + deltaPx }px`;
         } else {
-          this[ mode ] = ( refPx + axis.getRelPx( delta ) ) + 'px';
+          this[ mode ] = `${refPx + axis.getRelPx( delta ) }px`;
         }
       } else {
 
@@ -241,18 +241,18 @@ class Position {
       if ( ( refPx = _parsePx( refd ) ) !== false ) {
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ 'd' + mode ] = ( refPx + deltaPx ) + 'px';
+          this[ `d${ mode}` ] = `${refPx + deltaPx }px`;
         } else {
-          this[ 'd' + mode ] = ( refPx + axis.getRelPx( delta ) ) + 'px';
+          this[ `d${ mode}` ] = `${refPx + axis.getRelPx( delta ) }px`;
         }
       } else {
 
         refd = this.getValPosition( refd, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ 'd' + mode ] = ( refd + axis.getRelVal( deltaPx ) );
+          this[ `d${ mode}` ] = ( refd + axis.getRelVal( deltaPx ) );
         } else {
-          this[ 'd' + mode ] = ( refd + delta );
+          this[ `d${ mode}` ] = ( refd + delta );
         }
       }
 

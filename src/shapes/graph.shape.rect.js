@@ -1,5 +1,6 @@
-import GraphShape from './graph.shape.js';
 import * as util from '../graph.util.js';
+
+import GraphShape from './graph.shape.js';
 
 /**
  * Represents a rectangle that extends the Shape class
@@ -102,7 +103,7 @@ class ShapeRectangle extends GraphShape {
 
         for ( var i in handles.sides ) {
           if ( handles.sides[ i ] ) {
-            this.handles[ i ] = this[ 'handle' + j ];
+            this.handles[ i ] = this[ `handle${ j}` ];
             this.sides[ j ] = i;
             j++;
           }
@@ -338,13 +339,13 @@ class ShapeRectangle extends GraphShape {
       case 'seamlessX':
 
         if ( this.handles[ 1 ] ) {
-          this.handles[ 1 ].setAttribute( 'transform', 'translate(-10) translate(' + pos.x + ')' );
+          this.handles[ 1 ].setAttribute( 'transform', `translate(-10) translate(${ pos.x })` );
           this.handles[ 1 ].setAttribute( 'height', Math.abs( ( pos2.y - pos.y ) ) );
           this.handles[ 1 ].setAttribute( 'y', Math.min( pos2.y, pos.y ) );
         }
 
         if ( this.handles[ 2 ] ) {
-          this.handles[ 2 ].setAttribute( 'transform', 'translate(-10)  translate(' + pos2.x + ')' );
+          this.handles[ 2 ].setAttribute( 'transform', `translate(-10)  translate(${ pos2.x })` );
           this.handles[ 2 ].setAttribute( 'height', Math.abs( ( pos2.y - pos.y ) ) );
           this.handles[ 2 ].setAttribute( 'y', Math.min( pos2.y, pos.y ) );
         }
@@ -354,19 +355,19 @@ class ShapeRectangle extends GraphShape {
       case 'sides':
 
         if ( this.handles.left ) {
-          this.handles.left.setAttribute( 'transform', 'translate(' + this.currentX + ' ' + ( this.currentY + this.currentH / 2 ) + ')' );
+          this.handles.left.setAttribute( 'transform', `translate(${ this.currentX } ${ this.currentY + this.currentH / 2 })` );
         }
 
         if ( this.handles.right ) {
-          this.handles.right.setAttribute( 'transform', 'translate( ' + ( this.currentX + this.currentW ) + ' ' + ( this.currentY + this.currentH / 2 ) + ')' );
+          this.handles.right.setAttribute( 'transform', `translate( ${ this.currentX + this.currentW } ${ this.currentY + this.currentH / 2 })` );
         }
 
         if ( this.handles.top ) {
-          this.handles.top.setAttribute( 'transform', 'translate( ' + ( this.currentX + this.currentW / 2 ) + ' ' + this.currentY + ')' );
+          this.handles.top.setAttribute( 'transform', `translate( ${ this.currentX + this.currentW / 2 } ${ this.currentY })` );
         }
 
         if ( this.handles.bottom ) {
-          this.handles.bottom.setAttribute( 'transform', 'translate( ' + ( this.currentX + this.currentW / 2 ) + ' ' + ( this.currentY + this.currentH ) + ')' );
+          this.handles.bottom.setAttribute( 'transform', `translate( ${ this.currentX + this.currentW / 2 } ${ this.currentY + this.currentH })` );
         }
 
         break;

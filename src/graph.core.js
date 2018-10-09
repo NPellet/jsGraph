@@ -1409,7 +1409,7 @@ class Graph extends EventEmitter {
     if ( typeof shapeType == 'function' ) {
       constructor = shapeType;
     } else {
-      constructor = this.getConstructor( 'graph.shape.' + shapeType );
+      constructor = this.getConstructor( `graph.shape.${ shapeType}` );
     }
 
     if ( !constructor ) {
@@ -1908,7 +1908,7 @@ class Graph extends EventEmitter {
       console.log( pluginName );
       pluginOptions = this.options.plugins[ i ];
 
-      constructor = this.getConstructor( 'graph.plugin.' + pluginName );
+      constructor = this.getConstructor( `graph.plugin.${ pluginName}` );
 
       if ( constructor ) {
 
@@ -1919,7 +1919,7 @@ class Graph extends EventEmitter {
         this.plugins[ pluginName ].init( this, pluginOptions );
 
       } else {
-        util.throwError( 'Plugin "' + pluginName + '" has not been registered' );
+        util.throwError( `Plugin "${ pluginName }" has not been registered` );
       }
     }
   }
@@ -1933,7 +1933,7 @@ class Graph extends EventEmitter {
     var plugin = this.plugins[ pluginName ];
 
     if ( !plugin ) {
-      return util.throwError( 'Plugin "' + pluginName + '" has not been loaded or properly registered' );
+      return util.throwError( `Plugin "${ pluginName }" has not been loaded or properly registered` );
     }
 
     return plugin;
@@ -2144,7 +2144,7 @@ class Graph extends EventEmitter {
 
   updateGraphingZone() {
     util.setAttributeTo( this.graphingZone, {
-      'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+      'transform': `translate(${ this.options.paddingLeft }, ${ this.options.paddingTop })`
     } );
 
     this._sizeChanged = true;
@@ -2304,7 +2304,7 @@ class Graph extends EventEmitter {
           }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : ( output ) => {
 
             for ( var i in output ) {
-              return output[ i ].serie.serie.getName() + ': ' + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue );
+              return `${output[ i ].serie.serie.getName() }: ${ output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )}`;
             }
 
           }, index.trueX );
@@ -2997,7 +2997,7 @@ class Graph extends EventEmitter {
   static registerConstructor( constructorName, constructor ) {
 
     if ( _constructors.has( constructorName ) ) {
-      return util.throwError( 'Constructor ' + constructor + ' already exists.' );
+      return util.throwError( `Constructor ${ constructor } already exists.` );
     }
 
     _constructors.set( constructorName, constructor );
@@ -3020,7 +3020,7 @@ class Graph extends EventEmitter {
         return false;
       }
 
-      return util.throwError( 'Constructor "' + constructorName + "\" doesn't exist" );
+      return util.throwError( `Constructor "${ constructorName }" doesn't exist` );
     }
 
     return _constructors.get( constructorName );
@@ -3050,7 +3050,7 @@ function makeSerie( graph, name, options, type ) {
 
   var constructor = graph.getConstructor( type, true );
   if ( !constructor && typeof type == 'string' ) {
-    constructor = graph.getConstructor( 'graph.serie.' + type, true );
+    constructor = graph.getConstructor( `graph.serie.${ type}`, true );
   }
 
   if ( constructor ) {
@@ -3495,7 +3495,7 @@ function doDom() {
   this._makeClosingLines();
 
   this.clip = document.createElementNS( Graph.ns, 'clipPath' );
-  this.clip.setAttribute( 'id', '_clipplot' + this._creation );
+  this.clip.setAttribute( 'id', `_clipplot${ this._creation}` );
   this.defs.appendChild( this.clip );
 
   this.clipRect = document.createElementNS( Graph.ns, 'rect' );
@@ -3504,7 +3504,7 @@ function doDom() {
 
   this.markerArrow = document.createElementNS( this.ns, 'marker' );
   this.markerArrow.setAttribute( 'viewBox', '0 0 10 10' );
-  this.markerArrow.setAttribute( 'id', 'arrow' + this._creation );
+  this.markerArrow.setAttribute( 'id', `arrow${ this._creation}` );
   this.markerArrow.setAttribute( 'refX', '6' );
   this.markerArrow.setAttribute( 'refY', '5' );
   this.markerArrow.setAttribute( 'markerUnits', 'strokeWidth' );
@@ -3524,7 +3524,7 @@ function doDom() {
   // Horionzal split marker for axis
   this.markerHorizontalSplit = document.createElementNS( Graph.ns, 'marker' );
   this.markerHorizontalSplit.setAttribute( 'viewBox', '0 0 6 8' );
-  this.markerHorizontalSplit.setAttribute( 'id', 'horionzalsplit_' + this.getId() );
+  this.markerHorizontalSplit.setAttribute( 'id', `horionzalsplit_${ this.getId()}` );
   this.markerHorizontalSplit.setAttribute( 'refX', '3' );
   this.markerHorizontalSplit.setAttribute( 'refY', '4' );
   this.markerHorizontalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
@@ -3546,7 +3546,7 @@ function doDom() {
   // Vertical split marker for axis
   this.markerVerticalSplit = document.createElementNS( Graph.ns, 'marker' );
   this.markerVerticalSplit.setAttribute( 'viewBox', '0 0 8 6' );
-  this.markerVerticalSplit.setAttribute( 'id', 'verticalsplit_' + this.getId() );
+  this.markerVerticalSplit.setAttribute( 'id', `verticalsplit_${ this.getId()}` );
   this.markerVerticalSplit.setAttribute( 'refX', '4' );
   this.markerVerticalSplit.setAttribute( 'refY', '3' );
   this.markerVerticalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
@@ -3567,7 +3567,7 @@ function doDom() {
 
   this.vertLineArrow = document.createElementNS( Graph.ns, 'marker' );
   this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
-  this.vertLineArrow.setAttribute( 'id', 'verticalline' + this._creation );
+  this.vertLineArrow.setAttribute( 'id', `verticalline${ this._creation}` );
   this.vertLineArrow.setAttribute( 'refX', '0' );
   this.vertLineArrow.setAttribute( 'refY', '5' );
   this.vertLineArrow.setAttribute( 'markerUnits', 'strokeWidth' );
@@ -3917,8 +3917,8 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
         serieShape = {
           shape: 'ellipse',
           properties: {
-            rx: [ serie.serie.getLineWidth() * 3 + 'px' ],
-            ry: [ serie.serie.getLineWidth() * 3 + 'px' ]
+            rx: [ `${serie.serie.getLineWidth() * 3 }px` ],
+            ry: [ `${serie.serie.getLineWidth() * 3 }px` ]
           }
         };
       }
@@ -4010,8 +4010,8 @@ var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
   toY = ( toY - toY % 10 + h / 2 );
 
   if ( skip ) {
-    legend.style.marginLeft = ( toX ) + 'px';
-    legend.style.marginTop = ( toY ) + 'px';
+    legend.style.marginLeft = `${toX }px`;
+    legend.style.marginTop = `${toY }px`;
     return;
   }
 
@@ -4022,8 +4022,8 @@ var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
       progress = 1;
     }
 
-    legend.style.marginLeft = ( ( toX - startX ) * progress + startX ) + 'px';
-    legend.style.marginTop = ( ( toY - startY ) * progress + startY ) + 'px';
+    legend.style.marginLeft = `${( toX - startX ) * progress + startX }px`;
+    legend.style.marginTop = `${( toY - startY ) * progress + startY }px`;
 
     if ( progress < 1 ) {
       window.requestAnimationFrame( next );

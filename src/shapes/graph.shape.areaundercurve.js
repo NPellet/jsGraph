@@ -139,9 +139,9 @@ class ShapeSurfaceUnderCurve extends Shape {
         }
 
         if ( k > 0 ) {
-          this.currentLine += ' L ' + x + ' ' + y + ' ';
+          this.currentLine += ` L ${ x } ${ y } `;
         } else {
-          this.currentLine += ' M ' + x + ' ' + y + ' ';
+          this.currentLine += ` M ${ x } ${ y } `;
         }
 
         //this.serie._addPoint( x, y, false, this.currentLine );
@@ -156,7 +156,7 @@ class ShapeSurfaceUnderCurve extends Shape {
         return;
       }
 
-      this.currentLine += ' V ' + this.getYAxis().getPx( 0 ) + ' H ' + this.firstX + ' z';
+      this.currentLine += ` V ${ this.getYAxis().getPx( 0 ) } H ${ this.firstX } z`;
       this.setDom( 'd', this.currentLine );
     }
 

@@ -1,5 +1,6 @@
-import SerieLine from './graph.serie.line.js';
 import * as util from '../graph.util.js';
+
+import SerieLine from './graph.serie.line.js';
 
 /**
  * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method
@@ -19,7 +20,7 @@ class SerieContour extends SerieLine {
     this.negativeThreshold = 0;
     this.positiveThreshold = 0;
 
-    this.groupMain.setAttribute( 'clip-path', 'url(#_clipplot' + graph._creation + ')' );
+    this.groupMain.setAttribute( 'clip-path', `url(#_clipplot${ graph._creation })` );
   }
 
   /**
@@ -349,7 +350,7 @@ class SerieContour extends SerieLine {
 
     var rgb = util.hslToRgb( hsl.h, hsl.s, hsl.l );
 
-    line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')' );
+    line.setAttribute( 'stroke', `rgb(${ rgb.join() })` );
   }
 
   getSymbolForLegend() {
