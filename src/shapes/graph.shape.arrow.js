@@ -15,7 +15,7 @@ class ShapeArrow extends ShapeLine {
   createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
-    this._dom.setAttribute( 'marker-end', 'url(#arrow' + this.graph._creation + ')' );
+    this._dom.setAttribute( 'marker-end', `url(#arrow${ this.graph._creation })` );
 
     this.createHandles( this.nbHandles, 'rect', {
       transform: 'translate(-3 -3)',

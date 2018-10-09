@@ -80,7 +80,7 @@ class FitHost {
       this.NPTS = this._to - this._from + 1;
 
       if ( this.data && this.data.getLength() <= this._to ) {
-        throw 'Wave Y has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
+        throw `Wave Y has not enough point to be fitted to subrange [${ this._from }, ${ this._to }]`;
       }
 
       if ( this._from < 0 ) {
@@ -95,7 +95,7 @@ class FitHost {
     }
 
     if ( this.dataX && this.dataX.getLength() <= this._to ) {
-      throw 'Wave X has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
+      throw `Wave X has not enough point to be fitted to subrange [${ this._from }, ${ this._to }]`;
     }
 
     this.arrY = this.data.getDataY();
@@ -113,9 +113,9 @@ class FitHost {
 
   fit() {
 
-    this.log( 'Starting the fit with initial parameter list {' + this.parms.join() + '};' );
+    this.log( `Starting the fit with initial parameter list {${ this.parms.join() }};` );
     new LM( this, this.NPARMS, this.NPTS, this._hookIteration );
-    this.log( 'Fit successful. Output parameters {' + this.parms.join() + '};' );
+    this.log( `Fit successful. Output parameters {${ this.parms.join() }};` );
 
     this._result = this.buildFit( this.parms, 200 );
 
@@ -307,7 +307,7 @@ class LM {
     }
     this.sosprev = this.sos;
 
-    this.myH.log( '  bLMiter..SumOfSquares= ' + this.sos );
+    this.myH.log( `  bLMiter..SumOfSquares= ${ this.sos}` );
     if ( !this.myH.buildJacobian() ) {
       console.error( '  bLMiter finds buildJacobian()=false' );
       return false;

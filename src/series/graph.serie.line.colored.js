@@ -1,6 +1,7 @@
-import SerieLine from './graph.serie.line.js';
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
+
+import SerieLine from './graph.serie.line.js';
 
 /**
  * Colored serie line
@@ -262,7 +263,7 @@ class SerieLineColor extends SerieLine {
     }
 
     if ( color._rgb ) {
-      color = 'rgba(' + color._rgb[ 0 ] + ',' + color._rgb[ 1 ] + ',' + color._rgb[ 2 ] + ',' + ( color._rgb[ 3 ] || 1 ) + ')';
+      color = `rgba(${ color._rgb[ 0 ] },${ color._rgb[ 1 ] },${ color._rgb[ 2 ] },${ color._rgb[ 3 ] || 1 })`;
     }
 
     var line = this.lines[ color ];
@@ -278,7 +279,7 @@ class SerieLineColor extends SerieLine {
       this.groupLines.appendChild( line.object );
     }
 
-    line.path += 'M ' + xpxbefore + ' ' + ypxbefore + ' L ' + xpx + ' ' + ypx;
+    line.path += `M ${ xpxbefore } ${ ypxbefore } L ${ xpx } ${ ypx}`;
 
     if ( this.hasErrors() ) {
       this.errorAddPoint( j, x, y, xpx, ypx );

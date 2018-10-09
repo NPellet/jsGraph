@@ -4,8 +4,9 @@ import AxisY from '../graph.axis.y.js';
 import * as util from '../graph.util.js';
 import SerieLine from '../series/graph.serie.line.js';
 import SerieScatter from '../series/graph.serie.scatter.js';
-import Plugin from './graph.plugin.js';
 import Axis from '../graph.axis.js';
+
+import Plugin from './graph.plugin.js';
 
 class SerieLineExtended extends SerieLine {
 
@@ -87,7 +88,7 @@ var returnMethods = [
 
 var addMethods = [
   '_getSymbolForLegendContainer'
-]
+];
 
 Object.getOwnPropertyNames( SerieLine.prototype ).map( function( i ) {
 
@@ -135,7 +136,7 @@ addMethods.map( ( method ) => {
 
   } )( method );
 
-} )
+} );
 
 /**
  * Axis splitting plugin
@@ -255,7 +256,7 @@ class PluginAxisSplitting extends Plugin {
 
       while ( serie.subSeries.length < splits ) {
 
-        const name = serie.getName() + '_' + serie.subSeries.length;
+        const name = `${serie.getName() }_${ serie.subSeries.length}`;
 
         const s = this.graph.newSerie( name, {}, serie.getType() || Graph.SERIE_LINE );
 
@@ -274,7 +275,7 @@ class PluginAxisSplitting extends Plugin {
 
       while ( serie.subSeries.length > splits ) {
 
-        let subserie = this.graph.getSerie( serie.getName() + '_' + ( serie.subSeries.length - 1 ) );
+        let subserie = this.graph.getSerie( `${serie.getName() }_${ serie.subSeries.length - 1}` );
 
         if ( subserie && subserie.kill ) {
           subserie.kill();
@@ -345,7 +346,7 @@ class PluginAxisSplitting extends Plugin {
         break;
     }
 
-    throw 'Cannot create a split serie of type ' + type;
+    throw `Cannot create a split serie of type ${ type}`;
   }
 
   /**
@@ -715,7 +716,7 @@ var SplitAxis = function( mixin ) {
     getSubAxis( index ) {
 
       if ( this.axes.length <= index ) {
-        throw 'Impossible to reach axis. Index ' + index + ' is out of range';
+        throw `Impossible to reach axis. Index ${ index } is out of range`;
       }
 
       return this.axes[ index ];

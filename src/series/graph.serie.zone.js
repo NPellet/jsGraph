@@ -1,9 +1,12 @@
-import Serie from './graph.serie.js';
-import Waveform from '../util/waveform.js';
+import {
+  Waveform
+} from '../util/waveform.js';
 import {
   extend,
   guid
 } from '../graph.util.js';
+
+import Serie from './graph.serie.js';
 
 /**
  * @static
@@ -12,7 +15,6 @@ import {
  * @see Graph#newSerie
  */
 class SerieZone extends Serie {
-
   static
   default () {
     return {
@@ -43,7 +45,6 @@ class SerieZone extends Serie {
     this.clip.setAttribute( 'id', this.clipId );
 
     this.graph.defs.appendChild( this.clip );
-
   }
 
   /**
@@ -57,7 +58,6 @@ class SerieZone extends Serie {
     this.waveforms = waveforms;
 
     this.waveforms = this.waveforms.map( ( wave ) => {
-
       if ( !( wave instanceof Waveform ) ) {
         return new Waveform( wave );
       } else {
@@ -71,7 +71,6 @@ class SerieZone extends Serie {
     this.maxY = this.waveforms[ 0 ].getMax();
 
     this.waveforms.map( ( wave ) => {
-
       this.minX = Math.min( wave.getXMin(), this.minX );
       this.maxX = Math.max( wave.getXMin(), this.maxX );
       this.minY = Math.min( wave.getMin(), this.minY );
@@ -100,7 +99,6 @@ class SerieZone extends Serie {
    * Removes all the dom concerning this serie from the drawing zone
    */
   empty() {
-
     while ( this.group.firstChild ) {
       this.group.removeChild( this.group.firstChild );
     }
@@ -112,16 +110,15 @@ class SerieZone extends Serie {
    *
    * @param {force} Boolean - Forces redraw even if the data hasn't changed
    */
-  draw( force ) { // Serie redrawing
+  draw( force ) {
+    // Serie redrawing
 
     if ( force || this.hasDataChanged() ) {
-
       if ( !this.waveforms ) {
         return;
       }
 
-      let
-        dataX = 0,
+      let dataX = 0,
         dataY = 0,
         xpx = 0,
         ypx = 0,
@@ -148,7 +145,6 @@ class SerieZone extends Serie {
       this.groupMain.removeChild( this.groupZones );
 
       for ( let waveform of this.waveforms ) {
-
         for ( j = 0; j < waveform.getLength(); j += 1 ) {
           dataX = waveform.getX( j, true );
           dataY = waveform.getY( j, true );
@@ -171,7 +167,7 @@ class SerieZone extends Serie {
               continue;
             }
 
-            line += 'L ' + xpx + ', ' + this.getY( waveform.getMinY() );
+            line += `L ${xpx}, ${this.getY( waveform.getMinY() )}`;
             move = true;
             continue;
           }
@@ -185,7 +181,7 @@ class SerieZone extends Serie {
           }
 
           if ( move ) {
-            line += ' M ' + xpx + ', ' + this.getY( waveform.getMinY() ) + ' ';
+            line += ` M ${xpx}, ${this.getY( waveform.getMinY() )} `;
             move = false;
           }
 
@@ -194,16 +190,16 @@ class SerieZone extends Serie {
           }
 
           if ( buffer ) {
-            line += buffer[ 2 ] + ',' + buffer[ 3 ] + ' ';
+            line += `${buffer[2]},${buffer[3]} `;
             buffer = false;
           } else {
-            line += xpx + ',' + ypx + ' ';
+            line += `${xpx},${ypx} `;
           }
         }
       }
 
       if ( line !== '' ) {
-        this.lineZone.setAttribute( 'd', 'M ' + line + ' z' );
+        this.lineZone.setAttribute( 'd', `M ${line} z` );
       } else {
         this.lineZone.setAttribute( 'd', '' );
       }
@@ -214,7 +210,6 @@ class SerieZone extends Serie {
       this.applyLineStyle( this.lineZone );
       this.styleHasChanged( false );
     }
-
   }
 
   /**
@@ -224,7 +219,6 @@ class SerieZone extends Serie {
    * @param {SVGLineElement} line - The line to which the style has to be applied to
    */
   applyLineStyle( line ) {
-
     line.setAttribute( 'stroke', this.getLineColor() );
     line.setAttribute( 'stroke-width', this.getLineWidth() );
     line.setAttribute( 'fill', this.getFillColor() );
@@ -336,7 +330,6 @@ class SerieZone extends Serie {
   getFillColor() {
     return this.options.fillColor;
   }
-
 }
 
 export default SerieZone;

@@ -93,7 +93,7 @@ class Legend {
     this.eyeId = util.guid();
     this.eyeCrossedId = util.guid();
 
-    var eyeClosed = util.SVGParser( '<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeCrossedId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" fill="transparent" x="-256" y="0" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1214.339)"><path d="m 555,201 78,141 q -87,63 -136,159 -49,96 -49,203 0,121 61,225 Q 280,812 128,576 295,318 555,201 z m 389,759 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 363,191 q 0,-7 -1,-9 Q 1201,954 991,576 781,198 675,9 l -49,-89 q -10,-16 -28,-16 -12,0 -134,70 -16,10 -16,28 0,12 44,87 Q 349,154 228.5,262 108,370 20,507 0,538 0,576 q 0,38 20,69 153,235 380,371 227,136 496,136 89,0 180,-17 l 54,97 q 10,16 28,16 5,0 18,-6 13,-6 31,-15.5 18,-9.5 33,-18.5 15,-9 31.5,-18.5 16.5,-9.5 19.5,-11.5 16,-10 16,-27 z m 37,-447 Q 1344,565 1265,450.5 1186,336 1056,286 l 280,502 q 8,-45 8,-84 z m 448,-128 q 0,-35 -20,-69 Q 1733,443 1663,362 1513,190 1315.5,95 1118,0 896,0 l 74,132 q 212,18 392.5,137 180.5,119 301.5,307 -115,179 -282,294 l 63,112 q 95,-64 182.5,-153 87.5,-89 144.5,-184 20,-34 20,-69 z" fill="#c0c0c0"></path></g></symbol></svg>' );
+    var eyeClosed = util.SVGParser( `<svg xmlns="http://www.w3.org/2000/svg"><symbol id="${ this.eyeCrossedId }" viewBox="0 -256 1850 1850"><rect pointer-events="fill" fill="transparent" x="-256" y="0" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1214.339)"><path d="m 555,201 78,141 q -87,63 -136,159 -49,96 -49,203 0,121 61,225 Q 280,812 128,576 295,318 555,201 z m 389,759 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 363,191 q 0,-7 -1,-9 Q 1201,954 991,576 781,198 675,9 l -49,-89 q -10,-16 -28,-16 -12,0 -134,70 -16,10 -16,28 0,12 44,87 Q 349,154 228.5,262 108,370 20,507 0,538 0,576 q 0,38 20,69 153,235 380,371 227,136 496,136 89,0 180,-17 l 54,97 q 10,16 28,16 5,0 18,-6 13,-6 31,-15.5 18,-9.5 33,-18.5 15,-9 31.5,-18.5 16.5,-9.5 19.5,-11.5 16,-10 16,-27 z m 37,-447 Q 1344,565 1265,450.5 1186,336 1056,286 l 280,502 q 8,-45 8,-84 z m 448,-128 q 0,-35 -20,-69 Q 1733,443 1663,362 1513,190 1315.5,95 1118,0 896,0 l 74,132 q 212,18 392.5,137 180.5,119 301.5,307 -115,179 -282,294 l 63,112 q 95,-64 182.5,-153 87.5,-89 144.5,-184 20,-34 20,-69 z" fill="#c0c0c0"></path></g></symbol></svg>` );
     //  var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 0 100 100"><rect fill="black" x="0" y="0" width="100" height="100" /></symbol></svg>');
 
     /* var eyeClosed = document.createElementNS( this.graph.ns, "symbol");
@@ -108,7 +108,7 @@ class Legend {
       rect.setAttribute('fill', 'black');
       eyeClosed.appendChild( rect );
   */
-    var eye = util.SVGParser( '<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>' );
+    var eye = util.SVGParser( `<svg xmlns="http://www.w3.org/2000/svg"><symbol id="${ this.eyeId }" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>` );
 
     this.svg.appendChild( document.adoptNode( eye.documentElement.firstChild ) );
     this.svg.appendChild( document.adoptNode( eyeClosed.documentElement.firstChild ) );
@@ -185,7 +185,7 @@ class Legend {
         }
       }
 
-      this.groups[ i ].setAttribute( 'transform', 'translate( ' + posX + ', ' + posY + ')' );
+      this.groups[ i ].setAttribute( 'transform', `translate( ${ posX }, ${ posY })` );
 
       if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
 
@@ -228,29 +228,29 @@ class Legend {
     switch ( this.autoPosition ) {
 
       case 'bottom':
-        this.position.y = this.graph.getHeight() + 'px';
+        this.position.y = `${this.graph.getHeight() }px`;
         // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
-        this.position.x = ( ( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX ) + 'px';
+        this.position.x = `${( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX }px`;
         this.alignToY = 'bottom';
         this.alignToX = false;
         break;
 
       case 'left':
         this.position.x = '6px';
-        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + 'px';
+        this.position.y = `${( this.graph.getHeight() - this.height ) / 2 }px`;
         this.alignToX = 'left';
         this.alignToY = false;
         break;
 
       case 'right':
-        this.position.x = this.graph.getWidth() + 'px';
-        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + 'px';
+        this.position.x = `${this.graph.getWidth() }px`;
+        this.position.y = `${( this.graph.getHeight() - this.height ) / 2 }px`;
         this.alignToX = 'right';
         this.alignToY = false;
         break;
 
       case 'top':
-        this.position.x = ( ( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX ) + 'px';
+        this.position.x = `${( this.graph.drawingSpaceWidth - this.width ) / 2 + this.graph.drawingSpaceMinX }px`;
         this.position.y = '10px';
         this.alignToY = 'top';
         this.alignToX = false;
@@ -399,7 +399,7 @@ class Legend {
           dx += 20;
 
           var eyeUse = document.createElementNS( self.graph.ns, 'use' );
-          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', 'xlink:href', '#' + ( series[ i ].isShown() ? this.eyeId : this.eyeCrossedId ) );
+          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', 'xlink:href', `#${ series[ i ].isShown() ? this.eyeId : this.eyeCrossedId}` );
           eyeUse.setAttribute( 'width', 15 );
           eyeUse.setAttribute( 'height', 15 );
           eyeUse.setAttribute( 'x', 35 );
@@ -417,13 +417,13 @@ class Legend {
               id = self.eyeId;
             }
 
-            eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', 'xlink:href', '#' + id );
+            eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', 'xlink:href', `#${ id}` );
 
           } );
 
         }
 
-        text.setAttribute( 'transform', 'translate(' + dx + ', 3)' );
+        text.setAttribute( 'transform', `translate(${ dx }, 3)` );
         text.setAttribute( 'fill', this.options.color );
 
         if ( line ) {
@@ -606,7 +606,7 @@ class Legend {
 
     var pos = this.pos;
     if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) && pos.transformX !== false && pos.transformY !== false ) {
-      this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+      this.svg.setAttribute( 'transform', `translate(${ pos.transformX }, ${ pos.transformY })` );
     }
   }
 
@@ -617,7 +617,7 @@ class Legend {
 
     if ( this.options.frame ) {
       this.rectBottom.setAttribute( 'stroke', this.options.frameColor );
-      this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + 'px' );
+      this.rectBottom.setAttribute( 'stroke-width', `${this.options.frameWidth }px` );
       this.rectBottom.setAttribute( 'rx', this.options.frameRounding );
       this.rectBottom.setAttribute( 'ry', this.options.frameRounding );
     }

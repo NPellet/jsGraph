@@ -30,7 +30,7 @@ class Shape extends EventEmitter {
 
     this.group = document.createElementNS( this.graph.ns, 'g' );
 
-    this.group.setAttribute( 'clip-path', 'url(#_clipplot' + graph._creation + ')' );
+    this.group.setAttribute( 'clip-path', `url(#_clipplot${ graph._creation })` );
 
     this._selected = false;
     this.createDom();
@@ -1009,7 +1009,7 @@ class Shape extends EventEmitter {
 
     for ( var i = 0; i < transforms.length; i++ ) {
 
-      transformString += transforms[ i ].type + '(';
+      transformString += `${transforms[ i ].type }(`;
 
       switch ( transforms[ i ].type ) {
 
@@ -1029,7 +1029,7 @@ class Shape extends EventEmitter {
 
           if ( transforms[ i ].arguments.length == 1 ) {
             var p = this.computePosition( 0 );
-            transformString += p.x + ', ' + p.y;
+            transformString += `${p.x }, ${ p.y}`;
 
           } else {
 
@@ -1180,7 +1180,7 @@ class Shape extends EventEmitter {
       var x = this._labels[ labelIndex ].getAttribute( 'x' ),
         y = this._labels[ labelIndex ].getAttribute( 'y' );
 
-      this._labels[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+      this._labels[ labelIndex ].setAttribute( 'transform', `rotate(${ currAngle } ${ x } ${ y })` );
       //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
     }
 
@@ -1202,7 +1202,7 @@ class Shape extends EventEmitter {
     this._labels[ labelIndex ].setAttribute( 'fill', this.getProp( 'labelColor', labelIndex ) || 'black' );
 
     /** Sets the size */
-    this._labels[ labelIndex ].setAttribute( 'font-size', this.getProp( 'labelSize', labelIndex ) + 'px' || '12px' );
+    this._labels[ labelIndex ].setAttribute( 'font-size', `${this.getProp( 'labelSize', labelIndex ) }px` || '12px' );
 
     /** Sets the anchor */
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
@@ -1211,7 +1211,7 @@ class Shape extends EventEmitter {
     this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) || 'black' );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || 0 + 'px' );
+    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || `${0 }px` );
 
     this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
 
@@ -1932,7 +1932,7 @@ class Shape extends EventEmitter {
 
     if ( maskingId ) {
 
-      this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
+      this._dom.setAttribute( 'mask', `url(#${ maskingId })` );
 
     } else {
 
@@ -2005,8 +2005,8 @@ class Shape extends EventEmitter {
 
     util.setCSS( shapeLabel, {
       position: 'absolute',
-      marginTop: ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) + this.graph.getPaddingTop() - 10 ) + 'px',
-      marginLeft: ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) + this.graph.getPaddingLeft() - 50 ) + 'px',
+      marginTop: `${parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) + this.graph.getPaddingTop() - 10 }px`,
+      marginLeft: `${parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) + this.graph.getPaddingLeft() - 50 }px`,
       textAlign: 'center',
       width: '100px'
     } );

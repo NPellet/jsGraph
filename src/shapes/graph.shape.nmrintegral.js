@@ -1,5 +1,6 @@
-import Shape from './graph.shape.js';
 import GraphPosition from '../graph.position.js';
+
+import Shape from './graph.shape.js';
 
 /**
  * Displays an integral with NMR style
@@ -222,15 +223,15 @@ class ShapeNMRIntegral extends Shape {
         let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2 * ratio;
 
         this.setPosition( {
-          x: points[ i ][ 0 ] + 'px',
-          y: pos + 'px'
+          x: `${points[ i ][ 0 ] }px`,
+          y: `${pos }px`
 
         }, 3 );
 
         this.setLabelPosition( this.getPosition( 3 ), 0 );
       }
 
-      currentLine += ' L ' + points[ i ][ 0 ] + ', ' + py + ' ';
+      currentLine += ` L ${ points[ i ][ 0 ] }, ${ py } `;
 
       this.lastPointX = points[ i ][ 0 ];
       this.lastPointY = py;
@@ -240,9 +241,9 @@ class ShapeNMRIntegral extends Shape {
     this._sum = sum;
 
     if ( this.serie.isFlipped() ) {
-      currentLine = ' M ' + baseLine + ', ' + firstX + ' ' + currentLine;
+      currentLine = ` M ${ baseLine }, ${ firstX } ${ currentLine}`;
     } else {
-      currentLine = ' M ' + firstX + ', ' + baseLine + ' ' + currentLine;
+      currentLine = ` M ${ firstX }, ${ baseLine } ${ currentLine}`;
     }
 
     this.firstPointX = firstX;

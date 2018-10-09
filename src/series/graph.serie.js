@@ -1,7 +1,8 @@
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
 import * as util from '../graph.util.js';
-
-import Waveform from '../util/waveform.js';
+import {
+  Waveform
+} from '../util/waveform.js';
 
 const defaultOptions = {
   redrawShapesAfterDraw: false

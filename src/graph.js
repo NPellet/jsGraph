@@ -1,12 +1,10 @@
 import Graph from './graph.core.js';
 import GraphPosition from './graph.position.js';
 import GraphLegend from './graph.legend.js';
-
 import AxisX from './graph.axis.x.js';
 import AxisY from './graph.axis.y.js';
 import AxisXBar from './graph.axis.x.bar.js';
 import AxisXTime from './graph.axis.x.time.js';
-
 import SerieLine from './series/graph.serie.line.js';
 import SerieLine3D from './series/graph.serie.line.3d.js';
 import SerieBar from './series/graph.serie.bar.js';
@@ -17,7 +15,6 @@ import SerieZone from './series/graph.serie.zone.js';
 import SerieZone3D from './series/graph.serie.zone.3d.js';
 import SerieDensityMap from './series/graph.serie.densitymap.js';
 import SerieContour from './series/graph.serie.contour.js';
-
 import Shape from './shapes/graph.shape.js';
 import ShapeAreaUnderCurve from './shapes/graph.shape.areaundercurve.js';
 import ShapeArrow from './shapes/graph.shape.arrow.js';
@@ -31,7 +28,6 @@ import ShapeRect from './shapes/graph.shape.rect.js';
 import ShapeCross from './shapes/graph.shape.cross.js';
 import ShapePeakBoundariesCenter from './shapes/graph.shape.peakboundariescenter.js';
 import ShapeHTML from './shapes/graph.shape.html.js';
-
 import GraphPlugin from './plugins/graph.plugin.js';
 import GraphPluginDrag from './plugins/graph.plugin.drag.js';
 import GraphPluginShape from './plugins/graph.plugin.shape.js';
@@ -42,8 +38,9 @@ import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinediff
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting.js';
 import GraphPluginMakeTracesDifferent from './plugins/graph.plugin.makeTracesDifferent.js';
 import GraphPluginPeakPicking from './plugins/graph.plugin.peakpicking.js';
-
-import Waveform from './util/waveform.js';
+import {
+  Waveform
+} from './util/waveform.js';
 import FitLM from './util/fit_lm.js';
 
 // Corrent naming is important here !

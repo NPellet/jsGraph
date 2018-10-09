@@ -213,8 +213,8 @@ class Axis extends EventEmitter {
         this.clip.appendChild( this.clipRect );
         this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
     */
-    this.gridPrimary.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
-    this.gridSecondary.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
+    this.gridPrimary.setAttribute( 'clip-path', `url(#_clipplot${ this.graph._creation })` );
+    this.gridSecondary.setAttribute( 'clip-path', `url(#_clipplot${ this.graph._creation })` );
     this.graph._axisHasChanged( this );
   }
 
@@ -1162,14 +1162,14 @@ class Axis extends EventEmitter {
         this.preunitTspan.setAttribute( 'display', 'visible' );
         this.unitTspan.setAttribute( 'dx', 0 );
 
-        string += ' ' + letter + ' ' + this.options.unit;
+        string += ` ${ letter } ${ this.options.unit}`;
 
       } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
         if ( this.options.engineeringScale ) {
           this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
         }
-        string += ' \\cdot 10^' + this.scientificExponent + ' ' + this.options.unit;
+        string += ` \\cdot 10^${ this.scientificExponent } ${ this.options.unit}`;
 
       }
 
@@ -1525,7 +1525,7 @@ class Axis extends EventEmitter {
       return;
     }
 
-    this.gridLinePath[ primary ? 'primary' : 'secondary' ] += 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+    this.gridLinePath[ primary ? 'primary' : 'secondary' ] += `M ${ x1 } ${ y1 } L ${ x2 } ${ y2}`;
   }
 
   setGridLineStyle( gridLine, primary ) {
@@ -1810,7 +1810,7 @@ class Axis extends EventEmitter {
       }
 
       if ( this.options.unitInTicks && this.options.unit ) {
-        value += ' ' + this.options.unit;
+        value += ` ${ this.options.unit}`;
       }
 
       return value;
@@ -1839,7 +1839,7 @@ class Axis extends EventEmitter {
 
     } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) && !noScaling ) {
       text += 'x10';
-      text += '<sup>' + this.scientificExponent + '</sup>';
+      text += `<sup>${ this.scientificExponent }</sup>`;
     }
 
     if ( this.options.unit && !noUnits ) {
@@ -1900,7 +1900,7 @@ class Axis extends EventEmitter {
 
           value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
           valueRounded = Math.round( value );
-          text += ' ' + valueRounded + units[ umin ][ 1 ];
+          text += ` ${ valueRounded }${units[ umin ][ 1 ]}`;
           umin--;
         }
 
@@ -1909,9 +1909,9 @@ class Axis extends EventEmitter {
       case 'time:min.sec':
         value = value / 60;
         var valueRounded = Math.floor( value );
-        var s = ( Math.round( ( value - valueRounded ) * 60 ) + '' );
-        s = s.length == 1 ? '0' + s : s;
-        text = valueRounded + '.' + s;
+        var s = ( `${Math.round( ( value - valueRounded ) * 60 ) }` );
+        s = s.length == 1 ? `0${ s}` : s;
+        text = `${valueRounded }.${ s}`;
         break;
 
       default:
@@ -2475,7 +2475,7 @@ class Axis extends EventEmitter {
       var log = Math.round( Math.log( val ) / Math.log( 10 ) );
       var unit = Math.floor( val * Math.pow( 10, -log ) );
 
-      dom.textContent = ( unit != 1 ) ? unit + 'x10' : '10';
+      dom.textContent = ( unit != 1 ) ? `${unit }x10` : '10';
       var tspan = document.createElementNS( this.graph.ns, 'tspan' );
       tspan.textContent = log;
       tspan.setAttribute( 'font-size', '0.7em' );

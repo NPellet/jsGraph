@@ -23,7 +23,7 @@
     "babel-plugin-transform-exponentiation-operator": "^6.24.1",
     "babel-polyfill": "^6.16.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-minify": "^0.2.0",
+    "babel-preset-minify": "^0.5.0",
     "babel-preset-stage-1": "^6.5.0",
     "babel-preset-stage-2": "^6.11.0",
     "babel-preset-stage-3": "^6.11.0",
@@ -34,7 +34,7 @@
     "eslint-plugin-jest": "^21.21.0",
     "eslint-plugin-no-only-tests": "^2.0.0",
     "grunt": "^1.0.1",
-    "grunt-babel": "^7.0.0",
+    "grunt-babel": "^8.0.0",
     "grunt-bump": "^0.8.0",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-copy": "^1.0.0",
@@ -55,7 +55,11 @@
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.9.7"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@babel/core": "^7.1.2",
+    "babel": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2"
+  },
   "jest": {
     "testRegex": "/__tests__/.*$"
   },
