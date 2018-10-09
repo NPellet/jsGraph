@@ -1,4 +1,4 @@
-module.exports = {
+{
   series: {
     type: 'line',
     data: {
@@ -14,15 +14,15 @@ module.exports = {
       },
       marker: {
         shape: 'rect', // circle, path,
-        x: -2,
-        y: -2,
-        width: 4,
-        height: 4,
-        fillColor: 'white',
-        fillOpacity: 0.9,
-        strokeColor: 'blue',
-        strokeOpacity: 0.7
+        x: -4,
+        y: -4,
+        width: 8,
+        height: 8,
+        fill: 'white',
+        "fill-opacity": 0.9,
+        stroke: 'black',
+        "stroke-opacity": 0.7
       }
     }
   }
-};
+}

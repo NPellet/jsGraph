@@ -1,4 +1,14 @@
-export default {
+
+<!doctype html>
+<html>
+    <body>
+        <div id="graph"></div>
+    </body>
+    <script type="module">
+    console.log('a');
+        import Graph from '/src/graph.js'
+        console.log('a');
+        const graph = Graph.fromJSON( {
   axes: {
     left: [
       {
@@ -13,9 +23,9 @@ export default {
       label: 'Fruit type',
       name: 'cat_btm',
       categories: [
-        { name: 'peach', label: 'Peaches' },
-        { name: 'apple', label: 'Apples' },
-        { name: 'orange', label: 'Oranges' }
+        { name: 'peach', title: 'Peaches' },
+        { name: 'apple', title: 'Apples' },
+        { name: 'orange', title: 'Oranges' }
       ]
     }
     // x:, y:
@@ -42,4 +52,8 @@ export default {
       }
     }
   ]
-};
+}, "graph" );
+        console.log('a');
+        graph.draw();
+    </script>
+</html>

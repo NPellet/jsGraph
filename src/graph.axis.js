@@ -75,7 +75,9 @@ const defaults = {
   useKatexForLabel: false,
 
   highestMax: false,
-  lowestMin: false
+  lowestMin: false,
+
+  labelValue: ''
 };
 
 /**
@@ -1944,7 +1946,7 @@ class Axis extends EventEmitter {
    * @return {Axis} The current axis
    */
   setLabel( label ) {
-    this.options.labelValue = label;
+    this.options.label = label;
     return this;
   }
 
@@ -1958,7 +1960,7 @@ class Axis extends EventEmitter {
    * @return {String} The label value
    */
   getLabel() {
-    return this.options.labelValue;
+    return this.options.label;
   }
 
   setSpan( _from, _to ) {

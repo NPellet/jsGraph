@@ -1,4 +1,4 @@
-export default {
+{
   axes: {
     left: [
       {
@@ -29,10 +29,12 @@ export default {
         peach: 2
       },
       style: {
-        color: 'red',
-        width: 4,
-        fill: 'none',
-        fillOpacity: 0.9
+        line: {
+          color: 'red',
+          width: 4,
+          fill: 'red',
+          fillOpacity: 0.2
+        }
       }
     },
     {
@@ -44,11 +46,13 @@ export default {
         peach: 9
       },
       style: {
-        color: 'green',
-        width: 4,
-        fill: 'none',
-        fillOpacity: 0.9
+        line: {
+          color: 'green',
+          width: 4,
+          fill: 'DarkGreen',
+          fillOpacity: 0.2
+        }
       }
     }
   ]
-};
+}

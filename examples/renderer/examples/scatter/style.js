@@ -1,6 +1,6 @@
-module.exports = {
+{
   series: {
-    type: 'line',
+    type: 'scatter',
     data: {
       x: [1, 2, 3, 4, 5],
       y: [1, 2, 3, 2, 1]
@@ -12,11 +12,11 @@ module.exports = {
         y: -2,
         width: 4,
         height: 4,
-        fillColor: 'white',
-        fillOpacity: 0.9,
-        strokeColor: 'blue',
-        strokeOpacity: 0.7
+        fill: 'white',
+        "fill-opacity": 0.9,
+        stroke: 'blue',
+        "stroke-opacity": 0.7
       }
     }
   }
-};
+}

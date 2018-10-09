@@ -1,6 +1,7 @@
 import GraphPosition from './graph.position.js';
 import * as util from './graph.util.js';
 import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
+import graphFromJson from './renderer/main.js';
 import {
   Waveform,
   WaveformHash
@@ -62,10 +63,6 @@ const GraphOptionsDefault = {
   shapesUniqueSelection: true
 };
 
-const defaultScatterStyle = {
-  shape: 'circle',
-  r: 4
-};
 
 var _constructors = new Map();
 
@@ -549,6 +546,10 @@ class Graph extends EventEmitter {
    */
   uncacheOffset() {
     this.offsetCached = false;
+  }
+
+  getNumAxes( position ) {
+    return this.axis[ position ].length;
   }
 
   /**
@@ -2094,7 +2095,6 @@ class Graph extends EventEmitter {
     }
   }
   unlockShapes() {
-    //		console.log('unlock');
     this.shapesLocked = false;
   }
   prevent( arg ) {
@@ -2374,468 +2374,13 @@ class Graph extends EventEmitter {
 
   /**
    * Returns a graph created from a schema
-   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+   * @param {Object} json
    * @param {HTMLElement} wrapper - The wrapping element
    * @returns {Graph} Newly created graph
    */
-  static fromJSON( schema, wrapper ) {
+  static fromJSON( json, wrapper ) {
 
-    let graph,
-      options = {},
-      axes = {
-        left: [],
-        top: [],
-        right: [],
-        bottom: []
-      },
-      style;
-
-    if ( schema.title ) {
-      options.title = schema.title;
-    }
-
-    if ( schema.axis ) {
-
-      schema.axis.forEach( function( schemaAxis ) {
-
-        if ( !schemaAxis.type ) {
-          util.throwError( 'Axis type is required (top, bottom, left or right)' );
-        }
-
-        var axisOptions = {};
-        if ( schemaAxis.label ) {
-          axisOptions.labelValue = schemaAxis.label;
-        }
-
-        if ( schemaAxis.unit !== undefined ) {
-          axisOptions.unit = schemaAxis.unit;
-        }
-
-        if ( schemaAxis.unitWrapperAfter !== undefined ) {
-          axisOptions.unitWrapperAfter = schemaAxis.unitWrapperAfter;
-        }
-
-        if ( schemaAxis.unitWrapperBefore !== undefined ) {
-          axisOptions.unitWrapperBefore = schemaAxis.unitWrapperBefore;
-        }
-
-        if ( schemaAxis.min !== undefined ) {
-          axisOptions.forcedMin = schemaAxis.min;
-        }
-
-        if ( schemaAxis.max !== undefined ) {
-          axisOptions.forcedMax = schemaAxis.max;
-        }
-
-        if ( schemaAxis.flip !== undefined ) {
-          axisOptions.flipped = schemaAxis.flip;
-        }
-
-        axes[ schemaAxis.type ].push( axisOptions );
-        schemaAxis._jsGraphIndex = axes[ schemaAxis.type ].length - 1;
-
-      } );
-    }
-
-    graph = new Graph( wrapper, options, axes );
-
-    if ( schema.width ) {
-      graph.setWidth( schema.width );
-    }
-
-    if ( schema.height ) {
-      graph.setHeight( schema.width );
-    }
-
-    graph._resize();
-
-    if ( schema.data ) {
-
-      schema.data.forEach( function( schemaSerie ) {
-
-        var serieType = schemaSerie.type,
-          serie,
-          serieOptions = {},
-          serieAxis;
-
-        let waveform;
-
-        switch ( schemaSerie.type ) {
-
-          case 'bar':
-            util.throwError( 'Bar charts not supported' );
-            serieType = false;
-            break;
-
-          case 'color':
-            serieType = Graph.SERIE_LINE_COLORED;
-            break;
-
-          case 'scatter':
-            serieType = Graph.SERIE_SCATTER;
-            break;
-
-          case 'box':
-            serieType = Graph.SERIE_BOX;
-
-            if ( schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y' ) {
-              serieOptions.orientation = schemaSerie.orientation;
-            }
-            break;
-
-          default:
-            serieType = Graph.SERIE_LINE;
-            break;
-        }
-
-        if ( serieType !== Graph.SERIE_BOX ) {
-          waveform = Graph.newWaveform();
-        }
-
-        if ( !serieType ) {
-          util.throwError( 'No valid serie type was found' );
-          return;
-        }
-
-        serie = graph.newSerie( schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType );
-
-        if ( schemaSerie.lineStyle ) {
-
-          let lineStyle = schemaSerie.lineStyle;
-
-          if ( Array.isArray( lineStyle ) ) {
-            lineStyle = {
-              unselected: lineStyle
-            };
-          }
-
-          Object.entries( lineStyle ).forEach( ( [ styleName, style ] ) => {
-
-            var styleSerie = {};
-
-            switch ( serieType ) {
-
-              case Graph.SERIE_LINE:
-                if ( style.lineWidth !== undefined ) {
-                  styleSerie.lineWidth = style.lineWidth;
-                }
-
-                if ( style.color !== undefined ) {
-                  styleSerie.lineColor = style.color;
-                }
-
-                if ( style.lineStyle ) {
-                  styleSerie.lineStyle = style.lineStyle;
-                }
-
-                serie.setStyle( styleSerie, styleName );
-                break;
-            }
-          } );
-        }
-
-        let defaultStyle = {};
-        let defaultStyles = {};
-
-        if ( schemaSerie.defaultStyle ) {
-          defaultStyle = schemaSerie.defaultStyle;
-        }
-
-        if ( schemaSerie.defaultStyles ) {
-          defaultStyles = schemaSerie.defaultStyles;
-        }
-
-        if ( schemaSerie.styles ) {
-
-          let individualStyles;
-
-          if ( Array.isArray( schemaSerie.styles ) ) {
-            individualStyles = {
-              unselected: schemaSerie.styles
-            };
-          } else {
-            individualStyles = schemaSerie.styles;
-          }
-
-          let styleNames = new Set( Object.keys( defaultStyles ).concat( Object.keys( individualStyles ) ) );
-
-          styleNames.forEach( ( styleName ) => {
-
-            var styleSerie = {};
-            let style = [],
-              styles;
-
-            if ( individualStyles && individualStyles[ styleName ] ) {
-
-              style = individualStyles[ styleName ];
-
-              if ( !Array.isArray( style ) ) {
-                style = [ style ];
-              }
-
-              styles = style.map( function( eachStyleElement ) {
-
-                switch ( serieType ) {
-
-                  case Graph.SERIE_LINE:
-
-                    return {
-                      type: eachStyleElement.shape,
-                      zoom: eachStyleElement.zoom,
-                      strokeWidth: eachStyleElement.lineWidth,
-                      strokeColor: eachStyleElement.lineColor,
-                      fillColor: eachStyleElement.color,
-                      points: eachStyleElement.points
-                    };
-
-                    break;
-
-                  case Graph.SERIE_BOX:
-
-                    return eachStyleElement;
-
-                    break;
-
-                  case Graph.SERIE_SCATTER:
-                    return eachStyleElement;
-
-                    break;
-                }
-              } );
-            }
-
-            switch ( serieType ) {
-
-              case Graph.SERIE_LINE:
-
-                serie.setMarkers( styles, styleName );
-                break;
-
-              case Graph.SERIE_SCATTER:
-                serie.setStyle( Object.assign( {}, defaultScatterStyle, defaultStyle, defaultStyles[ styleName ] || {} ), styles, styleName );
-                break;
-
-              case Graph.SERIE_BOX:
-
-                serie.setStyle( styles[ 0 ], styleName || 'unselected' );
-                break;
-            }
-          } );
-        }
-
-        if ( schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED ) {
-          serie.setColors( schemaSerie.color );
-        }
-
-        if ( serieType !== Graph.SERIE_BOX ) {
-          waveform.setData( schemaSerie.y, schemaSerie.x );
-        }
-
-        if ( !serie ) {
-          return;
-        }
-
-        let errorBarsXAbove = [],
-          errorBarsXBelow = [],
-          errorBarsYAbove = [],
-          errorBarsYBelow = [],
-
-          errorBoxesXAbove = [],
-          errorBoxesXBelow = [],
-          errorBoxesYAbove = [],
-          errorBoxesYBelow = [];
-
-        if ( waveform !== undefined ) {
-          var errors = [];
-          if ( schemaSerie.errorX ) {
-
-            for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
-
-              if ( Array.isArray( schemaSerie.errorX[ i ] ) ) {
-
-                errorBarsXAbove.push( schemaSerie.errorX[ i ][ 0 ] );
-                errorBarsXBelow.push( schemaSerie.errorX[ i ][ 1 ] );
-              } else {
-                errorBarsXAbove.push( schemaSerie.errorX[ i ] );
-                errorBarsXBelow.push( schemaSerie.errorX[ i ] );
-              }
-            }
-
-          } else if ( schemaSerie.errorBarX || schemaSerie.errorBoxX ) {
-
-            if ( schemaSerie.errorBarX ) {
-
-              for ( var i = 0, l = schemaSerie.errorBarX.length; i < l; i++ ) {
-
-                if ( Array.isArray( schemaSerie.errorBarX[ i ] ) ) {
-
-                  errorBarsXAbove.push( schemaSerie.errorBarX[ i ][ 0 ] );
-                  errorBarsXBelow.push( schemaSerie.errorBarX[ i ][ 1 ] );
-                } else {
-                  errorBarsXAbove.push( schemaSerie.errorBarX[ i ] );
-                  errorBarsXBelow.push( schemaSerie.errorBarX[ i ] );
-                }
-              }
-            }
-
-            if ( schemaSerie.errorBoxX ) {
-
-              for ( var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++ ) {
-
-                if ( Array.isArray( schemaSerie.errorBoxX[ i ] ) ) {
-
-                  errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ][ 0 ] );
-                  errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ][ 1 ] );
-                } else {
-                  errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ] );
-                  errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ] );
-                }
-              }
-            }
-          }
-
-          if ( schemaSerie.errorY ) {
-
-            for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
-
-              if ( Array.isArray( schemaSerie.errorY[ i ] ) ) {
-
-                errorBarsYAbove.push( schemaSerie.errorY[ i ][ 0 ] );
-                errorBarsYBelow.push( schemaSerie.errorY[ i ][ 1 ] );
-              } else {
-                errorBarsYAbove.push( schemaSerie.errorY[ i ] );
-                errorBarsYBelow.push( schemaSerie.errorY[ i ] );
-              }
-            }
-          } else if ( schemaSerie.errorBarY || schemaSerie.errorBoxY ) {
-
-            if ( schemaSerie.errorBarY ) {
-
-              for ( var i = 0, l = schemaSerie.errorBarY.length; i < l; i++ ) {
-
-                if ( Array.isArray( schemaSerie.errorBarY[ i ] ) ) {
-
-                  errorBarsYAbove.push( schemaSerie.errorBarY[ i ][ 0 ] );
-                  errorBarsYBelow.push( schemaSerie.errorBarY[ i ][ 1 ] );
-                } else {
-                  errorBarsYAbove.push( schemaSerie.errorBarY[ i ] );
-                  errorBarsYBelow.push( schemaSerie.errorBarY[ i ] );
-                }
-              }
-            }
-
-            if ( schemaSerie.errorBoxY ) {
-
-              for ( var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++ ) {
-
-                if ( Array.isArray( schemaSerie.errorBoxY[ i ] ) ) {
-
-                  errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ][ 0 ] );
-                  errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ][ 1 ] );
-                } else {
-                  errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ] );
-                  errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ] );
-                }
-              }
-            }
-          }
-
-          style = {};
-          if ( errorBarsXAbove.length > 0 ) {
-            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
-            style.right = {};
-          }
-          if ( errorBarsXBelow.length > 0 ) {
-            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
-            style.left = {};
-          }
-          if ( errorBarsYAbove.length > 0 ) {
-            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
-            style.top = {};
-          }
-          if ( errorBarsYBelow.length > 0 ) {
-            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
-            style.bottom = {};
-          }
-
-          serie.setErrorBarStyle( style );
-
-          style = {};
-          if ( errorBoxesXAbove.length > 0 ) {
-            waveform.setErrorBoxXAbove( Graph.newWaveform( errorBoxesXAbove ) );
-            style.right = {};
-          }
-          if ( errorBoxesXBelow.length > 0 ) {
-            waveform.setErrorBoxXBelow( Graph.newWaveform( errorBoxesXBelow ) );
-            style.left = {};
-          }
-          if ( errorBoxesYAbove.length > 0 ) {
-            waveform.setErrorBoxAbove( Graph.newWaveform( errorBoxesYAbove ) );
-            style.top = {};
-          }
-          if ( errorBoxesYBelow.length > 0 ) {
-            waveform.setErrorBoxBelow( Graph.newWaveform( errorBoxesYBelow ) );
-            style.bottom = {};
-          }
-          serie.setErrorBoxStyle( style );
-        }
-
-        if ( schema.axis ) {
-          serieAxis = schema.axis[ schemaSerie.xAxis ];
-
-          if ( !serieAxis || ( serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) ) {
-            util.warn( 'No x axis found. Setting automatically' );
-            serie.setXAxis( graph.getXAxis( 0 ) );
-          } else {
-            if ( serieAxis.type == 'top' ) {
-              serie.setXAxis( graph.getTopAxis( serieAxis._jsGraphIndex ) );
-            } else if ( serieAxis.type == 'bottom' ) {
-              serie.setXAxis( graph.getBottomAxis( serieAxis._jsGraphIndex ) );
-            }
-          }
-
-          serieAxis = schema.axis[ schemaSerie.yAxis ];
-
-          if ( !serieAxis || ( serieAxis.type !== 'left' && serieAxis.type !== 'right' ) ) {
-            util.warn( 'No y axis found. Setting automatically' );
-            serie.setYAxis( graph.getYAxis( 0 ) );
-          } else {
-            if ( serieAxis.type == 'left' ) {
-              serie.setYAxis( graph.getLeftAxis( serieAxis._jsGraphIndex ) );
-            } else if ( serieAxis.type == 'right' ) {
-              serie.setYAxis( graph.getRightAxis( serieAxis._jsGraphIndex ) );
-            }
-          }
-
-        } else {
-          util.warn( 'No axes found. Setting automatically' );
-          serie.autoAxis();
-        }
-
-        switch ( serieType ) {
-
-          case Graph.SERIE_BOX:
-
-            serie.setData( schemaSerie.boxes );
-
-            break;
-
-          default:
-          case Graph.SERIE_SCATTER:
-          case Graph.SERIE_LINE_COLORED:
-          case Graph.SERIE_LINE:
-
-            serie.setWaveform( waveform );
-
-            break;
-        }
-      } );
-
-    }
-
-    graph.autoscaleAxes();
-    graph.draw();
-
+    const graph = graphFromJson( Graph, json, wrapper );
     return graph;
   }
 
@@ -2858,7 +2403,7 @@ class Graph extends EventEmitter {
     axesPositions.map( ( axisPosition ) => {
 
       if ( !this.axis[ axisPosition ] ) {
-        return;
+        return {};
       }
 
       axesExport = axesExport.concat( this.axis[ axisPosition ].map( ( axis ) => {
@@ -2888,21 +2433,18 @@ class Graph extends EventEmitter {
     let toType = ( type ) => {
       switch ( type ) {
 
-        case Graph.SERIE_LINE:
-          return 'line';
-          break;
-
         case Graph.SERIE_BAR:
           return 'bar';
-          break;
 
         case Graph.SERIE_LINE_COLORED:
           return 'color';
-          break;
 
         case Graph.SERIE_SCATTER:
           return 'scatter';
-          break;
+
+        default:
+        case Graph.SERIE_LINE:
+        return 'line';
       }
     };
 
@@ -3093,7 +2635,6 @@ function getAxisLevelFromSpan( span, level ) {
 
 function refreshDrawingZone( graph ) {
 
-  var i, j, l, xy, min, max, axis;
   var shift = {
     top: [],
     bottom: [],
@@ -3172,7 +2713,7 @@ function refreshDrawingZone( graph ) {
 
     axis.setMinPx( shiftTop );
     axis.setMaxPx( graph.getDrawingHeight( true ) - shiftBottom );
-
+console.log( axis );
     if ( axis.floating ) {
       return;
     }
@@ -3222,7 +2763,7 @@ function refreshDrawingZone( graph ) {
 
   graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
 
-  [ shift.left, shift.right ].map( function( arr ) {
+  [ shift.left, shift.right ].forEach( function( arr ) {
     arr.reduce( function( prev, current, index ) {
       arr[ index ] = prev + current;
       return prev + current;
@@ -3310,8 +2851,8 @@ function refreshDrawingZone( graph ) {
 
   }, false, true, true );
 
-  /*
-	graph.shapeZoneRect.setAttribute('x', shift[1]);
+/**
+  graph.shapeZoneRect.setAttribute('x', shift[1]);
 	graph.shapeZoneRect.setAttribute('y', shift[2]);
 	graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
 	graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
@@ -4000,11 +3541,11 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
 var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
 
-  var ratio = 0,
+  var
     start = Date.now(),
     h = legend.offsetHeight,
-    startX = parseInt( legend.style.marginLeft.replace( 'px', '' ) || 0 ),
-    startY = parseInt( legend.style.marginTop.replace( 'px', '' ) || 0 );
+    startX = parseInt( legend.style.marginLeft.replace( 'px', '' ) || 0, 10 ),
+    startY = parseInt( legend.style.marginTop.replace( 'px', '' ) || 0, 10 );
 
   toX = ( toX > graph.getWidth() / 2 ) ? ( ( toX - toX % 10 - 20 ) - legend.offsetWidth ) : ( toX - toX % 10 + 30 );
   toY = ( toY - toY % 10 + h / 2 );
@@ -4056,9 +3597,9 @@ function _makeTrackingLegend( graph ) {
 }
 
 function _handleDblClick( graph, x, y, e ) {
-  //	var _x = x - graph.options.paddingLeft;
-  //	var _y = y - graph.options.paddingTop;
-  var pref = graph.options.dblclick;
+  // var _x = x - graph.options.paddingLeft;
+  // var _y = y - graph.options.paddingTop;
+  //var pref = graph.options.dblclick;
   checkMouseActions( graph, e, [ x, y, e ], 'onDblClick' );
   /*
       if ( !pref || !pref.type ) {
@@ -4156,6 +3697,9 @@ function _getAxis( graph, num, options, pos ) {
     case 'right':
       inst = axisInstance.y;
       break;
+
+    default:
+      return;
   }
 
   num = num || 0;

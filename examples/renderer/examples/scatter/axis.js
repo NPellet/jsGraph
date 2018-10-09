@@ -1,4 +1,4 @@
-module.exports = {
+{
   axes: {
     x: {
       forcedMin: 0,
@@ -6,13 +6,14 @@ module.exports = {
       flipped: true,
       primaryGrid: true,
       secondaryGrid: true,
-      primaryGridColor: '#AAAAAA',
-      secondaryGridColor: '#DDDDDD'
+      primaryGridColor: '#FFAAAA',
+      secondaryGridColor: '#FFDDDD'
     },
     y: {
       label: 'Produced mass',
       unit: 'g',
-      unitWrapper: ['(', ')'],
+      unitWrapperBefore: '(',
+      unitWrapperAfter: ')',
       unitDecade: true,
       logScale: true
     }
@@ -24,4 +25,4 @@ module.exports = {
       y: [1, 22, 333, 2123, 12344]
     }
   }
-};
+}
