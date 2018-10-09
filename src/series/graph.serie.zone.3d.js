@@ -17,8 +17,8 @@ class SerieZone3D extends Serie {
       zpos: 0
     };
   }
-  constructor(graph, name, options) {
-    super(...arguments);
+  constructor( graph, name, options ) {
+    super( ...arguments );
   }
 
   /**
@@ -26,15 +26,15 @@ class SerieZone3D extends Serie {
    * @memberof SerieZone3D
    * @param {Number} zPos - The position in the z axis
    */
-  setZPos(zPos) {
+  setZPos( zPos ) {
     this.options.zpos = zPos;
     return this;
   }
 
   setz() {
-    return this.setZPos(...arguments);
+    return this.setZPos( ...arguments );
   }
 }
 
-util.mix(SerieZone3D, Serie3DMixin);
+util.mix( SerieZone3D, Serie3DMixin );
 export default SerieZone3D;
