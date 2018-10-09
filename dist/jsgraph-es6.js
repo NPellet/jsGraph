@@ -371,11 +371,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           if (options.json) response = JSON.parse(response);
           resolve(response);
         } else {
-          reject(new Error('Request error: ' + request.status));
+          reject(new Error(`Request error: ${request.status}`));
         }
       };
       request.onerror = function () {
-        reject(new Error('Network error: ' + request.status));
+        reject(new Error(`Network error: ${request.status}`));
       };
       request.send();
     });
@@ -570,7 +570,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       this.group = document.createElementNS(this.graph.ns, 'g');
 
-      this.group.setAttribute('clip-path', 'url(#_clipplot' + graph._creation + ')');
+      this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
 
       this._selected = false;
       this.createDom();
@@ -1543,7 +1543,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       for (var i = 0; i < transforms.length; i++) {
 
-        transformString += transforms[i].type + '(';
+        transformString += `${transforms[i].type}(`;
 
         switch (transforms[i].type) {
 
@@ -1563,7 +1563,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             if (transforms[i].arguments.length == 1) {
               var p = this.computePosition(0);
-              transformString += p.x + ', ' + p.y;
+              transformString += `${p.x}, ${p.y}`;
             } else {
 
               transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
@@ -1710,7 +1710,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var x = this._labels[labelIndex].getAttribute('x'),
             y = this._labels[labelIndex].getAttribute('y');
 
-        this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
+        this._labels[labelIndex].setAttribute('transform', `rotate(${currAngle} ${x} ${y})`);
         //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
       }
 
@@ -1732,7 +1732,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this._labels[labelIndex].setAttribute('fill', this.getProp('labelColor', labelIndex) || 'black');
 
       /** Sets the size */
-      this._labels[labelIndex].setAttribute('font-size', this.getProp('labelSize', labelIndex) + 'px' || '12px');
+      this._labels[labelIndex].setAttribute('font-size', `${this.getProp('labelSize', labelIndex)}px` || '12px');
 
       /** Sets the anchor */
       this._labels[labelIndex].setAttribute('text-anchor', this._getLabelAnchor(labelIndex));
@@ -1741,7 +1741,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this._labels[labelIndex].setAttribute('stroke', this.getProp('labelStrokeColor', labelIndex) || 'black');
 
       /** Sets the stroke */
-      this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) || 0 + 'px');
+      this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) || `${0}px`);
 
       this._labels[labelIndex].setAttribute('stroke-location', 'outside');
 
@@ -2450,7 +2450,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (maskingId) {
 
-        this._dom.setAttribute('mask', 'url(#' + maskingId + ')');
+        this._dom.setAttribute('mask', `url(#${maskingId})`);
       } else {
 
         this._dom.removeAttribute('mask');
@@ -2522,8 +2522,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       util.setCSS(shapeLabel, {
         position: 'absolute',
-        marginTop: parseInt(e.target.getAttribute('y').replace('px', '')) + this.graph.getPaddingTop() - 10 + 'px',
-        marginLeft: parseInt(e.target.getAttribute('x').replace('px', '')) + this.graph.getPaddingLeft() - 50 + 'px',
+        marginTop: `${parseInt(e.target.getAttribute('y').replace('px', '')) + this.graph.getPaddingTop() - 10}px`,
+        marginLeft: `${parseInt(e.target.getAttribute('x').replace('px', '')) + this.graph.getPaddingLeft() - 50}px`,
         textAlign: 'center',
         width: '100px'
       });
@@ -4160,7 +4160,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (typeof shapeType == 'function') {
         constructor = shapeType;
       } else {
-        constructor = this.getConstructor('graph.shape.' + shapeType);
+        constructor = this.getConstructor(`graph.shape.${shapeType}`);
       }
 
       if (!constructor) {
@@ -4651,7 +4651,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         console.log(pluginName);
         pluginOptions = this.options.plugins[i];
 
-        constructor = this.getConstructor('graph.plugin.' + pluginName);
+        constructor = this.getConstructor(`graph.plugin.${pluginName}`);
 
         if (constructor) {
 
@@ -4661,7 +4661,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           util.mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
           this.plugins[pluginName].init(this, pluginOptions);
         } else {
-          util.throwError('Plugin "' + pluginName + '" has not been registered');
+          util.throwError(`Plugin "${pluginName}" has not been registered`);
         }
       }
     }
@@ -4675,7 +4675,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var plugin = this.plugins[pluginName];
 
       if (!plugin) {
-        return util.throwError('Plugin "' + pluginName + '" has not been loaded or properly registered');
+        return util.throwError(`Plugin "${pluginName}" has not been loaded or properly registered`);
       }
 
       return plugin;
@@ -4884,7 +4884,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     updateGraphingZone() {
       util.setAttributeTo(this.graphingZone, {
-        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+        'transform': `translate(${this.options.paddingLeft}, ${this.options.paddingTop})`
       });
 
       this._sizeChanged = true;
@@ -5043,7 +5043,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : output => {
 
               for (var i in output) {
-                return output[i].serie.serie.getName() + ': ' + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
+                return `${output[i].serie.serie.getName()}: ${output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue)}`;
               }
             }, index.trueX);
 
@@ -5727,7 +5727,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     static registerConstructor(constructorName, constructor) {
 
       if (_constructors.has(constructorName)) {
-        return util.throwError('Constructor ' + constructor + ' already exists.');
+        return util.throwError(`Constructor ${constructor} already exists.`);
       }
 
       _constructors.set(constructorName, constructor);
@@ -5750,7 +5750,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return false;
         }
 
-        return util.throwError('Constructor "' + constructorName + "\" doesn't exist");
+        return util.throwError(`Constructor "${constructorName}" doesn't exist`);
       }
 
       return _constructors.get(constructorName);
@@ -5772,7 +5772,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     var constructor = graph.getConstructor(type, true);
     if (!constructor && typeof type == 'string') {
-      constructor = graph.getConstructor('graph.serie.' + type, true);
+      constructor = graph.getConstructor(`graph.serie.${type}`, true);
     }
 
     if (constructor) {
@@ -6197,7 +6197,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this._makeClosingLines();
 
     this.clip = document.createElementNS(Graph.ns, 'clipPath');
-    this.clip.setAttribute('id', '_clipplot' + this._creation);
+    this.clip.setAttribute('id', `_clipplot${this._creation}`);
     this.defs.appendChild(this.clip);
 
     this.clipRect = document.createElementNS(Graph.ns, 'rect');
@@ -6206,7 +6206,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     this.markerArrow = document.createElementNS(this.ns, 'marker');
     this.markerArrow.setAttribute('viewBox', '0 0 10 10');
-    this.markerArrow.setAttribute('id', 'arrow' + this._creation);
+    this.markerArrow.setAttribute('id', `arrow${this._creation}`);
     this.markerArrow.setAttribute('refX', '6');
     this.markerArrow.setAttribute('refY', '5');
     this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
@@ -6226,7 +6226,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // Horionzal split marker for axis
     this.markerHorizontalSplit = document.createElementNS(Graph.ns, 'marker');
     this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
-    this.markerHorizontalSplit.setAttribute('id', 'horionzalsplit_' + this.getId());
+    this.markerHorizontalSplit.setAttribute('id', `horionzalsplit_${this.getId()}`);
     this.markerHorizontalSplit.setAttribute('refX', '3');
     this.markerHorizontalSplit.setAttribute('refY', '4');
     this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
@@ -6248,7 +6248,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     // Vertical split marker for axis
     this.markerVerticalSplit = document.createElementNS(Graph.ns, 'marker');
     this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
-    this.markerVerticalSplit.setAttribute('id', 'verticalsplit_' + this.getId());
+    this.markerVerticalSplit.setAttribute('id', `verticalsplit_${this.getId()}`);
     this.markerVerticalSplit.setAttribute('refX', '4');
     this.markerVerticalSplit.setAttribute('refY', '3');
     this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
@@ -6269,7 +6269,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     this.vertLineArrow = document.createElementNS(Graph.ns, 'marker');
     this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
-    this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
+    this.vertLineArrow.setAttribute('id', `verticalline${this._creation}`);
     this.vertLineArrow.setAttribute('refX', '0');
     this.vertLineArrow.setAttribute('refY', '5');
     this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
@@ -6609,8 +6609,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           serieShape = {
             shape: 'ellipse',
             properties: {
-              rx: [serie.serie.getLineWidth() * 3 + 'px'],
-              ry: [serie.serie.getLineWidth() * 3 + 'px']
+              rx: [`${serie.serie.getLineWidth() * 3}px`],
+              ry: [`${serie.serie.getLineWidth() * 3}px`]
             }
           };
         }
@@ -6692,8 +6692,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     toY = toY - toY % 10 + h / 2;
 
     if (skip) {
-      legend.style.marginLeft = toX + 'px';
-      legend.style.marginTop = toY + 'px';
+      legend.style.marginLeft = `${toX}px`;
+      legend.style.marginTop = `${toY}px`;
       return;
     }
 
@@ -6704,8 +6704,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         progress = 1;
       }
 
-      legend.style.marginLeft = (toX - startX) * progress + startX + 'px';
-      legend.style.marginTop = (toY - startY) * progress + startY + 'px';
+      legend.style.marginLeft = `${(toX - startX) * progress + startX}px`;
+      legend.style.marginTop = `${(toY - startY) * progress + startY}px`;
 
       if (progress < 1) {
         window.requestAnimationFrame(next);
@@ -6932,29 +6932,35 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(13), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./fit_lm.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.util.js'), require('./fit_lm.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.fit_lm, global.graphUtil);
+    factory(mod, mod.exports, global.graphUtil, global.fit_lm);
     global.waveform = mod.exports;
   }
-})(this, function (module, exports, _fit_lm, _graphUtil) {
+})(this, function (module, exports, _graphUtil, _fit_lm) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
+  var util = _interopRequireWildcard(_graphUtil);
+
   var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
-  var util = _interopRequireWildcard(_graphUtil);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -6971,12 +6977,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   class Waveform {
@@ -7136,7 +7136,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     setTypedArrayClass(constructor) {
 
       if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
-        this.warn('NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')');
+        this.warn(`NaN values are not allowed by the new constructor (${constructor.name}) while it was allowed by the previous one (${this._typedArrayClass.name})`);
       }
 
       if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
@@ -8165,7 +8165,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this._dataAggregated[level]) {
 
-        this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
+        this.dataInUseType = `aggregate${this._dataAggregationDirection}`;
         this.dataInUse = this._dataAggregated[level];
         return;
       } else if (this._dataAggregating) {
@@ -8924,20 +8924,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(8), __webpack_require__(0), __webpack_require__(10), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(0), __webpack_require__(10), __webpack_require__(4), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.core.js'), require('./graph.serie.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('../util/waveform.js'));
+    factory(module, exports, require('../graph.core.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('../util/waveform.js'), require('./graph.serie.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphCore, global.graphSerie, global.graphUtil, global.graphMixinErrorbars, global.waveform);
+    factory(mod, mod.exports, global.graphCore, global.graphUtil, global.graphMixinErrorbars, global.waveform, global.graphSerie);
     global.graphSerieLine = mod.exports;
   }
-})(this, function (module, exports, _graphCore, _graphSerie, _graphUtil, _graphMixinErrorbars, _waveform) {
+})(this, function (module, exports, _graphCore, _graphUtil, _graphMixinErrorbars, _waveform, _graphSerie) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -8946,13 +8946,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _graphCore2 = _interopRequireDefault(_graphCore);
 
-  var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
   var util = _interopRequireWildcard(_graphUtil);
 
   var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
 
   var _waveform2 = _interopRequireDefault(_waveform);
+
+  var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -9180,7 +9180,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (typeof force === 'undefined') {
         _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
       }
-      var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
+      var el = this[`domMarker${hover ? 'Hover' : 'Select'}`];
 
       if (_on || force === true) {
 
@@ -9189,7 +9189,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           var dom = document.createElementNS(this.graph.ns, 'path');
 
           this.setMarkerStyleTo(dom, this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)]);
-          this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
+          this[`domMarker${hover ? 'Hover' : 'Select'}`][index] = dom;
           this.groupMarkerSelected.appendChild(dom);
         } else {
           dom = el[index];
@@ -9198,7 +9198,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         let x = this.getX(this.waveform.getX(i)),
             y = this.getY(this.waveform.getY(i));
 
-        dom.setAttribute('d', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
+        dom.setAttribute('d', `M ${x} ${y} ${this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1)}`);
 
         if (hover) {
           this.markerHovered++;
@@ -10719,7 +10719,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var marker = document.createElementNS(this.graph.ns, 'path');
         this.setMarkerStyleTo(marker, this.markerFamilies[this.selectionType][0]);
 
-        marker.setAttribute('d', 'M 14 0 ' + this.getMarkerPath(this.markerFamilies[this.selectionType][0]));
+        marker.setAttribute('d', `M 14 0 ${this.getMarkerPath(this.markerFamilies[this.selectionType][0])}`);
 
         this.markerForLegend = marker;
       }
@@ -10785,15 +10785,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     if (graph.options.markersIndependant) {
       var dom = graph.getMarkerDomIndependent(graph.counter2, family);
-      var p = 'M ' + x + ' ' + y + ' ';
-      p += family.markerPath + ' ';
+      var p = `M ${x} ${y} `;
+      p += `${family.markerPath} `;
 
       dom.setAttribute('d', p);
     }
 
     markerDom.path = markerDom.path || '';
-    markerDom.path += 'M ' + x + ' ' + y + ' ';
-    markerDom.path += family.markerPath + ' ';
+    markerDom.path += `M ${x} ${y} `;
+    markerDom.path += `${family.markerPath} `;
   }
 
   util.mix(SerieLine, _graphMixinErrorbars2.default);
@@ -10913,7 +10913,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var axis = i == 'x' ? xAxis : yAxis;
         var val = this[i];
-        var dval = this['d' + i];
+        var dval = this[`d${i}`];
 
         if (val === undefined && (dval !== undefined && relativeTo === undefined || relativeTo === undefined)) {
 
@@ -11022,10 +11022,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     getDeltaPx(value, axis) {
       var v;
       if ((v = _parsePx(value)) !== false) {
-        return v + 'px';
+        return `${v}px`;
       } else {
 
-        return axis.getRelPx(value) + 'px';
+        return `${axis.getRelPx(value)}px`;
       }
     }
 
@@ -11033,7 +11033,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       mode = mode == 'y' ? 'y' : 'x';
       var ref = this[mode],
-          refd = this['d' + mode],
+          refd = this[`d${mode}`],
           refPx,
           deltaPx;
 
@@ -11041,9 +11041,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if ((refPx = _parsePx(ref)) !== false) {
 
           if ((deltaPx = _parsePx(delta)) !== false) {
-            this[mode] = refPx + deltaPx + 'px';
+            this[mode] = `${refPx + deltaPx}px`;
           } else {
-            this[mode] = refPx + axis.getRelPx(delta) + 'px';
+            this[mode] = `${refPx + axis.getRelPx(delta)}px`;
           }
         } else {
 
@@ -11066,18 +11066,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if ((refPx = _parsePx(refd)) !== false) {
 
           if ((deltaPx = _parsePx(delta)) !== false) {
-            this['d' + mode] = refPx + deltaPx + 'px';
+            this[`d${mode}`] = `${refPx + deltaPx}px`;
           } else {
-            this['d' + mode] = refPx + axis.getRelPx(delta) + 'px';
+            this[`d${mode}`] = `${refPx + axis.getRelPx(delta)}px`;
           }
         } else {
 
           refd = this.getValPosition(refd, axis);
 
           if ((deltaPx = _parsePx(delta)) !== false) {
-            this['d' + mode] = refd + axis.getRelVal(deltaPx);
+            this[`d${mode}`] = refd + axis.getRelVal(deltaPx);
           } else {
-            this['d' + mode] = refd + delta;
+            this[`d${mode}`] = refd + delta;
           }
         }
       }
@@ -12778,8 +12778,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.clip.appendChild( this.clipRect );
           this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
       */
-      this.gridPrimary.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
-      this.gridSecondary.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
+      this.gridPrimary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
+      this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
       this.graph._axisHasChanged(this);
     }
 
@@ -13717,13 +13717,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.preunitTspan.setAttribute('display', 'visible');
           this.unitTspan.setAttribute('dx', 0);
 
-          string += ' ' + letter + ' ' + this.options.unit;
+          string += ` ${letter} ${this.options.unit}`;
         } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent)) {
 
           if (this.options.engineeringScale) {
             this.scientificExponent = this.getEngineeringExponent(this.scientificExponent);
           }
-          string += ' \\cdot 10^' + this.scientificExponent + ' ' + this.options.unit;
+          string += ` \\cdot 10^${this.scientificExponent} ${this.options.unit}`;
         }
 
         this.katexElement = this.graph.renderWithKatex(string, this.katexElement);
@@ -14062,7 +14062,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
 
-      this.gridLinePath[primary ? 'primary' : 'secondary'] += 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+      this.gridLinePath[primary ? 'primary' : 'secondary'] += `M ${x1} ${y1} L ${x2} ${y2}`;
     }
 
     setGridLineStyle(gridLine, primary) {
@@ -14340,7 +14340,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         if (this.options.unitInTicks && this.options.unit) {
-          value += ' ' + this.options.unit;
+          value += ` ${this.options.unit}`;
         }
 
         return value;
@@ -14368,7 +14368,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         text += letter;
       } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent) && !noScaling) {
         text += 'x10';
-        text += '<sup>' + this.scientificExponent + '</sup>';
+        text += `<sup>${this.scientificExponent}</sup>`;
       }
 
       if (this.options.unit && !noUnits) {
@@ -14427,7 +14427,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
             valueRounded = Math.round(value);
-            text += ' ' + valueRounded + units[umin][1];
+            text += ` ${valueRounded}${units[umin][1]}`;
             umin--;
           }
 
@@ -14436,9 +14436,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         case 'time:min.sec':
           value = value / 60;
           var valueRounded = Math.floor(value);
-          var s = Math.round((value - valueRounded) * 60) + '';
-          s = s.length == 1 ? '0' + s : s;
-          text = valueRounded + '.' + s;
+          var s = `${Math.round((value - valueRounded) * 60)}`;
+          s = s.length == 1 ? `0${s}` : s;
+          text = `${valueRounded}.${s}`;
           break;
 
         default:
@@ -15001,7 +15001,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var log = Math.round(Math.log(val) / Math.log(10));
         var unit = Math.floor(val * Math.pow(10, -log));
 
-        dom.textContent = unit != 1 ? unit + 'x10' : '10';
+        dom.textContent = unit != 1 ? `${unit}x10` : '10';
         var tspan = document.createElementNS(this.graph.ns, 'tspan');
         tspan.textContent = log;
         tspan.setAttribute('font-size', '0.7em');
@@ -15281,14 +15281,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
       var width = !util.isNumeric(style.width) ? 10 : style.width;
-      return ' V ' + coordY + ' m -' + width / 2 + ' 0 h ' + width + ' m -' + width / 2 + ' 0 V ' + origin + ' ';
+      return ` V ${coordY} m -${width / 2} 0 h ${width} m -${width / 2} 0 V ${origin} `;
     },
 
     makeBoxY: function (coordY, origin, style) {
       if (!coordY || style === undefined) {
         return;
       }
-      return ' m 5 0 V ' + coordY + ' h -10 V ' + origin + ' m 5 0 ';
+      return ` m 5 0 V ${coordY} h -10 V ${origin} m 5 0 `;
     },
 
     makeBarX: function (coordX, origin, style) {
@@ -15296,14 +15296,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
       var height = !util.isNumeric(style.width) ? 10 : style.width;
-      return ' H ' + coordX + ' m 0 -' + height / 2 + ' v ' + height + ' m 0 -' + height / 2 + ' H ' + origin + ' ';
+      return ` H ${coordX} m 0 -${height / 2} v ${height} m 0 -${height / 2} H ${origin} `;
     },
 
     makeBoxX: function (coordX, origin, style) {
       if (!coordX || style === undefined) {
         return;
       }
-      return ' v 5 H ' + coordX + ' v -10 H ' + origin + ' v 5 ';
+      return ` v 5 H ${coordX} v -10 H ${origin} v 5 `;
     },
     /*
       check: function( index, valY, valX ) {
@@ -15447,43 +15447,43 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       /* eslint-disable no-cond-assign */
       let error;
       if (error = this.waveform.getErrorBarXBelow(index)) {
-        this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.left += ` M ${xpx} ${ypx}`;
         this.errorbarStyle.paths.left += this.makeBarX(this.getX(dataX - error), xpx, this.errorbarStyle.left);
       }
 
       if (error = this.waveform.getErrorBarXAbove(index)) {
-        this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.right += ` M ${xpx} ${ypx}`;
         this.errorbarStyle.paths.right += this.makeBarX(this.getX(dataX + error), xpx, this.errorbarStyle.right);
       }
 
       if (error = this.waveform.getErrorBarYBelow(index)) {
-        this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.bottom += ` M ${xpx} ${ypx}`;
         this.errorbarStyle.paths.bottom += this.makeBarY(this.getY(dataY - error), ypx, this.errorbarStyle.bottom);
       }
 
       if (error = this.waveform.getErrorBarYAbove(index)) {
-        this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
+        this.errorbarStyle.paths.top += ` M ${xpx} ${ypx}`;
         this.errorbarStyle.paths.top += this.makeBarY(this.getY(dataY + error), ypx, this.errorbarStyle.top);
       }
 
       if (error = this.waveform.getErrorBoxXBelow(index)) {
-        this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.left += ` M ${xpx} ${ypx}`;
         this.errorboxStyle.paths.left += this.makeBoxX(this.getX(dataX - error), xpx, this.errorboxStyle.left);
       }
 
       if (error = this.waveform.getErrorBoxXAbove(index)) {
-        this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.right += ` M ${xpx} ${ypx}`;
 
         this.errorboxStyle.paths.right += this.makeBoxX(this.getX(dataX + error), xpx, this.errorboxStyle.right);
       }
 
       if (error = this.waveform.getErrorBoxYBelow(index)) {
-        this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.bottom += ` M ${xpx} ${ypx}`;
         this.errorboxStyle.paths.bottom += this.makeBoxY(this.getY(dataY - error), ypx, this.errorboxStyle.bottom);
       }
 
       if (error = this.waveform.getErrorBoxYAbove(index)) {
-        this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
+        this.errorboxStyle.paths.top += ` M ${xpx} ${ypx}`;
         this.errorboxStyle.paths.top += this.makeBoxY(this.getY(dataY + error), ypx, this.errorboxStyle.top);
       }
       /* eslint-enable */
@@ -15623,7 +15623,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
 
-      this.group.setAttribute('transform', 'translate(0 ' + (this.floating ? this.getShift() : this.top ? this.shift : this.graph.getDrawingHeight() - this.shift) + ')');
+      this.group.setAttribute('transform', `translate(0 ${this.floating ? this.getShift() : this.top ? this.shift : this.graph.getDrawingHeight() - this.shift})`);
     }
 
     /**
@@ -15743,8 +15743,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       var span = this.getSpan();
-      this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')');
-      this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')');
+      this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : `url(#horionzalsplit_${this.graph.getId()})`);
+      this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : `url(#horionzalsplit_${this.graph.getId()})`);
     }
 
     /**
@@ -16174,7 +16174,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.NPTS = this._to - this._from + 1;
 
         if (this.data && this.data.getLength() <= this._to) {
-          throw 'Wave Y has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
+          throw `Wave Y has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
         }
 
         if (this._from < 0) {
@@ -16188,7 +16188,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.dataX && this.dataX.getLength() <= this._to) {
-        throw 'Wave X has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
+        throw `Wave X has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
       }
 
       this.arrY = this.data.getDataY();
@@ -16206,9 +16206,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     fit() {
 
-      this.log('Starting the fit with initial parameter list {' + this.parms.join() + '};');
+      this.log(`Starting the fit with initial parameter list {${this.parms.join()}};`);
       new LM(this, this.NPARMS, this.NPTS, this._hookIteration);
-      this.log('Fit successful. Output parameters {' + this.parms.join() + '};');
+      this.log(`Fit successful. Output parameters {${this.parms.join()}};`);
 
       this._result = this.buildFit(this.parms, 200);
 
@@ -16394,7 +16394,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
       this.sosprev = this.sos;
 
-      this.myH.log('  bLMiter..SumOfSquares= ' + this.sos);
+      this.myH.log(`  bLMiter..SumOfSquares= ${this.sos}`);
       if (!this.myH.buildJacobian()) {
         console.error('  bLMiter finds buildJacobian()=false');
         return false;
@@ -16709,7 +16709,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     placeLabel(y) {
-      this.label.setAttribute('transform', 'translate(' + y + ', ' + Math.abs(this.getMaxPx() + this.getMinPx()) / 2 + ') rotate(-90)');
+      this.label.setAttribute('transform', `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) / 2}) rotate(-90)`);
     }
 
     /**
@@ -16735,8 +16735,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.line.setAttribute('stroke', this.getAxisColor());
 
       var span = this.getSpan();
-      this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')');
-      this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')');
+      this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
+      this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
     }
 
     /**
@@ -16752,7 +16752,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       let xshift = this.shift;
       xshift = this.floating ? xshift : this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift;
-      this.group.setAttribute('transform', 'translate( ' + xshift + ' 0 )');
+      this.group.setAttribute('transform', `translate( ${xshift} 0 )`);
       this.drawLabel();
     }
 
@@ -17074,31 +17074,37 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(10), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'));
+    factory(module, exports, require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('./graph.serie.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphSerie, global.graphUtil, global.graphMixinErrorbars);
+    factory(mod, mod.exports, global.graphUtil, global.graphMixinErrorbars, global.graphSerie);
     global.graphSerieScatter = mod.exports;
   }
-})(this, function (module, exports, _graphSerie, _graphUtil, _graphMixinErrorbars) {
+})(this, function (module, exports, _graphUtil, _graphMixinErrorbars, _graphSerie) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
-  var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
   var util = _interopRequireWildcard(_graphUtil);
 
   var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
+
+  var _graphSerie2 = _interopRequireDefault(_graphSerie);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -17115,12 +17121,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   const defaults = {};
@@ -17422,7 +17422,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       let shape;
       let g = document.createElementNS(this.graph.ns, 'g');
-      g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
+      g.setAttribute('transform', `translate(${xpx}, ${ypx})`);
       g.setAttribute('data-shapeid', k);
 
       if (this.extraStyle && this.extraStyle[k]) {
@@ -17522,7 +17522,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         if (!noSetPosition) {
-          shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
+          shape.parentNode.setAttribute('transform', `translate(${this.shapesDetails[index][0]}, ${this.shapesDetails[index][1]})`);
         }
       }
 
@@ -17617,29 +17617,29 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(4), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(4), __webpack_require__(0), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.js'), require('../util/waveform.js'), require('../graph.util.js'));
+    factory(module, exports, require('../util/waveform.js'), require('../graph.util.js'), require('./graph.serie.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphSerie, global.waveform, global.graphUtil);
+    factory(mod, mod.exports, global.waveform, global.graphUtil, global.graphSerie);
     global.graphSerieZone = mod.exports;
   }
-})(this, function (module, exports, _graphSerie, _waveform, _graphUtil) {
+})(this, function (module, exports, _waveform, _graphUtil, _graphSerie) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
-  var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
   var _waveform2 = _interopRequireDefault(_waveform);
+
+  var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -17812,7 +17812,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 continue;
               }
 
-              line += 'L ' + xpx + ', ' + this.getY(waveform.getMinY());
+              line += `L ${xpx}, ${this.getY(waveform.getMinY())}`;
               move = true;
               continue;
             }
@@ -17826,7 +17826,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
 
             if (move) {
-              line += ' M ' + xpx + ', ' + this.getY(waveform.getMinY()) + ' ';
+              line += ` M ${xpx}, ${this.getY(waveform.getMinY())} `;
               move = false;
             }
 
@@ -17835,16 +17835,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }
 
             if (buffer) {
-              line += buffer[2] + ',' + buffer[3] + ' ';
+              line += `${buffer[2]},${buffer[3]} `;
               buffer = false;
             } else {
-              line += xpx + ',' + ypx + ' ';
+              line += `${xpx},${ypx} `;
             }
           }
         }
 
         if (line !== '') {
-          this.lineZone.setAttribute('d', 'M ' + line + ' z');
+          this.lineZone.setAttribute('d', `M ${line} z`);
         } else {
           this.lineZone.setAttribute('d', '');
         }
@@ -17989,29 +17989,35 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.shape.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.util.js'), require('./graph.shape.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphShape, global.graphUtil);
+    factory(mod, mod.exports, global.graphUtil, global.graphShape);
     global.graphShapeRect = mod.exports;
   }
-})(this, function (module, exports, _graphShape, _graphUtil) {
+})(this, function (module, exports, _graphUtil, _graphShape) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
+  var util = _interopRequireWildcard(_graphUtil);
+
   var _graphShape2 = _interopRequireDefault(_graphShape);
 
-  var util = _interopRequireWildcard(_graphUtil);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -18028,12 +18034,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   /**
@@ -18135,7 +18135,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           for (var i in handles.sides) {
             if (handles.sides[i]) {
-              this.handles[i] = this['handle' + j];
+              this.handles[i] = this[`handle${j}`];
               this.sides[j] = i;
               j++;
             }
@@ -18365,13 +18365,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         case 'seamlessX':
 
           if (this.handles[1]) {
-            this.handles[1].setAttribute('transform', 'translate(-10) translate(' + pos.x + ')');
+            this.handles[1].setAttribute('transform', `translate(-10) translate(${pos.x})`);
             this.handles[1].setAttribute('height', Math.abs(pos2.y - pos.y));
             this.handles[1].setAttribute('y', Math.min(pos2.y, pos.y));
           }
 
           if (this.handles[2]) {
-            this.handles[2].setAttribute('transform', 'translate(-10)  translate(' + pos2.x + ')');
+            this.handles[2].setAttribute('transform', `translate(-10)  translate(${pos2.x})`);
             this.handles[2].setAttribute('height', Math.abs(pos2.y - pos.y));
             this.handles[2].setAttribute('y', Math.min(pos2.y, pos.y));
           }
@@ -18381,19 +18381,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         case 'sides':
 
           if (this.handles.left) {
-            this.handles.left.setAttribute('transform', 'translate(' + this.currentX + ' ' + (this.currentY + this.currentH / 2) + ')');
+            this.handles.left.setAttribute('transform', `translate(${this.currentX} ${this.currentY + this.currentH / 2})`);
           }
 
           if (this.handles.right) {
-            this.handles.right.setAttribute('transform', 'translate( ' + (this.currentX + this.currentW) + ' ' + (this.currentY + this.currentH / 2) + ')');
+            this.handles.right.setAttribute('transform', `translate( ${this.currentX + this.currentW} ${this.currentY + this.currentH / 2})`);
           }
 
           if (this.handles.top) {
-            this.handles.top.setAttribute('transform', 'translate( ' + (this.currentX + this.currentW / 2) + ' ' + this.currentY + ')');
+            this.handles.top.setAttribute('transform', `translate( ${this.currentX + this.currentW / 2} ${this.currentY})`);
           }
 
           if (this.handles.bottom) {
-            this.handles.bottom.setAttribute('transform', 'translate( ' + (this.currentX + this.currentW / 2) + ' ' + (this.currentY + this.currentH) + ')');
+            this.handles.bottom.setAttribute('transform', `translate( ${this.currentX + this.currentW / 2} ${this.currentY + this.currentH})`);
           }
 
           break;
@@ -18756,7 +18756,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.eyeId = util.guid();
       this.eyeCrossedId = util.guid();
 
-      var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeCrossedId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" fill="transparent" x="-256" y="0" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1214.339)"><path d="m 555,201 78,141 q -87,63 -136,159 -49,96 -49,203 0,121 61,225 Q 280,812 128,576 295,318 555,201 z m 389,759 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 363,191 q 0,-7 -1,-9 Q 1201,954 991,576 781,198 675,9 l -49,-89 q -10,-16 -28,-16 -12,0 -134,70 -16,10 -16,28 0,12 44,87 Q 349,154 228.5,262 108,370 20,507 0,538 0,576 q 0,38 20,69 153,235 380,371 227,136 496,136 89,0 180,-17 l 54,97 q 10,16 28,16 5,0 18,-6 13,-6 31,-15.5 18,-9.5 33,-18.5 15,-9 31.5,-18.5 16.5,-9.5 19.5,-11.5 16,-10 16,-27 z m 37,-447 Q 1344,565 1265,450.5 1186,336 1056,286 l 280,502 q 8,-45 8,-84 z m 448,-128 q 0,-35 -20,-69 Q 1733,443 1663,362 1513,190 1315.5,95 1118,0 896,0 l 74,132 q 212,18 392.5,137 180.5,119 301.5,307 -115,179 -282,294 l 63,112 q 95,-64 182.5,-153 87.5,-89 144.5,-184 20,-34 20,-69 z" fill="#c0c0c0"></path></g></symbol></svg>');
+      var eyeClosed = util.SVGParser(`<svg xmlns="http://www.w3.org/2000/svg"><symbol id="${this.eyeCrossedId}" viewBox="0 -256 1850 1850"><rect pointer-events="fill" fill="transparent" x="-256" y="0" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1214.339)"><path d="m 555,201 78,141 q -87,63 -136,159 -49,96 -49,203 0,121 61,225 Q 280,812 128,576 295,318 555,201 z m 389,759 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 363,191 q 0,-7 -1,-9 Q 1201,954 991,576 781,198 675,9 l -49,-89 q -10,-16 -28,-16 -12,0 -134,70 -16,10 -16,28 0,12 44,87 Q 349,154 228.5,262 108,370 20,507 0,538 0,576 q 0,38 20,69 153,235 380,371 227,136 496,136 89,0 180,-17 l 54,97 q 10,16 28,16 5,0 18,-6 13,-6 31,-15.5 18,-9.5 33,-18.5 15,-9 31.5,-18.5 16.5,-9.5 19.5,-11.5 16,-10 16,-27 z m 37,-447 Q 1344,565 1265,450.5 1186,336 1056,286 l 280,502 q 8,-45 8,-84 z m 448,-128 q 0,-35 -20,-69 Q 1733,443 1663,362 1513,190 1315.5,95 1118,0 896,0 l 74,132 q 212,18 392.5,137 180.5,119 301.5,307 -115,179 -282,294 l 63,112 q 95,-64 182.5,-153 87.5,-89 144.5,-184 20,-34 20,-69 z" fill="#c0c0c0"></path></g></symbol></svg>`);
       //  var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 0 100 100"><rect fill="black" x="0" y="0" width="100" height="100" /></symbol></svg>');
 
       /* var eyeClosed = document.createElementNS( this.graph.ns, "symbol");
@@ -18770,7 +18770,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         rect.setAttribute('fill', 'black');
         eyeClosed.appendChild( rect );
       */
-      var eye = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>');
+      var eye = util.SVGParser(`<svg xmlns="http://www.w3.org/2000/svg"><symbol id="${this.eyeId}" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>`);
 
       this.svg.appendChild(document.adoptNode(eye.documentElement.firstChild));
       this.svg.appendChild(document.adoptNode(eyeClosed.documentElement.firstChild));
@@ -18845,7 +18845,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         }
 
-        this.groups[i].setAttribute('transform', 'translate( ' + posX + ', ' + posY + ')');
+        this.groups[i].setAttribute('transform', `translate( ${posX}, ${posY})`);
 
         if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
 
@@ -18887,29 +18887,29 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       switch (this.autoPosition) {
 
         case 'bottom':
-          this.position.y = this.graph.getHeight() + 'px';
+          this.position.y = `${this.graph.getHeight()}px`;
           // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
-          this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + 'px';
+          this.position.x = `${(this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX}px`;
           this.alignToY = 'bottom';
           this.alignToX = false;
           break;
 
         case 'left':
           this.position.x = '6px';
-          this.position.y = (this.graph.getHeight() - this.height) / 2 + 'px';
+          this.position.y = `${(this.graph.getHeight() - this.height) / 2}px`;
           this.alignToX = 'left';
           this.alignToY = false;
           break;
 
         case 'right':
-          this.position.x = this.graph.getWidth() + 'px';
-          this.position.y = (this.graph.getHeight() - this.height) / 2 + 'px';
+          this.position.x = `${this.graph.getWidth()}px`;
+          this.position.y = `${(this.graph.getHeight() - this.height) / 2}px`;
           this.alignToX = 'right';
           this.alignToY = false;
           break;
 
         case 'top':
-          this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + 'px';
+          this.position.x = `${(this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX}px`;
           this.position.y = '10px';
           this.alignToY = 'top';
           this.alignToX = false;
@@ -19055,7 +19055,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             dx += 20;
 
             var eyeUse = document.createElementNS(self.graph.ns, 'use');
-            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + (series[i].isShown() ? this.eyeId : this.eyeCrossedId));
+            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${series[i].isShown() ? this.eyeId : this.eyeCrossedId}`);
             eyeUse.setAttribute('width', 15);
             eyeUse.setAttribute('height', 15);
             eyeUse.setAttribute('x', 35);
@@ -19073,11 +19073,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 id = self.eyeId;
               }
 
-              eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + id);
+              eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${id}`);
             });
           }
 
-          text.setAttribute('transform', 'translate(' + dx + ', 3)');
+          text.setAttribute('transform', `translate(${dx}, 3)`);
           text.setAttribute('fill', this.options.color);
 
           if (line) {
@@ -19257,7 +19257,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var pos = this.pos;
       if (!isNaN(pos.transformX) && !isNaN(pos.transformY) && pos.transformX !== false && pos.transformY !== false) {
-        this.svg.setAttribute('transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')');
+        this.svg.setAttribute('transform', `translate(${pos.transformX}, ${pos.transformY})`);
       }
     }
 
@@ -19268,7 +19268,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.options.frame) {
         this.rectBottom.setAttribute('stroke', this.options.frameColor);
-        this.rectBottom.setAttribute('stroke-width', this.options.frameWidth + 'px');
+        this.rectBottom.setAttribute('stroke-width', `${this.options.frameWidth}px`);
         this.rectBottom.setAttribute('rx', this.options.frameRounding);
         this.rectBottom.setAttribute('ry', this.options.frameRounding);
       }
@@ -19984,12 +19984,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         pad = function (val, len) {
       val = String(val);
       len = len || 2;
-      while (val.length < len) val = '0' + val;
+      while (val.length < len) val = `0${val}`;
       return val;
     },
         getWeek = function (d, f) {
-      var onejan = new Date(d[f + 'FullYear'](), 0, 1);
-      return Math.ceil(((d - onejan) / 86400000 + onejan[f + 'Day']() + 1) / 7);
+      var onejan = new Date(d[`${f}FullYear`](), 0, 1);
+      return Math.ceil(((d - onejan) / 86400000 + onejan[`${f}Day`]() + 1) / 7);
     };
 
     // Regexes and supporting functions are cached through closure
@@ -20004,7 +20004,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       // Passing date through Date applies Date.parse, if necessary
       date = date ? new Date(date) : new Date();
-      if (isNaN(date)) throw SyntaxError('invalid date:' + date);
+      if (isNaN(date)) throw SyntaxError(`invalid date:${date}`);
 
       mask = String(dF.masks[mask] || mask || dF.masks.default);
 
@@ -20015,14 +20015,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       var _ = utc ? 'getUTC' : 'get',
-          d = date[_ + 'Date'](),
-          D = date[_ + 'Day'](),
-          m = date[_ + 'Month'](),
-          y = date[_ + 'FullYear'](),
-          H = date[_ + 'Hours'](),
-          M = date[_ + 'Minutes'](),
-          s = date[_ + 'Seconds'](),
-          L = date[_ + 'Milliseconds'](),
+          d = date[`${_}Date`](),
+          D = date[`${_}Day`](),
+          m = date[`${_}Month`](),
+          y = date[`${_}FullYear`](),
+          H = date[`${_}Hours`](),
+          M = date[`${_}Minutes`](),
+          s = date[`${_}Seconds`](),
+          L = date[`${_}Milliseconds`](),
           o = utc ? 0 : date.getTimezoneOffset(),
           flags = {
         d: d,
@@ -20348,7 +20348,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         while (text.length * 8 > x2B - x1B) {
 
-          text = text.substr(0, text.length - 2) + '.';
+          text = `${text.substr(0, text.length - 2)}.`;
 
           if (text.length == 1) {
             text = '';
@@ -20501,7 +20501,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     setShift(shift) {
       this.shift = shift;
-      this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : this.graph.getDrawingHeight() - this.shift) + ')');
+      this.group.setAttribute('transform', `translate(0 ${this.top ? this.shift : this.graph.getDrawingHeight() - this.shift})`);
     }
 
     getAxisPosition() {
@@ -20530,20 +20530,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(5), __webpack_require__(4), __webpack_require__(15), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(4), __webpack_require__(15), __webpack_require__(0), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.core.js'), require('./graph.serie.line.js'), require('../util/waveform.js'), require('../mixins/graph.mixin.serie3d.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.core.js'), require('../util/waveform.js'), require('../mixins/graph.mixin.serie3d.js'), require('../graph.util.js'), require('./graph.serie.line.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphCore, global.graphSerieLine, global.waveform, global.graphMixinSerie3d, global.graphUtil);
+    factory(mod, mod.exports, global.graphCore, global.waveform, global.graphMixinSerie3d, global.graphUtil, global.graphSerieLine);
     global.graphSerieLine3d = mod.exports;
   }
-})(this, function (module, exports, _graphCore, _graphSerieLine, _waveform, _graphMixinSerie3d, _graphUtil) {
+})(this, function (module, exports, _graphCore, _waveform, _graphMixinSerie3d, _graphUtil, _graphSerieLine) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -20552,13 +20552,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _graphCore2 = _interopRequireDefault(_graphCore);
 
-  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
-
   var _waveform2 = _interopRequireDefault(_waveform);
 
   var _graphMixinSerie3d2 = _interopRequireDefault(_graphMixinSerie3d);
 
   var util = _interopRequireWildcard(_graphUtil);
+
+  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -20626,20 +20626,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(5), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(10), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.util.js'), require('./graph.serie.line.js'), require('../mixins/graph.mixin.errorbars.js'));
+    factory(module, exports, require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('./graph.serie.line.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphUtil, global.graphSerieLine, global.graphMixinErrorbars);
+    factory(mod, mod.exports, global.graphUtil, global.graphMixinErrorbars, global.graphSerieLine);
     global.graphSerieBar = mod.exports;
   }
-})(this, function (module, exports, _graphUtil, _graphSerieLine, _graphMixinErrorbars) {
+})(this, function (module, exports, _graphUtil, _graphMixinErrorbars, _graphSerieLine) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -20648,9 +20648,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var util = _interopRequireWildcard(_graphUtil);
 
-  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
-
   var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
+
+  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -20813,7 +20813,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           continue;
         }
 
-        path += 'M ' + this.getXAxis().getPos(this.categoryIndices[i]) + ' ' + this.getYAxis().getPos(0) + ' V ' + this.getYAxis().getPos(this.data[i]) + ' h ' + this.getXAxis().getDeltaPx(1 / this.nbCategories) + ' V ' + this.getYAxis().getPos(0);
+        path += `M ${this.getXAxis().getPos(this.categoryIndices[i])} ${this.getYAxis().getPos(0)} V ${this.getYAxis().getPos(this.data[i])} h ${this.getXAxis().getDeltaPx(1 / this.nbCategories)} V ${this.getYAxis().getPos(0)}`;
 
         if (this.error) {
           this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
@@ -20847,20 +20847,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.util.js'), require('./graph.serie.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphSerie, global.graphUtil);
+    factory(mod, mod.exports, global.graphUtil, global.graphSerie);
     global.graphSerieBox = mod.exports;
   }
-})(this, function (module, exports, _graphSerie, _graphUtil) {
+})(this, function (module, exports, _graphUtil, _graphSerie) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -21707,31 +21707,37 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(5), __webpack_require__(0), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(10), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.line.js'), require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'));
+    factory(module, exports, require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('./graph.serie.line.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphSerieLine, global.graphUtil, global.graphMixinErrorbars);
+    factory(mod, mod.exports, global.graphUtil, global.graphMixinErrorbars, global.graphSerieLine);
     global.graphSerieLineColored = mod.exports;
   }
-})(this, function (module, exports, _graphSerieLine, _graphUtil, _graphMixinErrorbars) {
+})(this, function (module, exports, _graphUtil, _graphMixinErrorbars, _graphSerieLine) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
-  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
-
   var util = _interopRequireWildcard(_graphUtil);
 
   var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
+
+  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -21748,12 +21754,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   /**
@@ -21982,7 +21982,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (color._rgb) {
-        color = 'rgba(' + color._rgb[0] + ',' + color._rgb[1] + ',' + color._rgb[2] + ',' + (color._rgb[3] || 1) + ')';
+        color = `rgba(${color._rgb[0]},${color._rgb[1]},${color._rgb[2]},${color._rgb[3] || 1})`;
       }
 
       var line = this.lines[color];
@@ -21998,7 +21998,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.groupLines.appendChild(line.object);
       }
 
-      line.path += 'M ' + xpxbefore + ' ' + ypxbefore + ' L ' + xpx + ' ' + ypx;
+      line.path += `M ${xpxbefore} ${ypxbefore} L ${xpx} ${ypx}`;
 
       if (this.hasErrors()) {
         this.errorAddPoint(j, x, y, xpx, ypx);
@@ -22056,20 +22056,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(17), __webpack_require__(4), __webpack_require__(15), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(4), __webpack_require__(15), __webpack_require__(0), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.core.js'), require('./graph.serie.zone.js'), require('../util/waveform.js'), require('../mixins/graph.mixin.serie3d.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.core.js'), require('../util/waveform.js'), require('../mixins/graph.mixin.serie3d.js'), require('../graph.util.js'), require('./graph.serie.zone.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphCore, global.graphSerieZone, global.waveform, global.graphMixinSerie3d, global.graphUtil);
+    factory(mod, mod.exports, global.graphCore, global.waveform, global.graphMixinSerie3d, global.graphUtil, global.graphSerieZone);
     global.graphSerieZone3d = mod.exports;
   }
-})(this, function (module, exports, _graphCore, _graphSerieZone, _waveform, _graphMixinSerie3d, _graphUtil) {
+})(this, function (module, exports, _graphCore, _waveform, _graphMixinSerie3d, _graphUtil, _graphSerieZone) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -22078,13 +22078,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _graphCore2 = _interopRequireDefault(_graphCore);
 
-  var _graphSerieZone2 = _interopRequireDefault(_graphSerieZone);
-
   var _waveform2 = _interopRequireDefault(_waveform);
 
   var _graphMixinSerie3d2 = _interopRequireDefault(_graphMixinSerie3d);
 
   var util = _interopRequireWildcard(_graphUtil);
+
+  var _graphSerieZone2 = _interopRequireDefault(_graphSerieZone);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -22152,29 +22152,35 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.util.js'), require('./graph.serie.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphSerie, global.graphUtil);
+    factory(mod, mod.exports, global.graphUtil, global.graphSerie);
     global.graphSerieDensitymap = mod.exports;
   }
-})(this, function (module, exports, _graphSerie, _graphUtil) {
+})(this, function (module, exports, _graphUtil, _graphSerie) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
+  var util = _interopRequireWildcard(_graphUtil);
+
   var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-  var util = _interopRequireWildcard(_graphUtil);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -22191,12 +22197,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   /**
@@ -22714,7 +22714,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           color[j] = (colorStops[first + 1][j] - colorStops[first][j]) * ratio + colorStops[first][j];
         }
 
-        colorMap[k] = 'hsl(' + color.h + ', ' + Math.round(color.s * 100) + '%, ' + Math.round(color.l * 100) + '%)'; //this.HSVtoRGB( color.h, color.s, color.v );
+        colorMap[k] = `hsl(${color.h}, ${Math.round(color.s * 100)}%, ${Math.round(color.l * 100)}%)`; //this.HSVtoRGB( color.h, color.s, color.v );
         opacities[k] = color.a;
         k++;
       }
@@ -22832,7 +22832,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             this.paths[colorIndex] = '';
           }
 
-          this.paths[colorIndex] += ' M ' + this.getXAxis().getPx(i * this.deltaX + this.fromX) + ' ' + this.getYAxis().getPx(j * this.deltaY + this.fromY) + ' h ' + deltaXPx + ' v ' + deltaYPx + ' h -' + deltaXPx + ' z';
+          this.paths[colorIndex] += ` M ${this.getXAxis().getPx(i * this.deltaX + this.fromX)} ${this.getYAxis().getPx(j * this.deltaY + this.fromY)} h ${deltaXPx} v ${deltaYPx} h -${deltaXPx} z`;
         }
       }
       /*
@@ -22890,29 +22890,35 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(5), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.serie.line.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.util.js'), require('./graph.serie.line.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphSerieLine, global.graphUtil);
+    factory(mod, mod.exports, global.graphUtil, global.graphSerieLine);
     global.graphSerieContour = mod.exports;
   }
-})(this, function (module, exports, _graphSerieLine, _graphUtil) {
+})(this, function (module, exports, _graphUtil, _graphSerieLine) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
+  var util = _interopRequireWildcard(_graphUtil);
+
   var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
-  var util = _interopRequireWildcard(_graphUtil);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -22929,12 +22935,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   /**
@@ -22955,7 +22955,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.negativeThreshold = 0;
       this.positiveThreshold = 0;
 
-      this.groupMain.setAttribute('clip-path', 'url(#_clipplot' + graph._creation + ')');
+      this.groupMain.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
     }
 
     /**
@@ -23287,7 +23287,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var rgb = util.hslToRgb(hsl.h, hsl.s, hsl.l);
 
-      line.setAttribute('stroke', 'rgb(' + rgb.join() + ')');
+      line.setAttribute('stroke', `rgb(${rgb.join()})`);
     }
 
     getSymbolForLegend() {
@@ -23503,9 +23503,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (k > 0) {
-            this.currentLine += ' L ' + x + ' ' + y + ' ';
+            this.currentLine += ` L ${x} ${y} `;
           } else {
-            this.currentLine += ' M ' + x + ' ' + y + ' ';
+            this.currentLine += ` M ${x} ${y} `;
           }
 
           //this.serie._addPoint( x, y, false, this.currentLine );
@@ -23519,7 +23519,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
-        this.currentLine += ' V ' + this.getYAxis().getPx(0) + ' H ' + this.firstX + ' z';
+        this.currentLine += ` V ${this.getYAxis().getPx(0)} H ${this.firstX} z`;
         this.setDom('d', this.currentLine);
       }
 
@@ -23615,7 +23615,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     createDom() {
 
       this._dom = document.createElementNS(this.graph.ns, 'line');
-      this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
+      this._dom.setAttribute('marker-end', `url(#arrow${this.graph._creation})`);
 
       this.createHandles(this.nbHandles, 'rect', {
         transform: 'translate(-3 -3)',
@@ -23786,7 +23786,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (pxPoints = this.getProp('pxPoints')) {
 
-        pxPoints = ' M ' + pos.x + ' ' + pos.y + ' ' + pxPoints;
+        pxPoints = ` M ${pos.x} ${pos.y} ${pxPoints}`;
         this.setDom('d', pxPoints);
       } else if (this.points) {
 
@@ -23802,9 +23802,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           yAxis = this.yAxis;
         }
 
-        this.setDom('d', 'M ' + this.points.map(function (p) {
-          return xAxis.getPx(p[0]) + ', ' + yAxis.getPx(p[1]);
-        }).join(' L '));
+        this.setDom('d', `M ${this.points.map(function (p) {
+          return `${xAxis.getPx(p[0])}, ${yAxis.getPx(p[1])}`;
+        }).join(' L ')}`);
       }
 
       this.changed();
@@ -23822,29 +23822,29 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(6), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.shape.js'), require('../graph.position.js'));
+    factory(module, exports, require('../graph.position.js'), require('./graph.shape.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphShape, global.graphPosition);
+    factory(mod, mod.exports, global.graphPosition, global.graphShape);
     global.graphShapeNmrintegral = mod.exports;
   }
-})(this, function (module, exports, _graphShape, _graphPosition) {
+})(this, function (module, exports, _graphPosition, _graphShape) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
-  var _graphShape2 = _interopRequireDefault(_graphShape);
-
   var _graphPosition2 = _interopRequireDefault(_graphPosition);
+
+  var _graphShape2 = _interopRequireDefault(_graphShape);
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -24065,15 +24065,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           let pos = baseLine - (points[i - 1][2] + points[i][2]) / 2 * ratio;
 
           this.setPosition({
-            x: points[i][0] + 'px',
-            y: pos + 'px'
+            x: `${points[i][0]}px`,
+            y: `${pos}px`
 
           }, 3);
 
           this.setLabelPosition(this.getPosition(3), 0);
         }
 
-        currentLine += ' L ' + points[i][0] + ', ' + py + ' ';
+        currentLine += ` L ${points[i][0]}, ${py} `;
 
         this.lastPointX = points[i][0];
         this.lastPointY = py;
@@ -24083,9 +24083,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this._sum = sum;
 
       if (this.serie.isFlipped()) {
-        currentLine = ' M ' + baseLine + ', ' + firstX + ' ' + currentLine;
+        currentLine = ` M ${baseLine}, ${firstX} ${currentLine}`;
       } else {
-        currentLine = ' M ' + firstX + ', ' + baseLine + ' ' + currentLine;
+        currentLine = ` M ${firstX}, ${baseLine} ${currentLine}`;
       }
 
       this.firstPointX = firstX;
@@ -24373,7 +24373,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     createDom() {
 
       this._dom = document.createElementNS(this.graph.ns, 'path');
-      this._dom.setAttribute('d', 'M -' + this.width / 2 + ' 0 h ' + this.width + ' m -' + this.width / 2 + ' -' + this.width / 2 + ' v ' + this.width + '');
+      this._dom.setAttribute('d', `M -${this.width / 2} 0 h ${this.width} m -${this.width / 2} -${this.width / 2} v ${this.width}`);
     }
 
     createHandles() {
@@ -24394,7 +24394,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
 
-      this.setDom('transform', 'translate( ' + position.x + ', ' + position.y + ')');
+      this.setDom('transform', `translate( ${position.x}, ${position.y})`);
 
       this.currentPos1x = position.x;
       this.currentPos1y = position.y;
@@ -24572,7 +24572,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (posLeft.x && posRight.x && posCenter.x && this.posYPx) {
 
         var height = this.lineHeight;
-        this.rectBoundary.setAttribute('d', 'M ' + posLeft.x + ' ' + (this.posYPx - height) + ' v ' + 2 * height + ' H ' + posRight.x + ' v ' + -2 * height + 'z');
+        this.rectBoundary.setAttribute('d', `M ${posLeft.x} ${this.posYPx - height} v ${2 * height} H ${posRight.x} v ${-2 * height}z`);
         this.line1.setAttribute('x1', posLeft.x);
         this.line1.setAttribute('x2', posLeft.x);
 
@@ -24836,8 +24836,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (!position || !(0, _graphUtil.isNumeric)(position.x) || !(0, _graphUtil.isNumeric)(position.y)) {
         return;
       }
-      this._dom.style.left = position.x + 'px';
-      this._dom.style.top = position.y + 'px';
+      this._dom.style.left = `${position.x}px`;
+      this._dom.style.top = `${position.y}px`;
 
       this.currentPosX = position.x;
       this.currentPosY = position.y;
@@ -25089,29 +25089,35 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(2), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.plugin.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.util.js'), require('./graph.plugin.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphPlugin, global.graphUtil);
+    factory(mod, mod.exports, global.graphUtil, global.graphPlugin);
     global.graphPluginShape = mod.exports;
   }
-})(this, function (module, exports, _graphPlugin, _graphUtil) {
+})(this, function (module, exports, _graphUtil, _graphPlugin) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
 
+  var util = _interopRequireWildcard(_graphUtil);
+
   var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
-  var util = _interopRequireWildcard(_graphUtil);
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -25128,12 +25134,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       newObj.default = obj;
       return newObj;
     }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
   }
 
   /**
@@ -25398,7 +25398,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return;
       }
 
-      this.path = 'M ' + x + ' ' + y + ' ';
+      this.path = `M ${x} ${y} `;
       this.currentX = x;
       this.currentY = y;
 
@@ -25415,14 +25415,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (Math.pow(x - this.currentX, 2) + Math.pow(y - this.currentY, 2) > 25) {
 
-        this.path += ' L ' + x + ' ' + y + ' ';
+        this.path += ` L ${x} ${y} `;
         this.currentX = x;
         this.currentY = y;
 
         this.xs.push(this.serie.getXAxis().getVal(x - graph.getPaddingLeft()));
         this.ys.push(this.serie.getYAxis().getVal(y - graph.getPaddingTop()));
 
-        this._path.setAttribute('d', this.path + ' z');
+        this._path.setAttribute('d', `${this.path} z`);
 
         this.findPoints();
       }
@@ -26157,20 +26157,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(44), __webpack_require__(2), __webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(44), __webpack_require__(0), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.core.js'), require('../graph.lru.js'), require('./graph.plugin.js'), require('../graph.util.js'));
+    factory(module, exports, require('../graph.core.js'), require('../graph.lru.js'), require('../graph.util.js'), require('./graph.plugin.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphCore, global.graphLru, global.graphPlugin, global.graphUtil);
+    factory(mod, mod.exports, global.graphCore, global.graphLru, global.graphUtil, global.graphPlugin);
     global.graphPluginTimeseriemanager = mod.exports;
   }
-})(this, function (module, exports, _graphCore, _graphLru, _graphPlugin, _graphUtil) {
+})(this, function (module, exports, _graphCore, _graphLru, _graphUtil, _graphPlugin) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -26181,9 +26181,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _graphLru2 = _interopRequireDefault(_graphLru);
 
-  var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
-
   var util = _interopRequireWildcard(_graphUtil);
+
+  var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -26296,7 +26296,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       s.setInfo('timeSerieManagerDBElements', dbElements);
 
       if (!noZoneSerie) {
-        s._zoneSerie = this.graph.newSerie(serieName + '_zone', {}, _graphCore2.default.SERIE_ZONE);
+        s._zoneSerie = this.graph.newSerie(`${serieName}_zone`, {}, _graphCore2.default.SERIE_ZONE);
       }
 
       this.series.push(s);
@@ -26505,7 +26505,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var dbElements = requestElements[6] || {};
 
       for (var i in dbElements) {
-        url = url.replace('<' + i + '>', dbElements[i]);
+        url = url.replace(`<${i}>`, dbElements[i]);
       }
 
       return url;
@@ -26534,10 +26534,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var extra = '';
       var info = serie.getInfo('timeSerieManagerDBElements');
       for (var i in info) {
-        extra += ';' + i + ':' + info[i];
+        extra += `;${i}:${info[i]}`;
       }
 
-      return serie.getName() + ';' + slotId + ';' + interval + extra;
+      return `${serie.getName()};${slotId};${interval}${extra}`;
     }
 
     computeSlotID(time, interval) {
@@ -27178,14 +27178,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           if (i == 0) {
             d += 'M ';
           }
-          d += ' ' + Math.round(self.serie1.getXAxis().getPx(path[0][i])) + ', ' + Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]));
+          d += ` ${Math.round(self.serie1.getXAxis().getPx(path[0][i]))}, ${Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]))}`;
           if (i < path[0].length - 2) {
             d += ' L ';
           }
         }
 
         for (var i = path[1].length - 2; i >= 0; i -= 2) {
-          d += ' L ' + Math.round(self.serie2.getXAxis().getPx(path[1][i])) + ', ' + Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]));
+          d += ` L ${Math.round(self.serie2.getXAxis().getPx(path[1][i]))}, ${Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]))}`;
           if (i == 0) {
             d += ' z ';
           }
@@ -27290,20 +27290,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(14), __webpack_require__(0), __webpack_require__(5), __webpack_require__(16), __webpack_require__(2), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(3), __webpack_require__(11), __webpack_require__(14), __webpack_require__(0), __webpack_require__(5), __webpack_require__(16), __webpack_require__(9), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.core.js'), require('../graph.axis.x.js'), require('../graph.axis.y.js'), require('../graph.util.js'), require('../series/graph.serie.line.js'), require('../series/graph.serie.scatter.js'), require('./graph.plugin.js'), require('../graph.axis.js'));
+    factory(module, exports, require('../graph.core.js'), require('../graph.axis.x.js'), require('../graph.axis.y.js'), require('../graph.util.js'), require('../series/graph.serie.line.js'), require('../series/graph.serie.scatter.js'), require('../graph.axis.js'), require('./graph.plugin.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphCore, global.graphAxisX, global.graphAxisY, global.graphUtil, global.graphSerieLine, global.graphSerieScatter, global.graphPlugin, global.graphAxis);
+    factory(mod, mod.exports, global.graphCore, global.graphAxisX, global.graphAxisY, global.graphUtil, global.graphSerieLine, global.graphSerieScatter, global.graphAxis, global.graphPlugin);
     global.graphPluginAxissplitting = mod.exports;
   }
-})(this, function (module, exports, _graphCore, _graphAxisX, _graphAxisY, _graphUtil, _graphSerieLine, _graphSerieScatter, _graphPlugin, _graphAxis) {
+})(this, function (module, exports, _graphCore, _graphAxisX, _graphAxisY, _graphUtil, _graphSerieLine, _graphSerieScatter, _graphAxis, _graphPlugin) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -27322,9 +27322,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var _graphSerieScatter2 = _interopRequireDefault(_graphSerieScatter);
 
-  var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
-
   var _graphAxis2 = _interopRequireDefault(_graphAxis);
+
+  var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -27545,7 +27545,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         while (serie.subSeries.length < splits) {
 
-          const name = serie.getName() + '_' + serie.subSeries.length;
+          const name = `${serie.getName()}_${serie.subSeries.length}`;
 
           const s = this.graph.newSerie(name, {}, serie.getType() || _graphCore2.default.SERIE_LINE);
 
@@ -27564,7 +27564,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         while (serie.subSeries.length > splits) {
 
-          let subserie = this.graph.getSerie(serie.getName() + '_' + (serie.subSeries.length - 1));
+          let subserie = this.graph.getSerie(`${serie.getName()}_${serie.subSeries.length - 1}`);
 
           if (subserie && subserie.kill) {
             subserie.kill();
@@ -27632,7 +27632,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           break;
       }
 
-      throw 'Cannot create a split serie of type ' + type;
+      throw `Cannot create a split serie of type ${type}`;
     }
 
     /**
@@ -27959,7 +27959,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       getSubAxis(index) {
 
         if (this.axes.length <= index) {
-          throw 'Impossible to reach axis. Index ' + index + ' is out of range';
+          throw `Impossible to reach axis. Index ${index} is out of range`;
         }
 
         return this.axes[index];
@@ -28192,7 +28192,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     buildHSLString(hsl) {
-      return 'hsl( ' + Math.round(hsl.h) + ', ' + Math.round(hsl.s * 100) + '%, ' + Math.round(hsl.l * 100) + '%)';
+      return `hsl( ${Math.round(hsl.h)}, ${Math.round(hsl.s * 100)}%, ${Math.round(hsl.l * 100)}%)`;
     }
 
     colorizeAll(options, callback = false) {
@@ -28279,7 +28279,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return series.map((serie, index) => {
 
         if (!serie.setLineColor) {
-          throw 'The serie ' + serie.getName() + ' does not implement the method `startingColor`';
+          throw `The serie ${serie.getName()} does not implement the method \`startingColor\``;
         }
 
         let colorString;

@@ -1,7 +1,8 @@
 import Graph from '../graph.core.js';
 import LRU from '../graph.lru.js';
-import Plugin from './graph.plugin.js';
 import * as util from '../graph.util.js';
+
+import Plugin from './graph.plugin.js';
 
 /**
  * @class PluginTimeSerieManager
@@ -95,7 +96,7 @@ class PluginTimeSerieManager extends Plugin {
     s.setInfo( 'timeSerieManagerDBElements', dbElements );
 
     if ( !noZoneSerie ) {
-      s._zoneSerie = this.graph.newSerie( serieName + '_zone', {}, Graph.SERIE_ZONE );
+      s._zoneSerie = this.graph.newSerie( `${serieName }_zone`, {}, Graph.SERIE_ZONE );
     }
 
     this.series.push( s );
@@ -316,7 +317,7 @@ class PluginTimeSerieManager extends Plugin {
     var dbElements = requestElements[ 6 ] || {};
 
     for ( var i in dbElements ) {
-      url = url.replace( '<' + i + '>', dbElements[ i ] );
+      url = url.replace( `<${ i }>`, dbElements[ i ] );
     }
 
     return url;
@@ -345,10 +346,10 @@ class PluginTimeSerieManager extends Plugin {
     var extra = '';
     var info = serie.getInfo( 'timeSerieManagerDBElements' );
     for ( var i in info ) {
-      extra += ';' + i + ':' + info[ i ];
+      extra += `;${ i }:${ info[ i ]}`;
     }
 
-    return serie.getName() + ';' + slotId + ';' + interval + extra;
+    return `${serie.getName() };${ slotId };${ interval }${extra}`;
   }
 
   computeSlotID( time, interval ) {

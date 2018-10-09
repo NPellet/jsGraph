@@ -446,12 +446,12 @@ var dateFormat = ( function() {
     pad = function( val, len ) {
       val = String( val );
       len = len || 2;
-      while ( val.length < len ) val = '0' + val;
+      while ( val.length < len ) val = `0${ val}`;
       return val;
     },
     getWeek = function( d, f ) {
-      var onejan = new Date( d[ f + 'FullYear' ](), 0, 1 );
-      return Math.ceil( ( ( ( d - onejan ) / 86400000 ) + onejan[ f + 'Day' ]() + 1 ) / 7 );
+      var onejan = new Date( d[ `${f }FullYear` ](), 0, 1 );
+      return Math.ceil( ( ( ( d - onejan ) / 86400000 ) + onejan[ `${f }Day` ]() + 1 ) / 7 );
     };
 
   // Regexes and supporting functions are cached through closure
@@ -466,7 +466,7 @@ var dateFormat = ( function() {
 
     // Passing date through Date applies Date.parse, if necessary
     date = date ? new Date( date ) : new Date();
-    if ( isNaN( date ) ) throw SyntaxError( 'invalid date:' + date );
+    if ( isNaN( date ) ) throw SyntaxError( `invalid date:${ date}` );
 
     mask = String( dF.masks[ mask ] || mask || dF.masks.default );
 
@@ -477,14 +477,14 @@ var dateFormat = ( function() {
     }
 
     var _ = utc ? 'getUTC' : 'get',
-      d = date[ _ + 'Date' ](),
-      D = date[ _ + 'Day' ](),
-      m = date[ _ + 'Month' ](),
-      y = date[ _ + 'FullYear' ](),
-      H = date[ _ + 'Hours' ](),
-      M = date[ _ + 'Minutes' ](),
-      s = date[ _ + 'Seconds' ](),
-      L = date[ _ + 'Milliseconds' ](),
+      d = date[ `${_ }Date` ](),
+      D = date[ `${_ }Day` ](),
+      m = date[ `${_ }Month` ](),
+      y = date[ `${_ }FullYear` ](),
+      H = date[ `${_ }Hours` ](),
+      M = date[ `${_ }Minutes` ](),
+      s = date[ `${_ }Seconds` ](),
+      L = date[ `${_ }Milliseconds` ](),
       o = utc ? 0 : date.getTimezoneOffset(),
       flags = {
         d: d,
@@ -812,7 +812,7 @@ function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
 
       while ( text.length * 8 > x2B - x1B ) {
 
-        text = text.substr( 0, text.length - 2 ) + '.';
+        text = `${text.substr( 0, text.length - 2 ) }.`;
 
         if ( text.length == 1 ) {
           text = '';
@@ -967,7 +967,7 @@ class GraphTimeAxis extends Axis {
 
   setShift( shift ) {
     this.shift = shift;
-    this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' );
+    this.group.setAttribute( 'transform', `translate(0 ${ this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) })` );
   }
 
   getAxisPosition() {

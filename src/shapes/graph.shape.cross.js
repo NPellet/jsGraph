@@ -26,7 +26,7 @@ class ShapeCross extends Shape {
   createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'path' );
-    this._dom.setAttribute( 'd', 'M -' + ( this.width / 2 ) + ' 0 h ' + ( this.width ) + ' m -' + ( this.width / 2 ) + ' -' + ( this.width / 2 ) + ' v ' + ( this.width ) + '' );
+    this._dom.setAttribute( 'd', `M -${ this.width / 2 } 0 h ${ this.width } m -${ this.width / 2 } -${ this.width / 2 } v ${ this.width }` );
 
   }
 
@@ -49,7 +49,7 @@ class ShapeCross extends Shape {
       return;
     }
 
-    this.setDom( 'transform', 'translate( ' + position.x + ', ' + position.y + ')' );
+    this.setDom( 'transform', `translate( ${ position.x }, ${ position.y })` );
 
     this.currentPos1x = position.x;
     this.currentPos1y = position.y;

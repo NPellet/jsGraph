@@ -1,4 +1,3 @@
-import Serie from './graph.serie.js';
 import {
   extend,
   guid,
@@ -6,6 +5,8 @@ import {
   emptyDom
 }
 from '../graph.util.js';
+
+import Serie from './graph.serie.js';
 
 /**
  * @static

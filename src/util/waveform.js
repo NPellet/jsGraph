@@ -1,5 +1,6 @@
-import FitLM from './fit_lm.js';
 import * as util from '../graph.util.js';
+
+import FitLM from './fit_lm.js';
 
 class Waveform {
 
@@ -166,7 +167,7 @@ class Waveform {
   setTypedArrayClass( constructor ) {
 
     if ( this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed( constructor ) ) {
-      this.warn( 'NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')' );
+      this.warn( `NaN values are not allowed by the new constructor (${ constructor.name }) while it was allowed by the previous one (${ this._typedArrayClass.name })` );
     }
 
     if ( this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned( constructor ) ) {
@@ -1202,7 +1203,7 @@ class Waveform {
 
     if ( this._dataAggregated[ level ] ) {
 
-      this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
+      this.dataInUseType = `aggregate${ this._dataAggregationDirection}`;
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating ) {

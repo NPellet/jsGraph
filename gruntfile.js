@@ -1,4 +1,5 @@
 const path = require( 'path' );
+
 const babel = require( 'rollup-plugin-babel' );
 
 const distPath = path.resolve( __dirname, './dist/' );
@@ -63,7 +64,7 @@ module.exports = function ( grunt ) {
                 files: {
                     './web/site/js/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph-es6.js',
                     './web/site/js/node-jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js',
-                    
+
                 }
             },
 
@@ -282,7 +283,7 @@ console.log( fs.readFileSync( 'examples/list.json', 'utf8' ) );
         var list = JSON.parse( fs.readFileSync( 'examples/list.json', 'utf8' ) );
 
         for ( var i = 0, l = list.length; i < l; i++ ) {
-            var code = fs.readFileSync( 'examples/v2/' + list[i].file + '.js', 'utf8' );
+            var code = fs.readFileSync( `examples/v2/${ list[i].file }.js`, 'utf8' );
             var example = {};
             example.id = list[i].file;
             example.title = list[i].title;

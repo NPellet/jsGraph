@@ -58,7 +58,7 @@ class ShapePolyline extends Shape {
 
     if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
 
-      pxPoints = ' M ' + pos.x + ' ' + pos.y + ' ' + pxPoints;
+      pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
       this.setDom( 'd', pxPoints );
 
     } else if ( this.points ) {
@@ -76,9 +76,9 @@ class ShapePolyline extends Shape {
         yAxis = this.yAxis;
       }
 
-      this.setDom( 'd', 'M ' + this.points.map( function( p ) {
-        return xAxis.getPx( p[ 0 ] ) + ', ' + yAxis.getPx( p[ 1 ] );
-      } ).join( ' L ' ) );
+      this.setDom( 'd', `M ${ this.points.map( function( p ) {
+        return `${xAxis.getPx( p[ 0 ] ) }, ${ yAxis.getPx( p[ 1 ] )}`;
+      } ).join( ' L ' )}` );
     }
 
     this.changed();
