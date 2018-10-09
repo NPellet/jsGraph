@@ -816,7 +816,13 @@ class SerieLine extends SerieScatter {
     } else {
       line.removeAttribute( 'stroke-dasharray' );
     }
-    line.setAttribute( 'fill', 'none' );
+
+    if ( this.getFillColor() ) {
+      line.setAttribute( 'fill', this.getFillColor() );
+    } else {
+      line.setAttribute( 'fill', 'none' );
+    }
+
     //	line.setAttribute('shape-rendering', 'optimizeSpeed');
   }
 
@@ -1245,9 +1251,31 @@ class SerieLine extends SerieScatter {
     return this;
   }
 
+  /* FILL COLOR * @memberof SerieLine
+   */
+  setFillColor( color, selectionType, applyToSelected ) {
+
+    selectionType = selectionType || 'unselected';
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].fillColor = color;
+
+    if ( applyToSelected ) {
+      this.setFillColor( color, 'selected' );
+    }
+
+    this.styleHasChanged( selectionType );
+
+    return this;
+  }
+
   getLineColor( selectionType ) {
 
     return this.getStyle( selectionType ).lineColor || 'black';
+  }
+
+  getFillColor( selectionType ) {
+
+    return this.getStyle( selectionType ).fillColor || undefined;
   }
 
   /* * @memberof SerieLine

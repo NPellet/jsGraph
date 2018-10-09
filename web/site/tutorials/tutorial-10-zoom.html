@@ -188,27 +188,28 @@ return { Graph: graph }
 <div id="example-1" class="jsgraph-example"></div>
 
 <script>
+( () => {
+  var graphResponse = makeGraph( "example-1", { zoomMode: 'xy' }, [ { plugin: 'zoom' } ] ); 
 
-var graphResponse = makeGraph( "example-1", { zoomMode: 'xy' }, [ { plugin: 'zoom' } ] ); 
+  $( document ).ready( function() {
 
-$( document ).ready( function() {
+    $( '#example-1-shift' ).on( 'click', function() {
+      
+      graphResponse.Graph.options.mouseActions[ 0 ].shift = true;
 
-  $( '#example-1-shift' ).on( 'click', function() {
-    
-    graphResponse.Graph.options.mouseActions[ 0 ].shift = true;
+      $( this ).siblings( ).removeClass( 'active' );
+      $( this ).addClass( 'active' );
+    });
 
-    $( this ).siblings( ).removeClass( 'active' );
-    $( this ).addClass( 'active' );
+    $( '#example-1-shift2' ).on('click', function() {
+      
+      graphResponse.Graph.options.mouseActions[ 0 ].shift = false;
+
+      $( this ).siblings( ).removeClass( 'active' );
+      $( this ).addClass( 'active' );
+    });
   });
-
-  $( '#example-1-shift2' ).on('click', function() {
-    
-    graphResponse.Graph.options.mouseActions[ 0 ].shift = false;
-
-    $( this ).siblings( ).removeClass( 'active' );
-    $( this ).addClass( 'active' );
-  });
-});
+})();
 </script>
 
 <div class="btn-group">

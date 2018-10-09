@@ -1794,7 +1794,7 @@ class Graph extends EventEmitter {
   }
 
   isActionAllowed( e, action ) {
-
+    console.log( action.type, e.type, action.shift, e.shiftKey, action );
     if ( action.type !== e.type && ( action.type !== undefined || e.type !== 'mousedown' ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
     }

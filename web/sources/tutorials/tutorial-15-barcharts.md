@@ -137,9 +137,14 @@ graph.draw();
 	graph.draw();
 </script>
  
+It might be worth it to add the following code to make the Y axis start at 0:
+{% highlight javascript %}
+graph.getLeftAxis().forceMin( 0 );
+{% endhighlight %}
 
 
-### <a id="errorbars"></a>Adding error bars
+###<a id="errorbars"></a>Adding errors to the bars
+
 Adding error bars in bar charts is similar to the line series. The style has to be defined first using the ```setErrorBoxStyle``` and the ```setErrorBarStyle``` method **to the waveform**. Here's an example:
 
 {% highlight javascript %}

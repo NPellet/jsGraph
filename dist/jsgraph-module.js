@@ -1690,6 +1690,7 @@ class Waveform {
     }
 
     this.xdata = waveform;
+
     this.computeXMinMax();
     return this;
   }
@@ -1838,6 +1839,27 @@ class Waveform {
     return this;
   }
 
+  concat(wave2) {
+
+    if (!this.xdata) {
+      this.xdata = this.getXWaveform();
+    }
+
+    if (!wave2.xdata) {
+      wave2.xdata = wave2.getXWaveform();
+    }
+
+    this.data = this.data.concat(wave2.data);
+    this.xdata.data = this.xdata.data.concat(wave2.xdata.data);
+
+    this.checkMonotonicity();
+    this.xdata.checkMonotonicity();
+
+    this.computeXMinMax();
+
+    return this;
+  }
+
   _makeArray(length) {
 
     const constructor = this.getTypedArrayClass();
@@ -1881,8 +1903,11 @@ class Waveform {
     }
 
     this.data = dataY;
-    this.checkMinMaxErrorBars();
 
+    this.minY = minY;
+    this.maxY = maxY;
+
+    this.checkMinMaxErrorBars();
     this.computeXMinMax();
   }
 
@@ -1917,7 +1942,6 @@ class Waveform {
   computeXMinMax() {
 
     if (!this.data) {
-
       return;
     }
 
@@ -2388,14 +2412,18 @@ class Waveform {
 
   invert(data) {
 
-    let d = dataY || this.data;
+    let d = data || this.data;
     d.reverse();
+
+    if (this.xdata) {
+      this.xdata.invert();
+    }
 
     if (this.isMonotoneous()) {
       this._monotoneousAscending = !this._monotoneousAscending;
     }
 
-    return d;
+    return this;
   }
 
   resampleForDisplay(options) {
@@ -2695,29 +2723,64 @@ class Waveform {
     this.requireXMonotonicity();
     wave.requireXMonotonicity();
 
-    if (operation == MULTIPLY) {
+    if (this.xdata && wave.xdata) {
 
-      for (; i < l; i++) {
-        yDataThis[i] *= wave.interpolate(this.getX(i));
-      }
-    } else if (operation == DIVIDE) {
+      const xSet = new Set();
+      const xData = this.xdata.data;
+      const xData2 = wave.xdata.data;
 
-      for (; i < l; i++) {
-        yDataThis[i] /= wave.interpolate(this.getX(i));
+      for (i = 0; i < xData.length; i++) {
+        xSet.add(xData[i]);
       }
-    } else if (operation == ADD) {
 
-      for (; i < l; i++) {
-        yDataThis[i] += wave.interpolate(this.getX(i));
+      for (i = 0; i < xData2.length; i++) {
+        xSet.add(xData2[i]);
       }
-    } else if (operation == SUBTRACT) {
 
-      for (; i < l; i++) {
-        yDataThis[i] -= wave.interpolate(this.getX(i));
+      const xs = Array.from(xSet.values()).sort();
+
+      const ys = xs.map(x => {
+
+        if (operation == MULTIPLY) {
+          return this.interpolate(x) * wave.interpolate(x);
+        } else if (operation == DIVIDE) {
+          return this.interpolate(x) / wave.interpolate(x);
+        } else if (operation == ADD) {
+          return this.interpolate(x) + wave.interpolate(x);
+        } else if (operation == SUBTRACT) {
+          return this.interpolate(x) - wave.interpolate(x);
+        }
+      });
+
+      this._setData(ys);
+      this.xdata._setData(xs);
+    } else {
+
+      if (operation == MULTIPLY) {
+
+        for (; i < l; i++) {
+          yDataThis[i] *= wave.interpolate(this.getX(i));
+        }
+      } else if (operation == DIVIDE) {
+
+        for (; i < l; i++) {
+          yDataThis[i] /= wave.interpolate(this.getX(i));
+        }
+      } else if (operation == ADD) {
+
+        for (; i < l; i++) {
+          yDataThis[i] += wave.interpolate(this.getX(i));
+        }
+      } else if (operation == SUBTRACT) {
+
+        for (; i < l; i++) {
+          yDataThis[i] -= wave.interpolate(this.getX(i));
+        }
       }
+
+      this._setData(yDataThis);
     }
 
-    this._setData(yDataThis);
     return this;
   }
 
@@ -2793,8 +2856,10 @@ class Waveform {
 
     if (this.xdata) {
       if (alsoDuplicateXWave) {
+
         newWaveform.setXWaveform(this.xdata.duplicate());
       } else {
+
         newWaveform.setXWaveform(this.xdata);
       }
 
@@ -5407,7 +5472,7 @@ class Graph$1 extends EventEmitter {
   }
 
   isActionAllowed(e, action) {
-
+    console.log(action.type, e.type, action.shift, e.shiftKey, action);
     if (action.type !== e.type && (action.type !== undefined || e.type !== 'mousedown') && !((e.type === 'wheel' || e.type === 'mousewheel') && action.type == 'mousewheel')) {
       return;
     }
@@ -15178,7 +15243,13 @@ class SerieLine extends SerieScatter {
     } else {
       line.removeAttribute('stroke-dasharray');
     }
-    line.setAttribute('fill', 'none');
+
+    if (this.getFillColor()) {
+      line.setAttribute('fill', this.getFillColor());
+    } else {
+      line.setAttribute('fill', 'none');
+    }
+
     //	line.setAttribute('shape-rendering', 'optimizeSpeed');
   }
 
@@ -15604,9 +15675,31 @@ class SerieLine extends SerieScatter {
     return this;
   }
 
+  /* FILL COLOR * @memberof SerieLine
+   */
+  setFillColor(color, selectionType, applyToSelected) {
+
+    selectionType = selectionType || 'unselected';
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].fillColor = color;
+
+    if (applyToSelected) {
+      this.setFillColor(color, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
   getLineColor(selectionType) {
 
     return this.getStyle(selectionType).lineColor || 'black';
+  }
+
+  getFillColor(selectionType) {
+
+    return this.getStyle(selectionType).fillColor || undefined;
   }
 
   /* * @memberof SerieLine
@@ -23950,6 +24043,7 @@ class PluginSerieLineDifference extends Plugin {
   init(graph, options) {
     this.graph = graph;
 
+    this.series = [];
     this.pathsPositive = [];
     this.pathsNegative = [];
 
@@ -24000,245 +24094,92 @@ class PluginSerieLineDifference extends Plugin {
    */
   draw() {
 
-    var self = this;
-    var s1 = this.serie1.searchClosestValue(this.getFrom());
-    var i1, j1, i2, j2, y, y2, crossing;
+    const w1 = this.serie1.getWaveform();
+    const w2 = this.serie2.getWaveform();
 
-    var top = [];
-    var bottom = [];
+    const wFinal = w1.duplicate(true).subtract(w2).add(w2);
+    const wFinal2 = w1.duplicate(true).subtract(w1.duplicate(true).subtract(w2));
 
-    var bottomBroken;
+    const chunks = [];
+    let currentChunk;
 
-    if (!s1) {
-      i1 = 0;
-      j1 = 0;
-    } else {
+    var newChunk = (force = false) => {
 
-      i1 = s1.dataIndex;
-      j1 = s1.xAfterIndex * 2;
-    }
+      if (!force) {
+        if (currentChunk.wave1.length == 0 && currentChunk.wave2.length == 0) {
+          return;
+        }
+      }
+      currentChunk = {
+        above: undefined,
+        wave1: [],
+        wave2: []
+      };
+      chunks.push(currentChunk);
+    };
 
-    y = this.interpolate(this.serie1, this.getFrom());
-    top.push(this.getFrom()); // x
-    top.push(y); // y
+    newChunk(true);
 
-    y = this.interpolate(this.serie2, this.getFrom());
-    bottom.push(this.getFrom()); // x
-    bottom.push(y); // y
+    for (var i = 0; i < wFinal.getLength(); i++) {
 
-    var s2;
-
-    var order;
-
-    function nextSet() {
-
-      if (order === true) {
-        self.pathsPositive.push([top, bottom]);
-      } else if (order === false) {
-        self.pathsNegative.push([top, bottom]);
+      if (isNaN(wFinal.getY(i)) || isNaN(wFinal2.getY(i))) {
+        newChunk();
+        continue;
       }
 
-      top = [];
-      bottom = [];
-      order = undefined;
-    }
-    var ended;
-    for (; i1 < this.serie1.data.length; i1++) {
+      if (i > 0 && currentChunk.wave1.length > 0) {
 
-      for (; j1 < this.serie1.data[i1].length; j1 += 2) {
+        if (wFinal.getY(i) > wFinal2.getY(i) && !currentChunk.above) {
 
-        if (this.serie1.data[i1][j1] > this.getTo()) {
-          // FINISHED !
-
-          y = this.interpolate(this.serie1, this.getTo());
-          y2 = this.interpolate(this.serie2, this.getTo());
-
-          crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.getTo(), y, bottom[bottom.length - 2], bottom[bottom.length - 1], this.getTo(), y2);
-
-          if (crossing) {
-
-            top.push(crossing.x);
-            top.push(crossing.y);
-            bottom.push(crossing.x);
-            bottom.push(crossing.y);
-            nextSet();
-            top.push(crossing.x);
-            top.push(crossing.y);
-            bottom.push(crossing.x);
-            bottom.push(crossing.y);
-
-            order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-          }
-
-          top.push(this.getTo()); // x
-          top.push(y); // y
-
-          bottom.push(this.getTo()); // x
-          bottom.push(y2); // y
-
-          ended = true;
-          break;
+          const crossing = this.computeCrossing(wFinal.getX(i - 1), wFinal.getY(i - 1), wFinal.getX(i), wFinal.getY(i), wFinal2.getX(i - 1), wFinal2.getY(i - 1), wFinal2.getX(i), wFinal2.getY(i));
+          currentChunk.wave1.push([crossing.x, crossing.y]);
+          newChunk();
+          currentChunk.wave1.push([crossing.x, crossing.y]);
+          currentChunk.above = true;
         }
 
-        if (!s2) {
-          s2 = this.serie2.searchClosestValue(this.serie1.data[i1][j1]); // Finds the first point
+        if (wFinal.getY(i) < wFinal2.getY(i) && currentChunk.above) {
 
-          if (s2) {
-            i2 = s2.dataIndex;
-            j2 = s2.xBeforeIndex * 2;
-
-            // TODO: Add here first points
-
-            y = this.interpolate(this.serie2, this.serie1.data[i1][j1]);
-
-            top.push(this.serie1.data[i1][j1]); // x
-            top.push(this.serie1.data[i1][j1 + 1]); // y
-
-            bottom.push(this.serie1.data[i1][j1]); // x
-            bottom.push(y); // y
-
-            order = this.serie1.data[i1][j1 + 1] > y;
-          } else {
-            continue;
-          }
-        }
-
-        bottomBroken = false;
-
-        crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
-
-        if (crossing) {
-
-          top.push(crossing.x);
-          top.push(crossing.y);
-          bottom.push(crossing.x);
-          bottom.push(crossing.y);
-          nextSet();
-          top.push(crossing.x);
-          top.push(crossing.y);
-          bottom.push(crossing.x);
-          bottom.push(crossing.y);
-
-          order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-        }
-
-        while (this.serie2.data[i2][j2] < this.serie1.data[i1][j1]) {
-
-          bottom.push(this.serie2.data[i2][j2]);
-          bottom.push(this.serie2.data[i2][j2 + 1]);
-
-          j2 += 2;
-          if (j2 == this.serie2.data[i2].length) {
-            bottomBroken = this.serie2.data[i2][j2 - 2];
-            i2++;
-            j2 = 0;
-            break;
-          }
-
-          crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
-
-          if (crossing) {
-
-            top.push(crossing.x);
-            top.push(crossing.y);
-            bottom.push(crossing.x);
-            bottom.push(crossing.y);
-            nextSet();
-            top.push(crossing.x);
-            top.push(crossing.y);
-            bottom.push(crossing.x);
-            bottom.push(crossing.y);
-
-            order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-          }
-        }
-
-        if (bottomBroken === false) {
-          top.push(this.serie1.data[i1][j1]);
-          top.push(this.serie1.data[i1][j1 + 1]);
-        } else {
-
-          top.push(bottomBroken);
-          top.push(this.interpolate(this.serie1, bottomBroken));
-
-          s2 = false;
-          j1 -= 2;
-          nextSet();
+          const crossing = this.computeCrossing(wFinal.getX(i - 1), wFinal.getY(i - 1), wFinal.getX(i), wFinal.getY(i), wFinal2.getX(i - 1), wFinal2.getY(i - 1), wFinal2.getX(i), wFinal2.getY(i));
+          currentChunk.wave1.push([crossing.x, crossing.y]);
+          newChunk();
+          currentChunk.wave1.push([crossing.x, crossing.y]);
+          currentChunk.above = false;
         }
       }
 
-      if (ended) {
-        nextSet();
-        break;
-      }
-      // End of X
-
-      y = this.interpolate(this.serie2, top[top.length - 2]);
-      if (y) {
-        bottom.push(top[top.length - 2]);
-        bottom.push(y);
+      if (currentChunk.wave1.length == 0) {
+        currentChunk.above = wFinal.getY(i) > wFinal2.getY(1);
       }
 
-      nextSet();
-
-      j1 = 0;
-      s2 = false;
+      currentChunk.wave1.push([wFinal.getX(i), wFinal.getY(i)]);
+      currentChunk.wave2.push([wFinal2.getX(i), wFinal2.getY(i)]);
     }
 
-    var d = this.pathsPositive.reduce(makePaths, '');
-    this.positivePolyline.setPointsPx(d).redraw();
+    this.series.forEach(serie => serie.kill());
 
-    var d = this.pathsNegative.reduce(makePaths, '');
-    this.negativePolyline.setPointsPx(d).redraw();
+    this.series = chunks.forEach((chunk, index) => {
 
-    //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
+      const serie = this.graph.newSerie("__graph_serielinedifference_" + this.serie1.getName() + "_" + this.serie2.getName() + "_" + index);
+      const wave = new Waveform();
 
-    function makePaths(d, path) {
+      wave.setData(chunk.wave1.map(el => el[1]).concat(chunk.wave2.reverse().map(el => el[1])), chunk.wave1.map(el => el[0]).concat(chunk.wave2.map(el => el[0])));
 
-      for (var i = 0; i < path[0].length; i += 2) {
-        if (i == 0) {
-          d += 'M ';
-        }
-        d += ' ' + Math.round(self.serie1.getXAxis().getPx(path[0][i])) + ', ' + Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]));
-        if (i < path[0].length - 2) {
-          d += ' L ';
-        }
+      if (chunk.wave1[0]) {
+        wave.append(chunk.wave1[0][0], chunk.wave1[0][1]);
       }
 
-      for (var i = path[1].length - 2; i >= 0; i -= 2) {
-        d += ' L ' + Math.round(self.serie2.getXAxis().getPx(path[1][i])) + ', ' + Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]));
-        if (i == 0) {
-          d += ' z ';
-        }
+      serie.setWaveform(wave);
+      serie.setXAxis(this.serie1.getXAxis());
+      serie.setYAxis(this.serie1.getYAxis());
+
+      if (chunk.above) {
+        serie.setFillColor(this.options.positiveStyle.fillColor);
+      } else {
+        serie.setFillColor(this.options.negativeStyle.fillColor);
       }
-      return d;
-    }
-  }
-
-  /**
-   * Finds the interpolated y value at point ```valX``` of the serie ```serie```
-   * @returns {(Number|Boolean)} The interpolated y value is possible, ```false``` otherwise
-   * @param {Serie} serie - The serie for which the y value should be computed
-   * @param {Number} valX - The x value
-   */
-  interpolate(serie, valX) {
-
-    var value = serie.searchClosestValue(valX);
-
-    if (!value) {
-      return false;
-    }
-
-    if (value.xMax == undefined) {
-      return value.yMin;
-    }
-
-    if (value.xMin == undefined) {
-      return value.yMax;
-    }
-
-    var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-    return (1 - ratio) * value.yMin + ratio * value.yMax;
+      console.log(this.options);
+    });
   }
 
   /**
@@ -24254,6 +24195,7 @@ class PluginSerieLineDifference extends Plugin {
    * @param {Number} y22 - Second y point of the second vector
    */
   computeCrossing(x11, y11, x12, y12, x21, y21, x22, y22) {
+
     var a1 = (y12 - y11) / (x12 - x11);
     var a2 = (y22 - y21) / (x22 - x21);
 
@@ -24269,7 +24211,8 @@ class PluginSerieLineDifference extends Plugin {
       return {
         x: x11,
         y1: y11,
-        y2: y11
+        y2: y11,
+        y: y11
       };
     }
 

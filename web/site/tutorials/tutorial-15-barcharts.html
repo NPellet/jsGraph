@@ -198,8 +198,13 @@
 	graph.draw();
 </script>
 
-<p>### <a id="errorbars"></a>Adding error bars
-Adding error bars in bar charts is similar to the line series. The style has to be defined first using the <code class="highlighter-rouge">setErrorBoxStyle</code> and the <code class="highlighter-rouge">setErrorBarStyle</code> method <strong>to the waveform</strong>. Here’s an example:</p>
+<p>It might be worth it to add the following code to make the Y axis start at 0:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
+
+<p>###<a id="errorbars"></a>Adding errors to the bars</p>
+
+<p>Adding error bars in bar charts is similar to the line series. The style has to be defined first using the <code class="highlighter-rouge">setErrorBoxStyle</code> and the <code class="highlighter-rouge">setErrorBarStyle</code> method <strong>to the waveform</strong>. Here’s an example:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">wave1</span><span class="p">.</span><span class="nx">setErrorBarStyle</span><span class="p">(</span> <span class="p">{</span> 
   <span class="na">top</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span> <span class="na">strokeOpacity</span><span class="p">:</span> <span class="mf">0.7</span> <span class="p">},</span> 

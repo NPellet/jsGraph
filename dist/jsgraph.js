@@ -593,7 +593,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /***/ (function(module, exports, __webpack_require__) {
 
 var store = __webpack_require__(57)('wks');
-var uid = __webpack_require__(35);
+var uid = __webpack_require__(36);
 var Symbol = __webpack_require__(2).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
@@ -685,7 +685,7 @@ module.exports = function (it, key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(8);
-var createDesc = __webpack_require__(34);
+var createDesc = __webpack_require__(35);
 module.exports = __webpack_require__(7) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
@@ -701,7 +701,7 @@ module.exports = __webpack_require__(7) ? function (object, key, value) {
 var global = __webpack_require__(2);
 var hide = __webpack_require__(13);
 var has = __webpack_require__(12);
-var SRC = __webpack_require__(35)('src');
+var SRC = __webpack_require__(36)('src');
 var TO_STRING = 'toString';
 var $toString = Function[TO_STRING];
 var TPL = ('' + $toString).split(TO_STRING);
@@ -773,7 +773,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE = __webpack_require__(53);
-var createDesc = __webpack_require__(34);
+var createDesc = __webpack_require__(35);
 var toIObject = __webpack_require__(16);
 var toPrimitive = __webpack_require__(23);
 var has = __webpack_require__(12);
@@ -2837,32 +2837,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 "use strict";
 
 if (__webpack_require__(7)) {
-  var LIBRARY = __webpack_require__(36);
+  var LIBRARY = __webpack_require__(37);
   var global = __webpack_require__(2);
   var fails = __webpack_require__(3);
   var $export = __webpack_require__(0);
   var $typed = __webpack_require__(67);
   var $buffer = __webpack_require__(99);
   var ctx = __webpack_require__(19);
-  var anInstance = __webpack_require__(42);
-  var propertyDesc = __webpack_require__(34);
+  var anInstance = __webpack_require__(43);
+  var propertyDesc = __webpack_require__(35);
   var hide = __webpack_require__(13);
-  var redefineAll = __webpack_require__(44);
+  var redefineAll = __webpack_require__(45);
   var toInteger = __webpack_require__(25);
   var toLength = __webpack_require__(9);
   var toIndex = __webpack_require__(131);
-  var toAbsoluteIndex = __webpack_require__(38);
+  var toAbsoluteIndex = __webpack_require__(39);
   var toPrimitive = __webpack_require__(23);
   var has = __webpack_require__(12);
   var classof = __webpack_require__(54);
   var isObject = __webpack_require__(4);
   var toObject = __webpack_require__(10);
   var isArrayIter = __webpack_require__(90);
-  var create = __webpack_require__(39);
+  var create = __webpack_require__(40);
   var getPrototypeOf = __webpack_require__(18);
-  var gOPN = __webpack_require__(40).f;
+  var gOPN = __webpack_require__(41).f;
   var getIterFn = __webpack_require__(92);
-  var uid = __webpack_require__(35);
+  var uid = __webpack_require__(36);
   var wks = __webpack_require__(6);
   var createArrayMethod = __webpack_require__(27);
   var createArrayIncludes = __webpack_require__(58);
@@ -2870,7 +2870,7 @@ if (__webpack_require__(7)) {
   var ArrayIterators = __webpack_require__(95);
   var Iterators = __webpack_require__(49);
   var $iterDetect = __webpack_require__(62);
-  var setSpecies = __webpack_require__(41);
+  var setSpecies = __webpack_require__(42);
   var arrayFill = __webpack_require__(94);
   var arrayCopyWithin = __webpack_require__(121);
   var $DP = __webpack_require__(8);
@@ -3378,7 +3378,7 @@ module.exports = {
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var META = __webpack_require__(35)('meta');
+var META = __webpack_require__(36)('meta');
 var isObject = __webpack_require__(4);
 var has = __webpack_require__(12);
 var setDesc = __webpack_require__(8).f;
@@ -3448,6 +3448,2502 @@ module.exports = function (key) {
 
 /***/ }),
 /* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(139), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require('./fit_lm.js'), require('../graph.util.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.fit_lm, global.graphUtil);
+    global.waveform = mod.exports;
+  }
+})(this, function (exports, _fit_lm, _graphUtil) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.WaveformHash = exports.Waveform = undefined;
+
+  var _fit_lm2 = _interopRequireDefault(_fit_lm);
+
+  var util = _interopRequireWildcard(_graphUtil);
+
+  function _interopRequireWildcard(obj) {
+    if (obj && obj.__esModule) {
+      return obj;
+    } else {
+      var newObj = {};
+
+      if (obj != null) {
+        for (var key in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+        }
+      }
+
+      newObj.default = obj;
+      return newObj;
+    }
+  }
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  function _toConsumableArray(arr) {
+    if (Array.isArray(arr)) {
+      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+        arr2[i] = arr[i];
+      }
+
+      return arr2;
+    } else {
+      return Array.from(arr);
+    }
+  }
+
+  function _possibleConstructorReturn(self, call) {
+    if (!self) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+  }
+
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+  }
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  var _createClass = function () {
+    function defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+
+  var Waveform = function () {
+    function Waveform() {
+      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      var xOffset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var xScale = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+
+      _classCallCheck(this, Waveform);
+
+      this.xOffset = xOffset;
+      this.xScale = xScale;
+
+      // Error bar handling
+      this.errors = {
+
+        nb: 0,
+
+        bars: {
+          above: null,
+          below: null
+        },
+
+        boxes: {
+          above: null,
+          below: null
+        }
+      };
+
+      this.BELOW = Waveform.BELOW;
+      this.ABOVE = Waveform.ABOVE;
+      this.BOX = Waveform.BOX;
+      this.BAR = Waveform.BAR;
+
+      this.setData(data);
+    }
+
+    /** [ [ x1, y1 ], [ x2, y2 ] ] */
+
+    /*
+    setDataXY( data ) {
+       let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
+        warnNaN = false;
+      const nanable = this.isNaNAllowed();
+       data.map( ( el, index ) => {
+         if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
+          warnNaN = true;
+        }
+         newData[ 0 ][ index ] = el[ 0 ];
+        newData[ 1 ][ index ] = el[ 1 ];
+      } );
+       if ( warnNaN ) {
+        this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
+      }
+       this._setData( ...newData );
+      return this;
+    }
+    */
+
+
+    _createClass(Waveform, [{
+      key: 'setData',
+      value: function setData(data) {
+        var dataX = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+
+        /* First, we must treat the case of the array of array for backward compatibility */
+        if (Array.isArray(data[0])) {
+          var x = [];
+          var y = [];
+          data.forEach(function (el) {
+            x.push(el[0]);
+            y.push(el[1]);
+          });
+
+          this.setXWaveform(x);
+          data = y;
+        }
+
+        var newData = this._makeArray(data.length),
+            warnNaN = false;
+
+        var nanable = this.isNaNAllowed();
+
+        data.map(function (el, index) {
+
+          if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+            warnNaN = true;
+          }
+
+          newData[index] = el;
+        });
+
+        if (warnNaN) {
+          this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
+        }
+
+        this._setData(newData);
+
+        if (dataX) {
+          this.setXWaveform(dataX);
+        }
+        return this;
+      }
+    }, {
+      key: 'getY',
+      value: function getY(index, optimized) {
+
+        if (optimized && this.dataInUse) {
+          return this.dataInUse.y[index] * this.getScale() + this.getShift();
+        }
+
+        return this.data[index] * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'setXWaveform',
+      value: function setXWaveform(waveform) {
+
+        if (!(waveform instanceof Waveform)) {
+
+          if (Array.isArray(waveform)) {
+            waveform = new Waveform(waveform);
+          } else {
+            throw 'Cannot set X waveform. Data is not a valid array.';
+          }
+        }
+
+        this.xdata = waveform;
+
+        this.computeXMinMax();
+        return this;
+      }
+    }, {
+      key: 'hasXWaveform',
+      value: function hasXWaveform() {
+        return !!this.xdata;
+      }
+    }, {
+      key: 'getXWaveform',
+      value: function getXWaveform() {
+        if (this.xdata) {
+          return this.xdata;
+        }
+
+        var wave = new Waveform();
+        for (var i = 0; i < this.getLength(); i += 1) {
+          wave.append(this.getX(i));
+        }
+        return wave;
+      }
+    }, {
+      key: 'rescaleX',
+      value: function rescaleX(offset, scale) {
+        this.xScale = scale;
+        this.xOffset = offset;
+        this.computeXMinMax();
+        return this;
+      }
+    }, {
+      key: 'getTypedArrayClass',
+      value: function getTypedArrayClass() {
+        return this._typedArrayClass || false;
+      }
+    }, {
+      key: 'setTypedArrayClass',
+      value: function setTypedArrayClass(constructor) {
+
+        if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
+          this.warn('NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')');
+        }
+
+        if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
+          this.warn('You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.');
+        }
+
+        this._typedArrayClass = constructor;
+
+        if (this.data) {
+          this._setData(constructor.from(this.data));
+        }
+
+        if (this.hasXWaveform()) {
+          this.getXWaveform().setTypedArrayClass(constructor);
+        }
+      }
+    }, {
+      key: 'isNaNAllowed',
+      value: function isNaNAllowed() {
+        var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
+
+
+        // The following types accept NaNs
+        return constructor == Array || constructor == Float32Array || constructor == Float64Array;
+      }
+    }, {
+      key: 'isUnsigned',
+      value: function isUnsigned() {
+        var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
+
+
+        // The following types accept NaNs
+        return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
+      }
+    }, {
+      key: 'recalculateMinMaxNewPoint',
+      value: function recalculateMinMaxNewPoint(x, y) {
+        if (x < this.minX || this.minX === undefined) {
+          this.minX = x;
+        }
+
+        if (x > this.maxX || this.maxX === undefined) {
+          this.maxX = x;
+        }
+
+        if (y < this.minY || this.minY === undefined) {
+          this.minY = y;
+        }
+
+        if (y > this.maxY || this.maxY === undefined) {
+          this.maxY = y;
+        }
+      }
+    }, {
+      key: 'prepend',
+      value: function prepend(x, y) {
+
+        if (typeof x == 'function') {
+          x = x(this);
+        }
+
+        if (typeof y == 'function') {
+          y = y(this);
+        }
+
+        if (this.xdata) {
+          this.xdata.prepend(null, x);
+        } else if (x !== null) {
+          this.xdata = this.getXWaveform();
+          this.xdata.prepend(null, x);
+        } else {
+          this.xOffset -= this.xScale;
+        }
+
+        this.data.unshift(y);
+        this.recalculateMinMaxNewPoint(x, y);
+        return this;
+      }
+    }, {
+      key: 'append',
+      value: function append(x, y) {
+
+        if (typeof x == 'function') {
+          x = x(this);
+        }
+
+        if (typeof y == 'function') {
+          y = y(this);
+        }
+
+        if (this.xdata) {
+          this.xdata.append(null, x);
+        } else if (x !== null) {
+          this.xdata = this.getXWaveform();
+          this.xdata.append(null, x);
+        }
+
+        if (this.monotoneous) {
+          if (y > this.data[this.data.y] && this.getMonotoneousAscending() === false) {
+            this.monotoneous = false;
+          } else if (y < this.data[this.data.y] && this.getMonotoneousAscending() === true) {
+            this.monotoneous = false;
+          }
+        }
+
+        if (this.data.length == 1 || this._monotoneousAscending === undefined) {
+
+          this.monotoneous = true;
+
+          if (y == this.data[0]) {
+            this._monotoneousAscending = undefined;
+          } else {
+            this._monotoneousAscending = y > this.data[0];
+          }
+        }
+
+        this.data.push(y);
+        this.recalculateMinMaxNewPoint(x, y);
+
+        return this;
+      }
+    }, {
+      key: 'concat',
+      value: function concat(wave2) {
+
+        if (!this.xdata) {
+          this.xdata = this.getXWaveform();
+        }
+
+        if (!wave2.xdata) {
+          wave2.xdata = wave2.getXWaveform();
+        }
+
+        this.data = this.data.concat(wave2.data);
+        this.xdata.data = this.xdata.data.concat(wave2.xdata.data);
+
+        this.checkMonotonicity();
+        this.xdata.checkMonotonicity();
+
+        this.computeXMinMax();
+
+        return this;
+      }
+    }, {
+      key: '_makeArray',
+      value: function _makeArray(length) {
+
+        var constructor = this.getTypedArrayClass();
+        if (constructor) {
+          return new constructor(length);
+        }
+        return new Array(length);
+      }
+    }, {
+      key: '_setData',
+      value: function _setData(dataY) {
+        var l = dataY.length;
+        var i = 1,
+            monoDir = dataY[1] > dataY[0],
+            minY = dataY[0],
+            maxY = dataY[0];
+
+        if (isNaN(minY)) {
+          minY = Number.MAX_VALUE;
+        }
+
+        if (isNaN(maxY)) {
+          maxY = -Number.MAX_VALUE;
+        }
+
+        this._monotoneous = true;
+
+        for (; i < l; i++) {
+          if (dataY[i] !== dataY[i - 1] && monoDir !== dataY[i] > dataY[i - 1]) {
+            this._monotoneous = false;
+          }
+
+          if (dataY[i] === dataY[i]) {
+            // NaN support
+            minY = Math.min(dataY[i], minY);
+            maxY = Math.max(dataY[i], maxY);
+          }
+        }
+
+        if (this._monotoneous) {
+          this._monotoneousAscending = dataY[1] > dataY[0];
+        }
+
+        this.data = dataY;
+
+        this.minY = minY;
+        this.maxY = maxY;
+
+        this.checkMinMaxErrorBars();
+        this.computeXMinMax();
+      }
+    }, {
+      key: 'checkMinMaxErrorBars',
+      value: function checkMinMaxErrorBars() {
+
+        var minY = this.minY,
+            maxY = this.maxY,
+            i = 0,
+            l = this.getLength();
+
+        if (this.hasErrorBars()) {
+          // If prefer to loop again here
+
+          for (i = 0; i < l; i++) {
+
+            if (this.data[i] === this.data[i]) {
+              // NaN support
+
+              minY = Math.min(minY, this.data[i] - this.getMaxError(i, 'below'));
+              maxY = Math.max(maxY, this.data[i] + this.getMaxError(i, 'above'));
+            }
+          }
+
+          this.minY = minY;
+          this.maxY = maxY;
+        } else {
+          this.minY = minY;
+          this.maxY = maxY;
+        }
+      }
+    }, {
+      key: 'computeXMinMax',
+      value: function computeXMinMax() {
+
+        if (!this.data) {
+          return;
+        }
+
+        if (this.xdata) {
+
+          this.minX = this.xdata.getMin();
+          this.maxX = this.xdata.getMax();
+        } else {
+
+          var b1 = this.xOffset + this.xScale * this.getLength(),
+              b2 = this.xOffset;
+
+          this.minX = Math.min(b1, b2);
+          this.maxX = Math.max(b1, b2);
+        }
+      }
+    }, {
+      key: 'getDataInUse',
+      value: function getDataInUse() {
+        return this.dataInUse || this.data;
+      }
+    }, {
+      key: 'getIndexFromVal',
+      value: function getIndexFromVal(val) {
+        var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
+
+
+        var data = void 0;
+
+        if (useDataToUse && this.dataInUse) {
+          data = this.dataInUse.y;
+        } else {
+          data = this.data;
+        }
+
+        var position = void 0;
+
+        position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
+
+        if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateY') {
+          // In case of aggregation, round to the closest element of 4.
+          return position - position % 4;
+        }
+
+        return position;
+      }
+    }, {
+      key: 'getIndexFromX',
+      value: function getIndexFromX(xval) {
+        var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
+
+
+        var xdata = void 0;
+
+        if (useDataToUse && this.dataInUse) {
+          xdata = this.dataInUse.x;
+        } else if (this.xdata) {
+          xdata = this.xdata.getData();
+        }
+
+        var position = void 0;
+
+        if (this.hasXWaveform()) {
+          position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+        } else {
+          position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
+        }
+
+        if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
+          // In case of aggregation, round to the closest element of 4.
+          return position - position % 4;
+        }
+
+        return position;
+      }
+    }, {
+      key: 'getIndexFromXY',
+      value: function getIndexFromXY(xval, yval) {
+        var useDataToUse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var roundingMethod = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Math.round;
+        var scaleX = arguments[4];
+        var scaleY = arguments[5];
+
+
+        var xdata = void 0,
+            ydata = void 0;
+
+        if (useDataToUse && this.dataInUse) {
+
+          xdata = this.dataInUse.x;
+          ydata = this.dataInUse.y;
+        } else if (this.xdata) {
+
+          xdata = this.xdata.data;
+          ydata = this.data;
+        }
+
+        var position = void 0;
+
+        if (this.isXMonotoneous()) {
+          // X lookup only
+
+          if (this.getXMin() > xval || this.getXMax() < xval) {
+            return false;
+          }
+
+          if (this.hasXWaveform()) {
+            // The x value HAS to be rescaled
+            position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+          } else {
+            position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
+          }
+        } else if (!isNaN(yval)) {
+
+          position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
+        } else {
+          return;
+        }
+
+        if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
+          // In case of aggregation, round to the closest element of 4.
+          return position - position % 4;
+        }
+
+        return position;
+      }
+    }, {
+      key: 'getIndexFromDataXY',
+      value: function getIndexFromDataXY(valX, dataX, valY, dataY) {
+        var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+        var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
+
+
+        var data = void 0,
+            position = void 0;
+
+        valX -= this.getXShift();
+        valX /= this.getXScale();
+
+        valY -= this.getShift();
+        valY /= this.getScale();
+
+        return euclidianSearch(valX, valY, dataX, dataY, scaleX, scaleY);
+      }
+    }, {
+      key: 'getIndexFromData',
+      value: function getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+
+        if (!this.isMonotoneous()) {
+          console.trace();
+          throw 'Impossible to get the index from a non-monotoneous wave !';
+        }
+
+        var data = void 0,
+            position = void 0;
+
+        val -= this.getShift();
+        val /= this.getScale();
+
+        return binarySearch(val, valCollection, !isAscending);
+      }
+    }, {
+      key: 'getReductionType',
+      value: function getReductionType() {
+        return this.dataInUseType;
+      }
+    }, {
+      key: 'getXMin',
+      value: function getXMin() {
+        return this.minX * this.getXScale() + this.getXShift();
+      }
+    }, {
+      key: 'getXMax',
+      value: function getXMax() {
+        return this.maxX * this.getXScale() + this.getXShift();
+      }
+    }, {
+      key: 'getYMin',
+      value: function getYMin() {
+        return this.minY * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'getYMax',
+      value: function getYMax() {
+        return this.maxY * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'getMin',
+      value: function getMin() {
+        return this.minY * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'getMax',
+      value: function getMax() {
+        return this.maxY * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'getMinX',
+      value: function getMinX() {
+
+        return this.minX * this.getXScale() + this.getXShift();
+      }
+    }, {
+      key: 'getMaxX',
+      value: function getMaxX() {
+        return this.maxX * this.getXScale() + this.getXShift();
+      }
+    }, {
+      key: 'getMinY',
+      value: function getMinY() {
+        return this.minY * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'getMaxY',
+      value: function getMaxY() {
+        return this.maxY * this.getScale() + this.getShift();
+      }
+    }, {
+      key: 'getDataMaxX',
+      value: function getDataMaxX() {
+        return this.maxX;
+      }
+    }, {
+      key: 'getDataMinX',
+      value: function getDataMinX() {
+        return this.minX;
+      }
+    }, {
+      key: 'getDataMaxY',
+      value: function getDataMaxY() {
+        return this.maxY;
+      }
+    }, {
+      key: 'getDataMaxY',
+      value: function getDataMaxY() {
+        return this.minY;
+      }
+    }, {
+      key: 'getDataY',
+      value: function getDataY() {
+        return this.data;
+      }
+    }, {
+      key: 'getData',
+      value: function getData(optimized) {
+        if (!optimized || !this.dataInUse) {
+          return this.data;
+        }
+        return this.dataInUse.y;
+      }
+    }, {
+      key: 'setShift',
+      value: function setShift() {
+        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+
+        // We must update the min and the max of the y data
+        //this.minY += ( shift - this.getShift() );
+        //this.maxY += ( shift - this.getShift() );
+        this.shift = shift;
+        return this;
+      }
+    }, {
+      key: 'getShift',
+      value: function getShift() {
+        return this.shift || 0;
+      }
+    }, {
+      key: 'getScale',
+      value: function getScale() {
+        return this.scale || 1;
+      }
+    }, {
+      key: 'setScale',
+      value: function setScale() {
+        var scale = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+
+        // this.minY = ( this.minY - this.getShift() ) * scale;
+        // this.maxY = ( this.maxY - this.getShift() ) * scale;
+        this.scale = scale;
+        return this;
+      }
+    }, {
+      key: 'setXShift',
+      value: function setXShift() {
+        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+
+        if (!this.hasXWaveform) {
+          return this;
+        }
+
+        // We must update the min and the max of the x data
+        // That's important for when the data has already been set
+        //  this.minX += ( shift - this.getXShift() );
+        //    this.maxX += ( shift - this.getXShift() );
+        this.getXWaveform().setShift(shift);
+        return this;
+      }
+    }, {
+      key: 'getXShift',
+      value: function getXShift() {
+        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+
+        if (!this.hasXWaveform) {
+          return 0;
+        }
+
+        return this.getXWaveform().getShift();
+      }
+    }, {
+      key: 'setXScale',
+      value: function setXScale() {
+        var scale = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+
+        if (!this.hasXWaveform) {
+          return this;
+        }
+
+        this.getXWaveform().setScale(scale);
+        return this;
+      }
+    }, {
+      key: 'getXScale',
+      value: function getXScale() {
+
+        if (!this.hasXWaveform) {
+          return 1;
+        }
+
+        return this.getXWaveform().getScale();
+      }
+    }, {
+      key: 'getLength',
+      value: function getLength() {
+        return this.data.length;
+      }
+    }, {
+      key: 'getDataToUseFlat',
+      value: function getDataToUseFlat() {
+
+        var l = void 0;
+        var j = 0;
+        var arr = void 0;
+
+        if (this.dataInUse) {
+
+          l = this.dataInUse.x.length;
+          arr = new Array(l * 2).fill(0);
+
+          for (var i = 0; i < l; i += 1) {
+            arr[j] = this.dataInUse.x[i];
+            arr[j + 1] = this.dataInUse.y[i];
+            j += 2;
+          }
+        } else {
+
+          l = this.getLength();
+          arr = new Array(l * 2).fill(0);
+          for (var i = 0; i < l; i += 1) {
+            arr[j + 1] = this.data[i];
+            arr[j] = this.getX(i);
+            j += 2;
+          }
+        }
+
+        return arr;
+      }
+    }, {
+      key: 'fit',
+      value: function fit(options) {
+
+        var self = this;
+
+        return new Promise(function (resolver, rejector) {
+
+          var fit = new _fit_lm2.default(util.extend({}, {
+
+            dataY: self,
+            dataX: self.getXWaveform(),
+            done: function done(results) {
+              resolver(results);
+            },
+            waveform: new Waveform()
+
+          }, options));
+
+          fit.init();
+          fit.fit();
+        });
+      }
+    }, {
+      key: 'getX',
+      value: function getX(index, optimized) {
+
+        if (optimized && this.dataInUse) {
+          return this.dataInUse.x[index] * this.getXScale() + this.getXShift();
+        }
+
+        if (this.xdata) {
+          return this.xdata.data[index] * this.getXScale() + this.getXShift();
+        } else {
+          return this.xOffset + index * this.xScale;
+        }
+      }
+    }, {
+      key: 'getXRaw',
+      value: function getXRaw(index, optimized) {
+
+        if (optimized && this.dataInUse) {
+          return this.dataInUse.x[index];
+        }
+
+        if (this.xdata) {
+          return this.xdata.data[index];
+        } else {
+          return index;
+        }
+      }
+    }, {
+      key: '_integrateP',
+      value: function _integrateP() {
+        var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - 1;
+
+
+        from = Math.round(from);
+        to = Math.round(to);
+
+        if (from > to) {
+          var temp = from;
+          from = to;
+          to = temp;
+        }
+
+        var l = to - from + 1;
+        var sum = 0,
+            delta;
+
+        var deltaTot = 0;
+        var diff = void 0;
+        var arrY = this.getData();
+
+        for (; from <= to; from++) {
+
+          if (arrY.length - 1 > from) {
+            diff = this.getX(from + 1) - this.getX(from);
+            deltaTot += diff;
+            sum += arrY[from] * diff;
+          }
+        }
+
+        return [sum, l, deltaTot];
+      }
+    }, {
+      key: 'integrateP',
+      value: function integrateP(from, to) {
+        var val = this._integrateP(from, to);
+        return val[0];
+      }
+    }, {
+      key: 'integrate',
+      value: function integrate(fromX, toX) {
+        return this.integrateP(this.getIndexFromX(fromX), this.getIndexFromX(toX));
+      }
+    }, {
+      key: 'average',
+      value: function average() {
+        var p0 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var p1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - 1;
+
+        return this.getAverageP(p0, p1);
+      }
+    }, {
+      key: 'mean',
+      value: function mean() {
+        return this.average();
+      }
+    }, {
+      key: 'stddev',
+      value: function stddev() {
+        var num = 0,
+            denom = 0;
+        var mean = this.mean();
+        for (var i = 0; i < this.getLength(); i++) {
+          num += Math.pow(this.getY(i) - mean, 2);
+          denom++;
+        }
+
+        return Math.pow(num / denom, 0.5);
+      }
+    }, {
+      key: 'getAverageP',
+      value: function getAverageP(from, to) {
+        var sum = this._integrateP(from, to);
+        return sum[0] / sum[2];
+      }
+    }, {
+      key: 'getAverageX',
+      value: function getAverageX(from, to) {
+        var sum = this._integrateX(from, to);
+        return sum[0] / sum[2];
+      }
+    }, {
+      key: 'checkMonotonicity',
+      value: function checkMonotonicity() {
+
+        var i = 1,
+            data = this.getData();
+        var l = this.data.length;
+        var dir = data[1] > data[0];
+
+        for (; i < l; i++) {
+          if (data[i] !== data[i - 1] && dir !== data[i] > data[i - 1]) {
+            return this._monotoneous = false;
+          }
+        }
+
+        this._monotoneousAscending = data[1] > data[0];
+        return this._monotoneous = true;
+      }
+    }, {
+      key: 'requireXMonotonicity',
+      value: function requireXMonotonicity() {
+        if (this.xdata) {
+          this.xdata.requireMonotonicity();
+        }
+      }
+    }, {
+      key: 'requireMonotonicity',
+      value: function requireMonotonicity() {
+        if (!this.isMonotoneous()) {
+          throw 'The wave must be monotonic';
+        }
+      }
+    }, {
+      key: 'isMonotoneous',
+      value: function isMonotoneous() {
+        return !!this._monotoneous;
+      }
+    }, {
+      key: 'isXMonotoneous',
+      value: function isXMonotoneous() {
+        if (this.xdata) {
+          return this.xdata.isMonotoneous();
+        }
+        // Offset and scale is always monotoneous
+        return true;
+      }
+    }, {
+      key: 'invert',
+      value: function invert(data) {
+
+        var d = data || this.data;
+        d.reverse();
+
+        if (this.xdata) {
+          this.xdata.invert();
+        }
+
+        if (this.isMonotoneous()) {
+          this._monotoneousAscending = !this._monotoneousAscending;
+        }
+
+        return this;
+      }
+    }, {
+      key: 'resampleForDisplay',
+      value: function resampleForDisplay(options) {
+        // Serie redrawing
+
+        var i = 0;
+
+        this.requireXMonotonicity();
+
+        var inverting = false,
+            dataY = this.getDataY(),
+            data = {
+          x: [],
+          y: []
+        },
+            dataMinMax = [],
+            resampleSum = void 0,
+            resampleMin = void 0,
+            resampleMax = void 0,
+            resampleNum = void 0,
+            resample_x_start = void 0,
+            resample_x_px_start = void 0,
+            x_px = void 0,
+            doing_mean = false,
+            firstPointIndex = 0,
+            xval = void 0;
+
+        var l = this.getLength();
+
+        if (!options.xPosition) {
+          throw 'No position calculation method provided';
+        }
+
+        if (!options.resampleToPx) {
+          throw 'No "resampleToPx" method was provided. Unit: px per point';
+        }
+
+        if (options.minX > options.maxX) {
+          var temp = options.minX;
+          options.minX = options.maxX;
+          options.maxX = temp;
+        }
+
+        if (this.xdata && !this.xdata.getMonotoneousAscending() || !this.xdata && this.xScale < -0) {
+          inverting = true;
+          i = l;
+        }
+
+        for (; inverting ? i > 0 : i < l; inverting ? i-- : i++) {
+
+          xval = this.getX(i);
+
+          if (options.minX > xval) {
+
+            firstPointIndex = i;
+            continue;
+          }
+
+          x_px = options.xPosition(xval);
+
+          if (!doing_mean) {
+
+            if (!firstPointIndex) {
+
+              firstPointIndex = i;
+            } else {
+
+              data.x.push(xval);
+              data.y.push(dataY[firstPointIndex]);
+            }
+
+            while (isNaN(dataY[i])) {
+
+              if (inverting) {
+                i--;
+              } else {
+                i++;
+              }
+            }
+
+            resampleSum = resampleMin = resampleMax = dataY[firstPointIndex];
+            resampleNum = 1;
+            resample_x_px_start = x_px;
+            resample_x_start = xval;
+            firstPointIndex = 0;
+
+            doing_mean = true;
+
+            continue;
+          }
+
+          if (Math.abs(x_px - resample_x_px_start) > options.resampleToPx || i == l || i == 0 || isNaN(dataY[i])) {
+
+            var xpos = (resample_x_start + xval) / 2;
+
+            data.x.push(xpos);
+            data.y.push(resampleSum / resampleNum);
+
+            dataMinMax.push(xpos, resampleMin, resampleMax);
+
+            if (options.maxX !== undefined && xval > options.maxX) {
+
+              break;
+            }
+
+            doing_mean = false;
+
+            continue;
+          }
+
+          resampleSum += dataY[i];
+          resampleNum++;
+
+          resampleMin = Math.min(resampleMin, dataY[i]);
+          resampleMax = Math.max(resampleMax, dataY[i]);
+        }
+
+        this.dataInUseType = 'resampled';
+        this.dataInUse = data;
+        return dataMinMax;
+      }
+    }, {
+      key: 'interpolate',
+      value: function interpolate(x) {
+
+        var yData = this.getDataY();
+        var xIndex = void 0;
+
+        if (this.xdata) {
+
+          var xData = this.xdata.getData();
+
+          try {
+            xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
+          } catch (e) {
+            return NaN;
+          }
+
+          if (xData[xIndex] == x) {
+            return yData[xIndex];
+          }
+          return (x - xData[xIndex]) / (xData[xIndex + 1] - xData[xIndex]) * (yData[xIndex + 1] - yData[xIndex]) + yData[xIndex];
+        } else {
+          xIndex = (x - this.xOffset) / this.xScale;
+          var xIndexF = Math.floor(xIndex);
+          return (xIndex - xIndexF) * (yData[xIndexF + 1] - yData[xIndexF]) + yData[xIndexF];
+        }
+      }
+    }, {
+      key: 'interpolateIndex_X',
+      value: function interpolateIndex_X(index) {
+
+        var yData = this.getDataY();
+        if (this.xdata) {
+          var xData = this.xdata.getData();
+          var indexStart = Math.floor(index);
+
+          return (index - indexStart) * (xData[indexStart + 1] - xData[indexStart]) + xData[indexStart];
+        }
+      }
+    }, {
+      key: 'getMonotoneousAscending',
+      value: function getMonotoneousAscending() {
+
+        if (!this.isMonotoneous()) {
+          return 'The waveform is not monotoneous';
+        }
+
+        return this._monotoneousAscending;
+      }
+    }, {
+      key: 'getXMonotoneousAscending',
+      value: function getXMonotoneousAscending() {
+        if (this.xdata) {
+          return this.xdata.getMonotoneousAscending();
+        }
+
+        return this.xScale > 0;
+      }
+    }, {
+      key: 'isXMonotoneousAscending',
+      value: function isXMonotoneousAscending() {
+        return this.getXMonotoneousAscending.apply(this, arguments);
+      }
+    }, {
+      key: 'divide',
+      value: function divide(numberOrWave) {
+        return this._arithmetic(numberOrWave, DIVIDE);
+      }
+    }, {
+      key: 'divideBy',
+      value: function divideBy() {
+        return this.divide.apply(this, arguments);
+      }
+    }, {
+      key: 'multiply',
+      value: function multiply(numberOrWave) {
+        return this._arithmetic(numberOrWave, MULTIPLY);
+      }
+    }, {
+      key: 'multiplyBy',
+      value: function multiplyBy() {
+        return this.multiply.apply(this, arguments);
+      }
+    }, {
+      key: 'log',
+      value: function log() {
+        return this.logBase(10);
+      }
+    }, {
+      key: 'ln',
+      value: function ln() {
+        return this.logBase(Math.E);
+      }
+    }, {
+      key: 'logBase',
+      value: function logBase(base) {
+
+        var logBase = Math.log(base);
+        this.data.map(function (valY) {
+
+          return Math.log(valY) / logBase;
+        });
+      }
+    }, {
+      key: 'add',
+      value: function add(numberOrWave) {
+        return this._arithmetic(numberOrWave, ADD);
+      }
+    }, {
+      key: 'addBy',
+      value: function addBy() {
+        return this.add.apply(this, arguments);
+      }
+    }, {
+      key: 'subtract',
+      value: function subtract(numberOrWave) {
+        return this._arithmetic(numberOrWave, SUBTRACT);
+      }
+    }, {
+      key: 'subtractBy',
+      value: function subtractBy() {
+        return this.subtract.apply(this, arguments);
+      }
+    }, {
+      key: 'math',
+      value: function math(method) {
+
+        for (var i = 0; i < this.getLength(); i++) {
+          this.data[i] = method(this.getY(i), this.getX(i));
+        }
+
+        this._setData(this.data);
+        return this;
+      }
+    }, {
+      key: '_arithmetic',
+      value: function _arithmetic(numberOrWave, operator) {
+
+        if (numberOrWave instanceof Waveform) {
+          return this._waveArithmetic(numberOrWave, operator);
+        } else if (typeof numberOrWave == 'number') {
+
+          return this._numberArithmetic(numberOrWave, operator);
+        }
+      }
+    }, {
+      key: '_numberArithmetic',
+      value: function _numberArithmetic(num, operation) {
+
+        var i = 0,
+            l = this.getLength();
+
+        if (operation == MULTIPLY) {
+
+          for (; i < l; i++) {
+            this.data[i] *= num;
+          }
+
+          this.minY *= num;
+          this.maxY *= num;
+        } else if (operation == DIVIDE) {
+
+          for (; i < l; i++) {
+            this.data[i] /= num;
+          }
+
+          this.minY /= num;
+          this.maxY /= num;
+        } else if (operation == ADD) {
+
+          for (; i < l; i++) {
+            this.data[i] += num;
+          }
+
+          this.minY += num;
+          this.maxY += num;
+        } else if (operation == SUBTRACT) {
+
+          for (; i < l; i++) {
+            this.data[i] -= num;
+          }
+
+          this.minY -= num;
+          this.maxY -= num;
+        }
+
+        return this;
+      }
+    }, {
+      key: '_waveArithmetic',
+      value: function _waveArithmetic(wave, operation) {
+        var _this = this;
+
+        var yDataThis = this.getDataY(),
+            i = 0;
+        var l = this.getLength();
+        this.requireXMonotonicity();
+        wave.requireXMonotonicity();
+
+        if (this.xdata && wave.xdata) {
+
+          var xSet = new Set();
+          var xData = this.xdata.data;
+          var xData2 = wave.xdata.data;
+
+          for (i = 0; i < xData.length; i++) {
+            xSet.add(xData[i]);
+          }
+
+          for (i = 0; i < xData2.length; i++) {
+            xSet.add(xData2[i]);
+          }
+
+          var xs = Array.from(xSet.values()).sort();
+
+          var ys = xs.map(function (x) {
+
+            if (operation == MULTIPLY) {
+              return _this.interpolate(x) * wave.interpolate(x);
+            } else if (operation == DIVIDE) {
+              return _this.interpolate(x) / wave.interpolate(x);
+            } else if (operation == ADD) {
+              return _this.interpolate(x) + wave.interpolate(x);
+            } else if (operation == SUBTRACT) {
+              return _this.interpolate(x) - wave.interpolate(x);
+            }
+          });
+
+          this._setData(ys);
+          this.xdata._setData(xs);
+        } else {
+
+          if (operation == MULTIPLY) {
+
+            for (; i < l; i++) {
+              yDataThis[i] *= wave.interpolate(this.getX(i));
+            }
+          } else if (operation == DIVIDE) {
+
+            for (; i < l; i++) {
+              yDataThis[i] /= wave.interpolate(this.getX(i));
+            }
+          } else if (operation == ADD) {
+
+            for (; i < l; i++) {
+              yDataThis[i] += wave.interpolate(this.getX(i));
+            }
+          } else if (operation == SUBTRACT) {
+
+            for (; i < l; i++) {
+              yDataThis[i] -= wave.interpolate(this.getX(i));
+            }
+          }
+
+          this._setData(yDataThis);
+        }
+
+        return this;
+      }
+    }, {
+      key: 'aggregate',
+      value: function aggregate() {
+        var _this2 = this;
+
+        var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'x';
+
+
+        this._dataAggregating = {};
+        this._dataAggregated = {};
+        this._dataAggregationDirection = direction.toUpperCase();
+
+        var pow2 = pow2floor(this.getLength());
+
+        this._dataAggregating = aggregator({
+
+          minX: this.minX,
+          maxX: this.maxX,
+          minY: this.minY,
+          maxY: this.maxY,
+          data: this.data,
+          xdata: this.xdata ? this.xdata.getData() : undefined,
+          xScale: this.xScale,
+          xOffset: this.xOffset,
+          numPoints: pow2,
+          direction: direction
+
+        }).then(function (event) {
+
+          _this2._dataAggregated = event.aggregates;
+          _this2._dataAggregating = false;
+        });
+      }
+    }, {
+      key: 'hasAggregation',
+      value: function hasAggregation() {
+        return !!this._dataAggregated;
+      }
+    }, {
+      key: 'selectAggregatedData',
+      value: function selectAggregatedData(pxWidth) {
+
+        if (pxWidth < 2) {
+          return false;
+        }
+        /*
+        console.log( direction, this._dataAggregationDirection );
+             if( direction !== this._dataAggregationDirection ) {
+              throw "The data is not aggregated in that direction";
+            }
+        */
+
+        var level = pow2ceil(pxWidth);
+
+        if (this._dataAggregated[level]) {
+
+          this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
+          this.dataInUse = this._dataAggregated[level];
+          return;
+        } else if (this._dataAggregating) {
+
+          return this._dataAggregating;
+        }
+
+        this.dataInUseType = 'none';
+        this.dataInUse = {
+          y: this.data,
+          x: this.getXWaveform().data
+        };
+      }
+    }, {
+      key: 'duplicate',
+      value: function duplicate(alsoDuplicateXWave) {
+        var newWaveform = new Waveform();
+        newWaveform._setData(this.getDataY().slice());
+        newWaveform.rescaleX(this.xOffset, this.xShift);
+        newWaveform.setShift(this.getShift());
+        newWaveform.setScale(this.getScale());
+
+        if (this.xdata) {
+          if (alsoDuplicateXWave) {
+
+            newWaveform.setXWaveform(this.xdata.duplicate());
+          } else {
+
+            newWaveform.setXWaveform(this.xdata);
+          }
+
+          newWaveform.setXShift(this.getXShift());
+          newWaveform.setXScale(this.getXScale());
+        } else {
+          newWaveform.xOffset = this.xOffset;
+          newWaveform.xScale = this.xScale;
+        }
+
+        return newWaveform;
+      }
+    }, {
+      key: 'subrangeX',
+      value: function subrangeX(fromX, toX) {
+
+        if (!this.xdata) {
+          // We can select the new range from there
+
+          var fromP = this.getIndexFromX(fromX),
+              toP = this.getIndexFromX(toP);
+
+          return new Waveform().setData(this.data.slice(fromP, toP)).rescaleX(this.xOffset, this.xScale);
+        } else {
+
+          var waveform = new Waveform();
+
+          for (var i = 0, l = this.data.length; i < l; i++) {
+
+            if (this.data[i] >= fromX && this.data[i] < toX) {
+
+              waveform.append(this.dataX[i], this.data[i]);
+            }
+          }
+
+          return waveform;
+        }
+      }
+    }, {
+      key: 'findLocalMinMax',
+      value: function findLocalMinMax(xRef, xWithin, type) {
+
+        var index = this.getIndexFromX(xRef),
+            indexPlus = this.getIndexFromX(xRef + xWithin),
+            indexMinus = this.getIndexFromX(xRef - xWithin);
+
+        return this.findLocalMinMaxIndex(indexMinus, indexPlus, type);
+      }
+    }, {
+      key: 'findLocalMinMaxIndex',
+      value: function findLocalMinMaxIndex(indexMinus, indexPlus, type) {
+
+        var tmp = void 0;
+
+        if (indexPlus < indexMinus) {
+          tmp = indexPlus;
+          indexPlus = indexMinus;
+          indexMinus = tmp;
+        }
+
+        var curr = void 0,
+            currI = void 0;
+
+        if (type == 'max') {
+
+          curr = Number.NEGATIVE_INFINITY;
+
+          for (var i = indexMinus; i <= indexPlus; i++) {
+
+            if (this.getY(i) > curr) {
+              curr = this.getY(i);
+              currI = i;
+            }
+          }
+        } else {
+
+          curr = Number.POSITIVE_INFINITY;
+
+          for (var i = indexMinus; i <= indexPlus; i++) {
+
+            if (this.getY(i) < curr) {
+              curr = this.getY(i);
+              currI = i;
+            }
+          }
+        }
+
+        if (currI == indexMinus || currI == indexPlus) {
+          return false;
+        }
+
+        return this.getX(currI);
+      }
+    }, {
+      key: 'warn',
+      value: function warn(text) {
+        if (console) {
+          console.warn(text);
+        }
+      }
+    }, {
+      key: 'setUnit',
+      value: function setUnit(unit) {
+        this.unit = unit;
+        return this;
+      }
+    }, {
+      key: 'setXUnit',
+      value: function setXUnit(unit) {
+        if (this.hasXWaveform()) {
+          this.xdata.setUnit(unit);
+        }
+
+        this.xunit = unit;
+        return this;
+      }
+    }, {
+      key: 'getUnit',
+      value: function getUnit() {
+        return this.unit || '';
+      }
+    }, {
+      key: 'getXUnit',
+      value: function getXUnit() {
+        if (this.hasXWaveform()) {
+          return this.xdata.getUnit();
+        }
+
+        return this.xunit | '';
+      }
+    }, {
+      key: 'hasXUnit',
+      value: function hasXUnit() {
+        return this.getXUnit().length > 0;
+      }
+    }, {
+      key: 'hasUnit',
+      value: function hasUnit() {
+        return this.getUnit().length > 0;
+      }
+    }, {
+      key: 'findLevels',
+      value: function findLevels(level, options) {
+
+        options = util.extend({
+
+          box: 1,
+          edge: 'both',
+          rounding: 'before',
+          rangeP: [0, this.getLength()]
+
+        }, options);
+
+        var lastLvlIndex = options.rangeP[0];
+        var lvlIndex;
+        var indices = [];
+        var i = 0;
+
+        while (lvlIndex = this.findLevel(level, util.extend(true, {}, options, {
+          rangeP: [lastLvlIndex, options.rangeP[1]]
+        }))) {
+          indices.push(lvlIndex);
+          lastLvlIndex = Math.ceil(lvlIndex);
+
+          i++;
+          if (i > 1000) {
+            return;
+          }
+        }
+
+        return indices;
+      }
+    }, {
+      key: 'findLevel',
+      value: function findLevel(level, options) {
+
+        options = util.extend({
+
+          box: 1,
+          edge: 'both',
+          direction: 'ascending',
+          rounding: 'before',
+          rangeP: [0, this.getLength()]
+
+        }, options);
+
+        if (options.rangeX) {
+          options.rangeP = options.rangeX.map(this.getIndexFromX);
+        }
+
+        var value, below, i, j, l, increment;
+
+        var box = options.box;
+
+        if (box % 2 == 0) {
+          box++;
+        }
+
+        if (options.direction == 'descending') {
+          i = options.rangeP[1], l = options.rangeP[0], increment = -1;
+        } else {
+          i = options.rangeP[0], l = options.rangeP[1], increment = +1;
+        }
+
+        for (;; i += increment) {
+
+          if (options.direction == 'descending') {
+            if (i < l) {
+              break;
+            }
+          } else {
+            if (i > l) {
+              break;
+            }
+          }
+
+          if (i < options.rangeP[0] + (box - 1) / 2) {
+            continue;
+          }
+
+          if (i > options.rangeP[1] - (box - 1) / 2) {
+            break;
+          }
+
+          value = this.getAverageP(i - (box - 1) / 2, i + (box - 1) / 2);
+
+          if (below === undefined) {
+            below = value < level;
+            continue;
+          }
+          // Crossing up
+          if (value >= level && below) {
+
+            below = false;
+
+            if (options.edge == 'ascending' || options.edge == 'both') {
+              // Found something
+
+              for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+                if (this.data[j] >= level && this.data[j - 1] <= level) {
+                  // Find a crossing
+
+                  switch (options.rounding) {
+                    case 'before':
+                      return j - 1;
+                      break;
+
+                    case 'after':
+                      return j;
+                      break;
+
+                    case 'interpolate':
+                      return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+                      break;
+                  }
+                }
+              }
+            }
+          } else if (value <= level && !below) {
+
+            below = true;
+
+            if (options.edge == 'descending' || options.edge == 'both') {
+
+              for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+                if (this.data[j] <= level && this.data[j - 1] >= level) {
+                  // Find a crossing
+
+                  switch (options.rounding) {
+                    case 'before':
+                      return j - 1;
+                      break;
+
+                    case 'after':
+                      return j;
+                      break;
+
+                    case 'interpolate':
+                      return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+                      break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }, {
+      key: 'normalize',
+      value: function normalize(mode) {
+
+        var factor = void 0,
+            total = void 0,
+            minValue = void 0,
+            maxValue = void 0,
+            ratio = void 0,
+            i = void 0;
+
+        if (mode == 'max1' || mode == 'max100') {
+
+          factor = 1;
+
+          if (mode == 'max100') {
+            factor = 100;
+          }
+
+          maxValue = this.data[0];
+
+          for (i = 1; i < this.getLength(); i++) {
+
+            if (this.data[i] > maxValue) {
+
+              maxValue = this.data[i];
+            }
+          }
+
+          for (i = 0; i < this.getLength(); i++) {
+
+            this.data[i] /= maxValue / factor;
+          }
+        } else if (mode == 'sum1') {
+
+          total = 0;
+
+          for (i = 0; i < this.getLength(); i++) {
+            total += this.data[i];
+          }
+
+          for (i = 0; i < this.getLength(); i++) {
+
+            this.data[i] /= total;
+          }
+        } else if (mode == 'max1min0') {
+
+          maxValue = this.data[0], minValue = this.data[0];
+
+          for (i = 1; i < this.getLength(); i++) {
+            if (this.data[i] > maxValue) {
+
+              maxValue = this.data[i];
+            } else if (this.data[i] < minValue) {
+
+              minValue = this.data[i];
+            }
+          }
+
+          ratio = 1 / (maxValue - minValue);
+
+          for (i = 0; i < this.getLength(); i++) {
+
+            this.data[i] = (this.data[i] - minValue) * ratio;
+          }
+        }
+
+        this.setData(this.data);
+      }
+    }, {
+      key: 'setErrorBarX',
+      value: function setErrorBarX(waveform) {
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        var xWave = this.getXWaveform();
+        xWave.setErrorBar(waveform);
+        return this;
+      }
+    }, {
+      key: 'setErrorBarXBelow',
+      value: function setErrorBarXBelow(waveform) {
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        var xWave = this.getXWaveform();
+        xWave.setErrorBarBelow(waveform);
+        return this;
+      }
+    }, {
+      key: 'setErrorBarXAbove',
+      value: function setErrorBarXAbove(waveform) {
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        var xWave = this.getXWaveform();
+        xWave.setErrorBarAbove(waveform);
+        return this;
+      }
+    }, {
+      key: 'setErrorBoxX',
+      value: function setErrorBoxX(waveform) {
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        var xWave = this.getXWaveform();
+        xWave.setErrorBoxAbove(waveform);
+        xWave.setErrorBoxBelow(waveform);
+        return this;
+      }
+    }, {
+      key: 'setErrorBoxXBelow',
+      value: function setErrorBoxXBelow(waveform) {
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        var xWave = this.getXWaveform();
+
+        xWave.setErrorBoxBelow(waveform);
+        return this;
+      }
+    }, {
+      key: 'setErrorBoxXAbove',
+      value: function setErrorBoxXAbove(waveform) {
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        var xWave = this.getXWaveform();
+        xWave.setErrorBoxAbove(waveform);
+        return this;
+      }
+    }, {
+      key: 'setErrorBar',
+      value: function setErrorBar(waveform) {
+        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+        this.errors.nb++;
+        this.errors.nb++;
+        this.errors.bars.below = waveform;
+        this.errors.bars.above = waveform;
+
+        if (checkMinMax) {
+          this._setData();
+        }
+      }
+    }, {
+      key: 'setErrorBarBelow',
+      value: function setErrorBarBelow(waveform) {
+        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+        this.errors.nb++;
+        this.errors.bars.below = waveform;
+
+        if (checkMinMax) {
+          this._setData();
+        }
+      }
+    }, {
+      key: 'setErrorBarAbove',
+      value: function setErrorBarAbove(waveform) {
+        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        this.errors.nb++;
+        this.errors.bars.above = waveform;
+
+        if (checkMinMax) {
+          this._setData();
+        }
+      }
+    }, {
+      key: 'setErrorBox',
+      value: function setErrorBox(waveform) {
+        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+        this.errors.nb++;
+        this.errors.nb++;
+        this.errors.boxes.above = waveform;
+        this.errors.boxes.below = waveform;
+
+        if (checkMinMax) {
+          this._setData();
+        }
+      }
+    }, {
+      key: 'setErrorBoxBelow',
+      value: function setErrorBoxBelow(waveform) {
+        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+        this.errors.nb++;
+        this.errors.boxes.below = waveform;
+
+        if (checkMinMax) {
+          this._setData();
+        }
+      }
+    }, {
+      key: 'setErrorBoxAbove',
+      value: function setErrorBoxAbove(waveform) {
+        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+        if (Array.isArray(waveform)) {
+          waveform = new Waveform(waveform);
+        }
+
+        this.errors.boxes.above = waveform;
+        if (checkMinMax) {
+          this._setData();
+        }
+      }
+    }, {
+      key: 'getMaxError',
+      value: function getMaxError(i) {
+        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+
+
+        return Math.max(this.getMaxErrorType(i, side, Waveform.BOX), this.getMaxErrorType(i, side, Waveform.BAR));
+      }
+    }, {
+      key: 'getMaxErrorType',
+      value: function getMaxErrorType(i) {
+        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BOX;
+
+
+        var stack = void 0;
+        if (type == Waveform.BOX) {
+          stack = this.errors.boxes;
+        } else if (type == Waveform.BAR) {
+          stack = this.errors.bars;
+        } else {
+          throw 'Unknown type of error';
+        }
+
+        var waveform = void 0;
+        if (!(waveform = stack[side])) {
+          if (side == Waveform.ABOVE) {
+            if (stack[side] == Waveform.BELOW) {
+              waveform = stack.below;
+            }
+          } else {
+            if (stack[side] == Waveform.ABOVE) {
+              waveform = stack.above;
+            }
+          }
+        }
+
+        if (!waveform) {
+          return 0;
+        }
+
+        return waveform.getY(i);
+      }
+    }, {
+      key: 'getErrorBarXBelow',
+      value: function getErrorBarXBelow(index) {
+        return this.getErrorX(index, Waveform.BELOW, Waveform.BAR);
+      }
+    }, {
+      key: 'getErrorBarXAbove',
+      value: function getErrorBarXAbove(index) {
+        return this.getErrorX(index, Waveform.ABOVE, Waveform.BAR);
+      }
+    }, {
+      key: 'getErrorBoxXBelow',
+      value: function getErrorBoxXBelow(index) {
+        return this.getErrorX(index, Waveform.BELOW, Waveform.BOX);
+      }
+    }, {
+      key: 'getErrorBoxXAbove',
+      value: function getErrorBoxXAbove(index) {
+        return this.getErrorX(index, Waveform.ABOVE, Waveform.BOX);
+      }
+    }, {
+      key: 'getErrorBarYBelow',
+      value: function getErrorBarYBelow(index) {
+        return this.getError(index, Waveform.BELOW, Waveform.BAR);
+      }
+    }, {
+      key: 'getErrorBarYAbove',
+      value: function getErrorBarYAbove(index) {
+        return this.getError(index, Waveform.ABOVE, Waveform.BAR);
+      }
+    }, {
+      key: 'getErrorBoxYBelow',
+      value: function getErrorBoxYBelow(index) {
+        return this.getError(index, Waveform.BELOW, Waveform.BOX);
+      }
+    }, {
+      key: 'getErrorBoxYAbove',
+      value: function getErrorBoxYAbove(index) {
+        return this.getError(index, Waveform.ABOVE, Waveform.BOX);
+      }
+    }, {
+      key: 'getErrorX',
+      value: function getErrorX(index) {
+        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BAR;
+
+
+        if (!this.hasXWaveform()) {
+          return false;
+        }
+
+        return this.xdata.getError(index, side, type);
+      }
+    }, {
+      key: 'getError',
+      value: function getError(index) {
+        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BAR;
+
+
+        var errors = type == Waveform.BAR ? this.errors.bars : this.errors.boxes;
+
+        if (!errors) {
+          return false;
+        }
+
+        var wave = void 0;
+        if (wave = side == Waveform.ABOVE ? errors.above : errors.below) {
+          /*console.log( wave );
+                if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
+                  wave = errors.above;
+                } else if ( wave == Waveform.BELOW && side == Waveform.ABOVE ) {
+                  wave = errors.below;
+                }
+          */
+          /*
+                if ( !wave ) {
+                  return false;
+                }
+          */
+          return wave.getY(index);
+        }
+      }
+    }, {
+      key: 'hasErrorBars',
+      value: function hasErrorBars() {
+
+        return this.errors.nb > 0 || this.hasXWaveform() && this.xdata.errors.nb > 0;
+      }
+    }]);
+
+    return Waveform;
+  }();
+
+  Waveform.BELOW = Symbol();
+  Waveform.ABOVE = Symbol();
+
+  Waveform.BOX = Symbol();
+  Waveform.BAR = Symbol();
+
+  var MULTIPLY = Symbol();
+  var ADD = Symbol();
+  var SUBTRACT = Symbol();
+  var DIVIDE = Symbol();
+
+  // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
+  function pow2ceil(v) {
+    v--;
+    var p = 2;
+    while (v >>= 1) {
+      p <<= 1;
+    }
+    return p;
+  }
+
+  function pow2floor(v) {
+
+    var p = 1;
+
+    while (v >>= 1) {
+      p <<= 1;
+    }
+    return p;
+  }
+
+  function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
+    return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
+  }
+
+  function euclidianSearch(targetX, targetY, haystackX, haystackY) {
+    var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+    var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
+
+
+    var distance = Number.MAX_VALUE,
+        distance_i = void 0;
+
+    var index = -1;
+
+    for (var i = 0, l = haystackX.length; i < l; i++) {
+
+      distance_i = Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2);
+
+      if (distance_i < distance) {
+
+        index = i;
+        distance = distance_i;
+      }
+    }
+
+    return index;
+  }
+
+  function binarySearch(target, haystack) {
+    var reverse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : haystack[haystack.length - 1] < haystack[0];
+
+
+    var seedA = 0,
+        length = haystack.length,
+        seedB = length - 1,
+        seedInt = void 0,
+        i = 0,
+        nanDirection = 1;
+
+    if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
+      throw new Error('Target ' + target + ' is not in the stack');
+    }
+
+    if (haystack[seedA] == target) {
+      return seedA;
+    }
+
+    if (haystack[seedB] == target) {
+      return seedB;
+    }
+
+    while (true) {
+      i++;
+      if (i > 100) {
+        throw new Error('Error loop');
+      }
+
+      seedInt = Math.floor((seedA + seedB) / 2);
+
+      //  seedInt -= seedInt % 2; // Always looks for an x.
+
+      while (isNaN(haystack[seedInt])) {
+
+        if (seedInt >= haystack.length - 1) {
+
+          return haystack.length - 1;
+        } else if (seedInt <= 0) {
+
+          return 0;
+        }
+
+        seedInt += nanDirection;
+      }
+
+      if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
+        return seedInt;
+      }
+
+      //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+      if (haystack[seedInt] < target) {
+        if (reverse) {
+          seedB = seedInt;
+        } else {
+          seedA = seedInt;
+        }
+      } else if (haystack[seedInt] > target) {
+        if (reverse) {
+          seedA = seedInt;
+        } else {
+          seedB = seedInt;
+        }
+      } else {
+        return false;
+      }
+
+      nanDirection *= -1;
+    }
+  }
+
+  // Stores key: value
+
+  var WaveformHash = function (_Waveform) {
+    _inherits(WaveformHash, _Waveform);
+
+    function WaveformHash() {
+      _classCallCheck(this, WaveformHash);
+
+      return _possibleConstructorReturn(this, (WaveformHash.__proto__ || Object.getPrototypeOf(WaveformHash)).apply(this, arguments));
+    }
+
+    _createClass(WaveformHash, [{
+      key: 'hasXWaveform',
+      value: function hasXWaveform() {
+        return false;
+      }
+    }, {
+      key: 'setXWaveform',
+      value: function setXWaveform(data) {
+        this.xdata = data;
+      }
+    }, {
+      key: 'getYFromX',
+      value: function getYFromX(xValue) {
+
+        var index = this.xdata.indexOf(xValue);
+        if (index == -1) {
+          throw 'Cannot find key ' + xValue;
+        }
+
+        return this.data[index];
+      }
+    }, {
+      key: 'getY',
+      value: function getY(index) {
+        return this.data[index];
+      }
+    }, {
+      key: 'getX',
+      value: function getX(index) {
+        return this.xdata[index];
+      }
+    }, {
+      key: 'hasXUnit',
+      value: function hasXUnit() {
+        return false;
+      }
+    }, {
+      key: 'errorNotImplemented',
+      value: function errorNotImplemented() {
+        console.trace();
+        throw "Not available in hash waveform";
+      }
+    }, {
+      key: 'subrangeX',
+      value: function subrangeX() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'duplicate',
+      value: function duplicate() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'aggregate',
+      value: function aggregate() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: '_waveArithmetic',
+      value: function _waveArithmetic() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'interpolateIndex_X',
+      value: function interpolateIndex_X(index) {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'getXMonotoneousAscending',
+      value: function getXMonotoneousAscending() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'isXMonotoneousAscending',
+      value: function isXMonotoneousAscending() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'interpolate',
+      value: function interpolate() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'resampleForDisplay',
+      value: function resampleForDisplay() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'isXMonotoneous',
+      value: function isXMonotoneous() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'rescaleX',
+      value: function rescaleX() {
+        this.errorNotImplemented();
+      }
+    }, {
+      key: 'getXMin',
+      value: function getXMin() {
+        return undefined;
+      }
+    }, {
+      key: 'getXMax',
+      value: function getXMax() {
+        return undefined;
+      }
+    }, {
+      key: 'computeXMinMax',
+      value: function computeXMinMax() {
+        return;
+      }
+    }, {
+      key: 'setData',
+      value: function setData(data) {
+
+        this.data = Object.values(data);
+        this.xdata = Object.keys(data);
+
+        this._setData();
+      }
+    }, {
+      key: '_setData',
+      value: function _setData() {
+        this.minY = Math.min.apply(Math, _toConsumableArray(this.data));
+        this.maxY = Math.max.apply(Math, _toConsumableArray(this.data));
+
+        this.checkMinMaxErrorBars();
+      }
+    }]);
+
+    return WaveformHash;
+  }(Waveform);
+
+  exports.Waveform = Waveform;
+  exports.WaveformHash = WaveformHash;
+  exports.default = Waveform;
+});
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -3461,7 +5957,7 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 var id = 0;
@@ -3472,14 +5968,14 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = false;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
@@ -3492,7 +5988,7 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(25);
@@ -3505,7 +6001,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
@@ -3552,7 +6048,7 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
@@ -3565,7 +6061,7 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3585,7 +6081,7 @@ module.exports = function (KEY) {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 module.exports = function (it, Constructor, name, forbiddenField) {
@@ -3596,7 +6092,7 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(19);
@@ -3627,7 +6123,7 @@ exports.RETURN = RETURN;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var redefine = __webpack_require__(14);
@@ -3638,12 +6134,12 @@ module.exports = function (target, src, safe) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(55), __webpack_require__(5), __webpack_require__(56), __webpack_require__(46)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(55), __webpack_require__(5), __webpack_require__(56), __webpack_require__(34)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5257,7 +7753,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'isActionAllowed',
       value: function isActionAllowed(e, action) {
-
+        console.log(action.type, e.type, action.shift, e.shiftKey, action);
         if (action.type !== e.type && (action.type !== undefined || e.type !== 'mousedown') && !((e.type === 'wheel' || e.type === 'mousewheel') && action.type == 'mousewheel')) {
           return;
         }
@@ -7700,2435 +10196,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(139), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(exports, require('./fit_lm.js'), require('../graph.util.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod.exports, global.fit_lm, global.graphUtil);
-    global.waveform = mod.exports;
-  }
-})(this, function (exports, _fit_lm, _graphUtil) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  exports.WaveformHash = exports.Waveform = undefined;
-
-  var _fit_lm2 = _interopRequireDefault(_fit_lm);
-
-  var util = _interopRequireWildcard(_graphUtil);
-
-  function _interopRequireWildcard(obj) {
-    if (obj && obj.__esModule) {
-      return obj;
-    } else {
-      var newObj = {};
-
-      if (obj != null) {
-        for (var key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-        }
-      }
-
-      newObj.default = obj;
-      return newObj;
-    }
-  }
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  function _toConsumableArray(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-        arr2[i] = arr[i];
-      }
-
-      return arr2;
-    } else {
-      return Array.from(arr);
-    }
-  }
-
-  function _possibleConstructorReturn(self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  }
-
-  function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  }
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
-
-  var _createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  var Waveform = function () {
-    function Waveform() {
-      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-      var xOffset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      var xScale = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-
-      _classCallCheck(this, Waveform);
-
-      this.xOffset = xOffset;
-      this.xScale = xScale;
-
-      // Error bar handling
-      this.errors = {
-
-        nb: 0,
-
-        bars: {
-          above: null,
-          below: null
-        },
-
-        boxes: {
-          above: null,
-          below: null
-        }
-      };
-
-      this.BELOW = Waveform.BELOW;
-      this.ABOVE = Waveform.ABOVE;
-      this.BOX = Waveform.BOX;
-      this.BAR = Waveform.BAR;
-
-      this.setData(data);
-    }
-
-    /** [ [ x1, y1 ], [ x2, y2 ] ] */
-
-    /*
-    setDataXY( data ) {
-       let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
-        warnNaN = false;
-      const nanable = this.isNaNAllowed();
-       data.map( ( el, index ) => {
-         if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
-          warnNaN = true;
-        }
-         newData[ 0 ][ index ] = el[ 0 ];
-        newData[ 1 ][ index ] = el[ 1 ];
-      } );
-       if ( warnNaN ) {
-        this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
-      }
-       this._setData( ...newData );
-      return this;
-    }
-    */
-
-
-    _createClass(Waveform, [{
-      key: 'setData',
-      value: function setData(data) {
-        var dataX = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-
-        /* First, we must treat the case of the array of array for backward compatibility */
-        if (Array.isArray(data[0])) {
-          var x = [];
-          var y = [];
-          data.forEach(function (el) {
-            x.push(el[0]);
-            y.push(el[1]);
-          });
-
-          this.setXWaveform(x);
-          data = y;
-        }
-
-        var newData = this._makeArray(data.length),
-            warnNaN = false;
-
-        var nanable = this.isNaNAllowed();
-
-        data.map(function (el, index) {
-
-          if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
-            warnNaN = true;
-          }
-
-          newData[index] = el;
-        });
-
-        if (warnNaN) {
-          this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
-        }
-
-        this._setData(newData);
-
-        if (dataX) {
-          this.setXWaveform(dataX);
-        }
-        return this;
-      }
-    }, {
-      key: 'getY',
-      value: function getY(index, optimized) {
-
-        if (optimized && this.dataInUse) {
-          return this.dataInUse.y[index] * this.getScale() + this.getShift();
-        }
-
-        return this.data[index] * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'setXWaveform',
-      value: function setXWaveform(waveform) {
-
-        if (!(waveform instanceof Waveform)) {
-
-          if (Array.isArray(waveform)) {
-            waveform = new Waveform(waveform);
-          } else {
-            throw 'Cannot set X waveform. Data is not a valid array.';
-          }
-        }
-
-        this.xdata = waveform;
-        this.computeXMinMax();
-        return this;
-      }
-    }, {
-      key: 'hasXWaveform',
-      value: function hasXWaveform() {
-        return !!this.xdata;
-      }
-    }, {
-      key: 'getXWaveform',
-      value: function getXWaveform() {
-        if (this.xdata) {
-          return this.xdata;
-        }
-
-        var wave = new Waveform();
-        for (var i = 0; i < this.getLength(); i += 1) {
-          wave.append(this.getX(i));
-        }
-        return wave;
-      }
-    }, {
-      key: 'rescaleX',
-      value: function rescaleX(offset, scale) {
-        this.xScale = scale;
-        this.xOffset = offset;
-        this.computeXMinMax();
-        return this;
-      }
-    }, {
-      key: 'getTypedArrayClass',
-      value: function getTypedArrayClass() {
-        return this._typedArrayClass || false;
-      }
-    }, {
-      key: 'setTypedArrayClass',
-      value: function setTypedArrayClass(constructor) {
-
-        if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
-          this.warn('NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')');
-        }
-
-        if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
-          this.warn('You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.');
-        }
-
-        this._typedArrayClass = constructor;
-
-        if (this.data) {
-          this._setData(constructor.from(this.data));
-        }
-
-        if (this.hasXWaveform()) {
-          this.getXWaveform().setTypedArrayClass(constructor);
-        }
-      }
-    }, {
-      key: 'isNaNAllowed',
-      value: function isNaNAllowed() {
-        var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
-
-
-        // The following types accept NaNs
-        return constructor == Array || constructor == Float32Array || constructor == Float64Array;
-      }
-    }, {
-      key: 'isUnsigned',
-      value: function isUnsigned() {
-        var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
-
-
-        // The following types accept NaNs
-        return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
-      }
-    }, {
-      key: 'recalculateMinMaxNewPoint',
-      value: function recalculateMinMaxNewPoint(x, y) {
-        if (x < this.minX || this.minX === undefined) {
-          this.minX = x;
-        }
-
-        if (x > this.maxX || this.maxX === undefined) {
-          this.maxX = x;
-        }
-
-        if (y < this.minY || this.minY === undefined) {
-          this.minY = y;
-        }
-
-        if (y > this.maxY || this.maxY === undefined) {
-          this.maxY = y;
-        }
-      }
-    }, {
-      key: 'prepend',
-      value: function prepend(x, y) {
-
-        if (typeof x == 'function') {
-          x = x(this);
-        }
-
-        if (typeof y == 'function') {
-          y = y(this);
-        }
-
-        if (this.xdata) {
-          this.xdata.prepend(null, x);
-        } else if (x !== null) {
-          this.xdata = this.getXWaveform();
-          this.xdata.prepend(null, x);
-        } else {
-          this.xOffset -= this.xScale;
-        }
-
-        this.data.unshift(y);
-        this.recalculateMinMaxNewPoint(x, y);
-        return this;
-      }
-    }, {
-      key: 'append',
-      value: function append(x, y) {
-
-        if (typeof x == 'function') {
-          x = x(this);
-        }
-
-        if (typeof y == 'function') {
-          y = y(this);
-        }
-
-        if (this.xdata) {
-          this.xdata.append(null, x);
-        } else if (x !== null) {
-          this.xdata = this.getXWaveform();
-          this.xdata.append(null, x);
-        }
-
-        if (this.monotoneous) {
-          if (y > this.data[this.data.y] && this.getMonotoneousAscending() === false) {
-            this.monotoneous = false;
-          } else if (y < this.data[this.data.y] && this.getMonotoneousAscending() === true) {
-            this.monotoneous = false;
-          }
-        }
-
-        if (this.data.length == 1 || this._monotoneousAscending === undefined) {
-
-          this.monotoneous = true;
-
-          if (y == this.data[0]) {
-            this._monotoneousAscending = undefined;
-          } else {
-            this._monotoneousAscending = y > this.data[0];
-          }
-        }
-
-        this.data.push(y);
-        this.recalculateMinMaxNewPoint(x, y);
-
-        return this;
-      }
-    }, {
-      key: '_makeArray',
-      value: function _makeArray(length) {
-
-        var constructor = this.getTypedArrayClass();
-        if (constructor) {
-          return new constructor(length);
-        }
-        return new Array(length);
-      }
-    }, {
-      key: '_setData',
-      value: function _setData(dataY) {
-        var l = dataY.length;
-        var i = 1,
-            monoDir = dataY[1] > dataY[0],
-            minY = dataY[0],
-            maxY = dataY[0];
-
-        if (isNaN(minY)) {
-          minY = Number.MAX_VALUE;
-        }
-
-        if (isNaN(maxY)) {
-          maxY = -Number.MAX_VALUE;
-        }
-
-        this._monotoneous = true;
-
-        for (; i < l; i++) {
-          if (dataY[i] !== dataY[i - 1] && monoDir !== dataY[i] > dataY[i - 1]) {
-            this._monotoneous = false;
-          }
-
-          if (dataY[i] === dataY[i]) {
-            // NaN support
-            minY = Math.min(dataY[i], minY);
-            maxY = Math.max(dataY[i], maxY);
-          }
-        }
-
-        if (this._monotoneous) {
-          this._monotoneousAscending = dataY[1] > dataY[0];
-        }
-
-        this.data = dataY;
-        this.checkMinMaxErrorBars();
-
-        this.computeXMinMax();
-      }
-    }, {
-      key: 'checkMinMaxErrorBars',
-      value: function checkMinMaxErrorBars() {
-
-        var minY = this.minY,
-            maxY = this.maxY,
-            i = 0,
-            l = this.getLength();
-
-        if (this.hasErrorBars()) {
-          // If prefer to loop again here
-
-          for (i = 0; i < l; i++) {
-
-            if (this.data[i] === this.data[i]) {
-              // NaN support
-
-              minY = Math.min(minY, this.data[i] - this.getMaxError(i, 'below'));
-              maxY = Math.max(maxY, this.data[i] + this.getMaxError(i, 'above'));
-            }
-          }
-
-          this.minY = minY;
-          this.maxY = maxY;
-        } else {
-          this.minY = minY;
-          this.maxY = maxY;
-        }
-      }
-    }, {
-      key: 'computeXMinMax',
-      value: function computeXMinMax() {
-
-        if (!this.data) {
-
-          return;
-        }
-
-        if (this.xdata) {
-
-          this.minX = this.xdata.getMin();
-          this.maxX = this.xdata.getMax();
-        } else {
-
-          var b1 = this.xOffset + this.xScale * this.getLength(),
-              b2 = this.xOffset;
-
-          this.minX = Math.min(b1, b2);
-          this.maxX = Math.max(b1, b2);
-        }
-      }
-    }, {
-      key: 'getDataInUse',
-      value: function getDataInUse() {
-        return this.dataInUse || this.data;
-      }
-    }, {
-      key: 'getIndexFromVal',
-      value: function getIndexFromVal(val) {
-        var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-        var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
-
-
-        var data = void 0;
-
-        if (useDataToUse && this.dataInUse) {
-          data = this.dataInUse.y;
-        } else {
-          data = this.data;
-        }
-
-        var position = void 0;
-
-        position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
-
-        if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateY') {
-          // In case of aggregation, round to the closest element of 4.
-          return position - position % 4;
-        }
-
-        return position;
-      }
-    }, {
-      key: 'getIndexFromX',
-      value: function getIndexFromX(xval) {
-        var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-        var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
-
-
-        var xdata = void 0;
-
-        if (useDataToUse && this.dataInUse) {
-          xdata = this.dataInUse.x;
-        } else if (this.xdata) {
-          xdata = this.xdata.getData();
-        }
-
-        var position = void 0;
-
-        if (this.hasXWaveform()) {
-          position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
-        } else {
-          position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
-        }
-
-        if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
-          // In case of aggregation, round to the closest element of 4.
-          return position - position % 4;
-        }
-
-        return position;
-      }
-    }, {
-      key: 'getIndexFromXY',
-      value: function getIndexFromXY(xval, yval) {
-        var useDataToUse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-        var roundingMethod = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Math.round;
-        var scaleX = arguments[4];
-        var scaleY = arguments[5];
-
-
-        var xdata = void 0,
-            ydata = void 0;
-
-        if (useDataToUse && this.dataInUse) {
-
-          xdata = this.dataInUse.x;
-          ydata = this.dataInUse.y;
-        } else if (this.xdata) {
-
-          xdata = this.xdata.data;
-          ydata = this.data;
-        }
-
-        var position = void 0;
-
-        if (this.isXMonotoneous()) {
-          // X lookup only
-
-          if (this.getXMin() > xval || this.getXMax() < xval) {
-            return false;
-          }
-
-          if (this.hasXWaveform()) {
-            // The x value HAS to be rescaled
-            position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
-          } else {
-            position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
-          }
-        } else if (!isNaN(yval)) {
-
-          position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
-        } else {
-          return;
-        }
-
-        if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
-          // In case of aggregation, round to the closest element of 4.
-          return position - position % 4;
-        }
-
-        return position;
-      }
-    }, {
-      key: 'getIndexFromDataXY',
-      value: function getIndexFromDataXY(valX, dataX, valY, dataY) {
-        var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
-        var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
-
-
-        var data = void 0,
-            position = void 0;
-
-        valX -= this.getXShift();
-        valX /= this.getXScale();
-
-        valY -= this.getShift();
-        valY /= this.getScale();
-
-        return euclidianSearch(valX, valY, dataX, dataY, scaleX, scaleY);
-      }
-    }, {
-      key: 'getIndexFromData',
-      value: function getIndexFromData(val, valCollection, isAscending, roundingMethod) {
-
-        if (!this.isMonotoneous()) {
-          console.trace();
-          throw 'Impossible to get the index from a non-monotoneous wave !';
-        }
-
-        var data = void 0,
-            position = void 0;
-
-        val -= this.getShift();
-        val /= this.getScale();
-
-        return binarySearch(val, valCollection, !isAscending);
-      }
-    }, {
-      key: 'getReductionType',
-      value: function getReductionType() {
-        return this.dataInUseType;
-      }
-    }, {
-      key: 'getXMin',
-      value: function getXMin() {
-        return this.minX * this.getXScale() + this.getXShift();
-      }
-    }, {
-      key: 'getXMax',
-      value: function getXMax() {
-        return this.maxX * this.getXScale() + this.getXShift();
-      }
-    }, {
-      key: 'getYMin',
-      value: function getYMin() {
-        return this.minY * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'getYMax',
-      value: function getYMax() {
-        return this.maxY * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'getMin',
-      value: function getMin() {
-        return this.minY * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'getMax',
-      value: function getMax() {
-        return this.maxY * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'getMinX',
-      value: function getMinX() {
-
-        return this.minX * this.getXScale() + this.getXShift();
-      }
-    }, {
-      key: 'getMaxX',
-      value: function getMaxX() {
-        return this.maxX * this.getXScale() + this.getXShift();
-      }
-    }, {
-      key: 'getMinY',
-      value: function getMinY() {
-        return this.minY * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'getMaxY',
-      value: function getMaxY() {
-        return this.maxY * this.getScale() + this.getShift();
-      }
-    }, {
-      key: 'getDataMaxX',
-      value: function getDataMaxX() {
-        return this.maxX;
-      }
-    }, {
-      key: 'getDataMinX',
-      value: function getDataMinX() {
-        return this.minX;
-      }
-    }, {
-      key: 'getDataMaxY',
-      value: function getDataMaxY() {
-        return this.maxY;
-      }
-    }, {
-      key: 'getDataMaxY',
-      value: function getDataMaxY() {
-        return this.minY;
-      }
-    }, {
-      key: 'getDataY',
-      value: function getDataY() {
-        return this.data;
-      }
-    }, {
-      key: 'getData',
-      value: function getData(optimized) {
-        if (!optimized || !this.dataInUse) {
-          return this.data;
-        }
-        return this.dataInUse.y;
-      }
-    }, {
-      key: 'setShift',
-      value: function setShift() {
-        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-
-        // We must update the min and the max of the y data
-        //this.minY += ( shift - this.getShift() );
-        //this.maxY += ( shift - this.getShift() );
-        this.shift = shift;
-        return this;
-      }
-    }, {
-      key: 'getShift',
-      value: function getShift() {
-        return this.shift || 0;
-      }
-    }, {
-      key: 'getScale',
-      value: function getScale() {
-        return this.scale || 1;
-      }
-    }, {
-      key: 'setScale',
-      value: function setScale() {
-        var scale = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
-
-        // this.minY = ( this.minY - this.getShift() ) * scale;
-        // this.maxY = ( this.maxY - this.getShift() ) * scale;
-        this.scale = scale;
-        return this;
-      }
-    }, {
-      key: 'setXShift',
-      value: function setXShift() {
-        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-
-        if (!this.hasXWaveform) {
-          return this;
-        }
-
-        // We must update the min and the max of the x data
-        // That's important for when the data has already been set
-        //  this.minX += ( shift - this.getXShift() );
-        //    this.maxX += ( shift - this.getXShift() );
-        this.getXWaveform().setShift(shift);
-        return this;
-      }
-    }, {
-      key: 'getXShift',
-      value: function getXShift() {
-        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-
-        if (!this.hasXWaveform) {
-          return 0;
-        }
-
-        return this.getXWaveform().getShift();
-      }
-    }, {
-      key: 'setXScale',
-      value: function setXScale() {
-        var scale = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
-
-        if (!this.hasXWaveform) {
-          return this;
-        }
-
-        this.getXWaveform().setScale(scale);
-        return this;
-      }
-    }, {
-      key: 'getXScale',
-      value: function getXScale() {
-
-        if (!this.hasXWaveform) {
-          return 1;
-        }
-
-        return this.getXWaveform().getScale();
-      }
-    }, {
-      key: 'getLength',
-      value: function getLength() {
-        return this.data.length;
-      }
-    }, {
-      key: 'getDataToUseFlat',
-      value: function getDataToUseFlat() {
-
-        var l = void 0;
-        var j = 0;
-        var arr = void 0;
-
-        if (this.dataInUse) {
-
-          l = this.dataInUse.x.length;
-          arr = new Array(l * 2).fill(0);
-
-          for (var i = 0; i < l; i += 1) {
-            arr[j] = this.dataInUse.x[i];
-            arr[j + 1] = this.dataInUse.y[i];
-            j += 2;
-          }
-        } else {
-
-          l = this.getLength();
-          arr = new Array(l * 2).fill(0);
-          for (var i = 0; i < l; i += 1) {
-            arr[j + 1] = this.data[i];
-            arr[j] = this.getX(i);
-            j += 2;
-          }
-        }
-
-        return arr;
-      }
-    }, {
-      key: 'fit',
-      value: function fit(options) {
-
-        var self = this;
-
-        return new Promise(function (resolver, rejector) {
-
-          var fit = new _fit_lm2.default(util.extend({}, {
-
-            dataY: self,
-            dataX: self.getXWaveform(),
-            done: function done(results) {
-              resolver(results);
-            },
-            waveform: new Waveform()
-
-          }, options));
-
-          fit.init();
-          fit.fit();
-        });
-      }
-    }, {
-      key: 'getX',
-      value: function getX(index, optimized) {
-
-        if (optimized && this.dataInUse) {
-          return this.dataInUse.x[index] * this.getXScale() + this.getXShift();
-        }
-
-        if (this.xdata) {
-          return this.xdata.data[index] * this.getXScale() + this.getXShift();
-        } else {
-          return this.xOffset + index * this.xScale;
-        }
-      }
-    }, {
-      key: 'getXRaw',
-      value: function getXRaw(index, optimized) {
-
-        if (optimized && this.dataInUse) {
-          return this.dataInUse.x[index];
-        }
-
-        if (this.xdata) {
-          return this.xdata.data[index];
-        } else {
-          return index;
-        }
-      }
-    }, {
-      key: '_integrateP',
-      value: function _integrateP() {
-        var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-        var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - 1;
-
-
-        from = Math.round(from);
-        to = Math.round(to);
-
-        if (from > to) {
-          var temp = from;
-          from = to;
-          to = temp;
-        }
-
-        var l = to - from + 1;
-        var sum = 0,
-            delta;
-
-        var deltaTot = 0;
-        var diff = void 0;
-        var arrY = this.getData();
-
-        for (; from <= to; from++) {
-
-          if (arrY.length - 1 > from) {
-            diff = this.getX(from + 1) - this.getX(from);
-            deltaTot += diff;
-            sum += arrY[from] * diff;
-          }
-        }
-
-        return [sum, l, deltaTot];
-      }
-    }, {
-      key: 'integrateP',
-      value: function integrateP(from, to) {
-        var val = this._integrateP(from, to);
-        return val[0];
-      }
-    }, {
-      key: 'integrate',
-      value: function integrate(fromX, toX) {
-        return this.integrateP(this.getIndexFromX(fromX), this.getIndexFromX(toX));
-      }
-    }, {
-      key: 'average',
-      value: function average() {
-        var p0 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-        var p1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - 1;
-
-        return this.getAverageP(p0, p1);
-      }
-    }, {
-      key: 'mean',
-      value: function mean() {
-        return this.average();
-      }
-    }, {
-      key: 'stddev',
-      value: function stddev() {
-        var num = 0,
-            denom = 0;
-        var mean = this.mean();
-        for (var i = 0; i < this.getLength(); i++) {
-          num += Math.pow(this.getY(i) - mean, 2);
-          denom++;
-        }
-
-        return Math.pow(num / denom, 0.5);
-      }
-    }, {
-      key: 'getAverageP',
-      value: function getAverageP(from, to) {
-        var sum = this._integrateP(from, to);
-        return sum[0] / sum[2];
-      }
-    }, {
-      key: 'getAverageX',
-      value: function getAverageX(from, to) {
-        var sum = this._integrateX(from, to);
-        return sum[0] / sum[2];
-      }
-    }, {
-      key: 'checkMonotonicity',
-      value: function checkMonotonicity() {
-
-        var i = 1,
-            data = this.getData();
-        var l = this.data.length;
-        var dir = data[1] > data[0];
-
-        for (; i < l; i++) {
-          if (data[i] !== data[i - 1] && dir !== data[i] > data[i - 1]) {
-            return this._monotoneous = false;
-          }
-        }
-
-        this._monotoneousAscending = data[1] > data[0];
-        return this._monotoneous = true;
-      }
-    }, {
-      key: 'requireXMonotonicity',
-      value: function requireXMonotonicity() {
-        if (this.xdata) {
-          this.xdata.requireMonotonicity();
-        }
-      }
-    }, {
-      key: 'requireMonotonicity',
-      value: function requireMonotonicity() {
-        if (!this.isMonotoneous()) {
-          throw 'The wave must be monotonic';
-        }
-      }
-    }, {
-      key: 'isMonotoneous',
-      value: function isMonotoneous() {
-        return !!this._monotoneous;
-      }
-    }, {
-      key: 'isXMonotoneous',
-      value: function isXMonotoneous() {
-        if (this.xdata) {
-          return this.xdata.isMonotoneous();
-        }
-        // Offset and scale is always monotoneous
-        return true;
-      }
-    }, {
-      key: 'invert',
-      value: function invert(data) {
-
-        var d = dataY || this.data;
-        d.reverse();
-
-        if (this.isMonotoneous()) {
-          this._monotoneousAscending = !this._monotoneousAscending;
-        }
-
-        return d;
-      }
-    }, {
-      key: 'resampleForDisplay',
-      value: function resampleForDisplay(options) {
-        // Serie redrawing
-
-        var i = 0;
-
-        this.requireXMonotonicity();
-
-        var inverting = false,
-            dataY = this.getDataY(),
-            data = {
-          x: [],
-          y: []
-        },
-            dataMinMax = [],
-            resampleSum = void 0,
-            resampleMin = void 0,
-            resampleMax = void 0,
-            resampleNum = void 0,
-            resample_x_start = void 0,
-            resample_x_px_start = void 0,
-            x_px = void 0,
-            doing_mean = false,
-            firstPointIndex = 0,
-            xval = void 0;
-
-        var l = this.getLength();
-
-        if (!options.xPosition) {
-          throw 'No position calculation method provided';
-        }
-
-        if (!options.resampleToPx) {
-          throw 'No "resampleToPx" method was provided. Unit: px per point';
-        }
-
-        if (options.minX > options.maxX) {
-          var temp = options.minX;
-          options.minX = options.maxX;
-          options.maxX = temp;
-        }
-
-        if (this.xdata && !this.xdata.getMonotoneousAscending() || !this.xdata && this.xScale < -0) {
-          inverting = true;
-          i = l;
-        }
-
-        for (; inverting ? i > 0 : i < l; inverting ? i-- : i++) {
-
-          xval = this.getX(i);
-
-          if (options.minX > xval) {
-
-            firstPointIndex = i;
-            continue;
-          }
-
-          x_px = options.xPosition(xval);
-
-          if (!doing_mean) {
-
-            if (!firstPointIndex) {
-
-              firstPointIndex = i;
-            } else {
-
-              data.x.push(xval);
-              data.y.push(dataY[firstPointIndex]);
-            }
-
-            while (isNaN(dataY[i])) {
-
-              if (inverting) {
-                i--;
-              } else {
-                i++;
-              }
-            }
-
-            resampleSum = resampleMin = resampleMax = dataY[firstPointIndex];
-            resampleNum = 1;
-            resample_x_px_start = x_px;
-            resample_x_start = xval;
-            firstPointIndex = 0;
-
-            doing_mean = true;
-
-            continue;
-          }
-
-          if (Math.abs(x_px - resample_x_px_start) > options.resampleToPx || i == l || i == 0 || isNaN(dataY[i])) {
-
-            var xpos = (resample_x_start + xval) / 2;
-
-            data.x.push(xpos);
-            data.y.push(resampleSum / resampleNum);
-
-            dataMinMax.push(xpos, resampleMin, resampleMax);
-
-            if (options.maxX !== undefined && xval > options.maxX) {
-
-              break;
-            }
-
-            doing_mean = false;
-
-            continue;
-          }
-
-          resampleSum += dataY[i];
-          resampleNum++;
-
-          resampleMin = Math.min(resampleMin, dataY[i]);
-          resampleMax = Math.max(resampleMax, dataY[i]);
-        }
-
-        this.dataInUseType = 'resampled';
-        this.dataInUse = data;
-        return dataMinMax;
-      }
-    }, {
-      key: 'interpolate',
-      value: function interpolate(x) {
-
-        var yData = this.getDataY();
-        var xIndex = void 0;
-
-        if (this.xdata) {
-
-          var xData = this.xdata.getData();
-
-          try {
-            xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
-          } catch (e) {
-            return NaN;
-          }
-
-          if (xData[xIndex] == x) {
-            return yData[xIndex];
-          }
-          return (x - xData[xIndex]) / (xData[xIndex + 1] - xData[xIndex]) * (yData[xIndex + 1] - yData[xIndex]) + yData[xIndex];
-        } else {
-          xIndex = (x - this.xOffset) / this.xScale;
-          var xIndexF = Math.floor(xIndex);
-          return (xIndex - xIndexF) * (yData[xIndexF + 1] - yData[xIndexF]) + yData[xIndexF];
-        }
-      }
-    }, {
-      key: 'interpolateIndex_X',
-      value: function interpolateIndex_X(index) {
-
-        var yData = this.getDataY();
-        if (this.xdata) {
-          var xData = this.xdata.getData();
-          var indexStart = Math.floor(index);
-
-          return (index - indexStart) * (xData[indexStart + 1] - xData[indexStart]) + xData[indexStart];
-        }
-      }
-    }, {
-      key: 'getMonotoneousAscending',
-      value: function getMonotoneousAscending() {
-
-        if (!this.isMonotoneous()) {
-          return 'The waveform is not monotoneous';
-        }
-
-        return this._monotoneousAscending;
-      }
-    }, {
-      key: 'getXMonotoneousAscending',
-      value: function getXMonotoneousAscending() {
-        if (this.xdata) {
-          return this.xdata.getMonotoneousAscending();
-        }
-
-        return this.xScale > 0;
-      }
-    }, {
-      key: 'isXMonotoneousAscending',
-      value: function isXMonotoneousAscending() {
-        return this.getXMonotoneousAscending.apply(this, arguments);
-      }
-    }, {
-      key: 'divide',
-      value: function divide(numberOrWave) {
-        return this._arithmetic(numberOrWave, DIVIDE);
-      }
-    }, {
-      key: 'divideBy',
-      value: function divideBy() {
-        return this.divide.apply(this, arguments);
-      }
-    }, {
-      key: 'multiply',
-      value: function multiply(numberOrWave) {
-        return this._arithmetic(numberOrWave, MULTIPLY);
-      }
-    }, {
-      key: 'multiplyBy',
-      value: function multiplyBy() {
-        return this.multiply.apply(this, arguments);
-      }
-    }, {
-      key: 'log',
-      value: function log() {
-        return this.logBase(10);
-      }
-    }, {
-      key: 'ln',
-      value: function ln() {
-        return this.logBase(Math.E);
-      }
-    }, {
-      key: 'logBase',
-      value: function logBase(base) {
-
-        var logBase = Math.log(base);
-        this.data.map(function (valY) {
-
-          return Math.log(valY) / logBase;
-        });
-      }
-    }, {
-      key: 'add',
-      value: function add(numberOrWave) {
-        return this._arithmetic(numberOrWave, ADD);
-      }
-    }, {
-      key: 'addBy',
-      value: function addBy() {
-        return this.add.apply(this, arguments);
-      }
-    }, {
-      key: 'subtract',
-      value: function subtract(numberOrWave) {
-        return this._arithmetic(numberOrWave, SUBTRACT);
-      }
-    }, {
-      key: 'subtractBy',
-      value: function subtractBy() {
-        return this.subtract.apply(this, arguments);
-      }
-    }, {
-      key: 'math',
-      value: function math(method) {
-
-        for (var i = 0; i < this.getLength(); i++) {
-          this.data[i] = method(this.getY(i), this.getX(i));
-        }
-
-        this._setData(this.data);
-        return this;
-      }
-    }, {
-      key: '_arithmetic',
-      value: function _arithmetic(numberOrWave, operator) {
-
-        if (numberOrWave instanceof Waveform) {
-          return this._waveArithmetic(numberOrWave, operator);
-        } else if (typeof numberOrWave == 'number') {
-
-          return this._numberArithmetic(numberOrWave, operator);
-        }
-      }
-    }, {
-      key: '_numberArithmetic',
-      value: function _numberArithmetic(num, operation) {
-
-        var i = 0,
-            l = this.getLength();
-
-        if (operation == MULTIPLY) {
-
-          for (; i < l; i++) {
-            this.data[i] *= num;
-          }
-
-          this.minY *= num;
-          this.maxY *= num;
-        } else if (operation == DIVIDE) {
-
-          for (; i < l; i++) {
-            this.data[i] /= num;
-          }
-
-          this.minY /= num;
-          this.maxY /= num;
-        } else if (operation == ADD) {
-
-          for (; i < l; i++) {
-            this.data[i] += num;
-          }
-
-          this.minY += num;
-          this.maxY += num;
-        } else if (operation == SUBTRACT) {
-
-          for (; i < l; i++) {
-            this.data[i] -= num;
-          }
-
-          this.minY -= num;
-          this.maxY -= num;
-        }
-
-        return this;
-      }
-    }, {
-      key: '_waveArithmetic',
-      value: function _waveArithmetic(wave, operation) {
-
-        var yDataThis = this.getDataY(),
-            i = 0;
-        var l = this.getLength();
-        this.requireXMonotonicity();
-        wave.requireXMonotonicity();
-
-        if (operation == MULTIPLY) {
-
-          for (; i < l; i++) {
-            yDataThis[i] *= wave.interpolate(this.getX(i));
-          }
-        } else if (operation == DIVIDE) {
-
-          for (; i < l; i++) {
-            yDataThis[i] /= wave.interpolate(this.getX(i));
-          }
-        } else if (operation == ADD) {
-
-          for (; i < l; i++) {
-            yDataThis[i] += wave.interpolate(this.getX(i));
-          }
-        } else if (operation == SUBTRACT) {
-
-          for (; i < l; i++) {
-            yDataThis[i] -= wave.interpolate(this.getX(i));
-          }
-        }
-
-        this._setData(yDataThis);
-        return this;
-      }
-    }, {
-      key: 'aggregate',
-      value: function aggregate() {
-        var _this = this;
-
-        var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'x';
-
-
-        this._dataAggregating = {};
-        this._dataAggregated = {};
-        this._dataAggregationDirection = direction.toUpperCase();
-
-        var pow2 = pow2floor(this.getLength());
-
-        this._dataAggregating = aggregator({
-
-          minX: this.minX,
-          maxX: this.maxX,
-          minY: this.minY,
-          maxY: this.maxY,
-          data: this.data,
-          xdata: this.xdata ? this.xdata.getData() : undefined,
-          xScale: this.xScale,
-          xOffset: this.xOffset,
-          numPoints: pow2,
-          direction: direction
-
-        }).then(function (event) {
-
-          _this._dataAggregated = event.aggregates;
-          _this._dataAggregating = false;
-        });
-      }
-    }, {
-      key: 'hasAggregation',
-      value: function hasAggregation() {
-        return !!this._dataAggregated;
-      }
-    }, {
-      key: 'selectAggregatedData',
-      value: function selectAggregatedData(pxWidth) {
-
-        if (pxWidth < 2) {
-          return false;
-        }
-        /*
-        console.log( direction, this._dataAggregationDirection );
-             if( direction !== this._dataAggregationDirection ) {
-              throw "The data is not aggregated in that direction";
-            }
-        */
-
-        var level = pow2ceil(pxWidth);
-
-        if (this._dataAggregated[level]) {
-
-          this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
-          this.dataInUse = this._dataAggregated[level];
-          return;
-        } else if (this._dataAggregating) {
-
-          return this._dataAggregating;
-        }
-
-        this.dataInUseType = 'none';
-        this.dataInUse = {
-          y: this.data,
-          x: this.getXWaveform().data
-        };
-      }
-    }, {
-      key: 'duplicate',
-      value: function duplicate(alsoDuplicateXWave) {
-        var newWaveform = new Waveform();
-        newWaveform._setData(this.getDataY().slice());
-        newWaveform.rescaleX(this.xOffset, this.xShift);
-        newWaveform.setShift(this.getShift());
-        newWaveform.setScale(this.getScale());
-
-        if (this.xdata) {
-          if (alsoDuplicateXWave) {
-            newWaveform.setXWaveform(this.xdata.duplicate());
-          } else {
-            newWaveform.setXWaveform(this.xdata);
-          }
-
-          newWaveform.setXShift(this.getXShift());
-          newWaveform.setXScale(this.getXScale());
-        } else {
-          newWaveform.xOffset = this.xOffset;
-          newWaveform.xScale = this.xScale;
-        }
-
-        return newWaveform;
-      }
-    }, {
-      key: 'subrangeX',
-      value: function subrangeX(fromX, toX) {
-
-        if (!this.xdata) {
-          // We can select the new range from there
-
-          var fromP = this.getIndexFromX(fromX),
-              toP = this.getIndexFromX(toP);
-
-          return new Waveform().setData(this.data.slice(fromP, toP)).rescaleX(this.xOffset, this.xScale);
-        } else {
-
-          var waveform = new Waveform();
-
-          for (var i = 0, l = this.data.length; i < l; i++) {
-
-            if (this.data[i] >= fromX && this.data[i] < toX) {
-
-              waveform.append(this.dataX[i], this.data[i]);
-            }
-          }
-
-          return waveform;
-        }
-      }
-    }, {
-      key: 'findLocalMinMax',
-      value: function findLocalMinMax(xRef, xWithin, type) {
-
-        var index = this.getIndexFromX(xRef),
-            indexPlus = this.getIndexFromX(xRef + xWithin),
-            indexMinus = this.getIndexFromX(xRef - xWithin);
-
-        return this.findLocalMinMaxIndex(indexMinus, indexPlus, type);
-      }
-    }, {
-      key: 'findLocalMinMaxIndex',
-      value: function findLocalMinMaxIndex(indexMinus, indexPlus, type) {
-
-        var tmp = void 0;
-
-        if (indexPlus < indexMinus) {
-          tmp = indexPlus;
-          indexPlus = indexMinus;
-          indexMinus = tmp;
-        }
-
-        var curr = void 0,
-            currI = void 0;
-
-        if (type == 'max') {
-
-          curr = Number.NEGATIVE_INFINITY;
-
-          for (var i = indexMinus; i <= indexPlus; i++) {
-
-            if (this.getY(i) > curr) {
-              curr = this.getY(i);
-              currI = i;
-            }
-          }
-        } else {
-
-          curr = Number.POSITIVE_INFINITY;
-
-          for (var i = indexMinus; i <= indexPlus; i++) {
-
-            if (this.getY(i) < curr) {
-              curr = this.getY(i);
-              currI = i;
-            }
-          }
-        }
-
-        if (currI == indexMinus || currI == indexPlus) {
-          return false;
-        }
-
-        return this.getX(currI);
-      }
-    }, {
-      key: 'warn',
-      value: function warn(text) {
-        if (console) {
-          console.warn(text);
-        }
-      }
-    }, {
-      key: 'setUnit',
-      value: function setUnit(unit) {
-        this.unit = unit;
-        return this;
-      }
-    }, {
-      key: 'setXUnit',
-      value: function setXUnit(unit) {
-        if (this.hasXWaveform()) {
-          this.xdata.setUnit(unit);
-        }
-
-        this.xunit = unit;
-        return this;
-      }
-    }, {
-      key: 'getUnit',
-      value: function getUnit() {
-        return this.unit || '';
-      }
-    }, {
-      key: 'getXUnit',
-      value: function getXUnit() {
-        if (this.hasXWaveform()) {
-          return this.xdata.getUnit();
-        }
-
-        return this.xunit | '';
-      }
-    }, {
-      key: 'hasXUnit',
-      value: function hasXUnit() {
-        return this.getXUnit().length > 0;
-      }
-    }, {
-      key: 'hasUnit',
-      value: function hasUnit() {
-        return this.getUnit().length > 0;
-      }
-    }, {
-      key: 'findLevels',
-      value: function findLevels(level, options) {
-
-        options = util.extend({
-
-          box: 1,
-          edge: 'both',
-          rounding: 'before',
-          rangeP: [0, this.getLength()]
-
-        }, options);
-
-        var lastLvlIndex = options.rangeP[0];
-        var lvlIndex;
-        var indices = [];
-        var i = 0;
-
-        while (lvlIndex = this.findLevel(level, util.extend(true, {}, options, {
-          rangeP: [lastLvlIndex, options.rangeP[1]]
-        }))) {
-          indices.push(lvlIndex);
-          lastLvlIndex = Math.ceil(lvlIndex);
-
-          i++;
-          if (i > 1000) {
-            return;
-          }
-        }
-
-        return indices;
-      }
-    }, {
-      key: 'findLevel',
-      value: function findLevel(level, options) {
-
-        options = util.extend({
-
-          box: 1,
-          edge: 'both',
-          direction: 'ascending',
-          rounding: 'before',
-          rangeP: [0, this.getLength()]
-
-        }, options);
-
-        if (options.rangeX) {
-          options.rangeP = options.rangeX.map(this.getIndexFromX);
-        }
-
-        var value, below, i, j, l, increment;
-
-        var box = options.box;
-
-        if (box % 2 == 0) {
-          box++;
-        }
-
-        if (options.direction == 'descending') {
-          i = options.rangeP[1], l = options.rangeP[0], increment = -1;
-        } else {
-          i = options.rangeP[0], l = options.rangeP[1], increment = +1;
-        }
-
-        for (;; i += increment) {
-
-          if (options.direction == 'descending') {
-            if (i < l) {
-              break;
-            }
-          } else {
-            if (i > l) {
-              break;
-            }
-          }
-
-          if (i < options.rangeP[0] + (box - 1) / 2) {
-            continue;
-          }
-
-          if (i > options.rangeP[1] - (box - 1) / 2) {
-            break;
-          }
-
-          value = this.getAverageP(i - (box - 1) / 2, i + (box - 1) / 2);
-
-          if (below === undefined) {
-            below = value < level;
-            continue;
-          }
-          // Crossing up
-          if (value >= level && below) {
-
-            below = false;
-
-            if (options.edge == 'ascending' || options.edge == 'both') {
-              // Found something
-
-              for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
-
-                if (this.data[j] >= level && this.data[j - 1] <= level) {
-                  // Find a crossing
-
-                  switch (options.rounding) {
-                    case 'before':
-                      return j - 1;
-                      break;
-
-                    case 'after':
-                      return j;
-                      break;
-
-                    case 'interpolate':
-                      return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
-                      break;
-                  }
-                }
-              }
-            }
-          } else if (value <= level && !below) {
-
-            below = true;
-
-            if (options.edge == 'descending' || options.edge == 'both') {
-
-              for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
-
-                if (this.data[j] <= level && this.data[j - 1] >= level) {
-                  // Find a crossing
-
-                  switch (options.rounding) {
-                    case 'before':
-                      return j - 1;
-                      break;
-
-                    case 'after':
-                      return j;
-                      break;
-
-                    case 'interpolate':
-                      return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
-                      break;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }, {
-      key: 'normalize',
-      value: function normalize(mode) {
-
-        var factor = void 0,
-            total = void 0,
-            minValue = void 0,
-            maxValue = void 0,
-            ratio = void 0,
-            i = void 0;
-
-        if (mode == 'max1' || mode == 'max100') {
-
-          factor = 1;
-
-          if (mode == 'max100') {
-            factor = 100;
-          }
-
-          maxValue = this.data[0];
-
-          for (i = 1; i < this.getLength(); i++) {
-
-            if (this.data[i] > maxValue) {
-
-              maxValue = this.data[i];
-            }
-          }
-
-          for (i = 0; i < this.getLength(); i++) {
-
-            this.data[i] /= maxValue / factor;
-          }
-        } else if (mode == 'sum1') {
-
-          total = 0;
-
-          for (i = 0; i < this.getLength(); i++) {
-            total += this.data[i];
-          }
-
-          for (i = 0; i < this.getLength(); i++) {
-
-            this.data[i] /= total;
-          }
-        } else if (mode == 'max1min0') {
-
-          maxValue = this.data[0], minValue = this.data[0];
-
-          for (i = 1; i < this.getLength(); i++) {
-            if (this.data[i] > maxValue) {
-
-              maxValue = this.data[i];
-            } else if (this.data[i] < minValue) {
-
-              minValue = this.data[i];
-            }
-          }
-
-          ratio = 1 / (maxValue - minValue);
-
-          for (i = 0; i < this.getLength(); i++) {
-
-            this.data[i] = (this.data[i] - minValue) * ratio;
-          }
-        }
-
-        this.setData(this.data);
-      }
-    }, {
-      key: 'setErrorBarX',
-      value: function setErrorBarX(waveform) {
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        var xWave = this.getXWaveform();
-        xWave.setErrorBar(waveform);
-        return this;
-      }
-    }, {
-      key: 'setErrorBarXBelow',
-      value: function setErrorBarXBelow(waveform) {
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        var xWave = this.getXWaveform();
-        xWave.setErrorBarBelow(waveform);
-        return this;
-      }
-    }, {
-      key: 'setErrorBarXAbove',
-      value: function setErrorBarXAbove(waveform) {
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        var xWave = this.getXWaveform();
-        xWave.setErrorBarAbove(waveform);
-        return this;
-      }
-    }, {
-      key: 'setErrorBoxX',
-      value: function setErrorBoxX(waveform) {
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        var xWave = this.getXWaveform();
-        xWave.setErrorBoxAbove(waveform);
-        xWave.setErrorBoxBelow(waveform);
-        return this;
-      }
-    }, {
-      key: 'setErrorBoxXBelow',
-      value: function setErrorBoxXBelow(waveform) {
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        var xWave = this.getXWaveform();
-
-        xWave.setErrorBoxBelow(waveform);
-        return this;
-      }
-    }, {
-      key: 'setErrorBoxXAbove',
-      value: function setErrorBoxXAbove(waveform) {
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        var xWave = this.getXWaveform();
-        xWave.setErrorBoxAbove(waveform);
-        return this;
-      }
-    }, {
-      key: 'setErrorBar',
-      value: function setErrorBar(waveform) {
-        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-        this.errors.nb++;
-        this.errors.nb++;
-        this.errors.bars.below = waveform;
-        this.errors.bars.above = waveform;
-
-        if (checkMinMax) {
-          this._setData();
-        }
-      }
-    }, {
-      key: 'setErrorBarBelow',
-      value: function setErrorBarBelow(waveform) {
-        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-        this.errors.nb++;
-        this.errors.bars.below = waveform;
-
-        if (checkMinMax) {
-          this._setData();
-        }
-      }
-    }, {
-      key: 'setErrorBarAbove',
-      value: function setErrorBarAbove(waveform) {
-        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        this.errors.nb++;
-        this.errors.bars.above = waveform;
-
-        if (checkMinMax) {
-          this._setData();
-        }
-      }
-    }, {
-      key: 'setErrorBox',
-      value: function setErrorBox(waveform) {
-        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-        this.errors.nb++;
-        this.errors.nb++;
-        this.errors.boxes.above = waveform;
-        this.errors.boxes.below = waveform;
-
-        if (checkMinMax) {
-          this._setData();
-        }
-      }
-    }, {
-      key: 'setErrorBoxBelow',
-      value: function setErrorBoxBelow(waveform) {
-        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-        this.errors.nb++;
-        this.errors.boxes.below = waveform;
-
-        if (checkMinMax) {
-          this._setData();
-        }
-      }
-    }, {
-      key: 'setErrorBoxAbove',
-      value: function setErrorBoxAbove(waveform) {
-        var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-
-        if (Array.isArray(waveform)) {
-          waveform = new Waveform(waveform);
-        }
-
-        this.errors.boxes.above = waveform;
-        if (checkMinMax) {
-          this._setData();
-        }
-      }
-    }, {
-      key: 'getMaxError',
-      value: function getMaxError(i) {
-        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
-
-
-        return Math.max(this.getMaxErrorType(i, side, Waveform.BOX), this.getMaxErrorType(i, side, Waveform.BAR));
-      }
-    }, {
-      key: 'getMaxErrorType',
-      value: function getMaxErrorType(i) {
-        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
-        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BOX;
-
-
-        var stack = void 0;
-        if (type == Waveform.BOX) {
-          stack = this.errors.boxes;
-        } else if (type == Waveform.BAR) {
-          stack = this.errors.bars;
-        } else {
-          throw 'Unknown type of error';
-        }
-
-        var waveform = void 0;
-        if (!(waveform = stack[side])) {
-          if (side == Waveform.ABOVE) {
-            if (stack[side] == Waveform.BELOW) {
-              waveform = stack.below;
-            }
-          } else {
-            if (stack[side] == Waveform.ABOVE) {
-              waveform = stack.above;
-            }
-          }
-        }
-
-        if (!waveform) {
-          return 0;
-        }
-
-        return waveform.getY(i);
-      }
-    }, {
-      key: 'getErrorBarXBelow',
-      value: function getErrorBarXBelow(index) {
-        return this.getErrorX(index, Waveform.BELOW, Waveform.BAR);
-      }
-    }, {
-      key: 'getErrorBarXAbove',
-      value: function getErrorBarXAbove(index) {
-        return this.getErrorX(index, Waveform.ABOVE, Waveform.BAR);
-      }
-    }, {
-      key: 'getErrorBoxXBelow',
-      value: function getErrorBoxXBelow(index) {
-        return this.getErrorX(index, Waveform.BELOW, Waveform.BOX);
-      }
-    }, {
-      key: 'getErrorBoxXAbove',
-      value: function getErrorBoxXAbove(index) {
-        return this.getErrorX(index, Waveform.ABOVE, Waveform.BOX);
-      }
-    }, {
-      key: 'getErrorBarYBelow',
-      value: function getErrorBarYBelow(index) {
-        return this.getError(index, Waveform.BELOW, Waveform.BAR);
-      }
-    }, {
-      key: 'getErrorBarYAbove',
-      value: function getErrorBarYAbove(index) {
-        return this.getError(index, Waveform.ABOVE, Waveform.BAR);
-      }
-    }, {
-      key: 'getErrorBoxYBelow',
-      value: function getErrorBoxYBelow(index) {
-        return this.getError(index, Waveform.BELOW, Waveform.BOX);
-      }
-    }, {
-      key: 'getErrorBoxYAbove',
-      value: function getErrorBoxYAbove(index) {
-        return this.getError(index, Waveform.ABOVE, Waveform.BOX);
-      }
-    }, {
-      key: 'getErrorX',
-      value: function getErrorX(index) {
-        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
-        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BAR;
-
-
-        if (!this.hasXWaveform()) {
-          return false;
-        }
-
-        return this.xdata.getError(index, side, type);
-      }
-    }, {
-      key: 'getError',
-      value: function getError(index) {
-        var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
-        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BAR;
-
-
-        var errors = type == Waveform.BAR ? this.errors.bars : this.errors.boxes;
-
-        if (!errors) {
-          return false;
-        }
-
-        var wave = void 0;
-        if (wave = side == Waveform.ABOVE ? errors.above : errors.below) {
-          /*console.log( wave );
-                if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
-                  wave = errors.above;
-                } else if ( wave == Waveform.BELOW && side == Waveform.ABOVE ) {
-                  wave = errors.below;
-                }
-          */
-          /*
-                if ( !wave ) {
-                  return false;
-                }
-          */
-          return wave.getY(index);
-        }
-      }
-    }, {
-      key: 'hasErrorBars',
-      value: function hasErrorBars() {
-
-        return this.errors.nb > 0 || this.hasXWaveform() && this.xdata.errors.nb > 0;
-      }
-    }]);
-
-    return Waveform;
-  }();
-
-  Waveform.BELOW = Symbol();
-  Waveform.ABOVE = Symbol();
-
-  Waveform.BOX = Symbol();
-  Waveform.BAR = Symbol();
-
-  var MULTIPLY = Symbol();
-  var ADD = Symbol();
-  var SUBTRACT = Symbol();
-  var DIVIDE = Symbol();
-
-  // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
-  function pow2ceil(v) {
-    v--;
-    var p = 2;
-    while (v >>= 1) {
-      p <<= 1;
-    }
-    return p;
-  }
-
-  function pow2floor(v) {
-
-    var p = 1;
-
-    while (v >>= 1) {
-      p <<= 1;
-    }
-    return p;
-  }
-
-  function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
-    return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
-  }
-
-  function euclidianSearch(targetX, targetY, haystackX, haystackY) {
-    var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
-    var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
-
-
-    var distance = Number.MAX_VALUE,
-        distance_i = void 0;
-
-    var index = -1;
-
-    for (var i = 0, l = haystackX.length; i < l; i++) {
-
-      distance_i = Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2);
-
-      if (distance_i < distance) {
-
-        index = i;
-        distance = distance_i;
-      }
-    }
-
-    return index;
-  }
-
-  function binarySearch(target, haystack) {
-    var reverse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : haystack[haystack.length - 1] < haystack[0];
-
-
-    var seedA = 0,
-        length = haystack.length,
-        seedB = length - 1,
-        seedInt = void 0,
-        i = 0,
-        nanDirection = 1;
-
-    if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
-      throw new Error('Target ' + target + ' is not in the stack');
-    }
-
-    if (haystack[seedA] == target) {
-      return seedA;
-    }
-
-    if (haystack[seedB] == target) {
-      return seedB;
-    }
-
-    while (true) {
-      i++;
-      if (i > 100) {
-        throw new Error('Error loop');
-      }
-
-      seedInt = Math.floor((seedA + seedB) / 2);
-
-      //  seedInt -= seedInt % 2; // Always looks for an x.
-
-      while (isNaN(haystack[seedInt])) {
-
-        if (seedInt >= haystack.length - 1) {
-
-          return haystack.length - 1;
-        } else if (seedInt <= 0) {
-
-          return 0;
-        }
-
-        seedInt += nanDirection;
-      }
-
-      if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
-        return seedInt;
-      }
-
-      //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-      if (haystack[seedInt] < target) {
-        if (reverse) {
-          seedB = seedInt;
-        } else {
-          seedA = seedInt;
-        }
-      } else if (haystack[seedInt] > target) {
-        if (reverse) {
-          seedA = seedInt;
-        } else {
-          seedB = seedInt;
-        }
-      } else {
-        return false;
-      }
-
-      nanDirection *= -1;
-    }
-  }
-
-  // Stores key: value
-
-  var WaveformHash = function (_Waveform) {
-    _inherits(WaveformHash, _Waveform);
-
-    function WaveformHash() {
-      _classCallCheck(this, WaveformHash);
-
-      return _possibleConstructorReturn(this, (WaveformHash.__proto__ || Object.getPrototypeOf(WaveformHash)).apply(this, arguments));
-    }
-
-    _createClass(WaveformHash, [{
-      key: 'hasXWaveform',
-      value: function hasXWaveform() {
-        return false;
-      }
-    }, {
-      key: 'setXWaveform',
-      value: function setXWaveform(data) {
-        this.xdata = data;
-      }
-    }, {
-      key: 'getYFromX',
-      value: function getYFromX(xValue) {
-
-        var index = this.xdata.indexOf(xValue);
-        if (index == -1) {
-          throw 'Cannot find key ' + xValue;
-        }
-
-        return this.data[index];
-      }
-    }, {
-      key: 'getY',
-      value: function getY(index) {
-        return this.data[index];
-      }
-    }, {
-      key: 'getX',
-      value: function getX(index) {
-        return this.xdata[index];
-      }
-    }, {
-      key: 'hasXUnit',
-      value: function hasXUnit() {
-        return false;
-      }
-    }, {
-      key: 'errorNotImplemented',
-      value: function errorNotImplemented() {
-        console.trace();
-        throw "Not available in hash waveform";
-      }
-    }, {
-      key: 'subrangeX',
-      value: function subrangeX() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'duplicate',
-      value: function duplicate() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'aggregate',
-      value: function aggregate() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: '_waveArithmetic',
-      value: function _waveArithmetic() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'interpolateIndex_X',
-      value: function interpolateIndex_X(index) {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'getXMonotoneousAscending',
-      value: function getXMonotoneousAscending() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'isXMonotoneousAscending',
-      value: function isXMonotoneousAscending() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'interpolate',
-      value: function interpolate() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'resampleForDisplay',
-      value: function resampleForDisplay() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'isXMonotoneous',
-      value: function isXMonotoneous() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'rescaleX',
-      value: function rescaleX() {
-        this.errorNotImplemented();
-      }
-    }, {
-      key: 'getXMin',
-      value: function getXMin() {
-        return undefined;
-      }
-    }, {
-      key: 'getXMax',
-      value: function getXMax() {
-        return undefined;
-      }
-    }, {
-      key: 'computeXMinMax',
-      value: function computeXMinMax() {
-        return;
-      }
-    }, {
-      key: 'setData',
-      value: function setData(data) {
-
-        this.data = Object.values(data);
-        this.xdata = Object.keys(data);
-
-        this._setData();
-      }
-    }, {
-      key: '_setData',
-      value: function _setData() {
-        this.minY = Math.min.apply(Math, _toConsumableArray(this.data));
-        this.maxY = Math.max.apply(Math, _toConsumableArray(this.data));
-
-        this.checkMinMaxErrorBars();
-      }
-    }]);
-
-    return WaveformHash;
-  }(Waveform);
-
-  exports.Waveform = Waveform;
-  exports.WaveformHash = WaveformHash;
-  exports.default = Waveform;
-});
-
-/***/ }),
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10201,7 +10268,7 @@ module.exports = function (it, TYPE) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(102), __webpack_require__(5), __webpack_require__(73), __webpack_require__(46)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(102), __webpack_require__(5), __webpack_require__(73), __webpack_require__(34)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -11104,7 +11171,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         } else {
           line.removeAttribute('stroke-dasharray');
         }
-        line.setAttribute('fill', 'none');
+
+        if (this.getFillColor()) {
+          line.setAttribute('fill', this.getFillColor());
+        } else {
+          line.setAttribute('fill', 'none');
+        }
+
         //	line.setAttribute('shape-rendering', 'optimizeSpeed');
       }
     }, {
@@ -11517,10 +11590,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return this;
       }
     }, {
+      key: 'setFillColor',
+      value: function setFillColor(color, selectionType, applyToSelected) {
+
+        selectionType = selectionType || 'unselected';
+        this.styles[selectionType] = this.styles[selectionType] || {};
+        this.styles[selectionType].fillColor = color;
+
+        if (applyToSelected) {
+          this.setFillColor(color, 'selected');
+        }
+
+        this.styleHasChanged(selectionType);
+
+        return this;
+      }
+    }, {
       key: 'getLineColor',
       value: function getLineColor(selectionType) {
 
         return this.getStyle(selectionType).lineColor || 'black';
+      }
+    }, {
+      key: 'getFillColor',
+      value: function getFillColor(selectionType) {
+
+        return this.getStyle(selectionType).fillColor || undefined;
       }
     }, {
       key: 'isMonotoneous',
@@ -12485,7 +12580,7 @@ module.exports = function (key) {
 // true  -> Array#includes
 var toIObject = __webpack_require__(16);
 var toLength = __webpack_require__(9);
-var toAbsoluteIndex = __webpack_require__(38);
+var toAbsoluteIndex = __webpack_require__(39);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -12645,10 +12740,10 @@ module.exports = function (O, D) {
 var global = __webpack_require__(2);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(14);
-var redefineAll = __webpack_require__(44);
+var redefineAll = __webpack_require__(45);
 var meta = __webpack_require__(32);
-var forOf = __webpack_require__(43);
-var anInstance = __webpack_require__(42);
+var forOf = __webpack_require__(44);
+var anInstance = __webpack_require__(43);
 var isObject = __webpack_require__(4);
 var fails = __webpack_require__(3);
 var $iterDetect = __webpack_require__(62);
@@ -12734,7 +12829,7 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 
 var global = __webpack_require__(2);
 var hide = __webpack_require__(13);
-var uid = __webpack_require__(35);
+var uid = __webpack_require__(36);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
 var ABV = !!(global.ArrayBuffer && global.DataView);
@@ -12769,7 +12864,7 @@ module.exports = {
 "use strict";
 
 // Forced replacement prototype accessors methods
-module.exports = __webpack_require__(36) || !__webpack_require__(3)(function () {
+module.exports = __webpack_require__(37) || !__webpack_require__(3)(function () {
   var K = Math.random();
   // In FF throws only define methods
   // eslint-disable-next-line no-undef, no-useless-call
@@ -12807,7 +12902,7 @@ module.exports = function (COLLECTION) {
 var $export = __webpack_require__(0);
 var aFunction = __webpack_require__(11);
 var ctx = __webpack_require__(19);
-var forOf = __webpack_require__(43);
+var forOf = __webpack_require__(44);
 
 module.exports = function (COLLECTION) {
   $export($export.S, COLLECTION, { from: function from(source /* , mapFn, thisArg */) {
@@ -12838,7 +12933,7 @@ module.exports = function (COLLECTION) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(56), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(56), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -15129,7 +15224,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(56), __webpack_require__(5), __webpack_require__(46)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(56), __webpack_require__(5), __webpack_require__(34)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -16221,7 +16316,7 @@ module.exports = function (it) {
 
 var global = __webpack_require__(2);
 var core = __webpack_require__(22);
-var LIBRARY = __webpack_require__(36);
+var LIBRARY = __webpack_require__(37);
 var wksExt = __webpack_require__(106);
 var defineProperty = __webpack_require__(8).f;
 module.exports = function (name) {
@@ -16235,7 +16330,7 @@ module.exports = function (name) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var shared = __webpack_require__(57)('keys');
-var uid = __webpack_require__(35);
+var uid = __webpack_require__(36);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -16388,7 +16483,7 @@ module.exports = function (TO_STRING) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(36);
+var LIBRARY = __webpack_require__(37);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(14);
 var hide = __webpack_require__(13);
@@ -16465,8 +16560,8 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 "use strict";
 
-var create = __webpack_require__(39);
-var descriptor = __webpack_require__(34);
+var create = __webpack_require__(40);
+var descriptor = __webpack_require__(35);
 var setToStringTag = __webpack_require__(47);
 var IteratorPrototype = {};
 
@@ -16532,7 +16627,7 @@ module.exports = function (it) {
 "use strict";
 
 var $defineProperty = __webpack_require__(8);
-var createDesc = __webpack_require__(34);
+var createDesc = __webpack_require__(35);
 
 module.exports = function (object, index, value) {
   if (index in object) $defineProperty.f(object, index, createDesc(0, value));
@@ -16574,7 +16669,7 @@ module.exports = function (original, length) {
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
 var toObject = __webpack_require__(10);
-var toAbsoluteIndex = __webpack_require__(38);
+var toAbsoluteIndex = __webpack_require__(39);
 var toLength = __webpack_require__(9);
 module.exports = function fill(value /* , start = 0, end = @length */) {
   var O = toObject(this);
@@ -16826,16 +16921,16 @@ module.exports.f = function (C) {
 
 var global = __webpack_require__(2);
 var DESCRIPTORS = __webpack_require__(7);
-var LIBRARY = __webpack_require__(36);
+var LIBRARY = __webpack_require__(37);
 var $typed = __webpack_require__(67);
 var hide = __webpack_require__(13);
-var redefineAll = __webpack_require__(44);
+var redefineAll = __webpack_require__(45);
 var fails = __webpack_require__(3);
-var anInstance = __webpack_require__(42);
+var anInstance = __webpack_require__(43);
 var toInteger = __webpack_require__(25);
 var toLength = __webpack_require__(9);
 var toIndex = __webpack_require__(131);
-var gOPN = __webpack_require__(40).f;
+var gOPN = __webpack_require__(41).f;
 var dP = __webpack_require__(8).f;
 var arrayFill = __webpack_require__(94);
 var setToStringTag = __webpack_require__(47);
@@ -18487,7 +18582,7 @@ module.exports = function (object, names) {
 
 var dP = __webpack_require__(8);
 var anObject = __webpack_require__(1);
-var getKeys = __webpack_require__(37);
+var getKeys = __webpack_require__(38);
 
 module.exports = __webpack_require__(7) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -18506,7 +18601,7 @@ module.exports = __webpack_require__(7) ? Object.defineProperties : function def
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 var toIObject = __webpack_require__(16);
-var gOPN = __webpack_require__(40).f;
+var gOPN = __webpack_require__(41).f;
 var toString = {}.toString;
 
 var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
@@ -18532,7 +18627,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 "use strict";
 
 // 19.1.2.1 Object.assign(target, source, ...)
-var getKeys = __webpack_require__(37);
+var getKeys = __webpack_require__(38);
 var gOPS = __webpack_require__(59);
 var pIE = __webpack_require__(53);
 var toObject = __webpack_require__(10);
@@ -18771,7 +18866,7 @@ module.exports = function (that, callbackfn, aLen, memo, isRight) {
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
 var toObject = __webpack_require__(10);
-var toAbsoluteIndex = __webpack_require__(38);
+var toAbsoluteIndex = __webpack_require__(39);
 var toLength = __webpack_require__(9);
 
 module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /* = 0, end = @length */) {
@@ -18880,14 +18975,14 @@ module.exports = __webpack_require__(66)(MAP, function (get) {
 "use strict";
 
 var dP = __webpack_require__(8).f;
-var create = __webpack_require__(39);
-var redefineAll = __webpack_require__(44);
+var create = __webpack_require__(40);
+var redefineAll = __webpack_require__(45);
 var ctx = __webpack_require__(19);
-var anInstance = __webpack_require__(42);
-var forOf = __webpack_require__(43);
+var anInstance = __webpack_require__(43);
+var forOf = __webpack_require__(44);
 var $iterDefine = __webpack_require__(86);
 var step = __webpack_require__(122);
-var setSpecies = __webpack_require__(41);
+var setSpecies = __webpack_require__(42);
 var DESCRIPTORS = __webpack_require__(7);
 var fastKey = __webpack_require__(32).fastKey;
 var validate = __webpack_require__(50);
@@ -19117,12 +19212,12 @@ if (fails(function () { return new $WeakMap().set((Object.freeze || Object)(tmp)
 
 "use strict";
 
-var redefineAll = __webpack_require__(44);
+var redefineAll = __webpack_require__(45);
 var getWeak = __webpack_require__(32).getWeak;
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(4);
-var anInstance = __webpack_require__(42);
-var forOf = __webpack_require__(43);
+var anInstance = __webpack_require__(43);
+var forOf = __webpack_require__(44);
 var createArrayMethod = __webpack_require__(27);
 var $has = __webpack_require__(12);
 var validate = __webpack_require__(50);
@@ -19224,7 +19319,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // all object keys, includes non-enumerable and symbols
-var gOPN = __webpack_require__(40);
+var gOPN = __webpack_require__(41);
 var gOPS = __webpack_require__(59);
 var anObject = __webpack_require__(1);
 var Reflect = __webpack_require__(2).Reflect;
@@ -19307,7 +19402,7 @@ module.exports = function (that, maxLength, fillString, left) {
 /* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getKeys = __webpack_require__(37);
+var getKeys = __webpack_require__(38);
 var toIObject = __webpack_require__(16);
 var isEnum = __webpack_require__(53).f;
 module.exports = function (isEntries) {
@@ -19344,7 +19439,7 @@ module.exports = function (NAME) {
 /* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var forOf = __webpack_require__(43);
+var forOf = __webpack_require__(44);
 
 module.exports = function (iter, ITERATOR) {
   var result = [];
@@ -20563,7 +20658,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(72), __webpack_require__(46), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(72), __webpack_require__(34), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -21726,7 +21821,7 @@ var META = __webpack_require__(32).KEY;
 var $fails = __webpack_require__(3);
 var shared = __webpack_require__(57);
 var setToStringTag = __webpack_require__(47);
-var uid = __webpack_require__(35);
+var uid = __webpack_require__(36);
 var wks = __webpack_require__(6);
 var wksExt = __webpack_require__(106);
 var wksDefine = __webpack_require__(75);
@@ -21736,12 +21831,12 @@ var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(4);
 var toIObject = __webpack_require__(16);
 var toPrimitive = __webpack_require__(23);
-var createDesc = __webpack_require__(34);
-var _create = __webpack_require__(39);
+var createDesc = __webpack_require__(35);
+var _create = __webpack_require__(40);
 var gOPNExt = __webpack_require__(109);
 var $GOPD = __webpack_require__(17);
 var $DP = __webpack_require__(8);
-var $keys = __webpack_require__(37);
+var $keys = __webpack_require__(38);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
 var gOPN = gOPNExt.f;
@@ -21864,11 +21959,11 @@ if (!USE_NATIVE) {
 
   $GOPD.f = $getOwnPropertyDescriptor;
   $DP.f = $defineProperty;
-  __webpack_require__(40).f = gOPNExt.f = $getOwnPropertyNames;
+  __webpack_require__(41).f = gOPNExt.f = $getOwnPropertyNames;
   __webpack_require__(53).f = $propertyIsEnumerable;
   __webpack_require__(59).f = $getOwnPropertySymbols;
 
-  if (DESCRIPTORS && !__webpack_require__(36)) {
+  if (DESCRIPTORS && !__webpack_require__(37)) {
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 
@@ -21956,7 +22051,7 @@ setToStringTag(global.JSON, 'JSON', true);
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(37);
+var getKeys = __webpack_require__(38);
 var gOPS = __webpack_require__(59);
 var pIE = __webpack_require__(53);
 module.exports = function (it) {
@@ -21978,7 +22073,7 @@ module.exports = function (it) {
 
 var $export = __webpack_require__(0);
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-$export($export.S, 'Object', { create: __webpack_require__(39) });
+$export($export.S, 'Object', { create: __webpack_require__(40) });
 
 
 /***/ }),
@@ -22035,7 +22130,7 @@ __webpack_require__(26)('getPrototypeOf', function () {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(10);
-var $keys = __webpack_require__(37);
+var $keys = __webpack_require__(38);
 
 __webpack_require__(26)('keys', function () {
   return function keys(it) {
@@ -22281,7 +22376,7 @@ var cof = __webpack_require__(20);
 var inheritIfRequired = __webpack_require__(81);
 var toPrimitive = __webpack_require__(23);
 var fails = __webpack_require__(3);
-var gOPN = __webpack_require__(40).f;
+var gOPN = __webpack_require__(41).f;
 var gOPD = __webpack_require__(17).f;
 var dP = __webpack_require__(8).f;
 var $trim = __webpack_require__(48).trim;
@@ -22290,7 +22385,7 @@ var $Number = global[NUMBER];
 var Base = $Number;
 var proto = $Number.prototype;
 // Opera ~12 has broken Object#toString
-var BROKEN_COF = cof(__webpack_require__(39)(proto)) == NUMBER;
+var BROKEN_COF = cof(__webpack_require__(40)(proto)) == NUMBER;
 var TRIM = 'trim' in String.prototype;
 
 // 7.1.3 ToNumber(argument)
@@ -22878,7 +22973,7 @@ $export($export.S, 'Math', {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var toAbsoluteIndex = __webpack_require__(38);
+var toAbsoluteIndex = __webpack_require__(39);
 var fromCharCode = String.fromCharCode;
 var $fromCodePoint = String.fromCodePoint;
 
@@ -23477,7 +23572,7 @@ $export($export.P + $export.F * (__webpack_require__(52) != Object || !__webpack
 var $export = __webpack_require__(0);
 var html = __webpack_require__(78);
 var cof = __webpack_require__(20);
-var toAbsoluteIndex = __webpack_require__(38);
+var toAbsoluteIndex = __webpack_require__(39);
 var toLength = __webpack_require__(9);
 var arraySlice = [].slice;
 
@@ -23796,7 +23891,7 @@ __webpack_require__(33)(KEY);
 /* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(41)('Array');
+__webpack_require__(42)('Array');
 
 
 /***/ }),
@@ -23806,7 +23901,7 @@ __webpack_require__(41)('Array');
 var global = __webpack_require__(2);
 var inheritIfRequired = __webpack_require__(81);
 var dP = __webpack_require__(8).f;
-var gOPN = __webpack_require__(40).f;
+var gOPN = __webpack_require__(41).f;
 var isRegExp = __webpack_require__(61);
 var $flags = __webpack_require__(63);
 var $RegExp = global.RegExp;
@@ -23845,7 +23940,7 @@ if (__webpack_require__(7) && (!CORRECT_NEW || __webpack_require__(3)(function (
   __webpack_require__(14)(global, 'RegExp', $RegExp);
 }
 
-__webpack_require__(41)('RegExp');
+__webpack_require__(42)('RegExp');
 
 
 /***/ }),
@@ -24013,15 +24108,15 @@ __webpack_require__(64)('split', 2, function (defined, SPLIT, $split) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(36);
+var LIBRARY = __webpack_require__(37);
 var global = __webpack_require__(2);
 var ctx = __webpack_require__(19);
 var classof = __webpack_require__(54);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(4);
 var aFunction = __webpack_require__(11);
-var anInstance = __webpack_require__(42);
-var forOf = __webpack_require__(43);
+var anInstance = __webpack_require__(43);
+var forOf = __webpack_require__(44);
 var speciesConstructor = __webpack_require__(65);
 var task = __webpack_require__(96).set;
 var microtask = __webpack_require__(97)();
@@ -24190,7 +24285,7 @@ if (!USE_NATIVE) {
     this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
     this._n = false;          // <- notify
   };
-  Internal.prototype = __webpack_require__(44)($Promise.prototype, {
+  Internal.prototype = __webpack_require__(45)($Promise.prototype, {
     // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
     then: function then(onFulfilled, onRejected) {
       var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
@@ -24222,7 +24317,7 @@ if (!USE_NATIVE) {
 
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
 __webpack_require__(47)($Promise, PROMISE);
-__webpack_require__(41)(PROMISE);
+__webpack_require__(42)(PROMISE);
 Wrapper = __webpack_require__(22)[PROMISE];
 
 // statics
@@ -24318,7 +24413,7 @@ var $export = __webpack_require__(0);
 var $typed = __webpack_require__(67);
 var buffer = __webpack_require__(99);
 var anObject = __webpack_require__(1);
-var toAbsoluteIndex = __webpack_require__(38);
+var toAbsoluteIndex = __webpack_require__(39);
 var toLength = __webpack_require__(9);
 var isObject = __webpack_require__(4);
 var ArrayBuffer = __webpack_require__(2).ArrayBuffer;
@@ -24358,7 +24453,7 @@ $export($export.P + $export.U + $export.F * __webpack_require__(3)(function () {
   }
 });
 
-__webpack_require__(41)(ARRAY_BUFFER);
+__webpack_require__(42)(ARRAY_BUFFER);
 
 
 /***/ }),
@@ -24498,7 +24593,7 @@ $export($export.S + $export.F * !__webpack_require__(3)(function () {
 
 // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
 var $export = __webpack_require__(0);
-var create = __webpack_require__(39);
+var create = __webpack_require__(40);
 var aFunction = __webpack_require__(11);
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(4);
@@ -24756,7 +24851,7 @@ var gOPD = __webpack_require__(17);
 var getPrototypeOf = __webpack_require__(18);
 var has = __webpack_require__(12);
 var $export = __webpack_require__(0);
-var createDesc = __webpack_require__(34);
+var createDesc = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(4);
 
@@ -25708,10 +25803,10 @@ var microtask = __webpack_require__(97)();
 var OBSERVABLE = __webpack_require__(6)('observable');
 var aFunction = __webpack_require__(11);
 var anObject = __webpack_require__(1);
-var anInstance = __webpack_require__(42);
-var redefineAll = __webpack_require__(44);
+var anInstance = __webpack_require__(43);
+var redefineAll = __webpack_require__(45);
 var hide = __webpack_require__(13);
-var forOf = __webpack_require__(43);
+var forOf = __webpack_require__(44);
 var RETURN = forOf.RETURN;
 
 var getMethod = function (fn) {
@@ -25897,7 +25992,7 @@ hide($Observable.prototype, OBSERVABLE, function () { return this; });
 
 $export($export.G, { Observable: $Observable });
 
-__webpack_require__(41)('Observable');
+__webpack_require__(42)('Observable');
 
 
 /***/ }),
@@ -25943,7 +26038,7 @@ $export($export.G + $export.B, {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $iterators = __webpack_require__(95);
-var getKeys = __webpack_require__(37);
+var getKeys = __webpack_require__(38);
 var redefine = __webpack_require__(14);
 var global = __webpack_require__(2);
 var hide = __webpack_require__(13);
@@ -26784,7 +26879,7 @@ module.exports = function (regExp, replace) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(55), __webpack_require__(348), __webpack_require__(101), __webpack_require__(140), __webpack_require__(349), __webpack_require__(350), __webpack_require__(51), __webpack_require__(351), __webpack_require__(352), __webpack_require__(353), __webpack_require__(354), __webpack_require__(102), __webpack_require__(142), __webpack_require__(355), __webpack_require__(356), __webpack_require__(357), __webpack_require__(28), __webpack_require__(358), __webpack_require__(359), __webpack_require__(377), __webpack_require__(360), __webpack_require__(361), __webpack_require__(103), __webpack_require__(362), __webpack_require__(363), __webpack_require__(143), __webpack_require__(364), __webpack_require__(365), __webpack_require__(366), __webpack_require__(29), __webpack_require__(367), __webpack_require__(368), __webpack_require__(369), __webpack_require__(370), __webpack_require__(371), __webpack_require__(373), __webpack_require__(374), __webpack_require__(375), __webpack_require__(376), __webpack_require__(46), __webpack_require__(139)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(55), __webpack_require__(348), __webpack_require__(101), __webpack_require__(140), __webpack_require__(349), __webpack_require__(350), __webpack_require__(51), __webpack_require__(351), __webpack_require__(352), __webpack_require__(353), __webpack_require__(354), __webpack_require__(102), __webpack_require__(142), __webpack_require__(355), __webpack_require__(356), __webpack_require__(357), __webpack_require__(28), __webpack_require__(358), __webpack_require__(359), __webpack_require__(377), __webpack_require__(360), __webpack_require__(361), __webpack_require__(103), __webpack_require__(362), __webpack_require__(363), __webpack_require__(143), __webpack_require__(364), __webpack_require__(365), __webpack_require__(366), __webpack_require__(29), __webpack_require__(367), __webpack_require__(368), __webpack_require__(369), __webpack_require__(370), __webpack_require__(371), __webpack_require__(373), __webpack_require__(374), __webpack_require__(375), __webpack_require__(376), __webpack_require__(34), __webpack_require__(139)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -29097,7 +29192,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(51), __webpack_require__(46), __webpack_require__(141), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(51), __webpack_require__(34), __webpack_require__(141), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -30743,7 +30838,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(142), __webpack_require__(46), __webpack_require__(141), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(142), __webpack_require__(34), __webpack_require__(141), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -35545,7 +35640,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(372), __webpack_require__(29), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(372), __webpack_require__(29), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -36326,20 +36421,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(29)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(29), __webpack_require__(34)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.plugin.js'));
+    factory(module, exports, require('./graph.plugin.js'), require('../util/waveform.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphPlugin);
+    factory(mod, mod.exports, global.graphPlugin, global.waveform);
     global.graphPluginSerielinedifference = mod.exports;
   }
-})(this, function (module, exports, _graphPlugin) {
+})(this, function (module, exports, _graphPlugin, _waveform) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -36416,6 +36511,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function init(graph, options) {
         this.graph = graph;
 
+        this.series = [];
         this.pathsPositive = [];
         this.pathsNegative = [];
 
@@ -36452,245 +36548,111 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'draw',
       value: function draw() {
+        var _this2 = this;
 
         var self = this;
-        var s1 = this.serie1.searchClosestValue(this.getFrom());
-        var i1, j1, i2, j2, y, y2, crossing;
 
-        var top = [];
-        var bottom = [];
+        var w1 = this.serie1.getWaveform();
+        var w2 = this.serie2.getWaveform();
 
-        var bottomBroken;
+        var wFinal = w1.duplicate(true).subtract(w2).add(w2);
+        var wFinal2 = w1.duplicate(true).subtract(w1.duplicate(true).subtract(w2));
 
-        if (!s1) {
-          i1 = 0;
-          j1 = 0;
-        } else {
+        var chunks = [];
+        var currentChunk = void 0;
 
-          i1 = s1.dataIndex;
-          j1 = s1.xAfterIndex * 2;
-        }
+        var newChunk = function newChunk() {
+          var force = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-        y = this.interpolate(this.serie1, this.getFrom());
-        top.push(this.getFrom()); // x
-        top.push(y); // y
 
-        y = this.interpolate(this.serie2, this.getFrom());
-        bottom.push(this.getFrom()); // x
-        bottom.push(y); // y
+          if (!force) {
+            if (currentChunk.wave1.length == 0 && currentChunk.wave2.length == 0) {
+              return;
+            }
+          }
+          currentChunk = { above: undefined, wave1: [], wave2: [] };
+          chunks.push(currentChunk);
+        };
 
-        var s2;
+        newChunk(true);
 
-        var order;
+        var currentlyAbove = true;
 
-        function nextSet() {
+        for (var i = 0; i < wFinal.getLength(); i++) {
 
-          if (order === true) {
-            self.pathsPositive.push([top, bottom]);
-          } else if (order === false) {
-            self.pathsNegative.push([top, bottom]);
+          if (isNaN(wFinal.getY(i)) || isNaN(wFinal2.getY(i))) {
+            newChunk();
+            continue;
           }
 
-          top = [];
-          bottom = [];
-          order = undefined;
-        }
-        var ended;
-        for (; i1 < this.serie1.data.length; i1++) {
+          if (i > 0 && currentChunk.wave1.length > 0) {
 
-          for (; j1 < this.serie1.data[i1].length; j1 += 2) {
+            if (wFinal.getY(i) > wFinal2.getY(i) && !currentChunk.above) {
 
-            if (this.serie1.data[i1][j1] > this.getTo()) {
-              // FINISHED !
-
-              y = this.interpolate(this.serie1, this.getTo());
-              y2 = this.interpolate(this.serie2, this.getTo());
-
-              crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.getTo(), y, bottom[bottom.length - 2], bottom[bottom.length - 1], this.getTo(), y2);
-
-              if (crossing) {
-
-                top.push(crossing.x);
-                top.push(crossing.y);
-                bottom.push(crossing.x);
-                bottom.push(crossing.y);
-                nextSet();
-                top.push(crossing.x);
-                top.push(crossing.y);
-                bottom.push(crossing.x);
-                bottom.push(crossing.y);
-
-                order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-              }
-
-              top.push(this.getTo()); // x
-              top.push(y); // y
-
-              bottom.push(this.getTo()); // x
-              bottom.push(y2); // y
-
-              ended = true;
-              break;
+              var crossing = this.computeCrossing(wFinal.getX(i - 1), wFinal.getY(i - 1), wFinal.getX(i), wFinal.getY(i), wFinal2.getX(i - 1), wFinal2.getY(i - 1), wFinal2.getX(i), wFinal2.getY(i));
+              currentChunk.wave1.push([crossing.x, crossing.y]);
+              newChunk();
+              currentChunk.wave1.push([crossing.x, crossing.y]);
+              currentChunk.above = true;
             }
 
-            if (!s2) {
-              s2 = this.serie2.searchClosestValue(this.serie1.data[i1][j1]); // Finds the first point
+            if (wFinal.getY(i) < wFinal2.getY(i) && currentChunk.above) {
 
-              if (s2) {
-                i2 = s2.dataIndex;
-                j2 = s2.xBeforeIndex * 2;
-
-                // TODO: Add here first points
-
-                y = this.interpolate(this.serie2, this.serie1.data[i1][j1]);
-
-                top.push(this.serie1.data[i1][j1]); // x
-                top.push(this.serie1.data[i1][j1 + 1]); // y
-
-                bottom.push(this.serie1.data[i1][j1]); // x
-                bottom.push(y); // y
-
-                order = this.serie1.data[i1][j1 + 1] > y;
-              } else {
-                continue;
-              }
-            }
-
-            bottomBroken = false;
-
-            crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
-
-            if (crossing) {
-
-              top.push(crossing.x);
-              top.push(crossing.y);
-              bottom.push(crossing.x);
-              bottom.push(crossing.y);
-              nextSet();
-              top.push(crossing.x);
-              top.push(crossing.y);
-              bottom.push(crossing.x);
-              bottom.push(crossing.y);
-
-              order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-            }
-
-            while (this.serie2.data[i2][j2] < this.serie1.data[i1][j1]) {
-
-              bottom.push(this.serie2.data[i2][j2]);
-              bottom.push(this.serie2.data[i2][j2 + 1]);
-
-              j2 += 2;
-              if (j2 == this.serie2.data[i2].length) {
-                bottomBroken = this.serie2.data[i2][j2 - 2];
-                i2++;
-                j2 = 0;
-                break;
-              }
-
-              crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
-
-              if (crossing) {
-
-                top.push(crossing.x);
-                top.push(crossing.y);
-                bottom.push(crossing.x);
-                bottom.push(crossing.y);
-                nextSet();
-                top.push(crossing.x);
-                top.push(crossing.y);
-                bottom.push(crossing.x);
-                bottom.push(crossing.y);
-
-                order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-              }
-            }
-
-            if (bottomBroken === false) {
-              top.push(this.serie1.data[i1][j1]);
-              top.push(this.serie1.data[i1][j1 + 1]);
-            } else {
-
-              top.push(bottomBroken);
-              top.push(this.interpolate(this.serie1, bottomBroken));
-
-              s2 = false;
-              j1 -= 2;
-              nextSet();
+              var _crossing = this.computeCrossing(wFinal.getX(i - 1), wFinal.getY(i - 1), wFinal.getX(i), wFinal.getY(i), wFinal2.getX(i - 1), wFinal2.getY(i - 1), wFinal2.getX(i), wFinal2.getY(i));
+              currentChunk.wave1.push([_crossing.x, _crossing.y]);
+              newChunk();
+              currentChunk.wave1.push([_crossing.x, _crossing.y]);
+              currentChunk.above = false;
             }
           }
 
-          if (ended) {
-            nextSet();
-            break;
-          }
-          // End of X
-
-          y = this.interpolate(this.serie2, top[top.length - 2]);
-          if (y) {
-            bottom.push(top[top.length - 2]);
-            bottom.push(y);
+          if (currentChunk.wave1.length == 0) {
+            currentChunk.above = wFinal.getY(i) > wFinal2.getY(1);
           }
 
-          nextSet();
-
-          j1 = 0;
-          s2 = false;
+          currentChunk.wave1.push([wFinal.getX(i), wFinal.getY(i)]);
+          currentChunk.wave2.push([wFinal2.getX(i), wFinal2.getY(i)]);
         }
 
-        var d = this.pathsPositive.reduce(makePaths, '');
-        this.positivePolyline.setPointsPx(d).redraw();
+        this.series.forEach(function (serie) {
+          return serie.kill();
+        });
 
-        var d = this.pathsNegative.reduce(makePaths, '');
-        this.negativePolyline.setPointsPx(d).redraw();
+        this.series = chunks.forEach(function (chunk, index) {
 
-        //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
+          var serie = _this2.graph.newSerie("__graph_serielinedifference_" + _this2.serie1.getName() + "_" + _this2.serie2.getName() + "_" + index);
+          var wave = new _waveform.Waveform();
 
-        function makePaths(d, path) {
+          wave.setData(chunk.wave1.map(function (el) {
+            return el[1];
+          }).concat(chunk.wave2.reverse().map(function (el) {
+            return el[1];
+          })), chunk.wave1.map(function (el) {
+            return el[0];
+          }).concat(chunk.wave2.map(function (el) {
+            return el[0];
+          })));
 
-          for (var i = 0; i < path[0].length; i += 2) {
-            if (i == 0) {
-              d += 'M ';
-            }
-            d += ' ' + Math.round(self.serie1.getXAxis().getPx(path[0][i])) + ', ' + Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]));
-            if (i < path[0].length - 2) {
-              d += ' L ';
-            }
+          if (chunk.wave1[0]) {
+            wave.append(chunk.wave1[0][0], chunk.wave1[0][1]);
           }
 
-          for (var i = path[1].length - 2; i >= 0; i -= 2) {
-            d += ' L ' + Math.round(self.serie2.getXAxis().getPx(path[1][i])) + ', ' + Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]));
-            if (i == 0) {
-              d += ' z ';
-            }
+          serie.setWaveform(wave);
+          serie.setXAxis(_this2.serie1.getXAxis());
+          serie.setYAxis(_this2.serie1.getYAxis());
+
+          if (chunk.above) {
+            serie.setFillColor(_this2.options.positiveStyle.fillColor);
+          } else {
+            serie.setFillColor(_this2.options.negativeStyle.fillColor);
           }
-          return d;
-        }
-      }
-    }, {
-      key: 'interpolate',
-      value: function interpolate(serie, valX) {
-
-        var value = serie.searchClosestValue(valX);
-
-        if (!value) {
-          return false;
-        }
-
-        if (value.xMax == undefined) {
-          return value.yMin;
-        }
-
-        if (value.xMin == undefined) {
-          return value.yMax;
-        }
-
-        var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-        return (1 - ratio) * value.yMin + ratio * value.yMax;
+          console.log(_this2.options);
+        });
       }
     }, {
       key: 'computeCrossing',
       value: function computeCrossing(x11, y11, x12, y12, x21, y21, x22, y22) {
+
         var a1 = (y12 - y11) / (x12 - x11);
         var a2 = (y22 - y21) / (x22 - x21);
 
@@ -36706,7 +36668,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return {
             x: x11,
             y1: y11,
-            y2: y11
+            y2: y11,
+            y: y11
           };
         }
 
@@ -36768,7 +36731,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(45), __webpack_require__(101), __webpack_require__(140), __webpack_require__(5), __webpack_require__(51), __webpack_require__(102), __webpack_require__(29), __webpack_require__(71)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(46), __webpack_require__(101), __webpack_require__(140), __webpack_require__(5), __webpack_require__(51), __webpack_require__(102), __webpack_require__(29), __webpack_require__(71)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));

@@ -132,6 +132,7 @@ class Waveform {
     }
 
     this.xdata = waveform;
+
     this.computeXMinMax();
     return this;
   }
@@ -287,6 +288,27 @@ class Waveform {
     return this;
   }
 
+  concat( wave2 ) {
+
+    if ( !this.xdata ) {
+      this.xdata = this.getXWaveform();
+    }
+
+    if ( !wave2.xdata ) {
+      wave2.xdata = wave2.getXWaveform();
+    }
+
+    this.data = this.data.concat( wave2.data );
+    this.xdata.data = this.xdata.data.concat( wave2.xdata.data );
+
+    this.checkMonotonicity();
+    this.xdata.checkMonotonicity();
+
+    this.computeXMinMax();
+
+    return this;
+  }
+
   _makeArray( length ) {
 
     const constructor = this.getTypedArrayClass();
@@ -329,8 +351,11 @@ class Waveform {
     }
 
     this.data = dataY;
-    this.checkMinMaxErrorBars();
 
+    this.minY = minY;
+    this.maxY = maxY;
+
+    this.checkMinMaxErrorBars();
     this.computeXMinMax();
 
   }
@@ -366,7 +391,6 @@ class Waveform {
   computeXMinMax() {
 
     if ( !this.data ) {
-
       return;
     }
 
@@ -843,14 +867,18 @@ class Waveform {
 
   invert( data ) {
 
-    let d = dataY || this.data;
+    let d = data || this.data;
     d.reverse();
+
+    if ( this.xdata ) {
+      this.xdata.invert();
+    }
 
     if ( this.isMonotoneous() ) {
       this._monotoneousAscending = !this._monotoneousAscending;
     }
 
-    return d;
+    return this;
   }
 
   resampleForDisplay( options ) { // Serie redrawing
@@ -1142,35 +1170,70 @@ class Waveform {
   _waveArithmetic( wave, operation ) {
 
     let yDataThis = this.getDataY(),
-
       i = 0;
     const l = this.getLength();
     this.requireXMonotonicity();
     wave.requireXMonotonicity();
 
-    if ( operation == MULTIPLY ) {
+    if ( this.xdata && wave.xdata ) {
 
-      for ( ; i < l; i++ ) {
-        yDataThis[ i ] *= wave.interpolate( this.getX( i ) );
-      }
-    } else if ( operation == DIVIDE ) {
+      const xSet = new Set();
+      const xData = this.xdata.data;
+      const xData2 = wave.xdata.data;
 
-      for ( ; i < l; i++ ) {
-        yDataThis[ i ] /= wave.interpolate( this.getX( i ) );
+      for ( i = 0; i < xData.length; i++ ) {
+        xSet.add( xData[ i ] );
       }
-    } else if ( operation == ADD ) {
 
-      for ( ; i < l; i++ ) {
-        yDataThis[ i ] += wave.interpolate( this.getX( i ) );
+      for ( i = 0; i < xData2.length; i++ ) {
+        xSet.add( xData2[ i ] );
       }
-    } else if ( operation == SUBTRACT ) {
 
-      for ( ; i < l; i++ ) {
-        yDataThis[ i ] -= wave.interpolate( this.getX( i ) );
+      const xs = Array.from( xSet.values() ).sort();
+
+      const ys = xs.map( ( x ) => {
+
+        if ( operation == MULTIPLY ) {
+          return this.interpolate( x ) * wave.interpolate( x );
+        } else if ( operation == DIVIDE ) {
+          return this.interpolate( x ) / wave.interpolate( x );
+        } else if ( operation == ADD ) {
+          return this.interpolate( x ) + wave.interpolate( x );
+        } else if ( operation == SUBTRACT ) {
+          return this.interpolate( x ) - wave.interpolate( x );
+        }
+      } );
+
+      this._setData( ys );
+      this.xdata._setData( xs );
+
+    } else {
+
+      if ( operation == MULTIPLY ) {
+
+        for ( ; i < l; i++ ) {
+          yDataThis[ i ] *= wave.interpolate( this.getX( i ) );
+        }
+      } else if ( operation == DIVIDE ) {
+
+        for ( ; i < l; i++ ) {
+          yDataThis[ i ] /= wave.interpolate( this.getX( i ) );
+        }
+      } else if ( operation == ADD ) {
+
+        for ( ; i < l; i++ ) {
+          yDataThis[ i ] += wave.interpolate( this.getX( i ) );
+        }
+      } else if ( operation == SUBTRACT ) {
+
+        for ( ; i < l; i++ ) {
+          yDataThis[ i ] -= wave.interpolate( this.getX( i ) );
+        }
       }
+
+      this._setData( yDataThis );
     }
 
-    this._setData( yDataThis );
     return this;
   }
 
@@ -1248,8 +1311,11 @@ class Waveform {
 
     if ( this.xdata ) {
       if ( alsoDuplicateXWave ) {
+
         newWaveform.setXWaveform( this.xdata.duplicate() );
+
       } else {
+
         newWaveform.setXWaveform( this.xdata );
       }
 

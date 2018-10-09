@@ -1,4 +1,7 @@
 import Plugin from './graph.plugin.js';
+import {
+  Waveform
+} from '../util/waveform.js';
 
 /**
  * @class PluginSerieLineDifference
@@ -39,6 +42,7 @@ class PluginSerieLineDifference extends Plugin {
   init( graph, options ) {
     this.graph = graph;
 
+    this.series = [];
     this.pathsPositive = [];
     this.pathsNegative = [];
 
@@ -98,262 +102,100 @@ class PluginSerieLineDifference extends Plugin {
   draw() {
 
     var self = this;
-    var s1 = this.serie1.searchClosestValue( this.getFrom() );
-    var i1, j1, i2, j2, y, y2, crossing;
 
-    var top = [];
-    var bottom = [];
+    const w1 = this.serie1.getWaveform();
+    const w2 = this.serie2.getWaveform();
 
-    var bottomBroken;
+    const wFinal = w1.duplicate( true ).subtract( w2 ).add( w2 );
+    const wFinal2 = w1.duplicate( true ).subtract( w1.duplicate( true ).subtract( w2 ) );
 
-    if ( !s1 ) {
-      i1 = 0;
-      j1 = 0;
-    } else {
+    const chunks = [];
+    let currentChunk;
 
-      i1 = s1.dataIndex;
-      j1 = s1.xAfterIndex * 2;
+    var newChunk = ( force = false ) => {
+
+      if ( !force ) {
+        if ( currentChunk.wave1.length == 0 && currentChunk.wave2.length == 0 ) {
+          return;
+        }
+      }
+      currentChunk = {
+        above: undefined,
+        wave1: [],
+        wave2: []
+      };
+      chunks.push( currentChunk );
     }
 
-    y = this.interpolate( this.serie1, this.getFrom() );
-    top.push( this.getFrom() ); // x
-    top.push( y ); // y
+    newChunk( true );
 
-    y = this.interpolate( this.serie2, this.getFrom() );
-    bottom.push( this.getFrom() ); // x
-    bottom.push( y ); // y
+    let currentlyAbove = true;
 
-    var s2;
+    for ( var i = 0; i < wFinal.getLength(); i++ ) {
 
-    var order;
-
-    function nextSet() {
-
-      if ( order === true ) {
-        self.pathsPositive.push( [ top, bottom ] );
-      } else if ( order === false ) {
-        self.pathsNegative.push( [ top, bottom ] );
+      if ( isNaN( wFinal.getY( i ) ) || isNaN( wFinal2.getY( i ) ) ) {
+        newChunk();
+        continue;
       }
 
-      top = [];
-      bottom = [];
-      order = undefined;
-    }
-    var ended;
-    for ( ; i1 < this.serie1.data.length; i1++ ) {
+      if ( i > 0 && currentChunk.wave1.length > 0 ) {
 
-      for ( ; j1 < this.serie1.data[ i1 ].length; j1 += 2 ) {
+        if ( ( wFinal.getY( i ) > wFinal2.getY( i ) && !currentChunk.above ) ) {
 
-        if ( this.serie1.data[ i1 ][ j1 ] > this.getTo() ) { // FINISHED !
-
-          y = this.interpolate( this.serie1, this.getTo() );
-          y2 = this.interpolate( this.serie2, this.getTo() );
-
-          crossing = this.computeCrossing(
-            top[ top.length - 2 ], top[ top.length - 1 ],
-            this.getTo(), y,
-            bottom[ bottom.length - 2 ], bottom[ bottom.length - 1 ],
-            this.getTo(), y2
-          );
-
-          if ( crossing ) {
-
-            top.push( crossing.x );
-            top.push( crossing.y );
-            bottom.push( crossing.x );
-            bottom.push( crossing.y );
-            nextSet();
-            top.push( crossing.x );
-            top.push( crossing.y );
-            bottom.push( crossing.x );
-            bottom.push( crossing.y );
-
-            order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
-          }
-
-          top.push( this.getTo() ); // x
-          top.push( y ); // y
-
-          bottom.push( this.getTo() ); // x
-          bottom.push( y2 ); // y
-
-          ended = true;
-          break;
+          const crossing = this.computeCrossing( wFinal.getX( i - 1 ), wFinal.getY( i - 1 ), wFinal.getX( i ), wFinal.getY( i ), wFinal2.getX( i - 1 ), wFinal2.getY( i - 1 ), wFinal2.getX( i ), wFinal2.getY( i ) );
+          currentChunk.wave1.push( [ crossing.x, crossing.y ] );
+          newChunk();
+          currentChunk.wave1.push( [ crossing.x, crossing.y ] );
+          currentChunk.above = true;
         }
 
-        if ( !s2 ) {
-          s2 = this.serie2.searchClosestValue( this.serie1.data[ i1 ][ j1 ] ); // Finds the first point
+        if ( ( wFinal.getY( i ) < wFinal2.getY( i ) && currentChunk.above ) ) {
 
-          if ( s2 ) {
-            i2 = s2.dataIndex;
-            j2 = s2.xBeforeIndex * 2;
+          const crossing = this.computeCrossing( wFinal.getX( i - 1 ), wFinal.getY( i - 1 ), wFinal.getX( i ), wFinal.getY( i ), wFinal2.getX( i - 1 ), wFinal2.getY( i - 1 ), wFinal2.getX( i ), wFinal2.getY( i ) );
+          currentChunk.wave1.push( [ crossing.x, crossing.y ] );
+          newChunk()
+          currentChunk.wave1.push( [ crossing.x, crossing.y ] );
+          currentChunk.above = false;
 
-            // TODO: Add here first points
-
-            y = this.interpolate( this.serie2, this.serie1.data[ i1 ][ j1 ] );
-
-            top.push( this.serie1.data[ i1 ][ j1 ] ); // x
-            top.push( this.serie1.data[ i1 ][ j1 + 1 ] ); // y
-
-            bottom.push( this.serie1.data[ i1 ][ j1 ] ); // x
-            bottom.push( y ); // y
-
-            order = this.serie1.data[ i1 ][ j1 + 1 ] > y;
-
-          } else {
-            continue;
-          }
-        }
-
-        bottomBroken = false;
-
-        crossing = this.computeCrossing(
-          top[ top.length - 2 ], top[ top.length - 1 ],
-          this.serie1.data[ i1 ][ j1 ], this.serie1.data[ i1 ][ j1 + 1 ],
-          bottom[ bottom.length - 2 ], bottom[ bottom.length - 1 ],
-          this.serie2.data[ i2 ][ j2 ], this.serie2.data[ i2 ][ j2 + 1 ]
-        );
-
-        if ( crossing ) {
-
-          top.push( crossing.x );
-          top.push( crossing.y );
-          bottom.push( crossing.x );
-          bottom.push( crossing.y );
-          nextSet();
-          top.push( crossing.x );
-          top.push( crossing.y );
-          bottom.push( crossing.x );
-          bottom.push( crossing.y );
-
-          order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
-        }
-
-        while ( this.serie2.data[ i2 ][ j2 ] < this.serie1.data[ i1 ][ j1 ] ) {
-
-          bottom.push( this.serie2.data[ i2 ][ j2 ] );
-          bottom.push( this.serie2.data[ i2 ][ j2 + 1 ] );
-
-          j2 += 2;
-          if ( j2 == this.serie2.data[ i2 ].length ) {
-            bottomBroken = this.serie2.data[ i2 ][ j2 - 2 ];
-            i2++;
-            j2 = 0;
-            break;
-          }
-
-          crossing = this.computeCrossing(
-            top[ top.length - 2 ], top[ top.length - 1 ],
-            this.serie1.data[ i1 ][ j1 ], this.serie1.data[ i1 ][ j1 + 1 ],
-            bottom[ bottom.length - 2 ], bottom[ bottom.length - 1 ],
-            this.serie2.data[ i2 ][ j2 ], this.serie2.data[ i2 ][ j2 + 1 ]
-          );
-
-          if ( crossing ) {
-
-            top.push( crossing.x );
-            top.push( crossing.y );
-            bottom.push( crossing.x );
-            bottom.push( crossing.y );
-            nextSet();
-            top.push( crossing.x );
-            top.push( crossing.y );
-            bottom.push( crossing.x );
-            bottom.push( crossing.y );
-
-            order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
-          }
-
-        }
-
-        if ( bottomBroken === false ) {
-          top.push( this.serie1.data[ i1 ][ j1 ] );
-          top.push( this.serie1.data[ i1 ][ j1 + 1 ] );
-        } else {
-
-          top.push( bottomBroken );
-          top.push( this.interpolate( this.serie1, bottomBroken ) );
-
-          s2 = false;
-          j1 -= 2;
-          nextSet();
-        }
-
-      }
-
-      if ( ended ) {
-        nextSet();
-        break;
-      }
-      // End of X
-
-      y = this.interpolate( this.serie2, top[ top.length - 2 ] );
-      if ( y ) {
-        bottom.push( top[ top.length - 2 ] );
-        bottom.push( y );
-      }
-
-      nextSet();
-
-      j1 = 0;
-      s2 = false;
-    }
-
-    var d = this.pathsPositive.reduce( makePaths, '' );
-    this.positivePolyline.setPointsPx( d ).redraw();
-
-    var d = this.pathsNegative.reduce( makePaths, '' );
-    this.negativePolyline.setPointsPx( d ).redraw();
-
-    //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
-
-    function makePaths( d, path ) {
-
-      for ( var i = 0; i < path[ 0 ].length; i += 2 ) {
-        if ( i == 0 ) {
-          d += 'M ';
-        }
-        d += ' ' + Math.round( self.serie1.getXAxis().getPx( path[ 0 ][ i ] ) ) + ', ' + Math.round( self.serie1.getYAxis().getPx( path[ 0 ][ i + 1 ] ) );
-        if ( i < path[ 0 ].length - 2 ) {
-          d += ' L ';
         }
       }
 
-      for ( var i = path[ 1 ].length - 2; i >= 0; i -= 2 ) {
-        d += ' L ' + Math.round( self.serie2.getXAxis().getPx( path[ 1 ][ i ] ) ) + ', ' + Math.round( self.serie2.getYAxis().getPx( path[ 1 ][ i + 1 ] ) );
-        if ( i == 0 ) {
-          d += ' z ';
-        }
+      if ( currentChunk.wave1.length == 0 ) {
+        currentChunk.above = wFinal.getY( i ) > wFinal2.getY( 1 );
       }
-      return d;
+
+      currentChunk.wave1.push( [ wFinal.getX( i ), wFinal.getY( i ) ] );
+      currentChunk.wave2.push( [ wFinal2.getX( i ), wFinal2.getY( i ) ] );
     }
 
-  }
+    this.series.forEach( serie => serie.kill() );
 
-  /**
-   * Finds the interpolated y value at point ```valX``` of the serie ```serie```
-   * @returns {(Number|Boolean)} The interpolated y value is possible, ```false``` otherwise
-   * @param {Serie} serie - The serie for which the y value should be computed
-   * @param {Number} valX - The x value
-   */
-  interpolate( serie, valX ) {
+    this.series = chunks.forEach( ( chunk, index ) => {
 
-    var value = serie.searchClosestValue( valX );
+      const serie = this.graph.newSerie( "__graph_serielinedifference_" + this.serie1.getName() + "_" + this.serie2.getName() + "_" + index );
+      const wave = new Waveform();
 
-    if ( !value ) {
-      return false;
-    }
+      wave.setData(
+        chunk.wave1.map( el => el[ 1 ] ).concat( chunk.wave2.reverse().map( el => el[ 1 ] ) ),
+        chunk.wave1.map( el => el[ 0 ] ).concat( chunk.wave2.map( el => el[ 0 ] ) )
+      );
 
-    if ( value.xMax == undefined ) {
-      return value.yMin;
-    }
+      if ( chunk.wave1[ 0 ] ) {
+        wave.append( chunk.wave1[ 0 ][ 0 ], chunk.wave1[ 0 ][ 1 ] );
+      }
 
-    if ( value.xMin == undefined ) {
-      return value.yMax;
-    }
+      serie.setWaveform( wave );
+      serie.setXAxis( this.serie1.getXAxis() );
+      serie.setYAxis( this.serie1.getYAxis() );
 
-    var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-    return ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+      if ( chunk.above ) {
+        serie.setFillColor( this.options.positiveStyle.fillColor );
+      } else {
+        serie.setFillColor( this.options.negativeStyle.fillColor );
+      }
+      console.log( this.options );
+    } );
+
   }
 
   /**
@@ -369,6 +211,7 @@ class PluginSerieLineDifference extends Plugin {
    * @param {Number} y22 - Second y point of the second vector
    */
   computeCrossing( x11, y11, x12, y12, x21, y21, x22, y22 ) {
+
     var a1 = ( y12 - y11 ) / ( x12 - x11 );
     var a2 = ( y22 - y21 ) / ( x22 - x21 );
 
@@ -384,7 +227,8 @@ class PluginSerieLineDifference extends Plugin {
       return {
         x: x11,
         y1: y11,
-        y2: y11
+        y2: y11,
+        y: y11
       };
     }
 
