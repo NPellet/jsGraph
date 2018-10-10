@@ -785,6 +785,7 @@ class SerieLine extends SerieScatter {
     }
 
     if ( this.hasErrors() ) {
+      console.log( j, x, y, xpx, ypx );
       this.errorAddPoint( j, x, y, xpx, ypx );
     }
 

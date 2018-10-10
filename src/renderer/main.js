@@ -42,7 +42,12 @@ const makeGraph = ( Graph, json, wrapper ) => {
       switch ( jsonSerie.type ) {
         case 'bar':
           data = Graph.newWaveformHash();
-          data.setData( jsonSerie.data );
+          if ( jsonSerie.data.errors ) {
+            data.setData( jsonSerie.data.values );
+          } else {
+            data.setData( jsonSerie.data );
+          }
+
           break;
 
         default:
@@ -51,6 +56,48 @@ const makeGraph = ( Graph, json, wrapper ) => {
           data = Graph.newWaveform();
           data.setData( jsonSerie.data.y, jsonSerie.data.x );
           break;
+      }
+
+      if ( jsonSerie.data.errors ) {
+        if ( jsonSerie.data.errors.xBar ) {
+          data.setErrorBarX( jsonSerie.data.errors.xBar );
+        }
+        if ( jsonSerie.data.errors.xBarAbove ) {
+          data.setErrorBarXAbove( jsonSerie.data.errors.xBarAbove );
+        }
+        if ( jsonSerie.data.errors.xBarBelow ) {
+          data.setErrorBarXBelow( jsonSerie.data.errors.xBarBelow );
+        }
+
+        if ( jsonSerie.data.errors.yBar ) {
+          data.setErrorBar( jsonSerie.data.errors.yBar );
+        }
+        if ( jsonSerie.data.errors.yBarAbove ) {
+          data.setErrorBarAbove( jsonSerie.data.errors.yBarAbove );
+        }
+        if ( jsonSerie.data.errors.yBarBelow ) {
+          data.setErrorBarBelow( jsonSerie.data.errors.yBarBelow );
+        }
+
+        if ( jsonSerie.data.errors.xBox ) {
+          data.setErrorBoxX( jsonSerie.data.errors.xBox );
+        }
+        if ( jsonSerie.data.errors.xBoxAbove ) {
+          data.setErrorBoxXAbove( jsonSerie.data.errors.xBoxAbove );
+        }
+        if ( jsonSerie.data.errors.xBoxBelow ) {
+          data.setErrorBoxXBelow( jsonSerie.data.errors.xBoxBelow );
+        }
+
+        if ( jsonSerie.data.errors.yBox ) {
+          data.setErrorBox( jsonSerie.data.errors.yBox );
+        }
+        if ( jsonSerie.data.errors.yBoxAbove ) {
+          data.setErrorBoxAbove( jsonSerie.data.errors.yBoxAbove );
+        }
+        if ( jsonSerie.data.errors.yBoxBelow ) {
+          data.setErrorBoxBelow( jsonSerie.data.errors.yBoxBelow );
+        }
       }
 
       const serie = graph.newSerie(

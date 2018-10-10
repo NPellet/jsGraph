@@ -1019,11 +1019,11 @@ class Shape extends EventEmitter {
         case 'rotate':
           if ( !transforms[i].arguments ) {
             transformString += transforms[i].angle;
-            transformString += ', ';
+            
 
             if ( !transforms[i].center ) {
               var p = this.computePosition( 0 );
-              transformString += `${p.x}, ${p.y}`;
+              transformString += `, ${p.x}, ${p.y}`;
             } else {
               console.log( GraphPosition.check(
                 transforms[i].center
@@ -1038,6 +1038,7 @@ class Shape extends EventEmitter {
               );
 
               if( posCenter.x === posCenter.x && posCenter.y === posCenter.y ) {
+                transformString += ', ';
                 transformString += posCenter.x;
               transformString += ', ';
               transformString += posCenter.y;
