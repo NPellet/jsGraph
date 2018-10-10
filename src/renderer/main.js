@@ -101,18 +101,17 @@ const makeGraph = ( Graph, json, wrapper ) => {
       }
 
       const serie = graph.newSerie(
-        jsonSerie.name || `_serie_${index}`,
-        {},
+        jsonSerie.name || `_serie_${index}`, {},
         type
       );
       serie.autoAxis();
 
-      if ( data.xAxis && axes[data.xAxis] ) {
-        serie.setXAxis( axes[data.xAxis] );
+      if ( data.xAxis && axes[ data.xAxis ] ) {
+        serie.setXAxis( axes[ data.xAxis ] );
       }
 
-      if ( data.yAxis && axes[data.yAxis] ) {
-        serie.setYAxis( axes[data.yAxis] );
+      if ( data.yAxis && axes[ data.yAxis ] ) {
+        serie.setYAxis( axes[ data.yAxis ] );
       }
 
       if ( data ) {

@@ -416,9 +416,7 @@ function throwError(message) {
   console.error(message);
 }
 
-function warn(message) {
-  console.warn(message);
-}
+
 
 /**
  * Checks if a variable is a numeric or not
@@ -1137,6 +1135,310 @@ proto._getEvents = function _getEvents() {
   return this._events || (this._events = {});
 };
 
+const setMarkerStyle = (serie, style) => {
+  serie.showMarkers();
+  let _default = {};
+  let modifiers = [];
+
+  if (style.default) {
+    _default = style.default;
+    if (style.modifiers) {
+      modifiers = style.modifiers;
+    }
+  } else {
+    _default = style;
+    modifiers = [];
+  }
+
+  serie.setMarkerStyle(_default, modifiers);
+};
+
+const setSerieStyle = (Graph, serie, jsonSerie, type) => {
+  console.log('sdfdsf');
+  let styles = jsonSerie.style;
+
+  if (!Array.isArray(styles)) {
+    styles = [{
+      name: 'unselected',
+      style: styles
+    }];
+  }
+
+  styles.map(({
+    name,
+    style
+  }, index) => {
+    console.log(style);
+    if (style.line && (type == Graph.SERIE_LINE || type == Graph.SERIE_BAR)) {
+      if (style.line.color) {
+        serie.setLineColor(style.line.color, name);
+      }
+
+      if (style.line.width) {
+        serie.setLineWidth(style.line.width, name);
+      }
+
+      if (style.line.dash) {
+        serie.setLineStyle(style.line.dash, name);
+      }
+
+      if (style.line.fill) {
+        serie.setFillColor(style.line.fill, name);
+      }
+
+      if (style.line.fillOpacity && serie.setFillOpacity) {
+        serie.setFillOpacity(style.line.fillOpacity, name);
+      }
+    }
+    console.log(style);
+    if (style.errorBar) {
+      serie.setErrorBarStyle(style.errorBar);
+    }
+
+    if (style.errorBox) {
+      serie.setErrorBoxStyle(style.errorBox);
+    }
+
+    if (style.marker && (type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER)) {
+      setMarkerStyle(serie, style.marker);
+    }
+  });
+};
+
+const processAxes = (Graph, graph, type, axisOptions, allAxes) => {
+  if (!Array.isArray(axisOptions)) {
+    axisOptions = [axisOptions];
+  }
+
+  axisOptions.forEach(options => {
+    let constructorName;
+
+    if (type == 'x') {
+      type = 'bottom';
+    } else if (type == 'y') {
+      type = 'left';
+    }
+
+    if (type == 'bottom' || type == 'top') {
+      constructorName = 'graph.axis.x';
+
+      if (options.type == 'category') {
+        constructorName += '.bar';
+      }
+    } else {
+      constructorName = 'graph.axis.y';
+    }
+
+    var axis = new (Graph.getConstructor(constructorName))(graph, type);
+    axis.init(graph, options);
+
+    if (type == 'bottom') {
+      graph.setBottomAxis(axis, graph.getNumAxes('bottom'));
+    } else if (type == 'top') {
+      graph.setTopAxis(axis, graph.getNumAxes('top'));
+    } else if (type == 'left') {
+      graph.setLeftAxis(axis, graph.getNumAxes('left'));
+    } else if (type == 'right') {
+      graph.setRightAxis(axis, graph.getNumAxes('right'));
+    }
+
+    if (options.type == 'category') {
+      axis.categories = options.categories;
+    }
+
+    if (options.name) {
+      allAxes[name] = axis;
+    }
+  });
+};
+
+const makeAxes = (Graph, graph, jsonAxes) => {
+  const allAxes = [];
+
+  if (jsonAxes.x) {
+    processAxes(Graph, graph, 'x', jsonAxes.x, allAxes);
+  }
+
+  if (jsonAxes.y) {
+    processAxes(Graph, graph, 'y', jsonAxes.y, allAxes);
+  }
+
+  if (jsonAxes.top) {
+    processAxes(Graph, graph, 'top', jsonAxes.top, allAxes);
+  }
+
+  if (jsonAxes.left) {
+    processAxes(Graph, graph, 'left', jsonAxes.left, allAxes);
+  }
+
+  if (jsonAxes.bottom) {
+    processAxes(Graph, graph, 'bottom', jsonAxes.bottom, allAxes);
+  }
+
+  if (jsonAxes.right) {
+    processAxes(Graph, graph, 'right', jsonAxes.right, allAxes);
+  }
+};
+
+const makeAnnotation = (graph, json, serie, axes) => {
+  if (json.type) {
+    const shape = graph.newShape(json.type, {}, false, json.properties);
+
+    if (json.serie) {
+      shape.setSerie(json.serie);
+    }
+
+    if (json.layer) {
+      shape.setLayer(json.layer);
+    }
+
+    if (json.xAxis) {
+      shape.setXAxis(axes[json.xAxis]);
+    }
+
+    if (json.yAxis) {
+      shape.setYAxis(axes[json.yAxis]);
+    }
+
+    shape.draw();
+    shape.redraw();
+  }
+};
+
+const makeGraph = (Graph, json, wrapper) => {
+  const graph = new Graph(wrapper);
+  let axes = [];
+
+  graph.resize(json.width || 400, json.height || 300);
+
+  if (json.axes) {
+    makeAxes(Graph, graph, json.axes);
+  }
+
+  if (json.series) {
+    if (!Array.isArray(json.series)) {
+      json.series = [json.series];
+    }
+
+    json.series.forEach((jsonSerie, index) => {
+      let type, data;
+
+      switch (jsonSerie.type) {
+        case 'scatter':
+          type = Graph.SERIE_SCATTER;
+          break;
+
+        case 'bar':
+          type = Graph.SERIE_BAR;
+          break;
+
+        case 'box':
+          type = Graph.SERIE_BOX;
+          break;
+
+        case 'line':
+        default:
+          type = Graph.SERIE_LINE;
+          break;
+      }
+
+      switch (jsonSerie.type) {
+        case 'bar':
+          data = Graph.newWaveformHash();
+          if (jsonSerie.data.errors) {
+            data.setData(jsonSerie.data.values);
+          } else {
+            data.setData(jsonSerie.data);
+          }
+
+          break;
+
+        default:
+        case 'line':
+        case 'scatter':
+          data = Graph.newWaveform();
+          data.setData(jsonSerie.data.y, jsonSerie.data.x);
+          break;
+      }
+
+      if (jsonSerie.data.errors) {
+        if (jsonSerie.data.errors.xBar) {
+          data.setErrorBarX(jsonSerie.data.errors.xBar);
+        }
+        if (jsonSerie.data.errors.xBarAbove) {
+          data.setErrorBarXAbove(jsonSerie.data.errors.xBarAbove);
+        }
+        if (jsonSerie.data.errors.xBarBelow) {
+          data.setErrorBarXBelow(jsonSerie.data.errors.xBarBelow);
+        }
+
+        if (jsonSerie.data.errors.yBar) {
+          data.setErrorBar(jsonSerie.data.errors.yBar);
+        }
+        if (jsonSerie.data.errors.yBarAbove) {
+          data.setErrorBarAbove(jsonSerie.data.errors.yBarAbove);
+        }
+        if (jsonSerie.data.errors.yBarBelow) {
+          data.setErrorBarBelow(jsonSerie.data.errors.yBarBelow);
+        }
+
+        if (jsonSerie.data.errors.xBox) {
+          data.setErrorBoxX(jsonSerie.data.errors.xBox);
+        }
+        if (jsonSerie.data.errors.xBoxAbove) {
+          data.setErrorBoxXAbove(jsonSerie.data.errors.xBoxAbove);
+        }
+        if (jsonSerie.data.errors.xBoxBelow) {
+          data.setErrorBoxXBelow(jsonSerie.data.errors.xBoxBelow);
+        }
+
+        if (jsonSerie.data.errors.yBox) {
+          data.setErrorBox(jsonSerie.data.errors.yBox);
+        }
+        if (jsonSerie.data.errors.yBoxAbove) {
+          data.setErrorBoxAbove(jsonSerie.data.errors.yBoxAbove);
+        }
+        if (jsonSerie.data.errors.yBoxBelow) {
+          data.setErrorBoxBelow(jsonSerie.data.errors.yBoxBelow);
+        }
+      }
+
+      const serie = graph.newSerie(jsonSerie.name || `_serie_${index}`, {}, type);
+      serie.autoAxis();
+
+      if (data.xAxis && axes[data.xAxis]) {
+        serie.setXAxis(axes[data.xAxis]);
+      }
+
+      if (data.yAxis && axes[data.yAxis]) {
+        serie.setYAxis(axes[data.yAxis]);
+      }
+
+      if (data) {
+        serie.setWaveform(data);
+      }
+
+      if (jsonSerie.style) {
+        setSerieStyle(Graph, serie, jsonSerie, type);
+      }
+
+      if (jsonSerie.annotations) {
+        jsonSerie.annotations.forEach(annotation => {
+          makeAnnotation(graph, annotation, undefined, axes);
+        });
+      }
+    });
+  }
+
+  if (json.annotations) {
+    json.annotations.forEach(annotation => {
+      makeAnnotation(graph, annotation, undefined, axes);
+    });
+  }
+
+  return graph;
+};
+
 var dataAggregator;
 
 if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || typeof Blob === 'undefined' || typeof Worker === 'undefined') {
@@ -1146,9 +1448,7 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
   var queue = {};
 
   let string = function () {
-
     onmessage = function (e) {
-
       const data = e.data.data,
             // The initial data
       maxX = e.data.maxX,
@@ -1174,7 +1474,6 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
       let newAggregationX;
 
       if (e.data.xdata) {
-
         getX = function getX(index) {
           return e.data.xdata[index];
         };
@@ -1191,7 +1490,6 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
         const dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
 
         for (; i < l; i++) {
-
           // dataPerSlot: 1 / 1000 ( compression by 1'000 )
           //console.log( dataPerSlot, getX( i ) );
           slotNumber = Math.floor((getX(i) - minX) * dataPerSlot);
@@ -1225,7 +1523,6 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
         const dataPerSlot = numPoints / (maxY - minY); // Computed number of aggregation per slot
 
         for (; i < l; i++) {
-
           // dataPerSlot: 1 / 1000 ( compression by 1'000 )
           //console.log( dataPerSlot, getX( i ) );
           slotNumber = Math.floor((data[i] - minY) * dataPerSlot);
@@ -1265,7 +1562,6 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
       lastAggregationSum = aggregationSum;
 
       while (numPoints > 256) {
-
         numPoints /= 2;
 
         newAggregation = [];
@@ -1274,9 +1570,7 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
         k = 0;
 
         if (direction == 'x') {
-
           for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
-
             newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
             newAggregationX[k + 1] = newAggregationX[k];
             newAggregationX[k + 2] = newAggregationX[k];
@@ -1292,9 +1586,7 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
             k += 4;
           }
         } else {
-
           for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
-
             newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
             newAggregation[k + 1] = newAggregation[k];
             newAggregation[k + 2] = newAggregation[k];
@@ -1346,7 +1638,6 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
   aggregatorWorker = new Worker(workerUrl);
 
   aggregatorWorker.onmessage = function (e) {
-
     var id = e.data._queueId;
     delete e.data._queueId;
     queue[id](e.data);
@@ -1354,7 +1645,6 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
   };
 
   dataAggregator = function (toOptimize) {
-
     var requestId = Date.now();
     toOptimize._queueId = requestId;
 
@@ -1370,9 +1660,7 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
 var aggregator = dataAggregator;
 
 class FitHost {
-
   constructor(options) {
-
     this.DELTAP = 1e-6;
     this.BIGVAL = 9e99;
     this.WEIGHT = 1.0;
@@ -1443,10 +1731,8 @@ class FitHost {
   }
 
   init() {
-
     // Get data length
     if (this._from !== undefined && this._to !== undefined) {
-
       if (this._from >= this._to) {
         throw 'Impossible to fit negative subranges. The starting index must be lower than the ending index';
       }
@@ -1461,7 +1747,6 @@ class FitHost {
         throw 'Impossible to fit a subrange with negative indices';
       }
     } else {
-
       this.NPTS = this.data.getLength();
       this._from = 0;
       this._to = this.data.getLength() - 1;
@@ -1485,7 +1770,6 @@ class FitHost {
   }
 
   fit() {
-
     this.log(`Starting the fit with initial parameter list {${this.parms.join()}};`);
     new LM(this, this.NPARMS, this.NPTS, this._hookIteration);
     this.log(`Fit successful. Output parameters {${this.parms.join()}};`);
@@ -1521,7 +1805,6 @@ class FitHost {
 
   //------the four mandated interface methods------------
   nudge(dp) {
-
     for (var j = 0; j < this.NPARMS; j++) {
       this.parms[j] += dp[j];
     }
@@ -1587,7 +1870,6 @@ class FitHost {
     if (!length) {
       x = this.arrX;
     } else {
-
       const xmin = this.dataX.getMin(this._from, this._to);
       const xmax = this.dataX.getMax(this._from, this._to);
 
@@ -1608,15 +1890,13 @@ class FitHost {
 }
 
 class LM {
-
   constructor(gH, gnadj, gnpnts, hook) {
-
     this.LMITER = 100; // max number of L-M iterations
     this.LMBOOST = 2.0; // damping increase per failed step
-    this.LMSHRINK = 0.10; // damping decrease per successful step
+    this.LMSHRINK = 0.1; // damping decrease per successful step
     this.LAMBDAZERO = 0.001; // initial damping
-    this.LAMBDAMAX = 1E9; // max damping
-    this.LMTOL = 1E-12; // exit tolerance
+    this.LAMBDAMAX = 1e9; // max damping
+    this.LMTOL = 1e-12; // exit tolerance
     this.BIGVAL = 9e99; // trouble flag
 
     this.sos;
@@ -1680,16 +1960,16 @@ class LM {
       return false;
     }
 
-    for (var k = 0; k < this.nadj; k++) // get downhill gradient beta
-    {
+    for (var k = 0; k < this.nadj; k++ // get downhill gradient beta
+    ) {
       this.beta[k] = 0.0;
       for (var i = 0; i < this.npts; i++) {
         this.beta[k] -= this.myH.getResidualElement(i) * this.myH.getJacobianElement(i, k);
       }
     }
 
-    for (var k = 0; k < this.nadj; k++) // get curvature matrix alpha
-    for (var j = 0; j < this.nadj; j++) {
+    for (var k = 0; k < this.nadj; k++ // get curvature matrix alpha
+    ) for (var j = 0; j < this.nadj; j++) {
       this.alpha[j][k] = 0.0;
       for (var i = 0; i < this.npts; i++) {
         this.alpha[j][k] += this.myH.getJacobianElement(i, j) * this.myH.getJacobianElement(i, k);
@@ -1707,8 +1987,8 @@ class LM {
 
       this.gaussj(this.amatrix, this.nadj); // invert
 
-      for (var k = 0; k < this.nadj; k++) // compute delta[]
-      {
+      for (var k = 0; k < this.nadj; k++ // compute delta[]
+      ) {
         this.delta[k] = 0.0;
         for (var j = 0; j < this.nadj; j++) this.delta[k] += this.amatrix[j][k] * this.beta[j];
       }
@@ -1718,11 +1998,11 @@ class LM {
         return false;
       }
       rrise = (this.sos - this.sosprev) / (1 + this.sos);
-      if (rrise <= 0.0) // good step!
-        {
-          this.lambda *= this.LMSHRINK; // shrink lambda
-          break; // leave lmInner.
-        }
+      if (rrise <= 0.0) {
+        // good step!
+        this.lambda *= this.LMSHRINK; // shrink lambda
+        break; // leave lmInner.
+      }
       for (var q = 0; q < this.nadj; q++) {
         // reverse course!
         this.delta[q] *= -1.0;
@@ -1750,16 +2030,16 @@ class LM {
 
     for (k = 0; k < N; k++) {
       big = 0.0;
-      for (i = k; i < N; i++) for (j = k; j < N; j++) // find biggest element
-      if (Math.abs(big) <= Math.abs(a[i][j])) {
+      for (i = k; i < N; i++) for (j = k; j < N; j++ // find biggest element
+      ) if (Math.abs(big) <= Math.abs(a[i][j])) {
         big = a[i][j];
         ik[k] = i;
         jk[k] = j;
       }
       if (big == 0.0) return 0.0;
       i = ik[k];
-      if (i > k) for (j = 0; j < N; j++) // exchange rows
-      {
+      if (i > k) for (j = 0; j < N; j++ // exchange rows
+      ) {
         save = a[k][j];
         a[k][j] = a[i][j];
         a[i][j] = -save;
@@ -1770,8 +2050,8 @@ class LM {
         a[i][k] = a[i][j];
         a[i][j] = -save;
       }
-      for (i = 0; i < N; i++) // build the inverse
-      if (i != k) a[i][k] = -a[i][k] / big;
+      for (i = 0; i < N; i++ // build the inverse
+      ) if (i != k) a[i][k] = -a[i][k] / big;
       for (i = 0; i < N; i++) for (j = 0; j < N; j++) if (i != k && j != k) a[i][j] += a[i][k] * a[k][j];
       for (j = 0; j < N; j++) if (j != k) a[k][j] /= big;
       a[k][k] = 1.0 / big;
@@ -2058,7 +2338,6 @@ class Waveform {
   }
 
   concat(wave2) {
-
     if (!this.xdata) {
       this.xdata = this.getXWaveform();
     }
@@ -2596,7 +2875,6 @@ class Waveform {
   }
 
   invert(data) {
-
     let d = data || this.data;
     d.reverse();
 
@@ -2886,7 +3164,6 @@ class Waveform {
     wave.requireXMonotonicity();
 
     if (this.xdata && wave.xdata) {
-
       const xSet = new Set();
       const xData = this.xdata.data;
       const xData2 = wave.xdata.data;
@@ -2902,7 +3179,6 @@ class Waveform {
       const xs = Array.from(xSet.values()).sort();
 
       const ys = xs.map(x => {
-
         if (operation == MULTIPLY) {
           return this.interpolate(x) * wave.interpolate(x);
         } else if (operation == DIVIDE) {
@@ -2917,24 +3193,19 @@ class Waveform {
       this._setData(ys);
       this.xdata._setData(xs);
     } else {
-
       if (operation == MULTIPLY) {
-
         for (; i < l; i++) {
           yDataThis[i] *= wave.interpolate(this.getX(i));
         }
       } else if (operation == DIVIDE) {
-
         for (; i < l; i++) {
           yDataThis[i] /= wave.interpolate(this.getX(i));
         }
       } else if (operation == ADD) {
-
         for (; i < l; i++) {
           yDataThis[i] += wave.interpolate(this.getX(i));
         }
       } else if (operation == SUBTRACT) {
-
         for (; i < l; i++) {
           yDataThis[i] -= wave.interpolate(this.getX(i));
         }
@@ -3011,10 +3282,8 @@ class Waveform {
 
     if (this.xdata) {
       if (alsoDuplicateXWave) {
-
         newWaveform.setXWaveform(this.xdata.duplicate());
       } else {
-
         newWaveform.setXWaveform(this.xdata);
       }
 
@@ -3328,8 +3597,8 @@ class Waveform {
   ////////////////////////////////////////////////////////////
 
   setErrorBarX(waveform) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     var xWave = this.getXWaveform();
@@ -3338,8 +3607,8 @@ class Waveform {
   }
 
   setErrorBarXBelow(waveform) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     var xWave = this.getXWaveform();
@@ -3348,8 +3617,8 @@ class Waveform {
   }
 
   setErrorBarXAbove(waveform) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     var xWave = this.getXWaveform();
@@ -3358,8 +3627,8 @@ class Waveform {
   }
 
   setErrorBoxX(waveform) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     var xWave = this.getXWaveform();
@@ -3369,8 +3638,8 @@ class Waveform {
   }
 
   setErrorBoxXBelow(waveform) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     var xWave = this.getXWaveform();
@@ -3380,8 +3649,8 @@ class Waveform {
   }
 
   setErrorBoxXAbove(waveform) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     var xWave = this.getXWaveform();
@@ -3390,8 +3659,9 @@ class Waveform {
   }
 
   setErrorBar(waveform, checkMinMax = true) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
     this.errors.nb++;
     this.errors.nb++;
@@ -3399,38 +3669,39 @@ class Waveform {
     this.errors.bars.above = waveform;
 
     if (checkMinMax) {
-      this._setData();
+      this._setData(this.data);
     }
   }
 
   setErrorBarBelow(waveform, checkMinMax = true) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
     this.errors.nb++;
     this.errors.bars.below = waveform;
 
     if (checkMinMax) {
-      this._setData();
+      this._setData(this.data);
     }
   }
 
   setErrorBarAbove(waveform, checkMinMax = true) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
 
     this.errors.nb++;
     this.errors.bars.above = waveform;
 
     if (checkMinMax) {
-      this._setData();
+      this._setData(this.data);
     }
   }
 
   setErrorBox(waveform, checkMinMax = true) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
     this.errors.nb++;
     this.errors.nb++;
@@ -3438,30 +3709,30 @@ class Waveform {
     this.errors.boxes.below = waveform;
 
     if (checkMinMax) {
-      this._setData();
+      this._setData(this.data);
     }
   }
 
   setErrorBoxBelow(waveform, checkMinMax = true) {
-    if (Array.isArray(waveform)) {
-      waveform = new Waveform(waveform);
+    if (!(waveform instanceof Waveform)) {
+      waveform = new this.constructor(waveform);
     }
     this.errors.nb++;
     this.errors.boxes.below = waveform;
 
     if (checkMinMax) {
-      this._setData();
+      this._setData(this.data);
     }
   }
 
   setErrorBoxAbove(waveform, checkMinMax = true) {
-    if (Array.isArray(waveform)) {
+    if (!(waveform instanceof Waveform)) {
       waveform = new Waveform(waveform);
     }
 
     this.errors.boxes.above = waveform;
     if (checkMinMax) {
-      this._setData();
+      this._setData(this.data);
     }
   }
 
@@ -3780,7 +4051,7 @@ class WaveformHash extends Waveform {
   _setData() {
     this.minY = Math.min(...this.data);
     this.maxY = Math.max(...this.data);
-
+    console.log(this.errors);
     this.checkMinMaxErrorBars();
   }
 }
@@ -3839,11 +4110,6 @@ const GraphOptionsDefault = {
 
   shapesUnselectOnClick: true,
   shapesUniqueSelection: true
-};
-
-const defaultScatterStyle = {
-  shape: 'circle',
-  r: 4
 };
 
 var _constructors = new Map();
@@ -4325,6 +4591,10 @@ class Graph$1 extends EventEmitter {
    */
   uncacheOffset() {
     this.offsetCached = false;
+  }
+
+  getNumAxes(position) {
+    return this.axis[position].length;
   }
 
   /**
@@ -5858,7 +6128,6 @@ class Graph$1 extends EventEmitter {
     }
   }
   unlockShapes() {
-    //		console.log('unlock');
     this.shapesLocked = false;
   }
   prevent(arg) {
@@ -6133,461 +6402,13 @@ class Graph$1 extends EventEmitter {
 
   /**
    * Returns a graph created from a schema
-   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+   * @param {Object} json
    * @param {HTMLElement} wrapper - The wrapping element
    * @returns {Graph} Newly created graph
    */
-  static fromJSON(schema, wrapper) {
+  static fromJSON(json, wrapper) {
 
-    let graph,
-        options = {},
-        axes = {
-      left: [],
-      top: [],
-      right: [],
-      bottom: []
-    },
-        style;
-
-    if (schema.title) {
-      options.title = schema.title;
-    }
-
-    if (schema.axis) {
-
-      schema.axis.forEach(function (schemaAxis) {
-
-        if (!schemaAxis.type) {
-          throwError('Axis type is required (top, bottom, left or right)');
-        }
-
-        var axisOptions = {};
-        if (schemaAxis.label) {
-          axisOptions.labelValue = schemaAxis.label;
-        }
-
-        if (schemaAxis.unit !== undefined) {
-          axisOptions.unit = schemaAxis.unit;
-        }
-
-        if (schemaAxis.unitWrapperAfter !== undefined) {
-          axisOptions.unitWrapperAfter = schemaAxis.unitWrapperAfter;
-        }
-
-        if (schemaAxis.unitWrapperBefore !== undefined) {
-          axisOptions.unitWrapperBefore = schemaAxis.unitWrapperBefore;
-        }
-
-        if (schemaAxis.min !== undefined) {
-          axisOptions.forcedMin = schemaAxis.min;
-        }
-
-        if (schemaAxis.max !== undefined) {
-          axisOptions.forcedMax = schemaAxis.max;
-        }
-
-        if (schemaAxis.flip !== undefined) {
-          axisOptions.flipped = schemaAxis.flip;
-        }
-
-        axes[schemaAxis.type].push(axisOptions);
-        schemaAxis._jsGraphIndex = axes[schemaAxis.type].length - 1;
-      });
-    }
-
-    graph = new Graph$1(wrapper, options, axes);
-
-    if (schema.width) {
-      graph.setWidth(schema.width);
-    }
-
-    if (schema.height) {
-      graph.setHeight(schema.width);
-    }
-
-    graph._resize();
-
-    if (schema.data) {
-
-      schema.data.forEach(function (schemaSerie) {
-
-        var serieType = schemaSerie.type,
-            serie,
-            serieOptions = {},
-            serieAxis;
-
-        let waveform;
-
-        switch (schemaSerie.type) {
-
-          case 'bar':
-            throwError('Bar charts not supported');
-            serieType = false;
-            break;
-
-          case 'color':
-            serieType = Graph$1.SERIE_LINE_COLORED;
-            break;
-
-          case 'scatter':
-            serieType = Graph$1.SERIE_SCATTER;
-            break;
-
-          case 'box':
-            serieType = Graph$1.SERIE_BOX;
-
-            if (schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y') {
-              serieOptions.orientation = schemaSerie.orientation;
-            }
-            break;
-
-          default:
-            serieType = Graph$1.SERIE_LINE;
-            break;
-        }
-
-        if (serieType !== Graph$1.SERIE_BOX) {
-          waveform = Graph$1.newWaveform();
-        }
-
-        if (!serieType) {
-          throwError('No valid serie type was found');
-          return;
-        }
-
-        serie = graph.newSerie(schemaSerie.id || schemaSerie.label || guid(), serieOptions, serieType);
-
-        if (schemaSerie.lineStyle) {
-
-          let lineStyle = schemaSerie.lineStyle;
-
-          if (Array.isArray(lineStyle)) {
-            lineStyle = {
-              unselected: lineStyle
-            };
-          }
-
-          Object.entries(lineStyle).forEach(([styleName, style]) => {
-
-            var styleSerie = {};
-
-            switch (serieType) {
-
-              case Graph$1.SERIE_LINE:
-                if (style.lineWidth !== undefined) {
-                  styleSerie.lineWidth = style.lineWidth;
-                }
-
-                if (style.color !== undefined) {
-                  styleSerie.lineColor = style.color;
-                }
-
-                if (style.lineStyle) {
-                  styleSerie.lineStyle = style.lineStyle;
-                }
-
-                serie.setStyle(styleSerie, styleName);
-                break;
-            }
-          });
-        }
-
-        let defaultStyle = {};
-        let defaultStyles = {};
-
-        if (schemaSerie.defaultStyle) {
-          defaultStyle = schemaSerie.defaultStyle;
-        }
-
-        if (schemaSerie.defaultStyles) {
-          defaultStyles = schemaSerie.defaultStyles;
-        }
-
-        if (schemaSerie.styles) {
-
-          let individualStyles;
-
-          if (Array.isArray(schemaSerie.styles)) {
-            individualStyles = {
-              unselected: schemaSerie.styles
-            };
-          } else {
-            individualStyles = schemaSerie.styles;
-          }
-
-          let styleNames = new Set(Object.keys(defaultStyles).concat(Object.keys(individualStyles)));
-
-          styleNames.forEach(styleName => {
-
-            let style = [],
-                styles;
-
-            if (individualStyles && individualStyles[styleName]) {
-
-              style = individualStyles[styleName];
-
-              if (!Array.isArray(style)) {
-                style = [style];
-              }
-
-              styles = style.map(function (eachStyleElement) {
-
-                switch (serieType) {
-
-                  case Graph$1.SERIE_LINE:
-
-                    return {
-                      type: eachStyleElement.shape,
-                      zoom: eachStyleElement.zoom,
-                      strokeWidth: eachStyleElement.lineWidth,
-                      strokeColor: eachStyleElement.lineColor,
-                      fillColor: eachStyleElement.color,
-                      points: eachStyleElement.points
-                    };
-
-                    break;
-
-                  case Graph$1.SERIE_BOX:
-
-                    return eachStyleElement;
-
-                    break;
-
-                  case Graph$1.SERIE_SCATTER:
-                    return eachStyleElement;
-
-                    break;
-                }
-              });
-            }
-
-            switch (serieType) {
-
-              case Graph$1.SERIE_LINE:
-
-                serie.setMarkers(styles, styleName);
-                break;
-
-              case Graph$1.SERIE_SCATTER:
-                serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[styleName] || {}), styles, styleName);
-                break;
-
-              case Graph$1.SERIE_BOX:
-
-                serie.setStyle(styles[0], styleName || 'unselected');
-                break;
-            }
-          });
-        }
-
-        if (schemaSerie.color && serieType == Graph$1.SERIE_LINE_COLORED) {
-          serie.setColors(schemaSerie.color);
-        }
-
-        if (serieType !== Graph$1.SERIE_BOX) {
-          waveform.setData(schemaSerie.y, schemaSerie.x);
-        }
-
-        if (!serie) {
-          return;
-        }
-
-        let errorBarsXAbove = [],
-            errorBarsXBelow = [],
-            errorBarsYAbove = [],
-            errorBarsYBelow = [],
-            errorBoxesXAbove = [],
-            errorBoxesXBelow = [],
-            errorBoxesYAbove = [],
-            errorBoxesYBelow = [];
-
-        if (waveform !== undefined) {
-          if (schemaSerie.errorX) {
-
-            for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
-
-              if (Array.isArray(schemaSerie.errorX[i])) {
-
-                errorBarsXAbove.push(schemaSerie.errorX[i][0]);
-                errorBarsXBelow.push(schemaSerie.errorX[i][1]);
-              } else {
-                errorBarsXAbove.push(schemaSerie.errorX[i]);
-                errorBarsXBelow.push(schemaSerie.errorX[i]);
-              }
-            }
-          } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
-
-            if (schemaSerie.errorBarX) {
-
-              for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
-
-                if (Array.isArray(schemaSerie.errorBarX[i])) {
-
-                  errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
-                  errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
-                } else {
-                  errorBarsXAbove.push(schemaSerie.errorBarX[i]);
-                  errorBarsXBelow.push(schemaSerie.errorBarX[i]);
-                }
-              }
-            }
-
-            if (schemaSerie.errorBoxX) {
-
-              for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
-
-                if (Array.isArray(schemaSerie.errorBoxX[i])) {
-
-                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
-                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
-                } else {
-                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
-                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
-                }
-              }
-            }
-          }
-
-          if (schemaSerie.errorY) {
-
-            for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
-
-              if (Array.isArray(schemaSerie.errorY[i])) {
-
-                errorBarsYAbove.push(schemaSerie.errorY[i][0]);
-                errorBarsYBelow.push(schemaSerie.errorY[i][1]);
-              } else {
-                errorBarsYAbove.push(schemaSerie.errorY[i]);
-                errorBarsYBelow.push(schemaSerie.errorY[i]);
-              }
-            }
-          } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
-
-            if (schemaSerie.errorBarY) {
-
-              for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
-
-                if (Array.isArray(schemaSerie.errorBarY[i])) {
-
-                  errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
-                  errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
-                } else {
-                  errorBarsYAbove.push(schemaSerie.errorBarY[i]);
-                  errorBarsYBelow.push(schemaSerie.errorBarY[i]);
-                }
-              }
-            }
-
-            if (schemaSerie.errorBoxY) {
-
-              for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
-
-                if (Array.isArray(schemaSerie.errorBoxY[i])) {
-
-                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
-                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
-                } else {
-                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
-                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
-                }
-              }
-            }
-          }
-
-          style = {};
-          if (errorBarsXAbove.length > 0) {
-            waveform.setErrorBarXAbove(Graph$1.newWaveform(errorBarsXAbove));
-            style.right = {};
-          }
-          if (errorBarsXBelow.length > 0) {
-            waveform.setErrorBarXAbove(Graph$1.newWaveform(errorBarsXAbove));
-            style.left = {};
-          }
-          if (errorBarsYAbove.length > 0) {
-            waveform.setErrorBarXAbove(Graph$1.newWaveform(errorBarsYAbove));
-            style.top = {};
-          }
-          if (errorBarsYBelow.length > 0) {
-            waveform.setErrorBarXAbove(Graph$1.newWaveform(errorBarsYAbove));
-            style.bottom = {};
-          }
-
-          serie.setErrorBarStyle(style);
-
-          style = {};
-          if (errorBoxesXAbove.length > 0) {
-            waveform.setErrorBoxXAbove(Graph$1.newWaveform(errorBoxesXAbove));
-            style.right = {};
-          }
-          if (errorBoxesXBelow.length > 0) {
-            waveform.setErrorBoxXBelow(Graph$1.newWaveform(errorBoxesXBelow));
-            style.left = {};
-          }
-          if (errorBoxesYAbove.length > 0) {
-            waveform.setErrorBoxAbove(Graph$1.newWaveform(errorBoxesYAbove));
-            style.top = {};
-          }
-          if (errorBoxesYBelow.length > 0) {
-            waveform.setErrorBoxBelow(Graph$1.newWaveform(errorBoxesYBelow));
-            style.bottom = {};
-          }
-          serie.setErrorBoxStyle(style);
-        }
-
-        if (schema.axis) {
-          serieAxis = schema.axis[schemaSerie.xAxis];
-
-          if (!serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom') {
-            warn('No x axis found. Setting automatically');
-            serie.setXAxis(graph.getXAxis(0));
-          } else {
-            if (serieAxis.type == 'top') {
-              serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));
-            } else if (serieAxis.type == 'bottom') {
-              serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));
-            }
-          }
-
-          serieAxis = schema.axis[schemaSerie.yAxis];
-
-          if (!serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right') {
-            warn('No y axis found. Setting automatically');
-            serie.setYAxis(graph.getYAxis(0));
-          } else {
-            if (serieAxis.type == 'left') {
-              serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));
-            } else if (serieAxis.type == 'right') {
-              serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));
-            }
-          }
-        } else {
-          warn('No axes found. Setting automatically');
-          serie.autoAxis();
-        }
-
-        switch (serieType) {
-
-          case Graph$1.SERIE_BOX:
-
-            serie.setData(schemaSerie.boxes);
-
-            break;
-
-          default:
-          case Graph$1.SERIE_SCATTER:
-          case Graph$1.SERIE_LINE_COLORED:
-          case Graph$1.SERIE_LINE:
-
-            serie.setWaveform(waveform);
-
-            break;
-        }
-      });
-    }
-
-    graph.autoscaleAxes();
-    graph.draw();
-
+    const graph = makeGraph(Graph$1, json, wrapper);
     return graph;
   }
 
@@ -6610,7 +6431,7 @@ class Graph$1 extends EventEmitter {
     axesPositions.map(axisPosition => {
 
       if (!this.axis[axisPosition]) {
-        return;
+        return {};
       }
 
       axesExport = axesExport.concat(this.axis[axisPosition].map(axis => {
@@ -6640,21 +6461,18 @@ class Graph$1 extends EventEmitter {
     let toType = type => {
       switch (type) {
 
-        case Graph$1.SERIE_LINE:
-          return 'line';
-          break;
-
         case Graph$1.SERIE_BAR:
           return 'bar';
-          break;
 
         case Graph$1.SERIE_LINE_COLORED:
           return 'color';
-          break;
 
         case Graph$1.SERIE_SCATTER:
           return 'scatter';
-          break;
+
+        default:
+        case Graph$1.SERIE_LINE:
+          return 'line';
       }
     };
 
@@ -6918,7 +6736,7 @@ function refreshDrawingZone(graph) {
 
     axis.setMinPx(shiftTop);
     axis.setMaxPx(graph.getDrawingHeight(true) - shiftBottom);
-
+    console.log(axis);
     if (axis.floating) {
       return;
     }
@@ -6966,7 +6784,7 @@ function refreshDrawingZone(graph) {
 
   graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
 
-  [shift.left, shift.right].map(function (arr) {
+  [shift.left, shift.right].forEach(function (arr) {
     arr.reduce(function (prev, current, index) {
       arr[index] = prev + current;
       return prev + current;
@@ -7050,11 +6868,11 @@ function refreshDrawingZone(graph) {
     axis.drawLines();
   }, false, true, true);
 
-  /*
-  graph.shapeZoneRect.setAttribute('x', shift[1]);
-  graph.shapeZoneRect.setAttribute('y', shift[2]);
-  graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-  graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+  /**
+    graph.shapeZoneRect.setAttribute('x', shift[1]);
+  	graph.shapeZoneRect.setAttribute('y', shift[2]);
+  	graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+  	graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
   */
   graph.shift = shift;
   graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
@@ -7709,11 +7527,10 @@ var _trackingLegendSerie = function (graph, serie, x, y, legend, textMethod, xVa
 
 var forceTrackingLegendMode = function (graph, legend, toX, toY, skip) {
 
-  var ratio = 0,
-      start = Date.now(),
+  var start = Date.now(),
       h = legend.offsetHeight,
-      startX = parseInt(legend.style.marginLeft.replace('px', '') || 0),
-      startY = parseInt(legend.style.marginTop.replace('px', '') || 0);
+      startX = parseInt(legend.style.marginLeft.replace('px', '') || 0, 10),
+      startY = parseInt(legend.style.marginTop.replace('px', '') || 0, 10);
 
   toX = toX > graph.getWidth() / 2 ? toX - toX % 10 - 20 - legend.offsetWidth : toX - toX % 10 + 30;
   toY = toY - toY % 10 + h / 2;
@@ -7765,9 +7582,9 @@ function _makeTrackingLegend(graph) {
 }
 
 function _handleDblClick(graph, x, y, e) {
-  //	var _x = x - graph.options.paddingLeft;
-  //	var _y = y - graph.options.paddingTop;
-  var pref = graph.options.dblclick;
+  // var _x = x - graph.options.paddingLeft;
+  // var _y = y - graph.options.paddingTop;
+  //var pref = graph.options.dblclick;
   checkMouseActions(graph, e, [x, y, e], 'onDblClick');
   /*
       if ( !pref || !pref.type ) {
@@ -7858,6 +7675,9 @@ function _getAxis(graph, num, options, pos) {
     case 'right':
       inst = axisInstance.y;
       break;
+
+    default:
+      return;
   }
 
   num = num || 0;
@@ -8681,7 +8501,9 @@ const defaults = {
   useKatexForLabel: false,
 
   highestMax: false,
-  lowestMin: false
+  lowestMin: false,
+
+  labelValue: ''
 };
 
 /**
@@ -10510,7 +10332,7 @@ class Axis extends EventEmitter {
    * @return {Axis} The current axis
    */
   setLabel(label) {
-    this.options.labelValue = label;
+    this.options.label = label;
     return this;
   }
 
@@ -10524,7 +10346,7 @@ class Axis extends EventEmitter {
    * @return {String} The label value
    */
   getLabel() {
-    return this.options.labelValue;
+    return this.options.label;
   }
 
   setSpan(_from, _to) {
@@ -11851,7 +11673,6 @@ class AxisY extends Axis {
  * @augments Axis
  */
 class AxisXBar extends AxisX {
-
   constructor(graph, topbottom, options = {}) {
     super(graph, topbottom, options);
   }
@@ -11868,10 +11689,13 @@ class AxisXBar extends AxisX {
   }
 
   draw() {
-
     var self = this,
         tickLabel,
         elements = this._barCategories;
+
+    if (!this.series || this.series.length == 0) {
+      this.autoSeries();
+    }
 
     this.forceMin(0);
     this.forceMax(1);
@@ -11896,7 +11720,6 @@ class AxisXBar extends AxisX {
 
       if (i < elements.length) {
         tickLabel = this.nextTickLabel(function (tickLabel) {
-
           tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)));
           tickLabel.setAttribute('text-anchor', 'middle');
           if (self.getTicksLabelColor() !== 'black') {
@@ -11919,14 +11742,13 @@ class AxisXBar extends AxisX {
    * @returns {AxisBar} The current axis instance
    */
   autoSeries() {
-
     let series = [];
     for (let serie of this.graph.series) {
       if (serie.getXAxis() == this) {
         series.push(serie);
       }
     }
-
+    console.log(series);
     this.setSeries(...series);
     return this;
   }
@@ -11937,12 +11759,10 @@ class AxisXBar extends AxisX {
    * @returns {AxisBar} The current axis instance
    */
   setSeries() {
-
     var self = this;
     this.series = arguments;
 
     Array.prototype.map.call(this.series, function (serie, index) {
-
       if (!(typeof serie == 'object')) {
         serie = self.graph.getSerie(serie);
       }
@@ -11958,14 +11778,12 @@ class AxisXBar extends AxisX {
   }
 
   _getUsedCategories() {
-
     let categories = {},
         total = 0;
 
     Array.prototype.map.call(this.series, serie => {
       let usedCategories = serie.getUsedCategories();
       for (let cat of usedCategories) {
-
         if (!categories.hasOwnProperty(cat)) {
           categories[cat] = 1;
           total += 1;
@@ -11975,7 +11793,7 @@ class AxisXBar extends AxisX {
         total++;
       }
     });
-
+    console.log(categories);
     let accumulator = 0;
     for (let i in categories) {
       let temp = categories[i];
@@ -11986,12 +11804,10 @@ class AxisXBar extends AxisX {
     let dispatchedCategories = {};
 
     Array.prototype.map.call(this.series, serie => {
-
       let scategories = serie.getUsedCategories(),
           indices = {};
 
       scategories.forEach(cat => {
-
         dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
         indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
         dispatchedCategories[cat]++;
@@ -13067,25 +12883,21 @@ var ErrorBarMixin = {
    *  @example serie.setErrorBarStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
    */
   setErrorBarStyle: function (errorstyle) {
-
     this.errorbarStyle = this._setErrorStyle(errorstyle);
 
     return this;
   },
 
   setErrorBoxStyle: function (errorstyle) {
-
     this.errorboxStyle = this._setErrorStyle(errorstyle);
     return this;
   },
 
   _setErrorStyle(errorstyles = {}) {
-
     var styles = [];
     var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
 
     var makePath = style => {
-
       style.dom = document.createElementNS(this.graph.ns, 'path');
       style.dom.setAttribute('fill', style.fillColor || 'none');
       style.dom.setAttribute('stroke', style.strokeColor || 'black');
@@ -13104,9 +12916,7 @@ var ErrorBarMixin = {
     }
 
     for (var j = 0, l = pairs.length; j < l; j++) {
-
       if (errorstyles.all) {
-
         errorstyles[pairs[j][1]] = extend(true, {}, errorstyles.all);
         errorstyles[pairs[j][2]] = extend(true, {}, errorstyles.all);
       }
@@ -13119,21 +12929,18 @@ var ErrorBarMixin = {
       }
 
       for (var k = 1; k <= 2; k++) {
-
         if (errorstyles[pairs[j][k]]) {
-
           styles[pairs[j][k]] = errorstyles[pairs[j][k]];
           makePath(styles[pairs[j][k]]);
         }
       }
     }
-
+    console.log(styles);
     return styles;
   },
 
   errorDrawInit: function () {
     if (this.errorboxStyle) {
-
       this.errorboxStyle.paths = {
         top: '',
         bottom: '',
@@ -13143,7 +12950,6 @@ var ErrorBarMixin = {
     }
 
     if (this.errorbarStyle) {
-
       this.errorbarStyle.paths = {
         top: '',
         bottom: '',
@@ -13154,7 +12960,6 @@ var ErrorBarMixin = {
   },
 
   errorAddPoint: function (index, dataX, dataY, xpx, ypx) {
-
     /* eslint-disable no-cond-assign */
     let error;
 
@@ -13212,11 +13017,8 @@ var ErrorBarMixin = {
   },
 
   errorDraw: function () {
-
     if (this.errorbarStyle) {
-
       for (var j in this.errorbarStyle.paths) {
-
         if (this.errorbarStyle[j] && this.errorbarStyle[j].dom) {
           this.errorbarStyle[j].dom.setAttribute('d', this.errorbarStyle.paths[j]);
         }
@@ -13224,9 +13026,7 @@ var ErrorBarMixin = {
     }
 
     if (this.errorboxStyle) {
-
       for (var j in this.errorboxStyle.paths) {
-
         if (this.errorboxStyle[j] && this.errorboxStyle[j].dom) {
           this.errorboxStyle[j].dom.setAttribute('d', this.errorboxStyle.paths[j]);
         }
@@ -13234,1495 +13034,6 @@ var ErrorBarMixin = {
     }
   }
 };
-
-const type = 'line';
-
-const defaultOptions = {
-  /**
-   * @name SerieLineDefaultOptions
-   * @object
-   * @static
-   * @memberof SerieLine
-   */
-
-  // Extends scatterSerie
-  markers: false,
-
-  lineColor: 'black',
-  lineStyle: 1,
-  flip: false,
-  label: '',
-  lineWidth: 1,
-
-  trackMouse: false,
-  trackMouseLabel: false,
-  trackMouseLabelRouding: 1,
-  lineToZero: false,
-  selectableOnClick: false,
-  overflowX: false,
-  overflowY: false
-};
-
-/**
- * Serie line
- * @example graph.newSerie( name, options, "line" );
- * @see Graph#newSerie
- * @extends Serie
- */
-class SerieLine extends SerieScatter {
-  constructor(graph, name, options, defaultInherited) {
-    super(graph, name, options, extend(true, {}, defaultOptions, defaultInherited));
-
-    this.selectionType = 'unselected';
-    this._type = type;
-    mapEventEmission(this.options, this); // Register events
-
-    // Creates an empty style variable
-    this.styles = {};
-
-    // Unselected style
-    this.styles.unselected = {
-      lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle,
-      lineWidth: this.options.lineWidth
-    };
-
-    this.styles.selected = {
-      lineWidth: 3
-    };
-
-    this.shown = true;
-
-    this.data = [];
-    this._isMinOrMax = {
-      x: {
-        min: false,
-        max: false
-      },
-      y: {
-        min: false,
-        max: false
-      }
-    };
-
-    // Optimize is no markerPoints => save loops
-    //      this.markerPoints = {};
-
-    this.groupLines = document.createElementNS(this.graph.ns, 'g');
-    this.domMarker = document.createElementNS(this.graph.ns, 'path');
-
-    if (!this.domMarker.style) {
-      this.domMarker.style = {
-        cursor: 'pointer'
-      };
-    } else {
-      this.domMarker.style.cursor = 'pointer';
-    }
-
-    this.additionalData = {};
-
-    this.marker = document.createElementNS(this.graph.ns, 'circle');
-    this.marker.setAttribute('fill', 'black');
-    this.marker.setAttribute('r', 3);
-    this.marker.setAttribute('display', 'none');
-
-    this.markerLabel = document.createElementNS(this.graph.ns, 'text');
-    this.markerLabelSquare = document.createElementNS(this.graph.ns, 'rect');
-    this.markerLabelSquare.setAttribute('fill', 'white');
-    this.domMarkerHover = {};
-    this.domMarkerSelect = {};
-    this.markerHovered = 0;
-    this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
-
-    this.markerPoints = {};
-
-    //this.scale = 1;
-    //this.shift = 0;
-    this.lines = [];
-
-    this.groupMain.appendChild(this.groupLines);
-
-    this.groupMain.appendChild(this.marker);
-
-    this.groupMain.appendChild(this.groupMarkerSelected);
-    this.groupMain.appendChild(this.markerLabelSquare);
-    this.groupMain.appendChild(this.markerLabel);
-
-    this.independantMarkers = [];
-
-    if (this.initExtended1) {
-      this.initExtended1();
-    }
-
-    this.groupLines.addEventListener('click', e => {
-      if (this.options.selectableOnClick) {
-        if (this.isSelected()) {
-          this.graph.unselectSerie(this);
-        } else {
-          this.graph.selectSerie(this);
-        }
-      }
-    });
-  }
-
-  postInit() {
-    this.extendStyles();
-  }
-
-  /**
-   * Sets the options of the serie
-   * @see SerieLineDefaultOptions
-   * @param {Object} options - A object containing the options to set
-   * @return {SerieLine} The current serie
-   * @memberof SerieLine
-   */
-  setOptions(options) {
-    //this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
-    // Unselected style
-    /*this.styles.unselected = {
-      lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle
-    };
-    */
-    this.applyLineStyles();
-    return this;
-  }
-
-  onMouseWheel() {}
-
-  /**
-   * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
-   * @returns {SerieLine} The current serie
-   * @memberof SerieLine
-   */
-  empty() {
-    for (var i = 0, l = this.lines.length; i < l; i++) {
-      this.groupLines.removeChild(this.lines[i]);
-    }
-    this.lines = [];
-
-    return this;
-  }
-
-  /**
-   * Applies a selection to the serie
-   * @param {String} [ selectionType = "selected" ] - The selection name
-   * @returns {SerieLine} The current serie
-   * @see SerieLine#unselect
-   * @memberof SerieLine
-   */
-  select(selectionType) {
-    selectionType = selectionType || 'selected';
-
-    this.selected = selectionType !== 'unselected';
-    this.selectionType = selectionType;
-    this.applyLineStyles();
-    this.applyLineStyle(this.getSymbolForLegend());
-
-    super.select(selectionType);
-
-    return this;
-  }
-
-  /**
-   * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
-   * @returns {SerieLine} The current serie
-   * @see SerieLine#select
-   * @memberof SerieLine
-   */
-  unselect() {
-    this.selected = false;
-    super.unselect();
-    return this.select('unselected');
-  }
-
-  /**
-   * Computes and returns a line SVG element with the same line style as the serie, or width 20px
-   * @returns {SVGElement}
-   * @memberof SerieLine
-   */
-  getSymbolForLegend() {
-    const container = this._getSymbolForLegendContainer();
-
-    if (!this.lineForLegend) {
-      var line = document.createElementNS(this.graph.ns, 'line');
-      this.applyLineStyle(line);
-
-      line.setAttribute('x1', 5);
-      line.setAttribute('x2', 25);
-      line.setAttribute('y1', 0);
-      line.setAttribute('y2', 0);
-
-      line.setAttribute('cursor', 'pointer');
-
-      this.lineForLegend = line;
-      container.appendChild(this.lineForLegend);
-    }
-
-    super.getSymbolForLegend();
-
-    return this.lineForLegend;
-  }
-
-  /**
-   * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
-   * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-   * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range
-   * Starting from jsGraph 2.0, it does not calculate the minimum and maximum and creates the zone serie anymore
-   * @return {SerieLine} The current serie instance
-   * @example serie.degrade( 0.5 ); // Will display 2 points per pixels
-   * @memberof SerieLine
-   */
-  degrade(pxPerP) {
-    this.degradationPx = pxPerP;
-    return this;
-  }
-
-  drawInit(force) {
-    try {
-      this.axisCheck();
-    } catch (e) {
-      console.warn(e);
-      return false;
-    }
-
-    this.currentLineId = 0;
-    this.counter = 0;
-    this._drawn = true;
-    this.currentLine = '';
-
-    // Degradation
-
-    if (this.waveform) {
-      if (this.degradationPx) {
-        this.waveform.resampleForDisplay({
-          resampleToPx: this.degradationPx,
-          xPosition: this.getXAxis().getPx.bind(this.getXAxis()),
-          minX: this.getXAxis().getCurrentMin(),
-          maxX: this.getXAxis().getCurrentMax()
-        });
-
-        this._dataToUse = [this.waveform.getDataToUseFlat()];
-      } else if (this.waveform.hasAggregation()) {
-        let xaxis = this.getXAxis(),
-            numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
-            promise = this.waveform.selectAggregatedData(numberOfPointsInTotal);
-
-        if (promise instanceof Promise) {
-          promise.then(() => {
-            this.draw(force);
-          });
-
-          return false;
-        } else if (promise === false) {
-          return false;
-        } else {
-          this._dataToUse = this.waveform.getDataToUseFlat();
-        }
-      }
-
-      //    this._dataToUse = this.waveform.getDataToUseFlat();
-    } else {
-      this._dataToUse = this.data;
-      this._xDataToUse = this.xData;
-    }
-
-    return true;
-  }
-
-  removeLinesGroup() {
-    this._afterLinesGroup = this.groupLines.nextSibling;
-    this.groupMain.removeChild(this.groupLines);
-  }
-
-  insertLinesGroup() {
-    if (!this._afterLinesGroup) {
-      throw 'Could not find group after lines to insertion.';
-    }
-
-    this.groupMain.insertBefore(this.groupLines, this._afterLinesGroup);
-    this._afterLinesGroup = false;
-  }
-
-  removeExtraLines() {
-    var i = this.currentLineId,
-        l = this.lines.length;
-
-    for (; i < l; i++) {
-      this.groupLines.removeChild(this.lines[i]);
-    }
-
-    this.lines.splice(this.currentLineId, l - this.currentLineId);
-    this.currentLineId = 0;
-  }
-
-  /**
-   * Draws the serie
-   * @memberof SerieLine
-   */
-  draw(force) {
-    // Serie redrawing
-
-    if (!this.getXAxis() || !this.getYAxis()) {
-      throw 'No axes were defined for this serie';
-    }
-
-    if (force || this.hasDataChanged()) {
-      super.draw();
-
-      if (!this.drawInit(force)) {
-        return;
-      }
-
-      var data = this._dataToUse,
-          xData = this._xDataToUse,
-          slotToUse = this._slotToUse;
-
-      this.removeLinesGroup();
-
-      this.lookForMaxima = true;
-      this.lookForMinima = false;
-
-      this.pos0 = this.getYAxis().getPos(0);
-
-      if (this.hasErrors()) {
-        this.errorDrawInit();
-      }
-
-      this._draw();
-
-      if (this.hasErrors()) {
-        this.errorDraw();
-      }
-
-      this.removeExtraLines();
-
-      this.insertLinesGroup();
-    }
-
-    // Unhovers everything
-    for (var i in this.domMarkerHover) {
-      this.toggleMarker(i.split(','), false, true);
-    }
-
-    // Deselects everything
-    for (var i in this.domMarkerSelect) {
-      this.toggleMarker(i.split(','), false, false);
-    }
-
-    this.applyLineStyle(this.getSymbolForLegend());
-
-    if (this.hasStyleChanged(this.selectionType)) {
-      this.updateStyle();
-    }
-
-    this.dataHasChanged(false);
-    super.afterDraw();
-  }
-
-  _draw() {
-    let self = this,
-        waveform = this.waveform,
-        data,
-        x,
-        y,
-        lastX = false,
-        lastY = false,
-        xpx,
-        ypx,
-        xpx2,
-        ypx2,
-        xAxis = this.getXAxis(),
-        yAxis = this.getYAxis(),
-        xMin = xAxis.getCurrentMin(),
-        yMin = yAxis.getCurrentMin(),
-        xMax = xAxis.getCurrentMax(),
-        yMax = yAxis.getCurrentMax();
-
-    if (!waveform) {
-      return;
-    }
-
-    data = waveform.getData(true);
-
-    // Y crossing
-    let yLeftCrossingRatio,
-        yLeftCrossing,
-        yRightCrossingRatio,
-        yRightCrossing,
-        xTopCrossingRatio,
-        xTopCrossing,
-        xBottomCrossingRatio,
-        xBottomCrossing,
-
-    /*xshift = waveform.getXShift(),
-    xscale = wave.getXScale(),*/
-    yshift = waveform.getShift(),
-        yscale = waveform.getScale();
-
-    let pointOutside = false;
-    let lastPointOutside = false;
-    let pointOnAxis;
-
-    let _monotoneous = this.isMonotoneous();
-
-    let i = 0,
-        l = waveform.getLength();
-
-    this.currentLine = '';
-
-    if (waveform.isXMonotoneous()) {
-      if (waveform.isXMonotoneousAscending()) {
-        try {
-          i = waveform.getIndexFromX(xMin, true) || 0;
-          l = waveform.getIndexFromX(xMax, true);
-        } catch (e) {
-          l = waveform.getLength();
-        }
-      } else {
-        try {
-          i = waveform.getIndexFromX(xMax, true) || 0;
-          l = waveform.getIndexFromX(xMin, true);
-        } catch (e) {
-          l = waveform.getLength();
-        }
-      }
-
-      l += 2;
-      if (l > data.length) {
-        l = data.length;
-      }
-    }
-
-    for (; i < l; i += 1) {
-      x = waveform.getX(i, true);
-      y = data[i] * yscale + yshift;
-
-      if (x != x || y != y) {
-        // NaN checks
-        this._createLine();
-        continue;
-      }
-
-      if (!this.options.overflowX && x < xMin && lastX < xMin || !this.options.overflowX && x > xMax && lastX > xMax || (!this.options.overflowY && y < yMin && lastY < yMin || !this.options.overflowY && y > yMax && lastY > yMax) && !this.options.lineToZero) {
-        lastX = x;
-        lastY = y;
-        lastPointOutside = true;
-        continue;
-      }
-
-      this.counter2 = i;
-
-      xpx2 = this.getX(x);
-      ypx2 = this.getY(y);
-      //xpx2 = 0;
-      //ypx2 = 0;
-
-      if (xpx2 == xpx && ypx2 == ypx) {
-        continue;
-      }
-
-      if (xpx2 != xpx2 || ypx2 != ypx2) {
-        // NaN checks
-        if (this.counter > 0) {
-          this._createLine();
-        }
-        continue;
-      }
-
-      if (!_monotoneous) {
-        pointOutside = !this.options.overflowX && (x < xMin || x > xMax) || !this.options.overflowY && (y < yMin || y > yMax);
-      } else {
-        pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
-      }
-
-      if (this.options.lineToZero) {
-        pointOutside = x < xMin || x > xMax;
-
-        if (pointOutside) {
-          continue;
-        }
-      } else {
-        if (pointOutside || lastPointOutside) {
-          if ((lastX === false || lastY === false) && !lastPointOutside) {
-            xpx = xpx2;
-            ypx = ypx2;
-            lastX = x;
-            lastY = y;
-          } else {
-            pointOnAxis = [];
-            // Y crossing
-            yLeftCrossingRatio = (x - xMin) / (x - lastX);
-            yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
-            yRightCrossingRatio = (x - xMax) / (x - lastX);
-            yRightCrossing = y - yRightCrossingRatio * (y - lastY);
-
-            // X crossing
-            xTopCrossingRatio = (y - yMin) / (y - lastY);
-            xTopCrossing = x - xTopCrossingRatio * (x - lastX);
-            xBottomCrossingRatio = (y - yMax) / (y - lastY);
-            xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
-
-            if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin) {
-              pointOnAxis.push([xMin, yLeftCrossing]);
-            }
-
-            if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin) {
-              pointOnAxis.push([xMax, yRightCrossing]);
-            }
-
-            if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin) {
-              pointOnAxis.push([xTopCrossing, yMin]);
-            }
-
-            if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin) {
-              pointOnAxis.push([xBottomCrossing, yMax]);
-            }
-
-            if (pointOnAxis.length > 0) {
-              if (!pointOutside) {
-                // We were outside and now go inside
-
-                if (pointOnAxis.length > 1) {
-                  console.error('Programmation error. Please e-mail me.');
-                  console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
-                }
-
-                this._createLine();
-                this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-                this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
-              } else if (!lastPointOutside) {
-                // We were inside and now go outside
-
-                if (pointOnAxis.length > 1) {
-                  console.error('Programmation error. Please e-mail me.');
-                  console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
-                }
-
-                this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-              } else {
-                // No crossing: do nothing
-                if (pointOnAxis.length == 2) {
-                  this._createLine();
-
-                  this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-                  this._addPoint(this.getX(pointOnAxis[1][0]), this.getY(pointOnAxis[1][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-                }
-              }
-            } else if (!pointOutside) {
-              this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
-            } // else {
-            // Norman:
-            // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
-            // However, there's no need to draw anything because the point is on the axis and will already be covered.
-            // 28 Aug 2015
-
-            /*
-              if ( lastPointOutside !== pointOutside ) {
-                console.error( "Programmation error. A crossing should have been found" );
-                console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
-                console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
-                console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
-                console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
-                console.log( pointOutside, lastPointOutside )
-               }
-              */
-            // }
-          }
-
-          xpx = xpx2;
-          ypx = ypx2;
-          lastX = x;
-          lastY = y;
-
-          lastPointOutside = pointOutside;
-
-          continue;
-        }
-      }
-
-      this._addPoint(xpx2, ypx2, x, y, i, false, true);
-
-      //this.detectPeaks( x, y );
-
-      xpx = xpx2;
-      ypx = ypx2;
-
-      lastX = x;
-      lastY = y;
-    }
-
-    this._createLine();
-
-    if (this._tracker) {
-      if (this._trackerDom) {
-        this._trackerDom.remove();
-      }
-
-      var cloned = this.groupLines.cloneNode(true);
-      this.groupMain.appendChild(cloned);
-
-      for (i = 0, l = cloned.children.length; i < l; i++) {
-        cloned.children[i].setAttribute('stroke', 'transparent');
-        cloned.children[i].setAttribute('stroke-width', '25px');
-        cloned.children[i].setAttribute('pointer-events', 'stroke');
-      }
-
-      this._trackerDom = cloned;
-
-      this.groupMain.addEventListener('mousemove', e => {
-        var coords = this.graph._getXY(e),
-            ret = this.handleMouseMove(false, false);
-
-        this._trackingCallback(this, ret, coords.x, coords.y);
-      });
-
-      this.groupMain.addEventListener('mouseleave', e => {
-        this._trackingOutCallback(this);
-      });
-    }
-
-    return this;
-  }
-
-  kill() {
-    super.kill();
-  }
-
-  _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
-    /*if( ! this.currentLineId ) {
-        throw "No current line"
-      }* @memberof SerieLine
-    */
-
-    if (xpx !== xpx || ypx !== ypx) {
-      return;
-    }
-
-    if (this.counter == 0) {
-      this.currentLine = 'M ';
-    } else {
-      if (this.options.lineToZero || move) {
-        this.currentLine += 'M ';
-      } else {
-        this.currentLine += 'L ';
-      }
-    }
-
-    this.currentLine += xpx;
-    this.currentLine += ' ';
-    this.currentLine += ypx;
-    this.currentLine += ' ';
-
-    if (this.options.lineToZero && this.pos0 !== undefined) {
-      this.currentLine += 'L ';
-      this.currentLine += xpx;
-      this.currentLine += ' ';
-      this.currentLine += this.pos0;
-      this.currentLine += ' ';
-    }
-
-    if (this.hasErrors()) {
-      this.errorAddPoint(j, x, y, xpx, ypx);
-    }
-
-    this.counter++;
-  }
-
-  // Returns the DOM
-  _createLine() {
-    var i = this.currentLineId++,
-        line;
-
-    // Creates a line if needed
-    if (this.lines[i]) {
-      line = this.lines[i];
-    } else {
-      line = document.createElementNS(this.graph.ns, 'path');
-      this.applyLineStyle(line);
-      this.groupLines.appendChild(line);
-      this.lines[i] = line;
-    }
-
-    if (this.counter == 0) {
-      line.setAttribute('d', '');
-    } else {
-      line.setAttribute('d', this.currentLine);
-    }
-
-    this.currentLine = 'M ';
-    this.counter = 0;
-
-    return line;
-  }
-
-  /**
-   * Reapply the current style to the serie lines elements. Mostly used internally
-   * @memberof SerieLine
-   */
-  applyLineStyles() {
-    for (var i = 0; i < this.lines.length; i++) {
-      this.applyLineStyle(this.lines[i]);
-    }
-  }
-
-  /**
-   * Applies the current style to a line element. Mostly used internally
-   * @memberof SerieLine
-   */
-  applyLineStyle(line) {
-    line.setAttribute('stroke', this.getLineColor());
-    line.setAttribute('stroke-width', this.getLineWidth());
-    if (this.getLineDashArray()) {
-      line.setAttribute('stroke-dasharray', this.getLineDashArray());
-    } else {
-      line.removeAttribute('stroke-dasharray');
-    }
-
-    if (this.getFillColor()) {
-      line.setAttribute('fill', this.getFillColor());
-    } else {
-      line.setAttribute('fill', 'none');
-    }
-
-    //	line.setAttribute('shape-rendering', 'optimizeSpeed');
-  }
-
-  /**
-   * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
-   * @example var opts = { lineColor: 'red' };
-   * var s = graph.newSerie( "name", opts ).setData( someData );
-   * opts.lineColor = 'green';
-   * s.updateStyle(); // Sets the lineColor to green
-   * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
-   * @memberof SerieLine
-   */
-  updateStyle() {
-    this.applyLineStyles();
-    this.setLegendSymbolStyle();
-
-    this.styleHasChanged(false);
-  }
-
-  // Revised August 2014. Ok
-  getMarkerPath(family, add) {
-    var z = family.zoom || 1,
-        add = add || 0,
-        el = [];
-
-    switch (family.type) {
-      case 2:
-        el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4];
-        break;
-
-      case 3:
-        el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4];
-        break;
-
-      case 4:
-        el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z'];
-        break;
-
-      default:
-      case 1:
-        el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
-        break;
-    }
-
-    if ((z == 1 || !z) && !add) {
-      return el.join(' ');
-    }
-
-    var num = 'number';
-
-    if (!el) {
-      return;
-    }
-
-    for (var i = 0, l = el.length; i < l; i++) {
-      if (typeof el[i] == num) {
-        el[i] *= z + add;
-      }
-    }
-
-    return el.join(' ');
-  }
-
-  /**
-   * Searches the closest point pair (x,y) to the a pair of pixel position
-   * @param {Number} x - The x position in pixels (from the left)
-   * @param {Number} y - The y position in pixels (from the left)
-   * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-   * @memberof SerieLine
-   */
-  searchIndexByPxXY(x, y) {
-    var oldDist = false,
-        xyindex = false,
-        dist;
-
-    var xData = this._xDataToUse,
-        p_x,
-        p_y;
-
-    for (var k = 0, m = this.waveform.getLength(); k < m; k += 1) {
-      p_x = this.waveform.getX(k);
-      p_y = this.waveform.getY(k);
-
-      dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-      //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
-
-      if (!oldDist || dist < oldDist) {
-        oldDist = dist;
-        xyindex = k;
-      }
-    }
-
-    return xyindex;
-  }
-
-  /**
-   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-   * @param {Number} valX - The x value to search for
-   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-   * @memberof SerieLine
-   */
-  searchClosestValue(valX, valY) {
-    if (this.waveform) {
-      let indexX;
-      try {
-        indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
-      } catch (e) {
-        console.log(e);
-        throw new Error('Error while finding the closest index');
-        return {};
-      }
-
-      if (!indexX) {
-        return false;
-      }
-
-      let returnObj = {};
-
-      let direction;
-      // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
-      if (valX > this.waveform.getX(indexX)) {
-        direction = -1;
-      } else {
-        direction = 0;
-      }
-
-      Object.assign(returnObj, {
-        indexMin: indexX + direction,
-        indexMax: indexX + direction + 1,
-        indexClosest: indexX,
-        xMin: this.waveform.getX(indexX + direction),
-        xMax: this.waveform.getX(indexX + direction + 1),
-        yMin: this.waveform.getY(indexX + direction),
-        yMax: this.waveform.getY(indexX + direction + 1),
-        xClosest: this.waveform.getX(indexX),
-        yClosest: this.waveform.getY(indexX),
-        xExact: valX
-      });
-      return returnObj;
-    }
-  }
-
-  handleMouseMove(xValue, doMarker, yValue) {
-    var valX = xValue || this.getXAxis().getMouseVal(),
-        valY = yValue || this.getYAxis().getMouseVal();
-
-    var value = this.searchClosestValue(valX, valY);
-
-    if (!value) {
-      return;
-    }
-
-    var ratio, intY;
-
-    if (value.xMax == value.xMin) {
-      intY = value.yMin;
-    } else {
-      //ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-      //intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
-    }
-
-    if (doMarker && this.options.trackMouse) {
-      if (value.xMin == undefined) {
-        return false;
-      }
-    }
-
-    return {
-      xBefore: value.xMin,
-      xAfter: value.xMax,
-      yBefore: value.yMin,
-      yAfter: value.yMax,
-      trueX: value.xExact,
-      indexClosest: value.indexClosest,
-      interpolatedY: intY,
-
-      xClosest: value.xClosest,
-      yClosest: value.yClosest
-    };
-  }
-  /**
-   * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-   * @param {Number} startX - The start of the x values
-   * @param {Number} endX - The end of the x values
-   * @returns {Number} Maximal y value in between startX and endX
-   * @memberof SerieLine
-   */
-  getMax(start, end) {
-    var start2 = Math.min(start, end),
-        end2 = Math.max(start, end),
-        v1 = this.searchClosestValue(start2),
-        v2 = this.searchClosestValue(end2),
-        i,
-        j,
-        max = -Infinity,
-        initJ,
-        maxJ;
-
-    //      console.log( start2, end2, v1, v2 );
-
-    if (!v1) {
-      start2 = this.minX;
-      v1 = this.searchClosestValue(start2);
-    }
-
-    if (!v2) {
-      end2 = this.maxX;
-      v2 = this.searchClosestValue(end2);
-    }
-
-    if (!v1 || !v2) {
-      return -Infinity;
-    }
-
-    for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
-      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-
-      for (j = initJ; j <= maxJ; j += 2) {
-        max = Math.max(max, this.data[i][j + 1]);
-      }
-    }
-
-    return max;
-  }
-
-  /**
-   * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-   * @param {Number} startX - The start of the x values
-   * @param {Number} endX - The end of the x values
-   * @returns {Number} Maximal y value in between startX and endX
-   * @memberof SerieLine
-   */
-  getMin(start, end) {
-    var start2 = Math.min(start, end),
-        end2 = Math.max(start, end),
-        v1 = this.searchClosestValue(start2),
-        v2 = this.searchClosestValue(end2),
-        i,
-        j,
-        min = Infinity,
-        initJ,
-        maxJ;
-
-    if (!v1) {
-      start2 = this.minX;
-      v1 = this.searchClosestValue(start2);
-    }
-
-    if (!v2) {
-      end2 = this.maxX;
-      v2 = this.searchClosestValue(end2);
-    }
-
-    if (!v1 || !v2) {
-      return Infinity;
-    }
-
-    for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
-      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-
-      for (j = initJ; j <= maxJ; j += 2) {
-        min = Math.min(min, this.data[i][j + 1]);
-      }
-    }
-
-    return min;
-  }
-
-  /* LINE STYLE * @memberof SerieLine
-   */
-
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
-  }
-
-  setLineStyle(number, selectionType = 'unselected', applyToSelected) {
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineStyle = number;
-
-    if (applyToSelected) {
-      this.setLineStyle(number, 'selected');
-    }
-
-    this.styleHasChanged(selectionType);
-
-    return this;
-  }
-
-  getLineStyle(selectionType) {
-    return this.getStyle(selectionType).lineStyle;
-  }
-
-  getLineDashArray(selectionType = this.selectionType || 'unselected') {
-    switch (this.getStyle(selectionType).lineStyle) {
-      case 2:
-        return '1, 1';
-        break;
-      case 3:
-        return '2, 2';
-        break;
-      case 4:
-        return '3, 3';
-        break;
-      case 5:
-        return '4, 4';
-        break;
-      case 6:
-        return '5, 5';
-        break;
-
-      case 7:
-        return '5 2';
-        break;
-      case 8:
-        return '2 5';
-        break;
-
-      case 9:
-        return '4 2 4 4';
-        break;
-      case 10:
-        return '1,3,1';
-        break;
-      case 11:
-        return '9 2';
-        break;
-      case 12:
-        return '2 9';
-        break;
-
-      case 1:
-      case false:
-        return false;
-        break;
-
-      default:
-        return this.styles[selectionType].lineStyle;
-        break;
-    }
-
-    this.styleHasChanged(selectionType);
-  }
-
-  getStyle(selectionType = this.selectionType || 'unselected') {
-    return this.styles[selectionType] || this.styles.unselected;
-  }
-
-  extendStyles() {
-    for (var i in this.styles) {
-      var s = this.styles[i];
-      if (s) {
-        this.styles[i] = extend(true, {}, this.styles.unselected, s);
-      }
-    }
-  }
-
-  extendStyle(styleTarget, styleOrigin) {
-    var s = this.styles[styleTarget];
-    this.styles[styleTarget] = extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
-    this.styleHasChanged(styleTarget);
-  }
-
-  /** @memberof SerieLine
-   */
-
-  setLineWidth(width, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineWidth = width;
-
-    if (applyToSelected) {
-      this.setLineWidth(width, 'selected');
-    }
-
-    this.styleHasChanged(selectionType);
-
-    return this;
-  }
-
-  getLineWidth(selectionType) {
-    return this.getStyle(selectionType).lineWidth || 1;
-  }
-
-  /* LINE COLOR * @memberof SerieLine
-   */
-  setLineColor(color, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineColor = color;
-
-    if (applyToSelected) {
-      this.setLineColor(color, 'selected');
-    }
-
-    this.styleHasChanged(selectionType);
-
-    return this;
-  }
-
-  /* FILL COLOR * @memberof SerieLine
-   */
-  setFillColor(color, selectionType, applyToSelected) {
-
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].fillColor = color;
-
-    if (applyToSelected) {
-      this.setFillColor(color, 'selected');
-    }
-
-    this.styleHasChanged(selectionType);
-
-    return this;
-  }
-
-  getLineColor(selectionType) {
-    return this.getStyle(selectionType).lineColor || 'black';
-  }
-
-  getFillColor(selectionType) {
-
-    return this.getStyle(selectionType).fillColor || undefined;
-  }
-
-  /* * @memberof SerieLine
-   */
-
-  isMonotoneous() {
-    if (this.waveform) {
-      return this.waveform.isMonotoneous();
-    }
-
-    return !!this.xmonotoneous;
-  }
-
-  findLocalMinMax(xRef, xWithin, type) {
-    if (!this.waveform) {
-      return false;
-    }
-
-    return this.waveform.findLocalMinMax(xRef, xWithin, type);
-  }
-}
-
-mix(SerieLine, ErrorBarMixin);
-
-var Serie3DMixin = {
-
-  /**
-   * Returns the x position of a certain value in pixels position, based on the serie's axis
-   * @memberof Serie
-   * @param {Number} val - Value to convert to pixels position
-   * @returns {Number} The x position in px corresponding to the x value
-   */
-  getX: function (val) {
-    return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.getXAxis().getZProj(this.options.zpos);
-  },
-
-  /**
-   * Returns the y position of a certain value in pixels position, based on the serie's axis
-   * @memberof Serie3DMixin
-   * @param {Number} val - Value to convert to pixels position
-   * @returns {Number} The y position in px corresponding to the y value
-   */
-  getY: function (val) {
-    return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.getYAxis().getZProj(this.options.zpos);
-  },
-
-  getZPos: function () {
-    return this.options.zpos;
-  },
-
-  /**
-   * @returns {Number} Lowest x value of the serie's data
-   * @memberof Serie
-   */
-  getMinX: function (useZValues) {
-    if (!useZValues) {
-      return this.minX;
-    }
-
-    return getZCorrectedValue(this, true, true);
-  },
-
-  /**
-   * @returns {Number} Highest x value of the serie's data
-   * @memberof Serie
-   */
-  getMaxX: function (useZValues) {
-
-    if (!useZValues) {
-      return this.maxX;
-    }
-    return getZCorrectedValue(this, true, false);
-  },
-
-  /**
-   * @returns {Number} Lowest y value of the serie's data
-   * @memberof Serie
-   */
-  getMinY: function (useZValues) {
-
-    if (!useZValues) {
-      return this.minY;
-    }
-    return getZCorrectedValue(this, false, true);
-  },
-
-  /**
-   * @returns {Number} Highest y value of the serie's data
-   * @memberof Serie
-   */
-  getMaxY: function (useZValues) {
-
-    if (!useZValues) {
-      return this.maxY;
-    }
-    return getZCorrectedValue(this, false, false);
-  }
-
-};
-
-function getZCorrectedValue(serie, x, min) {
-
-  let i, l, data, val, valFinal;
-  let wf = serie.getWaveforms();
-
-  for (let wave of wf) {
-
-    i = 0;
-    l = wave.getLength();
-    data = wave.getData();
-
-    for (; i < l; i += 1) {
-
-      if (x) {
-        val = serie.getXAxis().getVal(serie.getX(wave.getX(i, true)));
-      } else {
-        val = serie.getYAxis().getVal(serie.getY(data[i]));
-      }
-
-      if (i == 0) {
-        valFinal = val;
-      } else {
-
-        if (min) {
-          valFinal = Math.min(valFinal, val);
-        } else {
-          valFinal = Math.max(valFinal, val);
-        }
-      }
-    }
-  }
-  return valFinal;
-}
-
-/**
- * Serie line with 3D projection
- * @example graph.newSerie( name, options, "line" );
- * @see Graph#newSerie
- * @extends SerieLine
- */
-class SerieLine3D extends SerieLine {
-
-  static defaults() {
-    return {
-      zpos: 0
-    };
-  }
-  constructor(graph, name, options) {
-    super(...arguments);
-  }
-
-  /**
-   * Sets the z-position
-   * @memberof SerieLine3D
-   * @param {Number} zPos - The position in the z axis
-   */
-  setZPos(zPos) {
-    this.options.zpos = zPos;
-    return this;
-  }
-
-  setz() {
-    return this.setZPos(...arguments);
-  }
-}
-
-mix(SerieLine3D, Serie3DMixin);
-
-/**
- * Represents a bar serie.
-   Needs to be used exclusively with a bar axis ({@link AxisXBar}).
-   Supports error bars, line color, line width, fill color, fill opacity.
- * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
- * @extends Serie
- */
-class SerieBar extends SerieLine {
-
-  constructor(graph, name, options) {
-
-    super(...arguments);
-
-    this.pathDom = document.createElementNS(this.graph.ns, 'path');
-    this.groupMain.appendChild(this.pathDom);
-
-    // Creates an empty style variable
-    this.styles = {};
-
-    // Unselected style
-    this.styles.unselected = {
-      lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle,
-      lineWidth: this.options.lineWidth,
-      fillColor: this.options.fillColor,
-      fillOpacity: this.options.fillOpacity,
-      markers: this.options.markers
-    };
-  }
-
-  /**
-   *  Sets the fill color
-   */
-  setFillColor(fillColor, selectionType, applyToSelected) {
-
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].fillColor = fillColor;
-
-    if (applyToSelected) {
-      this.setFillColor(fillColor, 'selected');
-    }
-
-    this.styleHasChanged(selectionType);
-
-    return this;
-  }
-
-  /**
-   *  Returns the fill color
-   */
-  getFillColor(selectionType) {
-    return this.getStyle(selectionType).fillColor;
-  }
-
-  /*
-   * @memberof SerieBar
-   */
-  setFillOpacity(opacity, selectionType, applyToSelected) {
-
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].fillOpacity = opacity;
-
-    if (applyToSelected) {
-      this.setLineWidth(opacity, 'selected');
-    }
-
-    this.styleHasChanged(selectionType);
-
-    return this;
-  }
-
-  getFillOpacity(selectionType) {
-
-    return this.getStyle(selectionType).fillOpacity || 1;
-  }
-
-  /**
-   * Reapply the current style to the serie lines elements. Mostly used internally
-   */
-  applyLineStyles() {
-    this.applyLineStyle(this.pathDom);
-  }
-
-  /**
-   * Applies the current style to a line element. Mostly used internally
-   * @memberof SerieBar
-   */
-  applyLineStyle(line) {
-
-    line.setAttribute('stroke', this.getLineColor());
-    line.setAttribute('stroke-width', this.getLineWidth());
-    if (this.getLineDashArray()) {
-      line.setAttribute('stroke-dasharray', this.getLineDashArray());
-    } else {
-      line.removeAttribute('stroke-dasharray');
-    }
-    line.setAttribute('fill', this.getFillColor());
-    line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
-  }
-
-  draw() {
-
-    var path = '';
-    if (this.hasErrors()) {
-      this.errorDrawInit();
-    }
-
-    var j = 0;
-
-    for (; j < this.waveform.getLength(); j++) {
-
-      if (!this.categoryIndices[this.waveform.getX(j)]) {
-        continue;
-      }
-
-      path += `M ${this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)])} ${this.getYAxis().getPos(this.getYAxis().getCurrentMin())} V ${this.getYAxis().getPos(this.waveform.getY(j))} h ${this.getXAxis().getDeltaPx(1 / this.nbCategories)} V ${this.getYAxis().getPos(this.getYAxis().getCurrentMin())}`;
-
-      if (this.hasErrors()) {
-
-        var xpx = this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)]) + this.getXAxis().getDeltaPx(1 / this.nbCategories) / 2;
-        var ypx = this.getYAxis().getPos(this.waveform.getY(j));
-
-        this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
-      }
-    }
-
-    if (this.hasErrors()) {
-      this.errorDraw();
-    }
-
-    this.pathDom.setAttribute('d', path);
-    this.applyLineStyles();
-  }
-
-  // Markers now allowed
-  setMarkers() {}
-
-  getUsedCategories() {
-    return this.waveform.xdata;
-  }
-
-}
 
 const defaultOptions$2 = {
   redrawShapesAfterDraw: false
@@ -15539,7 +13850,1984 @@ class Serie extends EventEmitter {
   }
 }
 
+var type$1 = 'scatter';
+
 const defaultOptions$1 = {
+
+  markers: true,
+
+  markerStyles: {
+
+    unselected: {
+      default: {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: 'black'
+      }
+    },
+
+    selected: {
+      default: {
+        r: 4
+      }
+    }
+  }
+};
+
+/**
+ * @static
+ * @augments Serie
+ * @example graph.newSerie( name, options, "scatter" );
+ * @see Graph#newSerie
+ */
+class SerieScatter extends Serie {
+
+  constructor(graph, name, options, defaultInherited) {
+
+    super(graph, name, options, extend(true, {}, defaultOptions$1, defaultInherited));
+
+    this._type = type$1;
+    mapEventEmission(this.options, this);
+
+    this.shapes = []; // Stores all shapes
+    this.shapesDetails = [];
+    this.shapes = [];
+
+    this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
+    this.groupMain.appendChild(this.groupMarkers);
+
+    this.selectedStyleGeneral = {};
+    this.selectedStyleModifiers = {};
+
+    this.groupMarkers.addEventListener('mouseenter', e => {
+
+      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
+      if (isNaN(id)) {
+        return;
+      }
+
+      if (this.options.selectMarkerOnHover) {
+        this.selectMarker(id, 'selected');
+      }
+
+      this.emit('mouseOverMarker', id, this.waveform.getX(id), this.waveform.getY(id));
+    }, true);
+
+    this.groupMarkers.addEventListener('mouseout', e => {
+
+      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
+      if (isNaN(id)) {
+        return;
+      }
+
+      if (this.options.selectMarkerOnHover) {
+        this.selectMarker(id, 'unselected');
+      }
+
+      this.emit('mouseOutMarker', id, this.waveform.getX(id), this.waveform.getY(id));
+    });
+  }
+
+  /**
+   * Applies for x as the category axis
+   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
+   */
+  setDataCategory(data) {
+
+    for (let dataCategory of data) {
+
+      this._checkY(dataCategory.y.getMaxY());
+      this._checkY(dataCategory.y.getMinY());
+    }
+
+    this.data = data;
+    this.dataHasChanged();
+    this.graph.updateDataMinMaxAxes();
+    return this;
+  }
+
+  /**
+   * Removes all DOM points
+   * @private
+   */
+  empty() {
+
+    while (this.groupMarkers.firstChild) {
+      this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+    }
+  }
+
+  getSymbolForLegend() {
+
+    if (!this.markers) {
+      return;
+    }
+
+    const container = super._getSymbolForLegendContainer();
+
+    if (!this.shapeLegend) {
+      this.shapeLegend = this._makeMarker(container, this.options.markerStyles.unselected.default);
+      container.appendChild(this.shapeLegend);
+    }
+
+    var style = this.getMarkerStyle('unselected', -1, true);
+    for (var i in style[-1]) {
+      if (i == 'shape') {
+        continue;
+      }
+      this.shapeLegend.setAttribute(i, style[-1][i]);
+    }
+
+    return container;
+  }
+
+  /**
+   * Sets style to the scatter points
+   * First argument is the style applied by default to all points
+   * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+   * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+   *
+   * @example
+   * var modifiers = [];
+   * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+   * serie.setMarkerStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
+   *
+   * @param {Object} allStyles - The general style for all markers
+   * @param {Object} [ modifiers ] - The general style for all markers
+   * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
+   *
+   */
+  setMarkerStyle(all, modifiers, mode = 'unselected') {
+
+    if (typeof modifiers == 'string') {
+      mode = modifiers;
+      modifiers = false;
+    }
+
+    this.options.markerStyles[mode] = this.options.markerStyles[mode] || {};
+    this.options.markerStyles[mode].all = all;
+    this.options.markerStyles[mode].modifiers = modifiers;
+
+    this.styleHasChanged(mode);
+
+    return this;
+  }
+
+  /**
+   * Redraws the serie
+   * @private
+   * @param {force} Boolean - Forces redraw even if the data hasn't changed
+   */
+  draw(force) {
+    // Serie redrawing
+
+    if (!force && !this.hasDataChanged() && !this.hasStyleChanged('unselected') || !this.options.markers) {
+      return;
+    }
+
+    let xpx, ypx, j;
+    const isCategory = this.getXAxis().getType() == 'category';
+    const keys = [];
+
+    this.dataHasChanged(false);
+    this.styleHasChanged(false);
+
+    // Removes the marker group from the main DOM for operation (avoids browser repaint)
+    this.groupMain.removeChild(this.groupMarkers);
+
+    j = 0;
+    if (this.hasErrors()) {
+      this.errorDrawInit();
+    }
+
+    if (isCategory) {
+
+      let k = 0;
+
+      for (; j < this.data.length; j++) {
+
+        if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
+          continue;
+        }
+
+        if (this.error) {
+          //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
+        }
+
+        for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
+
+          //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+
+          ypx = this.getY(this.data[j].y.getY(n));
+          xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
+          n++;
+
+          this.shapesDetails[k] = this.shapesDetails[k] || [];
+          this.shapesDetails[k][0] = xpx;
+          this.shapesDetails[k][1] = ypx;
+          keys.push(k);
+          k++;
+        }
+      }
+    } else {
+
+      for (; j < this.waveform.getLength(); j++) {
+
+        if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
+
+          if (this.shapes[j]) {
+            this.shapes[j].setAttribute('display', 'none');
+            this.shapes[j]._hidden = true;
+          }
+          continue;
+        } else if (this.shapes[j] && this.shapes[j]._hidden) {
+          this.shapes[j].setAttribute('display', 'initial');
+          this.shapes[j]._hidden = false;
+        }
+
+        xpx = this.getX(this.waveform.getX(j));
+        ypx = this.getY(this.waveform.getY(j));
+
+        if (this.hasErrors()) {
+          this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
+        }
+
+        this.shapesDetails[j] = this.shapesDetails[j] || [];
+        this.shapesDetails[j][0] = xpx;
+        this.shapesDetails[j][1] = ypx;
+        keys.push(j);
+
+        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
+      }
+    }
+
+    if (this.hasErrors()) {
+      this.errorDraw();
+    }
+
+    // This will automatically create the shapes
+    this.applyMarkerStyle(this.selectionType || 'unselected', keys);
+    this.keys = keys;
+    this.groupMain.appendChild(this.groupMarkers);
+  }
+
+  _makeMarker(group, shape) {
+    var el = document.createElementNS(this.graph.ns, shape.shape);
+    group.appendChild(el);
+    return el;
+  }
+
+  getMarkerStyle(selection, index, noSetPosition) {
+
+    var selection = selection || 'unselected';
+    var indices;
+
+    var styles = {};
+
+    if (typeof index == 'number') {
+      indices = [index];
+    } else if (Array.isArray(index)) {
+      indices = index;
+    }
+
+    var shape, index, modifier, style; // loop variables
+
+    if (!this.options.markerStyles[selection]) {
+      selection = 'unselected';
+    }
+
+    var styleAll = this.options.markerStyles[selection].all;
+
+    if (!styleAll) {
+      styleAll = this.options.markerStyles[selection].default;
+    }
+
+    if (typeof styleAll == 'function') {
+      styleAll = styleAll();
+    }
+
+    const defaultStyle = this.options.markerStyles[selection].default ? this.options.markerStyles[selection].default : this.options.markerStyles.unselected.default;
+    styleAll = Object.assign({}, defaultStyle, styleAll);
+
+    var i = 0,
+        l = indices.length;
+
+    for (; i < l; i++) {
+
+      index = indices[i];
+      shape = this.shapes[index];
+
+      if ((modifier = this.options.markerStyles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
+
+        if (typeof modifier == 'function') {
+
+          style = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
+          if (style === false) {
+            continue;
+          }
+        } else if (modifier[index]) {
+
+          style = modifier[index];
+        }
+
+        styles[index] = Object.assign({}, styleAll, style);
+      } else if (styleAll !== undefined) {
+
+        styles[index] = styleAll;
+      } else {
+
+        styles[index] = this.options.markerStyles[selection].default;
+      }
+
+      if (!styles[index]) {
+        styles[index] = styleAll;
+      }
+
+      if (!shape) {
+        // Shape doesn't exist, let's create it
+
+        if (!styles[index].shape) {
+          console.error(style);
+          throw `No shape was defined with the style "${style}".`;
+        }
+
+        var g = document.createElementNS(this.graph.ns, 'g');
+        g.setAttribute('data-shapeid', index);
+
+        this.shapes[index] = this._makeMarker(g, styles[index]);
+        this.groupMarkers.appendChild(g);
+        shape = this.shapes[index];
+      }
+
+      if (!noSetPosition && this.shapesDetails[index][0] === this.shapesDetails[index][0] && this.shapesDetails[index][1] === this.shapesDetails[index][1]) {
+
+        shape.parentNode.setAttribute('transform', `translate(${this.shapesDetails[index][0]}, ${this.shapesDetails[index][1]})`);
+      }
+    }
+
+    return styles;
+  }
+
+  applyMarkerStyle(selection, index, noSetPosition) {
+
+    var i, j;
+    var styles = this.getMarkerStyle(selection, index, noSetPosition);
+
+    for (i in styles) {
+
+      for (j in styles[i]) {
+
+        if (j !== 'shape' && this.shapes[i]) {
+
+          if (styles[i][j]) {
+
+            this.shapes[i].setAttribute(j, styles[i][j]);
+          } else {
+
+            this.shapes[i].removeAttribute(j);
+          }
+        }
+      }
+    }
+  }
+
+  unselectMarker(index) {
+    this.selectMarker(index, false);
+  }
+
+  selectMarker(index, setOn, selectionType) {
+
+    if (this.shapesDetails[index][2] && this.shapesDetails[index][2] == selectionType) {
+      return;
+    }
+
+    if (typeof setOn == 'string') {
+      selectionType = setOn;
+      setOn = undefined;
+    }
+
+    if (Array.isArray(index)) {
+      return this.selectMarkers(index);
+    }
+
+    if (this.shapes[index] && this.shapesDetails[index]) {
+
+      if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
+
+        var selectionStyle = this.shapesDetails[index][2];
+        this.shapesDetails[index][2] = false;
+        var allStyles = this.getMarkerStyle(selectionStyle, index, true);
+
+        for (var i in allStyles[index]) {
+          this.shapes[index].removeAttribute(i);
+        }
+
+        this.applyMarkerStyle('unselected', index, true);
+      } else {
+
+        selectionType = selectionType || 'selected';
+        this.shapesDetails[index][2] = selectionType;
+        this.applyMarkerStyle(selectionType, index, true);
+      }
+    }
+  }
+
+  select(selectionType) {
+    this.selectionType = selectionType;
+    this.applyMarkerStyle(this.selectionType || 'selected', this.keys);
+    super.select(selectionType);
+  }
+
+  unselect() {
+    this.selectionType = 'unselected';
+    this.applyMarkerStyle(this.selectionType || 'unselected', this.keys);
+
+    super.unselect();
+  }
+
+  setMarkers(bln = true) {
+
+    this.options.markers = bln;
+
+    return this;
+  }
+
+  showMarkers() {
+
+    if (this.options.markers) {
+      return;
+    }
+
+    this.options.markers = true;
+    this.groupMarkers.setAttribute('display', 'initial');
+
+    if (this.shapeLegend) {
+      this.shapeLegend.setAttribute('display', 'initial');
+    }
+
+    return this;
+  }
+
+  hideMarkers() {
+
+    if (!this.options.markers) {
+      return;
+    }
+
+    this.options.markers = false;
+    this.groupMarkers.setAttribute('display', 'none');
+
+    if (this.shapeLegend) {
+      this.shapeLegend.setAttribute('display', 'none');
+    }
+    return this;
+  }
+
+  getUsedCategories() {
+
+    if (typeof this.data[0] == 'object') {
+      return this.data.map(d => d.x);
+    }
+
+    return [];
+  }
+
+}
+
+mix(SerieScatter, ErrorBarMixin);
+
+const type = 'line';
+
+const defaultOptions = {
+  /**
+   * @name SerieLineDefaultOptions
+   * @object
+   * @static
+   * @memberof SerieLine
+   */
+
+  // Extends scatterSerie
+  markers: false,
+
+  lineColor: 'black',
+  lineStyle: 1,
+  flip: false,
+  label: '',
+  lineWidth: 1,
+
+  trackMouse: false,
+  trackMouseLabel: false,
+  trackMouseLabelRouding: 1,
+  lineToZero: false,
+  selectableOnClick: false,
+  overflowX: false,
+  overflowY: false
+};
+
+/**
+ * Serie line
+ * @example graph.newSerie( name, options, "line" );
+ * @see Graph#newSerie
+ * @extends Serie
+ */
+class SerieLine extends SerieScatter {
+  constructor(graph, name, options, defaultInherited) {
+    super(graph, name, options, extend(true, {}, defaultOptions, defaultInherited));
+
+    this.selectionType = 'unselected';
+    this._type = type;
+    mapEventEmission(this.options, this); // Register events
+
+    // Creates an empty style variable
+    this.styles = {};
+
+    // Unselected style
+    this.styles.unselected = {
+      lineColor: this.options.lineColor,
+      lineStyle: this.options.lineStyle,
+      lineWidth: this.options.lineWidth
+    };
+
+    this.styles.selected = {
+      lineWidth: 3
+    };
+
+    this.shown = true;
+
+    this.data = [];
+    this._isMinOrMax = {
+      x: {
+        min: false,
+        max: false
+      },
+      y: {
+        min: false,
+        max: false
+      }
+    };
+
+    // Optimize is no markerPoints => save loops
+    //      this.markerPoints = {};
+
+    this.groupLines = document.createElementNS(this.graph.ns, 'g');
+    this.domMarker = document.createElementNS(this.graph.ns, 'path');
+
+    if (!this.domMarker.style) {
+      this.domMarker.style = {
+        cursor: 'pointer'
+      };
+    } else {
+      this.domMarker.style.cursor = 'pointer';
+    }
+
+    this.additionalData = {};
+
+    this.marker = document.createElementNS(this.graph.ns, 'circle');
+    this.marker.setAttribute('fill', 'black');
+    this.marker.setAttribute('r', 3);
+    this.marker.setAttribute('display', 'none');
+
+    this.markerLabel = document.createElementNS(this.graph.ns, 'text');
+    this.markerLabelSquare = document.createElementNS(this.graph.ns, 'rect');
+    this.markerLabelSquare.setAttribute('fill', 'white');
+    this.domMarkerHover = {};
+    this.domMarkerSelect = {};
+    this.markerHovered = 0;
+    this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
+
+    this.markerPoints = {};
+
+    //this.scale = 1;
+    //this.shift = 0;
+    this.lines = [];
+
+    this.groupMain.appendChild(this.groupLines);
+
+    this.groupMain.appendChild(this.marker);
+
+    this.groupMain.appendChild(this.groupMarkerSelected);
+    this.groupMain.appendChild(this.markerLabelSquare);
+    this.groupMain.appendChild(this.markerLabel);
+
+    this.independantMarkers = [];
+
+    if (this.initExtended1) {
+      this.initExtended1();
+    }
+
+    this.groupLines.addEventListener('click', e => {
+      if (this.options.selectableOnClick) {
+        if (this.isSelected()) {
+          this.graph.unselectSerie(this);
+        } else {
+          this.graph.selectSerie(this);
+        }
+      }
+    });
+  }
+
+  postInit() {
+    this.extendStyles();
+  }
+
+  /**
+   * Sets the options of the serie
+   * @see SerieLineDefaultOptions
+   * @param {Object} options - A object containing the options to set
+   * @return {SerieLine} The current serie
+   * @memberof SerieLine
+   */
+  setOptions(options) {
+    //this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
+    // Unselected style
+    /*this.styles.unselected = {
+      lineColor: this.options.lineColor,
+      lineStyle: this.options.lineStyle
+    };
+    */
+    this.applyLineStyles();
+    return this;
+  }
+
+  onMouseWheel() {}
+
+  /**
+   * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
+   * @returns {SerieLine} The current serie
+   * @memberof SerieLine
+   */
+  empty() {
+    for (var i = 0, l = this.lines.length; i < l; i++) {
+      this.groupLines.removeChild(this.lines[i]);
+    }
+    this.lines = [];
+
+    return this;
+  }
+
+  /**
+   * Applies a selection to the serie
+   * @param {String} [ selectionType = "selected" ] - The selection name
+   * @returns {SerieLine} The current serie
+   * @see SerieLine#unselect
+   * @memberof SerieLine
+   */
+  select(selectionType) {
+    selectionType = selectionType || 'selected';
+
+    this.selected = selectionType !== 'unselected';
+    this.selectionType = selectionType;
+    this.applyLineStyles();
+    this.applyLineStyle(this.getSymbolForLegend());
+
+    super.select(selectionType);
+
+    return this;
+  }
+
+  /**
+   * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
+   * @returns {SerieLine} The current serie
+   * @see SerieLine#select
+   * @memberof SerieLine
+   */
+  unselect() {
+    this.selected = false;
+    super.unselect();
+    return this.select('unselected');
+  }
+
+  /**
+   * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+   * @returns {SVGElement}
+   * @memberof SerieLine
+   */
+  getSymbolForLegend() {
+    const container = this._getSymbolForLegendContainer();
+
+    if (!this.lineForLegend) {
+      var line = document.createElementNS(this.graph.ns, 'line');
+      this.applyLineStyle(line);
+
+      line.setAttribute('x1', 5);
+      line.setAttribute('x2', 25);
+      line.setAttribute('y1', 0);
+      line.setAttribute('y2', 0);
+
+      line.setAttribute('cursor', 'pointer');
+
+      this.lineForLegend = line;
+      container.appendChild(this.lineForLegend);
+    }
+
+    super.getSymbolForLegend();
+
+    return this.lineForLegend;
+  }
+
+  /**
+   * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
+   * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
+   * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range
+   * Starting from jsGraph 2.0, it does not calculate the minimum and maximum and creates the zone serie anymore
+   * @return {SerieLine} The current serie instance
+   * @example serie.degrade( 0.5 ); // Will display 2 points per pixels
+   * @memberof SerieLine
+   */
+  degrade(pxPerP) {
+    this.degradationPx = pxPerP;
+    return this;
+  }
+
+  drawInit(force) {
+    try {
+      this.axisCheck();
+    } catch (e) {
+      console.warn(e);
+      return false;
+    }
+
+    this.currentLineId = 0;
+    this.counter = 0;
+    this._drawn = true;
+    this.currentLine = '';
+
+    // Degradation
+
+    if (this.waveform) {
+      if (this.degradationPx) {
+        this.waveform.resampleForDisplay({
+          resampleToPx: this.degradationPx,
+          xPosition: this.getXAxis().getPx.bind(this.getXAxis()),
+          minX: this.getXAxis().getCurrentMin(),
+          maxX: this.getXAxis().getCurrentMax()
+        });
+
+        this._dataToUse = [this.waveform.getDataToUseFlat()];
+      } else if (this.waveform.hasAggregation()) {
+        let xaxis = this.getXAxis(),
+            numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
+            promise = this.waveform.selectAggregatedData(numberOfPointsInTotal);
+
+        if (promise instanceof Promise) {
+          promise.then(() => {
+            this.draw(force);
+          });
+
+          return false;
+        } else if (promise === false) {
+          return false;
+        } else {
+          this._dataToUse = this.waveform.getDataToUseFlat();
+        }
+      }
+
+      //    this._dataToUse = this.waveform.getDataToUseFlat();
+    } else {
+      this._dataToUse = this.data;
+      this._xDataToUse = this.xData;
+    }
+
+    return true;
+  }
+
+  removeLinesGroup() {
+    this._afterLinesGroup = this.groupLines.nextSibling;
+    this.groupMain.removeChild(this.groupLines);
+  }
+
+  insertLinesGroup() {
+    if (!this._afterLinesGroup) {
+      throw 'Could not find group after lines to insertion.';
+    }
+
+    this.groupMain.insertBefore(this.groupLines, this._afterLinesGroup);
+    this._afterLinesGroup = false;
+  }
+
+  removeExtraLines() {
+    var i = this.currentLineId,
+        l = this.lines.length;
+
+    for (; i < l; i++) {
+      this.groupLines.removeChild(this.lines[i]);
+    }
+
+    this.lines.splice(this.currentLineId, l - this.currentLineId);
+    this.currentLineId = 0;
+  }
+
+  /**
+   * Draws the serie
+   * @memberof SerieLine
+   */
+  draw(force) {
+    // Serie redrawing
+
+    if (!this.getXAxis() || !this.getYAxis()) {
+      throw 'No axes were defined for this serie';
+    }
+
+    if (force || this.hasDataChanged()) {
+      super.draw();
+
+      if (!this.drawInit(force)) {
+        return;
+      }
+
+      var data = this._dataToUse,
+          xData = this._xDataToUse,
+          slotToUse = this._slotToUse;
+
+      this.removeLinesGroup();
+
+      this.lookForMaxima = true;
+      this.lookForMinima = false;
+
+      this.pos0 = this.getYAxis().getPos(0);
+
+      if (this.hasErrors()) {
+        this.errorDrawInit();
+      }
+
+      this._draw();
+
+      if (this.hasErrors()) {
+        this.errorDraw();
+      }
+
+      this.removeExtraLines();
+
+      this.insertLinesGroup();
+    }
+
+    // Unhovers everything
+    for (var i in this.domMarkerHover) {
+      this.toggleMarker(i.split(','), false, true);
+    }
+
+    // Deselects everything
+    for (var i in this.domMarkerSelect) {
+      this.toggleMarker(i.split(','), false, false);
+    }
+
+    this.applyLineStyle(this.getSymbolForLegend());
+
+    if (this.hasStyleChanged(this.selectionType)) {
+      this.updateStyle();
+    }
+
+    this.dataHasChanged(false);
+    super.afterDraw();
+  }
+
+  _draw() {
+    let self = this,
+        waveform = this.waveform,
+        data,
+        x,
+        y,
+        lastX = false,
+        lastY = false,
+        xpx,
+        ypx,
+        xpx2,
+        ypx2,
+        xAxis = this.getXAxis(),
+        yAxis = this.getYAxis(),
+        xMin = xAxis.getCurrentMin(),
+        yMin = yAxis.getCurrentMin(),
+        xMax = xAxis.getCurrentMax(),
+        yMax = yAxis.getCurrentMax();
+
+    if (!waveform) {
+      return;
+    }
+
+    data = waveform.getData(true);
+
+    // Y crossing
+    let yLeftCrossingRatio,
+        yLeftCrossing,
+        yRightCrossingRatio,
+        yRightCrossing,
+        xTopCrossingRatio,
+        xTopCrossing,
+        xBottomCrossingRatio,
+        xBottomCrossing,
+
+    /*xshift = waveform.getXShift(),
+    xscale = wave.getXScale(),*/
+    yshift = waveform.getShift(),
+        yscale = waveform.getScale();
+
+    let pointOutside = false;
+    let lastPointOutside = false;
+    let pointOnAxis;
+
+    let _monotoneous = this.isMonotoneous();
+
+    let i = 0,
+        l = waveform.getLength();
+
+    this.currentLine = '';
+
+    if (waveform.isXMonotoneous()) {
+      if (waveform.isXMonotoneousAscending()) {
+        try {
+          i = waveform.getIndexFromX(xMin, true) || 0;
+          l = waveform.getIndexFromX(xMax, true);
+        } catch (e) {
+          l = waveform.getLength();
+        }
+      } else {
+        try {
+          i = waveform.getIndexFromX(xMax, true) || 0;
+          l = waveform.getIndexFromX(xMin, true);
+        } catch (e) {
+          l = waveform.getLength();
+        }
+      }
+
+      l += 2;
+      if (l > data.length) {
+        l = data.length;
+      }
+    }
+
+    for (; i < l; i += 1) {
+      x = waveform.getX(i, true);
+      y = data[i] * yscale + yshift;
+
+      if (x != x || y != y) {
+        // NaN checks
+        this._createLine();
+        continue;
+      }
+
+      if (!this.options.overflowX && x < xMin && lastX < xMin || !this.options.overflowX && x > xMax && lastX > xMax || (!this.options.overflowY && y < yMin && lastY < yMin || !this.options.overflowY && y > yMax && lastY > yMax) && !this.options.lineToZero) {
+        lastX = x;
+        lastY = y;
+        lastPointOutside = true;
+        continue;
+      }
+
+      this.counter2 = i;
+
+      xpx2 = this.getX(x);
+      ypx2 = this.getY(y);
+      //xpx2 = 0;
+      //ypx2 = 0;
+
+      if (xpx2 == xpx && ypx2 == ypx) {
+        continue;
+      }
+
+      if (xpx2 != xpx2 || ypx2 != ypx2) {
+        // NaN checks
+        if (this.counter > 0) {
+          this._createLine();
+        }
+        continue;
+      }
+
+      if (!_monotoneous) {
+        pointOutside = !this.options.overflowX && (x < xMin || x > xMax) || !this.options.overflowY && (y < yMin || y > yMax);
+      } else {
+        pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
+      }
+
+      if (this.options.lineToZero) {
+        pointOutside = x < xMin || x > xMax;
+
+        if (pointOutside) {
+          continue;
+        }
+      } else {
+        if (pointOutside || lastPointOutside) {
+          if ((lastX === false || lastY === false) && !lastPointOutside) {
+            xpx = xpx2;
+            ypx = ypx2;
+            lastX = x;
+            lastY = y;
+          } else {
+            pointOnAxis = [];
+            // Y crossing
+            yLeftCrossingRatio = (x - xMin) / (x - lastX);
+            yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
+            yRightCrossingRatio = (x - xMax) / (x - lastX);
+            yRightCrossing = y - yRightCrossingRatio * (y - lastY);
+
+            // X crossing
+            xTopCrossingRatio = (y - yMin) / (y - lastY);
+            xTopCrossing = x - xTopCrossingRatio * (x - lastX);
+            xBottomCrossingRatio = (y - yMax) / (y - lastY);
+            xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
+
+            if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin) {
+              pointOnAxis.push([xMin, yLeftCrossing]);
+            }
+
+            if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin) {
+              pointOnAxis.push([xMax, yRightCrossing]);
+            }
+
+            if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin) {
+              pointOnAxis.push([xTopCrossing, yMin]);
+            }
+
+            if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin) {
+              pointOnAxis.push([xBottomCrossing, yMax]);
+            }
+
+            if (pointOnAxis.length > 0) {
+              if (!pointOutside) {
+                // We were outside and now go inside
+
+                if (pointOnAxis.length > 1) {
+                  console.error('Programmation error. Please e-mail me.');
+                  console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
+                }
+
+                this._createLine();
+                this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
+              } else if (!lastPointOutside) {
+                // We were inside and now go outside
+
+                if (pointOnAxis.length > 1) {
+                  console.error('Programmation error. Please e-mail me.');
+                  console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
+                }
+
+                this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+              } else {
+                // No crossing: do nothing
+                if (pointOnAxis.length == 2) {
+                  this._createLine();
+
+                  this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                  this._addPoint(this.getX(pointOnAxis[1][0]), this.getY(pointOnAxis[1][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                }
+              }
+            } else if (!pointOutside) {
+              this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
+            } // else {
+            // Norman:
+            // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
+            // However, there's no need to draw anything because the point is on the axis and will already be covered.
+            // 28 Aug 2015
+
+            /*
+              if ( lastPointOutside !== pointOutside ) {
+                console.error( "Programmation error. A crossing should have been found" );
+                console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
+                console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
+                console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
+                console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
+                console.log( pointOutside, lastPointOutside )
+               }
+              */
+            // }
+          }
+
+          xpx = xpx2;
+          ypx = ypx2;
+          lastX = x;
+          lastY = y;
+
+          lastPointOutside = pointOutside;
+
+          continue;
+        }
+      }
+
+      this._addPoint(xpx2, ypx2, x, y, i, false, true);
+
+      //this.detectPeaks( x, y );
+
+      xpx = xpx2;
+      ypx = ypx2;
+
+      lastX = x;
+      lastY = y;
+    }
+
+    this._createLine();
+
+    if (this._tracker) {
+      if (this._trackerDom) {
+        this._trackerDom.remove();
+      }
+
+      var cloned = this.groupLines.cloneNode(true);
+      this.groupMain.appendChild(cloned);
+
+      for (i = 0, l = cloned.children.length; i < l; i++) {
+        cloned.children[i].setAttribute('stroke', 'transparent');
+        cloned.children[i].setAttribute('stroke-width', '25px');
+        cloned.children[i].setAttribute('pointer-events', 'stroke');
+      }
+
+      this._trackerDom = cloned;
+
+      this.groupMain.addEventListener('mousemove', e => {
+        var coords = this.graph._getXY(e),
+            ret = this.handleMouseMove(false, false);
+
+        this._trackingCallback(this, ret, coords.x, coords.y);
+      });
+
+      this.groupMain.addEventListener('mouseleave', e => {
+        this._trackingOutCallback(this);
+      });
+    }
+
+    return this;
+  }
+
+  kill() {
+    super.kill();
+  }
+
+  _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
+    /*if( ! this.currentLineId ) {
+        throw "No current line"
+      }* @memberof SerieLine
+    */
+
+    if (xpx !== xpx || ypx !== ypx) {
+      return;
+    }
+
+    if (this.counter == 0) {
+      this.currentLine = 'M ';
+    } else {
+      if (this.options.lineToZero || move) {
+        this.currentLine += 'M ';
+      } else {
+        this.currentLine += 'L ';
+      }
+    }
+
+    this.currentLine += xpx;
+    this.currentLine += ' ';
+    this.currentLine += ypx;
+    this.currentLine += ' ';
+
+    if (this.options.lineToZero && this.pos0 !== undefined) {
+      this.currentLine += 'L ';
+      this.currentLine += xpx;
+      this.currentLine += ' ';
+      this.currentLine += this.pos0;
+      this.currentLine += ' ';
+    }
+
+    if (this.hasErrors()) {
+      console.log(j, x, y, xpx, ypx);
+      this.errorAddPoint(j, x, y, xpx, ypx);
+    }
+
+    this.counter++;
+  }
+
+  // Returns the DOM
+  _createLine() {
+    var i = this.currentLineId++,
+        line;
+
+    // Creates a line if needed
+    if (this.lines[i]) {
+      line = this.lines[i];
+    } else {
+      line = document.createElementNS(this.graph.ns, 'path');
+      this.applyLineStyle(line);
+      this.groupLines.appendChild(line);
+      this.lines[i] = line;
+    }
+
+    if (this.counter == 0) {
+      line.setAttribute('d', '');
+    } else {
+      line.setAttribute('d', this.currentLine);
+    }
+
+    this.currentLine = 'M ';
+    this.counter = 0;
+
+    return line;
+  }
+
+  /**
+   * Reapply the current style to the serie lines elements. Mostly used internally
+   * @memberof SerieLine
+   */
+  applyLineStyles() {
+    for (var i = 0; i < this.lines.length; i++) {
+      this.applyLineStyle(this.lines[i]);
+    }
+  }
+
+  /**
+   * Applies the current style to a line element. Mostly used internally
+   * @memberof SerieLine
+   */
+  applyLineStyle(line) {
+    line.setAttribute('stroke', this.getLineColor());
+    line.setAttribute('stroke-width', this.getLineWidth());
+    if (this.getLineDashArray()) {
+      line.setAttribute('stroke-dasharray', this.getLineDashArray());
+    } else {
+      line.removeAttribute('stroke-dasharray');
+    }
+
+    if (this.getFillColor()) {
+      line.setAttribute('fill', this.getFillColor());
+    } else {
+      line.setAttribute('fill', 'none');
+    }
+
+    //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+  }
+
+  /**
+   * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
+   * @example var opts = { lineColor: 'red' };
+   * var s = graph.newSerie( "name", opts ).setData( someData );
+   * opts.lineColor = 'green';
+   * s.updateStyle(); // Sets the lineColor to green
+   * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
+   * @memberof SerieLine
+   */
+  updateStyle() {
+    this.applyLineStyles();
+    this.setLegendSymbolStyle();
+
+    this.styleHasChanged(false);
+  }
+
+  // Revised August 2014. Ok
+  getMarkerPath(family, add) {
+    var z = family.zoom || 1,
+        add = add || 0,
+        el = [];
+
+    switch (family.type) {
+      case 2:
+        el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4];
+        break;
+
+      case 3:
+        el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4];
+        break;
+
+      case 4:
+        el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z'];
+        break;
+
+      default:
+      case 1:
+        el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
+        break;
+    }
+
+    if ((z == 1 || !z) && !add) {
+      return el.join(' ');
+    }
+
+    var num = 'number';
+
+    if (!el) {
+      return;
+    }
+
+    for (var i = 0, l = el.length; i < l; i++) {
+      if (typeof el[i] == num) {
+        el[i] *= z + add;
+      }
+    }
+
+    return el.join(' ');
+  }
+
+  /**
+   * Searches the closest point pair (x,y) to the a pair of pixel position
+   * @param {Number} x - The x position in pixels (from the left)
+   * @param {Number} y - The y position in pixels (from the left)
+   * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+   * @memberof SerieLine
+   */
+  searchIndexByPxXY(x, y) {
+    var oldDist = false,
+        xyindex = false,
+        dist;
+
+    var xData = this._xDataToUse,
+        p_x,
+        p_y;
+
+    for (var k = 0, m = this.waveform.getLength(); k < m; k += 1) {
+      p_x = this.waveform.getX(k);
+      p_y = this.waveform.getY(k);
+
+      dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
+      //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+
+      if (!oldDist || dist < oldDist) {
+        oldDist = dist;
+        xyindex = k;
+      }
+    }
+
+    return xyindex;
+  }
+
+  /**
+   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+   * @param {Number} valX - The x value to search for
+   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+   * @memberof SerieLine
+   */
+  searchClosestValue(valX, valY) {
+    if (this.waveform) {
+      let indexX;
+      try {
+        indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+      } catch (e) {
+        console.log(e);
+        throw new Error('Error while finding the closest index');
+        return {};
+      }
+
+      if (!indexX) {
+        return false;
+      }
+
+      let returnObj = {};
+
+      let direction;
+      // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
+      if (valX > this.waveform.getX(indexX)) {
+        direction = -1;
+      } else {
+        direction = 0;
+      }
+
+      Object.assign(returnObj, {
+        indexMin: indexX + direction,
+        indexMax: indexX + direction + 1,
+        indexClosest: indexX,
+        xMin: this.waveform.getX(indexX + direction),
+        xMax: this.waveform.getX(indexX + direction + 1),
+        yMin: this.waveform.getY(indexX + direction),
+        yMax: this.waveform.getY(indexX + direction + 1),
+        xClosest: this.waveform.getX(indexX),
+        yClosest: this.waveform.getY(indexX),
+        xExact: valX
+      });
+      return returnObj;
+    }
+  }
+
+  handleMouseMove(xValue, doMarker, yValue) {
+    var valX = xValue || this.getXAxis().getMouseVal(),
+        valY = yValue || this.getYAxis().getMouseVal();
+
+    var value = this.searchClosestValue(valX, valY);
+
+    if (!value) {
+      return;
+    }
+
+    var ratio, intY;
+
+    if (value.xMax == value.xMin) {
+      intY = value.yMin;
+    } else {
+      //ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+      //intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+    }
+
+    if (doMarker && this.options.trackMouse) {
+      if (value.xMin == undefined) {
+        return false;
+      }
+    }
+
+    return {
+      xBefore: value.xMin,
+      xAfter: value.xMax,
+      yBefore: value.yMin,
+      yAfter: value.yMax,
+      trueX: value.xExact,
+      indexClosest: value.indexClosest,
+      interpolatedY: intY,
+
+      xClosest: value.xClosest,
+      yClosest: value.yClosest
+    };
+  }
+  /**
+   * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+   * @param {Number} startX - The start of the x values
+   * @param {Number} endX - The end of the x values
+   * @returns {Number} Maximal y value in between startX and endX
+   * @memberof SerieLine
+   */
+  getMax(start, end) {
+    var start2 = Math.min(start, end),
+        end2 = Math.max(start, end),
+        v1 = this.searchClosestValue(start2),
+        v2 = this.searchClosestValue(end2),
+        i,
+        j,
+        max = -Infinity,
+        initJ,
+        maxJ;
+
+    //      console.log( start2, end2, v1, v2 );
+
+    if (!v1) {
+      start2 = this.minX;
+      v1 = this.searchClosestValue(start2);
+    }
+
+    if (!v2) {
+      end2 = this.maxX;
+      v2 = this.searchClosestValue(end2);
+    }
+
+    if (!v1 || !v2) {
+      return -Infinity;
+    }
+
+    for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
+      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
+
+      for (j = initJ; j <= maxJ; j += 2) {
+        max = Math.max(max, this.data[i][j + 1]);
+      }
+    }
+
+    return max;
+  }
+
+  /**
+   * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
+   * @param {Number} startX - The start of the x values
+   * @param {Number} endX - The end of the x values
+   * @returns {Number} Maximal y value in between startX and endX
+   * @memberof SerieLine
+   */
+  getMin(start, end) {
+    var start2 = Math.min(start, end),
+        end2 = Math.max(start, end),
+        v1 = this.searchClosestValue(start2),
+        v2 = this.searchClosestValue(end2),
+        i,
+        j,
+        min = Infinity,
+        initJ,
+        maxJ;
+
+    if (!v1) {
+      start2 = this.minX;
+      v1 = this.searchClosestValue(start2);
+    }
+
+    if (!v2) {
+      end2 = this.maxX;
+      v2 = this.searchClosestValue(end2);
+    }
+
+    if (!v1 || !v2) {
+      return Infinity;
+    }
+
+    for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
+      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
+
+      for (j = initJ; j <= maxJ; j += 2) {
+        min = Math.min(min, this.data[i][j + 1]);
+      }
+    }
+
+    return min;
+  }
+
+  /* LINE STYLE * @memberof SerieLine
+   */
+
+  setStyle(style, selectionType = 'unselected') {
+    this.styles[selectionType] = style;
+    this.styleHasChanged(selectionType);
+  }
+
+  setLineStyle(number, selectionType = 'unselected', applyToSelected) {
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].lineStyle = number;
+
+    if (applyToSelected) {
+      this.setLineStyle(number, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
+  getLineStyle(selectionType) {
+    return this.getStyle(selectionType).lineStyle;
+  }
+
+  getLineDashArray(selectionType = this.selectionType || 'unselected') {
+    switch (this.getStyle(selectionType).lineStyle) {
+      case 2:
+        return '1, 1';
+        break;
+      case 3:
+        return '2, 2';
+        break;
+      case 4:
+        return '3, 3';
+        break;
+      case 5:
+        return '4, 4';
+        break;
+      case 6:
+        return '5, 5';
+        break;
+
+      case 7:
+        return '5 2';
+        break;
+      case 8:
+        return '2 5';
+        break;
+
+      case 9:
+        return '4 2 4 4';
+        break;
+      case 10:
+        return '1,3,1';
+        break;
+      case 11:
+        return '9 2';
+        break;
+      case 12:
+        return '2 9';
+        break;
+
+      case 1:
+      case false:
+        return false;
+        break;
+
+      default:
+        return this.styles[selectionType].lineStyle;
+        break;
+    }
+
+    this.styleHasChanged(selectionType);
+  }
+
+  getStyle(selectionType = this.selectionType || 'unselected') {
+    return this.styles[selectionType] || this.styles.unselected;
+  }
+
+  extendStyles() {
+    for (var i in this.styles) {
+      var s = this.styles[i];
+      if (s) {
+        this.styles[i] = extend(true, {}, this.styles.unselected, s);
+      }
+    }
+  }
+
+  extendStyle(styleTarget, styleOrigin) {
+    var s = this.styles[styleTarget];
+    this.styles[styleTarget] = extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
+    this.styleHasChanged(styleTarget);
+  }
+
+  /** @memberof SerieLine
+   */
+
+  setLineWidth(width, selectionType, applyToSelected) {
+    selectionType = selectionType || 'unselected';
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].lineWidth = width;
+
+    if (applyToSelected) {
+      this.setLineWidth(width, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
+  getLineWidth(selectionType) {
+    return this.getStyle(selectionType).lineWidth || 1;
+  }
+
+  /* LINE COLOR * @memberof SerieLine
+   */
+  setLineColor(color, selectionType, applyToSelected) {
+    selectionType = selectionType || 'unselected';
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].lineColor = color;
+
+    if (applyToSelected) {
+      this.setLineColor(color, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
+  /* FILL COLOR * @memberof SerieLine
+   */
+  setFillColor(color, selectionType, applyToSelected) {
+    selectionType = selectionType || 'unselected';
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].fillColor = color;
+
+    if (applyToSelected) {
+      this.setFillColor(color, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
+  getLineColor(selectionType) {
+    return this.getStyle(selectionType).lineColor || 'black';
+  }
+
+  getFillColor(selectionType) {
+    return this.getStyle(selectionType).fillColor || undefined;
+  }
+
+  /** @memberof SerieLine
+   */
+
+  isMonotoneous() {
+    if (this.waveform) {
+      return this.waveform.isMonotoneous();
+    }
+
+    return !!this.xmonotoneous;
+  }
+
+  findLocalMinMax(xRef, xWithin, type) {
+    if (!this.waveform) {
+      return false;
+    }
+
+    return this.waveform.findLocalMinMax(xRef, xWithin, type);
+  }
+}
+
+mix(SerieLine, ErrorBarMixin);
+
+var Serie3DMixin = {
+
+  /**
+   * Returns the x position of a certain value in pixels position, based on the serie's axis
+   * @memberof Serie
+   * @param {Number} val - Value to convert to pixels position
+   * @returns {Number} The x position in px corresponding to the x value
+   */
+  getX: function (val) {
+    return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.getXAxis().getZProj(this.options.zpos);
+  },
+
+  /**
+   * Returns the y position of a certain value in pixels position, based on the serie's axis
+   * @memberof Serie3DMixin
+   * @param {Number} val - Value to convert to pixels position
+   * @returns {Number} The y position in px corresponding to the y value
+   */
+  getY: function (val) {
+    return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.getYAxis().getZProj(this.options.zpos);
+  },
+
+  getZPos: function () {
+    return this.options.zpos;
+  },
+
+  /**
+   * @returns {Number} Lowest x value of the serie's data
+   * @memberof Serie
+   */
+  getMinX: function (useZValues) {
+    if (!useZValues) {
+      return this.minX;
+    }
+
+    return getZCorrectedValue(this, true, true);
+  },
+
+  /**
+   * @returns {Number} Highest x value of the serie's data
+   * @memberof Serie
+   */
+  getMaxX: function (useZValues) {
+
+    if (!useZValues) {
+      return this.maxX;
+    }
+    return getZCorrectedValue(this, true, false);
+  },
+
+  /**
+   * @returns {Number} Lowest y value of the serie's data
+   * @memberof Serie
+   */
+  getMinY: function (useZValues) {
+
+    if (!useZValues) {
+      return this.minY;
+    }
+    return getZCorrectedValue(this, false, true);
+  },
+
+  /**
+   * @returns {Number} Highest y value of the serie's data
+   * @memberof Serie
+   */
+  getMaxY: function (useZValues) {
+
+    if (!useZValues) {
+      return this.maxY;
+    }
+    return getZCorrectedValue(this, false, false);
+  }
+
+};
+
+function getZCorrectedValue(serie, x, min) {
+
+  let i, l, data, val, valFinal;
+  let wf = serie.getWaveforms();
+
+  for (let wave of wf) {
+
+    i = 0;
+    l = wave.getLength();
+    data = wave.getData();
+
+    for (; i < l; i += 1) {
+
+      if (x) {
+        val = serie.getXAxis().getVal(serie.getX(wave.getX(i, true)));
+      } else {
+        val = serie.getYAxis().getVal(serie.getY(data[i]));
+      }
+
+      if (i == 0) {
+        valFinal = val;
+      } else {
+
+        if (min) {
+          valFinal = Math.min(valFinal, val);
+        } else {
+          valFinal = Math.max(valFinal, val);
+        }
+      }
+    }
+  }
+  return valFinal;
+}
+
+/**
+ * Serie line with 3D projection
+ * @example graph.newSerie( name, options, "line" );
+ * @see Graph#newSerie
+ * @extends SerieLine
+ */
+class SerieLine3D extends SerieLine {
+
+  static defaults() {
+    return {
+      zpos: 0
+    };
+  }
+  constructor(graph, name, options) {
+    super(...arguments);
+  }
+
+  /**
+   * Sets the z-position
+   * @memberof SerieLine3D
+   * @param {Number} zPos - The position in the z axis
+   */
+  setZPos(zPos) {
+    this.options.zpos = zPos;
+    return this;
+  }
+
+  setz() {
+    return this.setZPos(...arguments);
+  }
+}
+
+mix(SerieLine3D, Serie3DMixin);
+
+/**
+ * Represents a bar serie.
+   Needs to be used exclusively with a bar axis ({@link AxisXBar}).
+   Supports error bars, line color, line width, fill color, fill opacity.
+ * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
+ * @extends Serie
+ */
+class SerieBar extends SerieLine {
+
+  constructor(graph, name, options) {
+
+    super(...arguments);
+
+    this.pathDom = document.createElementNS(this.graph.ns, 'path');
+    this.groupMain.appendChild(this.pathDom);
+
+    // Creates an empty style variable
+    this.styles = {};
+
+    // Unselected style
+    this.styles.unselected = {
+      lineColor: this.options.lineColor,
+      lineStyle: this.options.lineStyle,
+      lineWidth: this.options.lineWidth,
+      fillColor: this.options.fillColor,
+      fillOpacity: this.options.fillOpacity,
+      markers: this.options.markers
+    };
+  }
+
+  /**
+   *  Sets the fill color
+   */
+  setFillColor(fillColor, selectionType, applyToSelected) {
+
+    selectionType = selectionType || 'unselected';
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].fillColor = fillColor;
+
+    if (applyToSelected) {
+      this.setFillColor(fillColor, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
+  /**
+   *  Returns the fill color
+   */
+  getFillColor(selectionType) {
+    return this.getStyle(selectionType).fillColor;
+  }
+
+  /*
+   * @memberof SerieBar
+   */
+  setFillOpacity(opacity, selectionType, applyToSelected) {
+
+    selectionType = selectionType || 'unselected';
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].fillOpacity = opacity;
+
+    if (applyToSelected) {
+      this.setLineWidth(opacity, 'selected');
+    }
+
+    this.styleHasChanged(selectionType);
+
+    return this;
+  }
+
+  getFillOpacity(selectionType) {
+
+    return this.getStyle(selectionType).fillOpacity || 1;
+  }
+
+  /**
+   * Reapply the current style to the serie lines elements. Mostly used internally
+   */
+  applyLineStyles() {
+    this.applyLineStyle(this.pathDom);
+  }
+
+  /**
+   * Applies the current style to a line element. Mostly used internally
+   * @memberof SerieBar
+   */
+  applyLineStyle(line) {
+
+    line.setAttribute('stroke', this.getLineColor());
+    line.setAttribute('stroke-width', this.getLineWidth());
+    if (this.getLineDashArray()) {
+      line.setAttribute('stroke-dasharray', this.getLineDashArray());
+    } else {
+      line.removeAttribute('stroke-dasharray');
+    }
+    line.setAttribute('fill', this.getFillColor());
+    line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
+  }
+
+  draw() {
+
+    var path = '';
+    if (this.hasErrors()) {
+      this.errorDrawInit();
+    }
+
+    var j = 0;
+
+    for (; j < this.waveform.getLength(); j++) {
+
+      if (!this.categoryIndices[this.waveform.getX(j)]) {
+        continue;
+      }
+
+      path += `M ${this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)])} ${this.getYAxis().getPos(this.getYAxis().getCurrentMin())} V ${this.getYAxis().getPos(this.waveform.getY(j))} h ${this.getXAxis().getDeltaPx(1 / this.nbCategories)} V ${this.getYAxis().getPos(this.getYAxis().getCurrentMin())}`;
+
+      if (this.hasErrors()) {
+
+        var xpx = this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)]) + this.getXAxis().getDeltaPx(1 / this.nbCategories) / 2;
+        var ypx = this.getYAxis().getPos(this.waveform.getY(j));
+
+        this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
+      }
+    }
+
+    if (this.hasErrors()) {
+      this.errorDraw();
+    }
+
+    this.pathDom.setAttribute('d', path);
+    this.applyLineStyles();
+  }
+
+  // Markers now allowed
+  setMarkers() {}
+
+  getUsedCategories() {
+    return this.waveform.xdata;
+  }
+
+}
+
+const defaultOptions$3 = {
   orientation: 'y',
   maxBoxWidth: 20,
 
@@ -15578,7 +15866,7 @@ const defaultOptions$1 = {
 class SerieBox extends Serie {
   constructor(graph, name, options, defaultInherited = {}) {
 
-    super(graph, name, options, extend(true, {}, defaultOptions$1, defaultInherited));
+    super(graph, name, options, extend(true, {}, defaultOptions$3, defaultInherited));
 
     this.pathDom = document.createElementNS(this.graph.ns, 'path');
     this.groupMain.appendChild(this.pathDom);
@@ -16558,495 +16846,6 @@ class SerieLineColor extends SerieLine {
     //	line.setAttribute('shape-rendering', 'optimizeSpeed');
   }
 }
-
-var type$1 = 'scatter';
-
-const defaultOptions$3 = {
-
-  markers: true,
-
-  markerStyles: {
-
-    unselected: {
-      default: {
-        shape: 'circle',
-        cx: 0,
-        cy: 0,
-        r: 3,
-        stroke: 'transparent',
-        fill: 'black'
-      }
-    },
-
-    selected: {
-      default: {
-        r: 4
-      }
-    }
-  }
-};
-
-/**
- * @static
- * @augments Serie
- * @example graph.newSerie( name, options, "scatter" );
- * @see Graph#newSerie
- */
-class SerieScatter$1 extends Serie {
-
-  constructor(graph, name, options, defaultInherited) {
-
-    super(graph, name, options, extend(true, {}, defaultOptions$3, defaultInherited));
-
-    this._type = type$1;
-    mapEventEmission(this.options, this);
-
-    this.shapes = []; // Stores all shapes
-    this.shapesDetails = [];
-    this.shapes = [];
-
-    this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
-    this.groupMain.appendChild(this.groupMarkers);
-
-    this.selectedStyleGeneral = {};
-    this.selectedStyleModifiers = {};
-
-    this.groupMarkers.addEventListener('mouseenter', e => {
-
-      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-      if (isNaN(id)) {
-        return;
-      }
-
-      if (this.options.selectMarkerOnHover) {
-        this.selectMarker(id, 'selected');
-      }
-
-      this.emit('mouseOverMarker', id, this.waveform.getX(id), this.waveform.getY(id));
-    }, true);
-
-    this.groupMarkers.addEventListener('mouseout', e => {
-
-      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-      if (isNaN(id)) {
-        return;
-      }
-
-      if (this.options.selectMarkerOnHover) {
-        this.selectMarker(id, 'unselected');
-      }
-
-      this.emit('mouseOutMarker', id, this.waveform.getX(id), this.waveform.getY(id));
-    });
-  }
-
-  /**
-   * Applies for x as the category axis
-   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
-   */
-  setDataCategory(data) {
-
-    for (let dataCategory of data) {
-
-      this._checkY(dataCategory.y.getMaxY());
-      this._checkY(dataCategory.y.getMinY());
-    }
-
-    this.data = data;
-    this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
-    return this;
-  }
-
-  /**
-   * Removes all DOM points
-   * @private
-   */
-  empty() {
-
-    while (this.groupMarkers.firstChild) {
-      this.groupMarkers.removeChild(this.groupMarkers.firstChild);
-    }
-  }
-
-  getSymbolForLegend() {
-
-    if (!this.markers) {
-      return;
-    }
-
-    const container = super._getSymbolForLegendContainer();
-
-    if (!this.shapeLegend) {
-      this.shapeLegend = this._makeMarker(container, this.options.markerStyles.unselected.default);
-      container.appendChild(this.shapeLegend);
-    }
-
-    var style = this.getMarkerStyle('unselected', -1, true);
-    for (var i in style[-1]) {
-      if (i == 'shape') {
-        continue;
-      }
-      this.shapeLegend.setAttribute(i, style[-1][i]);
-    }
-
-    return container;
-  }
-
-  /**
-   * Sets style to the scatter points
-   * First argument is the style applied by default to all points
-   * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
-   * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
-   *
-   * @example
-   * var modifiers = [];
-   * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
-   * serie.setMarkerStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
-   *
-   * @param {Object} allStyles - The general style for all markers
-   * @param {Object} [ modifiers ] - The general style for all markers
-   * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
-   *
-   */
-  setMarkerStyle(all, modifiers, mode = 'unselected') {
-
-    if (typeof modifiers == 'string') {
-      mode = modifiers;
-      modifiers = false;
-    }
-
-    this.options.markerStyles[mode] = this.options.markerStyles[mode] || {};
-    this.options.markerStyles[mode].all = all;
-    this.options.markerStyles[mode].modifiers = modifiers;
-
-    this.styleHasChanged(mode);
-
-    return this;
-  }
-
-  /**
-   * Redraws the serie
-   * @private
-   * @param {force} Boolean - Forces redraw even if the data hasn't changed
-   */
-  draw(force) {
-    // Serie redrawing
-
-    if (!force && !this.hasDataChanged() && !this.hasStyleChanged('unselected') || !this.options.markers) {
-      return;
-    }
-
-    let xpx, ypx, j;
-    const isCategory = this.getXAxis().getType() == 'category';
-    const keys = [];
-
-    this.dataHasChanged(false);
-    this.styleHasChanged(false);
-
-    // Removes the marker group from the main DOM for operation (avoids browser repaint)
-    this.groupMain.removeChild(this.groupMarkers);
-
-    j = 0;
-    if (this.hasErrors()) {
-      this.errorDrawInit();
-    }
-
-    if (isCategory) {
-
-      let k = 0;
-
-      for (; j < this.data.length; j++) {
-
-        if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
-          continue;
-        }
-
-        if (this.error) {
-          //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
-        }
-
-        for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
-
-          //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
-
-          ypx = this.getY(this.data[j].y.getY(n));
-          xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
-          n++;
-
-          this.shapesDetails[k] = this.shapesDetails[k] || [];
-          this.shapesDetails[k][0] = xpx;
-          this.shapesDetails[k][1] = ypx;
-          keys.push(k);
-          k++;
-        }
-      }
-    } else {
-
-      for (; j < this.waveform.getLength(); j++) {
-
-        if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
-
-          if (this.shapes[j]) {
-            this.shapes[j].setAttribute('display', 'none');
-            this.shapes[j]._hidden = true;
-          }
-          continue;
-        } else if (this.shapes[j] && this.shapes[j]._hidden) {
-          this.shapes[j].setAttribute('display', 'initial');
-          this.shapes[j]._hidden = false;
-        }
-
-        xpx = this.getX(this.waveform.getX(j));
-        ypx = this.getY(this.waveform.getY(j));
-
-        if (this.hasErrors()) {
-          this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
-        }
-
-        this.shapesDetails[j] = this.shapesDetails[j] || [];
-        this.shapesDetails[j][0] = xpx;
-        this.shapesDetails[j][1] = ypx;
-        keys.push(j);
-
-        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
-      }
-    }
-
-    if (this.hasErrors()) {
-      this.errorDraw();
-    }
-
-    // This will automatically create the shapes
-    this.applyMarkerStyle(this.selectionType || 'unselected', keys);
-    this.keys = keys;
-    this.groupMain.appendChild(this.groupMarkers);
-  }
-
-  _makeMarker(group, shape) {
-    var el = document.createElementNS(this.graph.ns, shape.shape);
-    group.appendChild(el);
-    return el;
-  }
-
-  getMarkerStyle(selection, index, noSetPosition) {
-
-    var selection = selection || 'unselected';
-    var indices;
-
-    var styles = {};
-
-    if (typeof index == 'number') {
-      indices = [index];
-    } else if (Array.isArray(index)) {
-      indices = index;
-    }
-
-    var shape, index, modifier, style; // loop variables
-
-    if (!this.options.markerStyles[selection]) {
-      selection = 'unselected';
-    }
-
-    var styleAll = this.options.markerStyles[selection].all;
-
-    if (!styleAll) {
-      styleAll = this.options.markerStyles[selection].default;
-    }
-
-    if (typeof styleAll == 'function') {
-      styleAll = styleAll();
-    }
-
-    const defaultStyle = this.options.markerStyles[selection].default ? this.options.markerStyles[selection].default : this.options.markerStyles.unselected.default;
-    styleAll = Object.assign({}, defaultStyle, styleAll);
-
-    var i = 0,
-        l = indices.length;
-
-    for (; i < l; i++) {
-
-      index = indices[i];
-      shape = this.shapes[index];
-
-      if ((modifier = this.options.markerStyles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
-
-        if (typeof modifier == 'function') {
-
-          style = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
-          if (style === false) {
-            continue;
-          }
-        } else if (modifier[index]) {
-
-          style = modifier[index];
-        }
-
-        styles[index] = Object.assign({}, styleAll, style);
-      } else if (styleAll !== undefined) {
-
-        styles[index] = styleAll;
-      } else {
-
-        styles[index] = this.options.markerStyles[selection].default;
-      }
-
-      if (!styles[index]) {
-        styles[index] = styleAll;
-      }
-
-      if (!shape) {
-        // Shape doesn't exist, let's create it
-
-        if (!styles[index].shape) {
-          console.error(style);
-          throw `No shape was defined with the style "${style}".`;
-        }
-
-        var g = document.createElementNS(this.graph.ns, 'g');
-        g.setAttribute('data-shapeid', index);
-
-        this.shapes[index] = this._makeMarker(g, styles[index]);
-        this.groupMarkers.appendChild(g);
-        shape = this.shapes[index];
-      }
-
-      if (!noSetPosition && this.shapesDetails[index][0] === this.shapesDetails[index][0] && this.shapesDetails[index][1] === this.shapesDetails[index][1]) {
-
-        shape.parentNode.setAttribute('transform', `translate(${this.shapesDetails[index][0]}, ${this.shapesDetails[index][1]})`);
-      }
-    }
-
-    return styles;
-  }
-
-  applyMarkerStyle(selection, index, noSetPosition) {
-
-    var i, j;
-    var styles = this.getMarkerStyle(selection, index, noSetPosition);
-
-    for (i in styles) {
-
-      for (j in styles[i]) {
-
-        if (j !== 'shape' && this.shapes[i]) {
-
-          if (styles[i][j]) {
-
-            this.shapes[i].setAttribute(j, styles[i][j]);
-          } else {
-
-            this.shapes[i].removeAttribute(j);
-          }
-        }
-      }
-    }
-  }
-
-  unselectMarker(index) {
-    this.selectMarker(index, false);
-  }
-
-  selectMarker(index, setOn, selectionType) {
-
-    if (this.shapesDetails[index][2] && this.shapesDetails[index][2] == selectionType) {
-      return;
-    }
-
-    if (typeof setOn == 'string') {
-      selectionType = setOn;
-      setOn = undefined;
-    }
-
-    if (Array.isArray(index)) {
-      return this.selectMarkers(index);
-    }
-
-    if (this.shapes[index] && this.shapesDetails[index]) {
-
-      if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
-
-        var selectionStyle = this.shapesDetails[index][2];
-        this.shapesDetails[index][2] = false;
-        var allStyles = this.getMarkerStyle(selectionStyle, index, true);
-
-        for (var i in allStyles[index]) {
-          this.shapes[index].removeAttribute(i);
-        }
-
-        this.applyMarkerStyle('unselected', index, true);
-      } else {
-
-        selectionType = selectionType || 'selected';
-        this.shapesDetails[index][2] = selectionType;
-        this.applyMarkerStyle(selectionType, index, true);
-      }
-    }
-  }
-
-  select(selectionType) {
-    this.selectionType = selectionType;
-    this.applyMarkerStyle(this.selectionType || 'selected', this.keys);
-    super.select(selectionType);
-  }
-
-  unselect() {
-    this.selectionType = 'unselected';
-    this.applyMarkerStyle(this.selectionType || 'unselected', this.keys);
-
-    super.unselect();
-  }
-
-  setMarkers(bln = true) {
-
-    this.options.markers = bln;
-
-    return this;
-  }
-
-  showMarkers() {
-
-    if (this.options.markers) {
-      return;
-    }
-
-    this.options.markers = true;
-    this.groupMarkers.setAttribute('display', 'initial');
-
-    if (this.shapeLegend) {
-      this.shapeLegend.setAttribute('display', 'initial');
-    }
-
-    return this;
-  }
-
-  hideMarkers() {
-
-    if (!this.options.markers) {
-      return;
-    }
-
-    this.options.markers = false;
-    this.groupMarkers.setAttribute('display', 'none');
-
-    if (this.shapeLegend) {
-      this.shapeLegend.setAttribute('display', 'none');
-    }
-    return this;
-  }
-
-  getUsedCategories() {
-
-    if (typeof this.data[0] == 'object') {
-      return this.data.map(d => d.x);
-    }
-
-    return [];
-  }
-
-}
-
-mix(SerieScatter$1, ErrorBarMixin);
 
 /**
  * @static
@@ -18476,7 +18275,6 @@ class SerieContour extends SerieLine {
  * @static
  */
 class Shape extends EventEmitter {
-
   constructor() {
     super();
   }
@@ -18488,7 +18286,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   init(graph, properties) {
-
     var self = this;
 
     this.graph = graph;
@@ -18513,7 +18310,6 @@ class Shape extends EventEmitter {
     this.transforms = [];
 
     if (this._data.masker) {
-
       var maskPath = document.createElementNS(this.graph.ns, 'mask');
       this.maskingId = Math.random();
       maskPath.setAttribute('id', this.maskingId);
@@ -18531,23 +18327,19 @@ class Shape extends EventEmitter {
     }
 
     if (this.group) {
-
       if (this._dom && !this.isHTML()) {
         this.group.appendChild(this._dom);
       }
 
       this.group.addEventListener('mouseover', function (e) {
-
         self.handleMouseOver(e);
       });
 
       this.group.addEventListener('mouseout', function (e) {
-
         self.handleMouseOut(e);
       });
 
       this.group.addEventListener('mousedown', function (e) {
-
         self.graph.focus();
 
         self.handleMouseDown(e);
@@ -18556,7 +18348,6 @@ class Shape extends EventEmitter {
       this.group.addEventListener('click', this.handleClick.bind(this));
 
       this.group.addEventListener('dblclick', function (e) {
-
         //e.preventDefault();
         // e.stopPropagation();
 
@@ -18596,7 +18387,6 @@ class Shape extends EventEmitter {
    * Removes the shape from the DOM and unlinks it from the graph
    */
   kill(keepDom) {
-
     if (this._inDom && !keepDom) {
       this.graph.removeShapeFromDom(this);
     }
@@ -18617,7 +18407,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   hide() {
-
     if (this.hidden) {
       return this;
     }
@@ -18652,7 +18441,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   show() {
-
     if (!this.hidden) {
       return this;
     }
@@ -18699,7 +18487,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   makeClasses() {
-
     if (this._dom) {
       this._dom.setAttribute('class', this.classes.join(' '));
     }
@@ -18712,7 +18499,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   changed(event, parameters) {
-
     if (event) {
       this.graph.emit(event, this, parameters);
       this.emit(event, this, parameters);
@@ -18728,7 +18514,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setEventReceptacle() {
-
     if (!this.rectEvent) {
       this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
       this.rectEvent.setAttribute('pointer-events', 'fill');
@@ -18750,7 +18535,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setSerie(serie) {
-
     if (!serie) {
       return;
     }
@@ -18780,7 +18564,6 @@ class Shape extends EventEmitter {
    * @see Graph#getYAxis
    */
   autoAxes() {
-
     if (!this.xAxis) {
       this.xAxis = this.graph.getXAxis();
     }
@@ -18816,7 +18599,6 @@ class Shape extends EventEmitter {
    * @return {XAxis} The x axis associated to the shape.
    */
   getXAxis() {
-
     if (!this.xAxis) {
       this.autoAxes();
     }
@@ -18829,7 +18611,6 @@ class Shape extends EventEmitter {
    * @return {YAxis} The y axis associated to the shape.
    */
   getYAxis() {
-
     if (!this.yAxis) {
       this.autoAxes();
     }
@@ -18869,9 +18650,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   draw(force, preventRedraw) {
-
     if (!this._inDom || force) {
-
       this.appendToDom();
       this._inDom = true;
     }
@@ -18892,7 +18671,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   redraw() {
-
     if (this.hidden) {
       return this;
     }
@@ -18928,7 +18706,6 @@ class Shape extends EventEmitter {
     }
     var self = this;
     for (var i = 0, l = this.properties.position.length; i < l; i++) {
-
       var pos = Position.check(this.properties.position[i], function (relativeTo) {
         return self.getRelativePosition(relativeTo);
       });
@@ -18941,7 +18718,6 @@ class Shape extends EventEmitter {
   }
 
   getRelativePosition(relativePosition) {
-
     var result;
     if ((result = /position([0-9]*)/.exec(relativePosition)) !== null) {
       return this.getPosition(result[1]);
@@ -18979,6 +18755,9 @@ class Shape extends EventEmitter {
    * @param [ index = 0 ] - The index of the property array
    */
   getProp(prop, index) {
+    if (!Array.isArray(this.properties[prop] || [])) {
+      return this.properties[prop];
+    }
     return (this.properties[prop] || [])[index || 0];
   }
 
@@ -19013,7 +18792,6 @@ class Shape extends EventEmitter {
    */
   setDom(prop, val, noForce) {
     if (this._dom) {
-
       if (!noForce || !hasSavedAttribute(this._dom, prop)) {
         this._dom.setAttribute(prop, val);
       }
@@ -19054,7 +18832,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setFillColor(color) {
-
     this.setProp('fillColor', color);
     this.overwriteSavedProp('fill', color);
     this.applySelectedStyle();
@@ -19257,7 +19034,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setLabelPosition(position, index) {
-
     var self;
     var pos = Position.check(position, function (relativeTo) {
       return self.getRelativePosition(relativeTo);
@@ -19360,7 +19136,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   applyGenericStyle() {
-
     this.setDom('fill', this.getProp('fillColor'), true);
     this.setDom('fill-opacity', this.getProp('fillOpacity'), true);
     this.setDom('stroke', this.getProp('strokeColor'), true);
@@ -19369,7 +19144,6 @@ class Shape extends EventEmitter {
 
     var attributes = this.getProps('attributes');
     for (var j = 0, l = attributes.length; j < l; j++) {
-
       for (var i in attributes[j]) {
         this.setDom(i, typeof attributes[j][i] == 'function' ? attributes[j][i].call(this, i) : attributes[j][i], true);
       }
@@ -19385,7 +19159,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   applyStyle() {
-
     return this.applyGenericStyle();
   }
 
@@ -19396,7 +19169,6 @@ class Shape extends EventEmitter {
    * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
    */
   calculatePosition(index) {
-
     var position;
 
     position = index instanceof Position ? index : this.getPosition(index);
@@ -19418,7 +19190,6 @@ class Shape extends EventEmitter {
    * @return {Position} The position at the proper index, or undefined
    */
   getPosition(index) {
-
     var pos = this.getProp('position', index || 0);
     this.setProp('position', pos = Position.check(pos), index);
     return pos;
@@ -19431,7 +19202,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setPosition(position, index) {
-
     var self = this;
     var pos = Position.check(position, function (relativeTo) {
       return self.getRelativePosition(relativeTo);
@@ -19456,8 +19226,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   _applyTransforms() {
-
-    var transforms = this.getProp('transforms'),
+    var transforms = this.getProps('transforms'),
         transformString = '';
 
     if (!transforms) {
@@ -19470,33 +19239,55 @@ class Shape extends EventEmitter {
     }
 
     for (var i = 0; i < transforms.length; i++) {
-
       transformString += `${transforms[i].type}(`;
 
+      let transform;
       switch (transforms[i].type) {
-
         case 'translate':
+          if (transforms[i].arguments) {
+            transform = transforms[i].arguments[0].compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
+          } else {
+            const value = Position.check(transforms[i].value);
 
-          let transform = transforms[i].arguments[0].compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
+            transform = value.compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
+          }
 
-          transformString += transform.x;
+          transformString += transform.x || transform.dx || 0;
           transformString += ', ';
-          transformString += transform.y;
+          transformString += transform.y || transform.dy || 0;
+
           break;
 
         case 'rotate':
+          if (!transforms[i].arguments) {
+            transformString += transforms[i].angle;
 
-          transformString += transforms[i].arguments[0];
-          transformString += ', ';
+            if (!transforms[i].center) {
+              var p = this.computePosition(0);
+              transformString += `, ${p.x}, ${p.y}`;
+            } else {
+              console.log(Position.check(transforms[i].center));
+              const posCenter = Position.check(transforms[i].center).compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
 
-          if (transforms[i].arguments.length == 1) {
-            var p = this.computePosition(0);
-            transformString += `${p.x}, ${p.y}`;
+              if (posCenter.x === posCenter.x && posCenter.y === posCenter.y) {
+                transformString += ', ';
+                transformString += posCenter.x;
+                transformString += ', ';
+                transformString += posCenter.y;
+              }
+            }
           } else {
-
-            transformString += Position.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
+            transformString += transforms[i].arguments[0];
             transformString += ', ';
-            transformString += Position.getDeltaPx(transforms[i].arguments[2], this.getYAxis()).replace('px', '');
+
+            if (transforms[i].arguments.length == 1) {
+              var p = this.computePosition(0);
+              transformString += `${p.x}, ${p.y}`;
+            } else {
+              transformString += Position.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
+              transformString += ', ';
+              transformString += Position.getDeltaPx(transforms[i].arguments[2], this.getYAxis()).replace('px', '');
+            }
           }
 
           break;
@@ -19515,7 +19306,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   makeLabels() {
-
     this._labels = this._labels || [];
     this._labelsBackground = this._labelsBackground || [];
 
@@ -19533,9 +19323,7 @@ class Shape extends EventEmitter {
     var i = 0;
 
     while (this.getProp('labelText', i) !== undefined) {
-
       if (!this._labels[i]) {
-
         this._labels[i] = document.createElementNS(this.graph.ns, 'text');
         this._labels[i].setAttribute('data-label-i', i);
         this._labels[i].jsGraphIsShape = this;
@@ -19558,6 +19346,10 @@ class Shape extends EventEmitter {
 
           this.labelDblClickListener(e);
         });
+      }
+
+      if (!Array.isArray(this.getProp('labelText', i))) {
+        break;
       }
 
       i++;
@@ -19584,7 +19376,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   updateLabels() {
-
     this._labels = this._labels || [];
 
     for (var i = 0, l = this._labels.length; i < l; i++) {
@@ -19599,7 +19390,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   _applyLabelData(labelIndex) {
-
     labelIndex = labelIndex || 0;
 
     /** Sets the position */
@@ -19625,7 +19415,6 @@ class Shape extends EventEmitter {
     }
 
     if (position.x != 'NaNpx' && !isNaN(position.x) && position.x !== 'NaN' && position.x !== false) {
-
       this._labels[labelIndex].setAttribute('x', position.x);
       this._labels[labelIndex].setAttribute('y', position.y);
     }
@@ -19633,7 +19422,6 @@ class Shape extends EventEmitter {
     /** Sets the angle */
     var currAngle = this.getProp('labelAngle', labelIndex) || 0;
     if (currAngle != 0) {
-
       var x = this._labels[labelIndex].getAttribute('x'),
           y = this._labels[labelIndex].getAttribute('y');
 
@@ -19644,7 +19432,6 @@ class Shape extends EventEmitter {
     let labelData = this.getProp('labelHTMLData', labelIndex) || {};
 
     for (var i in labelData) {
-
       this._labels[labelIndex].setAttribute(i, labelData[i]);
       this._labelsBackground[labelIndex].setAttribute(i, labelData[i]);
     }
@@ -19691,7 +19478,6 @@ class Shape extends EventEmitter {
    *  @returns {Shape} The current shape instance
    */
   emptyLabels() {
-
     for (var i = 0, l = this._labels.length; i < l; i++) {
       /** Sets the baseline */
       this._labels[i].textContent = '';
@@ -19746,7 +19532,6 @@ class Shape extends EventEmitter {
    * @example Shape.hasHandles( ); // Queries the shape to determine if it has handles or not. Also returns true if handles are static
    */
   hasHandles(setter) {
-
     if (setter !== undefined) {
       this.setProp('handles', setter);
     }
@@ -19760,17 +19545,14 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   addHandles() {
-
     if (this.isLocked()) {
       return;
     }
 
     if (!this.handlesInDom) {
-
       this.handlesInDom = true;
 
       for (var i = 1; i < this.handles.length; i++) {
-
         if (this.handles[i]) {
           this.group.appendChild(this.handles[i]);
         }
@@ -19786,7 +19568,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   removeHandles() {
-
     this.hideHandles();
     this.handles = [];
   }
@@ -19797,7 +19578,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   hideHandles() {
-
     if (!this.handlesInDom) {
       return this;
     }
@@ -19815,7 +19595,6 @@ class Shape extends EventEmitter {
    * @return {Boolean} ```true``` if the handles are in the DOM
    */
   areHandlesInDom() {
-
     return this.handlesInDom;
   }
 
@@ -19826,7 +19605,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} the current shape
    */
   _select(mute) {
-
     if (!this.isSelectable()) {
       return false;
     }
@@ -19840,7 +19618,6 @@ class Shape extends EventEmitter {
     this.applySelectedStyle();
 
     if (this.hasHandles() && !this.hasStaticHandles()) {
-
       this.addHandles();
       this.setHandles();
     }
@@ -19851,7 +19628,6 @@ class Shape extends EventEmitter {
   }
 
   applySelectedStyle() {
-
     if (!this._selectStatus) {
       return;
     }
@@ -19876,7 +19652,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} the current shape
    */
   _unselect(mute) {
-
     this._selectStatus = false;
 
     restoreDomAttributes(this._dom, 'select');
@@ -19937,15 +19712,12 @@ class Shape extends EventEmitter {
    * @private
    */
   _createHandles(nb, type, attr, callbackEach) {
-
     if (this.handles && this.handles.length > 0) {
       return;
     }
 
     for (var i = 1, l = nb; i <= l; i++) {
-
       (j => {
-
         var self = this;
 
         var handle = document.createElementNS(self.graph.ns, type);
@@ -19958,9 +19730,7 @@ class Shape extends EventEmitter {
         }
 
         handle.addEventListener('mousedown', e => {
-
           if (self.isResizable()) {
-
             e.preventDefault();
             e.stopPropagation();
 
@@ -19968,7 +19738,6 @@ class Shape extends EventEmitter {
             this.emit('beforeShapeResize');
 
             if (!self.graph.prevent(false)) {
-
               self.resizing = true;
               self.handleSelected = j;
               self.handleMouseDown(e);
@@ -19991,7 +19760,6 @@ class Shape extends EventEmitter {
    * Creates the handles for the shape. Should be implemented by the children shapes classes.
    */
   createHandles() {
-
     if (this.hasStaticHandles()) {
       this.addHandles();
       this.setHandles();
@@ -20032,7 +19800,6 @@ class Shape extends EventEmitter {
    * @return The result of the {@link Shape#handleMouseDownImpl} method.prototype
    */
   handleMouseDown(e) {
-
     //this.handleSelected = false;
 
     if (this.isLocked()) {
@@ -20040,7 +19807,6 @@ class Shape extends EventEmitter {
     }
 
     if (this.isMovable() || this.isResizable()) {
-
       this.graph.elementMoving(this);
     }
 
@@ -20050,11 +19816,9 @@ class Shape extends EventEmitter {
 
     if (this.isMovable()) {
       if (!this.resizing) {
-
         this.graph.emit('beforeShapeMove', self);
 
         if (!this.graph.prevent(false)) {
-
           this.moving = true;
           this.moved = false;
         }
@@ -20072,7 +19836,6 @@ class Shape extends EventEmitter {
    * @private
    */
   handleClick(e) {
-
     this.graph.emit('shapeClicked', this);
     this.emit('shapeClicked');
 
@@ -20085,7 +19848,6 @@ class Shape extends EventEmitter {
     }
 
     if (this.getProp('selectOnClick')) {
-
       this.graph.selectShape(this);
     }
   }
@@ -20132,15 +19894,12 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseUp(e) {
-
     if (this.moving && this.moved) {
-
       this.graph.emit('shapeMoved', this);
       this.emit('shapeMoved');
     }
 
     if (this.handleSelected || this.resize) {
-
       this.graph.emit('shapeResized', this);
       this.emit('shapeResized');
     }
@@ -20168,9 +19927,7 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseOver() {
-
     if (this.getProp('highlightOnMouseOver')) {
-
       if (!this.moving && !this.resizing) {
         this.highlight();
       }
@@ -20186,7 +19943,6 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseOut() {
-
     if (this.getProp('highlightOnMouseOver')) {
       this.unHighlight();
     }
@@ -20303,7 +20059,6 @@ class Shape extends EventEmitter {
    * @see Shape#unHighlight
    */
   highlight(attributes, saveDomName) {
-
     if (!attributes) {
       attributes = this.getHighlightAttributes();
     }
@@ -20324,7 +20079,6 @@ class Shape extends EventEmitter {
    * @see Shape#highlight
    */
   unHighlight(saveDomName) {
-
     if (!saveDomName) {
       saveDomName = 'highlight';
     }
@@ -20370,14 +20124,11 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   maskWith(maskingShape) {
-
     const maskingId = maskingShape.getMaskingID();
 
     if (maskingId) {
-
       this._dom.setAttribute('mask', `url(#${maskingId})`);
     } else {
-
       this._dom.removeAttribute('mask');
     }
   }
@@ -20422,7 +20173,6 @@ class Shape extends EventEmitter {
   }
 
   labelDblClickListener(e) {
-
     var i = parseInt(e.target.getAttribute('data-label-i'));
 
     var self = this;
@@ -20456,7 +20206,6 @@ class Shape extends EventEmitter {
     const previousValue = self.getLabelText(i);
 
     const blurEvent = function () {
-
       self.setLabelText(shapeLabel.value, i);
       self._labels[i].textContent = shapeLabel.value;
 
@@ -20475,7 +20224,6 @@ class Shape extends EventEmitter {
     shapeLabel.addEventListener('blur', blurEvent);
 
     shapeLabel.addEventListener('keyup', function (e) {
-
       if (e.keyCode === 13) {
         blurEvent();
       }
@@ -20495,9 +20243,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   appendToDom() {
-
     if (this._forcedParentDom) {
-
       this._forcedParentDom.appendChild(this.group);
     } else {
       this.graph.appendShapeToDom(this);
@@ -20510,7 +20256,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   forceParentDom(dom) {
-
     this._forcedParentDom = dom;
 
     return this;
@@ -24264,7 +24009,7 @@ class SerieLineExtended extends SerieLine {
 
 }
 
-class SerieScatterExtended extends SerieScatter$1 {
+class SerieScatterExtended extends SerieScatter {
 
   constructor() {
 
@@ -25501,7 +25246,7 @@ Graph$1.registerConstructor('graph.serie.line.color', SerieLineColor);
 Graph$1.registerConstructor('graph.serie.contour', SerieContour);
 Graph$1.registerConstructor('graph.serie.bar', SerieBar);
 Graph$1.registerConstructor('graph.serie.box', SerieBox);
-Graph$1.registerConstructor('graph.serie.scatter', SerieScatter$1);
+Graph$1.registerConstructor('graph.serie.scatter', SerieScatter);
 Graph$1.registerConstructor('graph.serie.zone', SerieZone);
 Graph$1.registerConstructor('graph.serie.zone.3d', SerieZone3D);
 Graph$1.registerConstructor('graph.serie.densitymap', SerieDensityMap);
@@ -25512,7 +25257,7 @@ Graph$1.registerConstructor(Graph$1.SERIE_LINE_COLORED, SerieLineColor);
 Graph$1.registerConstructor(Graph$1.SERIE_CONTOUR, SerieContour);
 Graph$1.registerConstructor(Graph$1.SERIE_BAR, SerieBar);
 Graph$1.registerConstructor(Graph$1.SERIE_BOX, SerieBox);
-Graph$1.registerConstructor(Graph$1.SERIE_SCATTER, SerieScatter$1);
+Graph$1.registerConstructor(Graph$1.SERIE_SCATTER, SerieScatter);
 Graph$1.registerConstructor(Graph$1.SERIE_ZONE, SerieZone);
 Graph$1.registerConstructor(Graph$1.SERIE_ZONE_3D, SerieZone3D);
 Graph$1.registerConstructor(Graph$1.SERIE_DENSITYMAP, SerieDensityMap);

@@ -22,7 +22,7 @@ const processAxes = ( Graph, graph, type, axisOptions, allAxes ) => {
       constructorName = 'graph.axis.y';
     }
 
-    var axis = new ( Graph.getConstructor( constructorName ) )( graph, type );
+    var axis = new( Graph.getConstructor( constructorName ) )( graph, type );
     axis.init( graph, options );
 
     if ( type == 'bottom' ) {
@@ -40,7 +40,7 @@ const processAxes = ( Graph, graph, type, axisOptions, allAxes ) => {
     }
 
     if ( options.name ) {
-      allAxes[name] = axis;
+      allAxes[ name ] = axis;
     }
   } );
 };

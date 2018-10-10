@@ -11,11 +11,11 @@ const makeAnnotation = ( graph, json, serie, axes ) => {
     }
 
     if ( json.xAxis ) {
-      shape.setXAxis( axes[json.xAxis] );
+      shape.setXAxis( axes[ json.xAxis ] );
     }
 
     if ( json.yAxis ) {
-      shape.setYAxis( axes[json.yAxis] );
+      shape.setYAxis( axes[ json.yAxis ] );
     }
 
     shape.draw();

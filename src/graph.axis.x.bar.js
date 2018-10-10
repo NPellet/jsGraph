@@ -56,7 +56,7 @@ class AxisXBar extends AxisX {
           tickLabel.setAttribute(
             'y',
             ( self.top ? -1 : 1 ) *
-              ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) )
+            ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) )
           );
           tickLabel.setAttribute( 'text-anchor', 'middle' );
           if ( self.getTicksLabelColor() !== 'black' ) {
@@ -66,7 +66,7 @@ class AxisXBar extends AxisX {
         } );
 
         tickLabel.setAttribute( 'x', this.getPos( ( i + 0.5 ) / elements.length ) );
-        tickLabel.textContent = elements[i].title;
+        tickLabel.textContent = elements[ i ].title;
       }
     }
 
@@ -122,19 +122,19 @@ class AxisXBar extends AxisX {
       let usedCategories = serie.getUsedCategories();
       for ( let cat of usedCategories ) {
         if ( !categories.hasOwnProperty( cat ) ) {
-          categories[cat] = 1;
+          categories[ cat ] = 1;
           total += 1;
         }
 
-        categories[cat]++;
+        categories[ cat ]++;
         total++;
       }
     } );
     console.log( categories );
     let accumulator = 0;
     for ( let i in categories ) {
-      let temp = categories[i];
-      categories[i] = accumulator;
+      let temp = categories[ i ];
+      categories[ i ] = accumulator;
       accumulator += temp;
     }
 
@@ -145,9 +145,9 @@ class AxisXBar extends AxisX {
         indices = {};
 
       scategories.forEach( ( cat ) => {
-        dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
-        indices[cat] = ( categories[cat] + dispatchedCategories[cat] ) / total;
-        dispatchedCategories[cat]++;
+        dispatchedCategories[ cat ] = dispatchedCategories[ cat ] || 0.5;
+        indices[ cat ] = ( categories[ cat ] + dispatchedCategories[ cat ] ) / total;
+        dispatchedCategories[ cat ]++;
       } );
 
       serie.setDataIndices( indices, total );

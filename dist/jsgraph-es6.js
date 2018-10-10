@@ -548,7 +548,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
    * @static
    */
   class Shape extends _EventEmitter2.default {
-
     constructor() {
       super();
     }
@@ -560,7 +559,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     init(graph, properties) {
-
       var self = this;
 
       this.graph = graph;
@@ -585,7 +583,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.transforms = [];
 
       if (this._data.masker) {
-
         var maskPath = document.createElementNS(this.graph.ns, 'mask');
         this.maskingId = Math.random();
         maskPath.setAttribute('id', this.maskingId);
@@ -603,23 +600,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.group) {
-
         if (this._dom && !this.isHTML()) {
           this.group.appendChild(this._dom);
         }
 
         this.group.addEventListener('mouseover', function (e) {
-
           self.handleMouseOver(e);
         });
 
         this.group.addEventListener('mouseout', function (e) {
-
           self.handleMouseOut(e);
         });
 
         this.group.addEventListener('mousedown', function (e) {
-
           self.graph.focus();
 
           self.handleMouseDown(e);
@@ -628,7 +621,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.group.addEventListener('click', this.handleClick.bind(this));
 
         this.group.addEventListener('dblclick', function (e) {
-
           //e.preventDefault();
           // e.stopPropagation();
 
@@ -668,7 +660,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * Removes the shape from the DOM and unlinks it from the graph
      */
     kill(keepDom) {
-
       if (this._inDom && !keepDom) {
         this.graph.removeShapeFromDom(this);
       }
@@ -689,7 +680,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     hide() {
-
       if (this.hidden) {
         return this;
       }
@@ -724,7 +714,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     show() {
-
       if (!this.hidden) {
         return this;
       }
@@ -771,7 +760,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     makeClasses() {
-
       if (this._dom) {
         this._dom.setAttribute('class', this.classes.join(' '));
       }
@@ -784,7 +772,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     changed(event, parameters) {
-
       if (event) {
         this.graph.emit(event, this, parameters);
         this.emit(event, this, parameters);
@@ -800,7 +787,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     setEventReceptacle() {
-
       if (!this.rectEvent) {
         this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
         this.rectEvent.setAttribute('pointer-events', 'fill');
@@ -822,7 +808,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     setSerie(serie) {
-
       if (!serie) {
         return;
       }
@@ -852,7 +837,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @see Graph#getYAxis
      */
     autoAxes() {
-
       if (!this.xAxis) {
         this.xAxis = this.graph.getXAxis();
       }
@@ -888,7 +872,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {XAxis} The x axis associated to the shape.
      */
     getXAxis() {
-
       if (!this.xAxis) {
         this.autoAxes();
       }
@@ -901,7 +884,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {YAxis} The y axis associated to the shape.
      */
     getYAxis() {
-
       if (!this.yAxis) {
         this.autoAxes();
       }
@@ -941,9 +923,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     draw(force, preventRedraw) {
-
       if (!this._inDom || force) {
-
         this.appendToDom();
         this._inDom = true;
       }
@@ -964,7 +944,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     redraw() {
-
       if (this.hidden) {
         return this;
       }
@@ -1000,7 +979,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
       var self = this;
       for (var i = 0, l = this.properties.position.length; i < l; i++) {
-
         var pos = _graphPosition2.default.check(this.properties.position[i], function (relativeTo) {
           return self.getRelativePosition(relativeTo);
         });
@@ -1013,7 +991,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     getRelativePosition(relativePosition) {
-
       var result;
       if ((result = /position([0-9]*)/.exec(relativePosition)) !== null) {
         return this.getPosition(result[1]);
@@ -1051,6 +1028,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @param [ index = 0 ] - The index of the property array
      */
     getProp(prop, index) {
+      if (!Array.isArray(this.properties[prop] || [])) {
+        return this.properties[prop];
+      }
       return (this.properties[prop] || [])[index || 0];
     }
 
@@ -1085,7 +1065,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     setDom(prop, val, noForce) {
       if (this._dom) {
-
         if (!noForce || !util.hasSavedAttribute(this._dom, prop)) {
           this._dom.setAttribute(prop, val);
         }
@@ -1126,7 +1105,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     setFillColor(color) {
-
       this.setProp('fillColor', color);
       this.overwriteSavedProp('fill', color);
       this.applySelectedStyle();
@@ -1329,7 +1307,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     setLabelPosition(position, index) {
-
       var self;
       var pos = _graphPosition2.default.check(position, function (relativeTo) {
         return self.getRelativePosition(relativeTo);
@@ -1432,7 +1409,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     applyGenericStyle() {
-
       this.setDom('fill', this.getProp('fillColor'), true);
       this.setDom('fill-opacity', this.getProp('fillOpacity'), true);
       this.setDom('stroke', this.getProp('strokeColor'), true);
@@ -1441,7 +1417,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var attributes = this.getProps('attributes');
       for (var j = 0, l = attributes.length; j < l; j++) {
-
         for (var i in attributes[j]) {
           this.setDom(i, typeof attributes[j][i] == 'function' ? attributes[j][i].call(this, i) : attributes[j][i], true);
         }
@@ -1457,7 +1432,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     applyStyle() {
-
       return this.applyGenericStyle();
     }
 
@@ -1468,7 +1442,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
      */
     calculatePosition(index) {
-
       var position;
 
       position = index instanceof _graphPosition2.default ? index : this.getPosition(index);
@@ -1490,7 +1463,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Position} The position at the proper index, or undefined
      */
     getPosition(index) {
-
       var pos = this.getProp('position', index || 0);
       this.setProp('position', pos = _graphPosition2.default.check(pos), index);
       return pos;
@@ -1503,7 +1475,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     setPosition(position, index) {
-
       var self = this;
       var pos = _graphPosition2.default.check(position, function (relativeTo) {
         return self.getRelativePosition(relativeTo);
@@ -1528,8 +1499,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     _applyTransforms() {
-
-      var transforms = this.getProp('transforms'),
+      var transforms = this.getProps('transforms'),
           transformString = '';
 
       if (!transforms) {
@@ -1542,33 +1512,55 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       for (var i = 0; i < transforms.length; i++) {
-
         transformString += `${transforms[i].type}(`;
 
+        let transform;
         switch (transforms[i].type) {
-
           case 'translate':
+            if (transforms[i].arguments) {
+              transform = transforms[i].arguments[0].compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
+            } else {
+              const value = _graphPosition2.default.check(transforms[i].value);
 
-            let transform = transforms[i].arguments[0].compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
+              transform = value.compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
+            }
 
-            transformString += transform.x;
+            transformString += transform.x || transform.dx || 0;
             transformString += ', ';
-            transformString += transform.y;
+            transformString += transform.y || transform.dy || 0;
+
             break;
 
           case 'rotate':
+            if (!transforms[i].arguments) {
+              transformString += transforms[i].angle;
 
-            transformString += transforms[i].arguments[0];
-            transformString += ', ';
+              if (!transforms[i].center) {
+                var p = this.computePosition(0);
+                transformString += `, ${p.x}, ${p.y}`;
+              } else {
+                console.log(_graphPosition2.default.check(transforms[i].center));
+                const posCenter = _graphPosition2.default.check(transforms[i].center).compute(this.graph, this.getXAxis(), this.getYAxis(), this.getSerie());
 
-            if (transforms[i].arguments.length == 1) {
-              var p = this.computePosition(0);
-              transformString += `${p.x}, ${p.y}`;
+                if (posCenter.x === posCenter.x && posCenter.y === posCenter.y) {
+                  transformString += ', ';
+                  transformString += posCenter.x;
+                  transformString += ', ';
+                  transformString += posCenter.y;
+                }
+              }
             } else {
-
-              transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
+              transformString += transforms[i].arguments[0];
               transformString += ', ';
-              transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[2], this.getYAxis()).replace('px', '');
+
+              if (transforms[i].arguments.length == 1) {
+                var p = this.computePosition(0);
+                transformString += `${p.x}, ${p.y}`;
+              } else {
+                transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
+                transformString += ', ';
+                transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[2], this.getYAxis()).replace('px', '');
+              }
             }
 
             break;
@@ -1587,7 +1579,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {Shape} The current shape
      */
     makeLabels() {
-
       this._labels = this._labels || [];
       this._labelsBackground = this._labelsBackground || [];
 
@@ -1605,9 +1596,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var i = 0;
 
       while (this.getProp('labelText', i) !== undefined) {
-
         if (!this._labels[i]) {
-
           this._labels[i] = document.createElementNS(this.graph.ns, 'text');
           this._labels[i].setAttribute('data-label-i', i);
           this._labels[i].jsGraphIsShape = this;
@@ -1630,6 +1619,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             this.labelDblClickListener(e);
           });
+        }
+
+        if (!Array.isArray(this.getProp('labelText', i))) {
+          break;
         }
 
         i++;
@@ -1656,7 +1649,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {Shape} The current shape
      */
     updateLabels() {
-
       var self = this;
       this._labels = this._labels || [];
 
@@ -1672,7 +1664,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {Shape} The current shape
      */
     _applyLabelData(labelIndex) {
-
       labelIndex = labelIndex || 0;
 
       /** Sets the position */
@@ -1698,7 +1689,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (position.x != 'NaNpx' && !isNaN(position.x) && position.x !== 'NaN' && position.x !== false) {
-
         this._labels[labelIndex].setAttribute('x', position.x);
         this._labels[labelIndex].setAttribute('y', position.y);
       }
@@ -1706,7 +1696,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       /** Sets the angle */
       var currAngle = this.getProp('labelAngle', labelIndex) || 0;
       if (currAngle != 0) {
-
         var x = this._labels[labelIndex].getAttribute('x'),
             y = this._labels[labelIndex].getAttribute('y');
 
@@ -1717,7 +1706,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       let labelData = this.getProp('labelHTMLData', labelIndex) || {};
 
       for (var i in labelData) {
-
         this._labels[labelIndex].setAttribute(i, labelData[i]);
         this._labelsBackground[labelIndex].setAttribute(i, labelData[i]);
       }
@@ -1764,7 +1752,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      *  @returns {Shape} The current shape instance
      */
     emptyLabels() {
-
       for (var i = 0, l = this._labels.length; i < l; i++) {
         /** Sets the baseline */
         this._labels[i].textContent = '';
@@ -1819,7 +1806,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @example Shape.hasHandles( ); // Queries the shape to determine if it has handles or not. Also returns true if handles are static
      */
     hasHandles(setter) {
-
       if (setter !== undefined) {
         this.setProp('handles', setter);
       }
@@ -1833,17 +1819,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     addHandles() {
-
       if (this.isLocked()) {
         return;
       }
 
       if (!this.handlesInDom) {
-
         this.handlesInDom = true;
 
         for (var i = 1; i < this.handles.length; i++) {
-
           if (this.handles[i]) {
             this.group.appendChild(this.handles[i]);
           }
@@ -1859,7 +1842,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     removeHandles() {
-
       this.hideHandles();
       this.handles = [];
     }
@@ -1870,7 +1852,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     hideHandles() {
-
       if (!this.handlesInDom) {
         return this;
       }
@@ -1888,7 +1869,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Boolean} ```true``` if the handles are in the DOM
      */
     areHandlesInDom() {
-
       return this.handlesInDom;
     }
 
@@ -1899,7 +1879,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {Shape} the current shape
      */
     _select(mute) {
-
       if (!this.isSelectable()) {
         return false;
       }
@@ -1913,7 +1892,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.applySelectedStyle();
 
       if (this.hasHandles() && !this.hasStaticHandles()) {
-
         this.addHandles();
         this.setHandles();
       }
@@ -1924,7 +1902,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     applySelectedStyle() {
-
       if (!this._selectStatus) {
         return;
       }
@@ -1949,7 +1926,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {Shape} the current shape
      */
     _unselect(mute) {
-
       this._selectStatus = false;
 
       util.restoreDomAttributes(this._dom, 'select');
@@ -2010,7 +1986,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     _createHandles(nb, type, attr, callbackEach) {
-
       if (this.handles && this.handles.length > 0) {
         return;
       }
@@ -2018,9 +1993,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var self = this;
 
       for (var i = 1, l = nb; i <= l; i++) {
-
         (j => {
-
           var self = this;
 
           var handle = document.createElementNS(self.graph.ns, type);
@@ -2033,9 +2006,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           handle.addEventListener('mousedown', e => {
-
             if (self.isResizable()) {
-
               e.preventDefault();
               e.stopPropagation();
 
@@ -2043,7 +2014,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               this.emit('beforeShapeResize');
 
               if (!self.graph.prevent(false)) {
-
                 self.resizing = true;
                 self.handleSelected = j;
                 self.handleMouseDown(e);
@@ -2066,7 +2036,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * Creates the handles for the shape. Should be implemented by the children shapes classes.
      */
     createHandles() {
-
       if (this.hasStaticHandles()) {
         this.addHandles();
         this.setHandles();
@@ -2107,7 +2076,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return The result of the {@link Shape#handleMouseDownImpl} method.prototype
      */
     handleMouseDown(e) {
-
       //this.handleSelected = false;
 
       if (this.isLocked()) {
@@ -2115,7 +2083,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.isMovable() || this.isResizable()) {
-
         this.graph.elementMoving(this);
       }
 
@@ -2125,11 +2092,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.isMovable()) {
         if (!this.resizing) {
-
           this.graph.emit('beforeShapeMove', self);
 
           if (!this.graph.prevent(false)) {
-
             this.moving = true;
             this.moved = false;
           }
@@ -2147,7 +2112,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     handleClick(e) {
-
       this.graph.emit('shapeClicked', this);
       this.emit('shapeClicked');
 
@@ -2160,7 +2124,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.getProp('selectOnClick')) {
-
         this.graph.selectShape(this);
       }
     }
@@ -2207,15 +2170,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     handleMouseUp(e) {
-
       if (this.moving && this.moved) {
-
         this.graph.emit('shapeMoved', this);
         this.emit('shapeMoved');
       }
 
       if (this.handleSelected || this.resize) {
-
         this.graph.emit('shapeResized', this);
         this.emit('shapeResized');
       }
@@ -2243,9 +2203,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     handleMouseOver() {
-
       if (this.getProp('highlightOnMouseOver')) {
-
         if (!this.moving && !this.resizing) {
           this.highlight();
         }
@@ -2261,7 +2219,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     handleMouseOut() {
-
       if (this.getProp('highlightOnMouseOver')) {
         this.unHighlight();
       }
@@ -2378,7 +2335,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @see Shape#unHighlight
      */
     highlight(attributes, saveDomName) {
-
       if (!attributes) {
         attributes = this.getHighlightAttributes();
       }
@@ -2399,7 +2355,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @see Shape#highlight
      */
     unHighlight(saveDomName) {
-
       if (!saveDomName) {
         saveDomName = 'highlight';
       }
@@ -2445,14 +2400,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     maskWith(maskingShape) {
-
       const maskingId = maskingShape.getMaskingID();
 
       if (maskingId) {
-
         this._dom.setAttribute('mask', `url(#${maskingId})`);
       } else {
-
         this._dom.removeAttribute('mask');
       }
     }
@@ -2497,7 +2449,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     labelDblClickListener(e) {
-
       var i = parseInt(e.target.getAttribute('data-label-i'));
 
       var self = this;
@@ -2531,7 +2482,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       const previousValue = self.getLabelText(i);
 
       const blurEvent = function () {
-
         self.setLabelText(shapeLabel.value, i);
         self._labels[i].textContent = shapeLabel.value;
 
@@ -2550,7 +2500,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       shapeLabel.addEventListener('blur', blurEvent);
 
       shapeLabel.addEventListener('keyup', function (e) {
-
         if (e.keyCode === 13) {
           blurEvent();
         }
@@ -2570,9 +2519,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     appendToDom() {
-
       if (this._forcedParentDom) {
-
         this._forcedParentDom.appendChild(this.group);
       } else {
         this.graph.appendShapeToDom(this);
@@ -2585,7 +2532,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Shape} The current shape
      */
     forceParentDom(dom) {
-
       this._forcedParentDom = dom;
 
       return this;
@@ -2712,20 +2658,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(9), __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'));
+    factory(module, exports, require('../graph.util.js'), require('../mixins/graph.mixin.errorbars.js'), require('./graph.serie.scatter.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphUtil, global.graphMixinErrorbars);
+    factory(mod, mod.exports, global.graphUtil, global.graphMixinErrorbars, global.graphSerieScatter);
     global.graphSerieLine = mod.exports;
   }
-})(this, function (module, exports, _graphUtil, _graphMixinErrorbars) {
+})(this, function (module, exports, _graphUtil, _graphMixinErrorbars, _graphSerieScatter) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -2735,6 +2681,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var util = _interopRequireWildcard(_graphUtil);
 
   var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
+
+  var _graphSerieScatter2 = _interopRequireDefault(_graphSerieScatter);
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -2793,7 +2741,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
    * @see Graph#newSerie
    * @extends Serie
    */
-  class SerieLine extends SerieScatter {
+  class SerieLine extends _graphSerieScatter2.default {
     constructor(graph, name, options, defaultInherited) {
       super(graph, name, options, util.extend(true, {}, defaultOptions, defaultInherited));
 
@@ -3449,6 +3397,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.hasErrors()) {
+        console.log(j, x, y, xpx, ypx);
         this.errorAddPoint(j, x, y, xpx, ypx);
       }
 
@@ -3921,7 +3870,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     /* FILL COLOR * @memberof SerieLine
      */
     setFillColor(color, selectionType, applyToSelected) {
-
       selectionType = selectionType || 'unselected';
       this.styles[selectionType] = this.styles[selectionType] || {};
       this.styles[selectionType].fillColor = color;
@@ -3940,11 +3888,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     getFillColor(selectionType) {
-
       return this.getStyle(selectionType).fillColor || undefined;
     }
 
-    /* * @memberof SerieLine
+    /** @memberof SerieLine
      */
 
     isMonotoneous() {
@@ -4819,7 +4766,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(20), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(0), __webpack_require__(24), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -5128,7 +5075,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     concat(wave2) {
-
       if (!this.xdata) {
         this.xdata = this.getXWaveform();
       }
@@ -5671,7 +5617,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     invert(data) {
-
       let d = data || this.data;
       d.reverse();
 
@@ -5961,7 +5906,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       wave.requireXMonotonicity();
 
       if (this.xdata && wave.xdata) {
-
         const xSet = new Set();
         const xData = this.xdata.data;
         const xData2 = wave.xdata.data;
@@ -5977,7 +5921,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         const xs = Array.from(xSet.values()).sort();
 
         const ys = xs.map(x => {
-
           if (operation == MULTIPLY) {
             return this.interpolate(x) * wave.interpolate(x);
           } else if (operation == DIVIDE) {
@@ -5992,24 +5935,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this._setData(ys);
         this.xdata._setData(xs);
       } else {
-
         if (operation == MULTIPLY) {
-
           for (; i < l; i++) {
             yDataThis[i] *= wave.interpolate(this.getX(i));
           }
         } else if (operation == DIVIDE) {
-
           for (; i < l; i++) {
             yDataThis[i] /= wave.interpolate(this.getX(i));
           }
         } else if (operation == ADD) {
-
           for (; i < l; i++) {
             yDataThis[i] += wave.interpolate(this.getX(i));
           }
         } else if (operation == SUBTRACT) {
-
           for (; i < l; i++) {
             yDataThis[i] -= wave.interpolate(this.getX(i));
           }
@@ -6086,10 +6024,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.xdata) {
         if (alsoDuplicateXWave) {
-
           newWaveform.setXWaveform(this.xdata.duplicate());
         } else {
-
           newWaveform.setXWaveform(this.xdata);
         }
 
@@ -6403,8 +6339,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     ////////////////////////////////////////////////////////////
 
     setErrorBarX(waveform) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       var xWave = this.getXWaveform();
@@ -6413,8 +6349,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setErrorBarXBelow(waveform) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       var xWave = this.getXWaveform();
@@ -6423,8 +6359,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setErrorBarXAbove(waveform) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       var xWave = this.getXWaveform();
@@ -6433,8 +6369,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setErrorBoxX(waveform) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       var xWave = this.getXWaveform();
@@ -6444,8 +6380,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setErrorBoxXBelow(waveform) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       var xWave = this.getXWaveform();
@@ -6455,8 +6391,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setErrorBoxXAbove(waveform) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       var xWave = this.getXWaveform();
@@ -6465,8 +6401,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setErrorBar(waveform, checkMinMax = true) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
       this.errors.nb++;
       this.errors.nb++;
@@ -6474,38 +6411,39 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.errors.bars.above = waveform;
 
       if (checkMinMax) {
-        this._setData();
+        this._setData(this.data);
       }
     }
 
     setErrorBarBelow(waveform, checkMinMax = true) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
       this.errors.nb++;
       this.errors.bars.below = waveform;
 
       if (checkMinMax) {
-        this._setData();
+        this._setData(this.data);
       }
     }
 
     setErrorBarAbove(waveform, checkMinMax = true) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
 
       this.errors.nb++;
       this.errors.bars.above = waveform;
 
       if (checkMinMax) {
-        this._setData();
+        this._setData(this.data);
       }
     }
 
     setErrorBox(waveform, checkMinMax = true) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
       this.errors.nb++;
       this.errors.nb++;
@@ -6513,30 +6451,30 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.errors.boxes.below = waveform;
 
       if (checkMinMax) {
-        this._setData();
+        this._setData(this.data);
       }
     }
 
     setErrorBoxBelow(waveform, checkMinMax = true) {
-      if (Array.isArray(waveform)) {
-        waveform = new Waveform(waveform);
+      if (!(waveform instanceof Waveform)) {
+        waveform = new this.constructor(waveform);
       }
       this.errors.nb++;
       this.errors.boxes.below = waveform;
 
       if (checkMinMax) {
-        this._setData();
+        this._setData(this.data);
       }
     }
 
     setErrorBoxAbove(waveform, checkMinMax = true) {
-      if (Array.isArray(waveform)) {
+      if (!(waveform instanceof Waveform)) {
         waveform = new Waveform(waveform);
       }
 
       this.errors.boxes.above = waveform;
       if (checkMinMax) {
-        this._setData();
+        this._setData(this.data);
       }
     }
 
@@ -6855,7 +6793,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _setData() {
       this.minY = Math.min(...this.data);
       this.maxY = Math.max(...this.data);
-
+      console.log(this.errors);
       this.checkMinMaxErrorBars();
     }
   }
@@ -6870,20 +6808,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(4), __webpack_require__(0), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(4), __webpack_require__(0), __webpack_require__(5), __webpack_require__(20), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.position.js'), require('./graph.util.js'), require('./dependencies/eventEmitter/EventEmitter.js'), require('./util/waveform.js'));
+    factory(module, exports, require('./graph.position.js'), require('./graph.util.js'), require('./dependencies/eventEmitter/EventEmitter.js'), require('./renderer/main.js'), require('./util/waveform.js'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod, mod.exports, global.graphPosition, global.graphUtil, global.EventEmitter, global.waveform);
+    factory(mod, mod.exports, global.graphPosition, global.graphUtil, global.EventEmitter, global.main, global.waveform);
     global.graphCore = mod.exports;
   }
-})(this, function (module, exports, _graphPosition, _graphUtil, _EventEmitter, _waveform) {
+})(this, function (module, exports, _graphPosition, _graphUtil, _EventEmitter, _main, _waveform) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -6895,6 +6833,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var util = _interopRequireWildcard(_graphUtil);
 
   var _EventEmitter2 = _interopRequireDefault(_EventEmitter);
+
+  var _main2 = _interopRequireDefault(_main);
 
   function _interopRequireWildcard(obj) {
     if (obj && obj.__esModule) {
@@ -6973,11 +6913,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     shapesUnselectOnClick: true,
     shapesUniqueSelection: true
-  };
-
-  const defaultScatterStyle = {
-    shape: 'circle',
-    r: 4
   };
 
   var _constructors = new Map();
@@ -7459,6 +7394,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     uncacheOffset() {
       this.offsetCached = false;
+    }
+
+    getNumAxes(position) {
+      return this.axis[position].length;
     }
 
     /**
@@ -8992,7 +8931,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
     }
     unlockShapes() {
-      //		console.log('unlock');
       this.shapesLocked = false;
     }
     prevent(arg) {
@@ -9267,463 +9205,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     /**
      * Returns a graph created from a schema
-     * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+     * @param {Object} json
      * @param {HTMLElement} wrapper - The wrapping element
      * @returns {Graph} Newly created graph
      */
-    static fromJSON(schema, wrapper) {
+    static fromJSON(json, wrapper) {
 
-      let graph,
-          options = {},
-          axes = {
-        left: [],
-        top: [],
-        right: [],
-        bottom: []
-      },
-          style;
-
-      if (schema.title) {
-        options.title = schema.title;
-      }
-
-      if (schema.axis) {
-
-        schema.axis.forEach(function (schemaAxis) {
-
-          if (!schemaAxis.type) {
-            util.throwError('Axis type is required (top, bottom, left or right)');
-          }
-
-          var axisOptions = {};
-          if (schemaAxis.label) {
-            axisOptions.labelValue = schemaAxis.label;
-          }
-
-          if (schemaAxis.unit !== undefined) {
-            axisOptions.unit = schemaAxis.unit;
-          }
-
-          if (schemaAxis.unitWrapperAfter !== undefined) {
-            axisOptions.unitWrapperAfter = schemaAxis.unitWrapperAfter;
-          }
-
-          if (schemaAxis.unitWrapperBefore !== undefined) {
-            axisOptions.unitWrapperBefore = schemaAxis.unitWrapperBefore;
-          }
-
-          if (schemaAxis.min !== undefined) {
-            axisOptions.forcedMin = schemaAxis.min;
-          }
-
-          if (schemaAxis.max !== undefined) {
-            axisOptions.forcedMax = schemaAxis.max;
-          }
-
-          if (schemaAxis.flip !== undefined) {
-            axisOptions.flipped = schemaAxis.flip;
-          }
-
-          axes[schemaAxis.type].push(axisOptions);
-          schemaAxis._jsGraphIndex = axes[schemaAxis.type].length - 1;
-        });
-      }
-
-      graph = new Graph(wrapper, options, axes);
-
-      if (schema.width) {
-        graph.setWidth(schema.width);
-      }
-
-      if (schema.height) {
-        graph.setHeight(schema.width);
-      }
-
-      graph._resize();
-
-      if (schema.data) {
-
-        schema.data.forEach(function (schemaSerie) {
-
-          var serieType = schemaSerie.type,
-              serie,
-              serieOptions = {},
-              serieAxis;
-
-          let waveform;
-
-          switch (schemaSerie.type) {
-
-            case 'bar':
-              util.throwError('Bar charts not supported');
-              serieType = false;
-              break;
-
-            case 'color':
-              serieType = Graph.SERIE_LINE_COLORED;
-              break;
-
-            case 'scatter':
-              serieType = Graph.SERIE_SCATTER;
-              break;
-
-            case 'box':
-              serieType = Graph.SERIE_BOX;
-
-              if (schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y') {
-                serieOptions.orientation = schemaSerie.orientation;
-              }
-              break;
-
-            default:
-              serieType = Graph.SERIE_LINE;
-              break;
-          }
-
-          if (serieType !== Graph.SERIE_BOX) {
-            waveform = Graph.newWaveform();
-          }
-
-          if (!serieType) {
-            util.throwError('No valid serie type was found');
-            return;
-          }
-
-          serie = graph.newSerie(schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType);
-
-          if (schemaSerie.lineStyle) {
-
-            let lineStyle = schemaSerie.lineStyle;
-
-            if (Array.isArray(lineStyle)) {
-              lineStyle = {
-                unselected: lineStyle
-              };
-            }
-
-            Object.entries(lineStyle).forEach(([styleName, style]) => {
-
-              var styleSerie = {};
-
-              switch (serieType) {
-
-                case Graph.SERIE_LINE:
-                  if (style.lineWidth !== undefined) {
-                    styleSerie.lineWidth = style.lineWidth;
-                  }
-
-                  if (style.color !== undefined) {
-                    styleSerie.lineColor = style.color;
-                  }
-
-                  if (style.lineStyle) {
-                    styleSerie.lineStyle = style.lineStyle;
-                  }
-
-                  serie.setStyle(styleSerie, styleName);
-                  break;
-              }
-            });
-          }
-
-          let defaultStyle = {};
-          let defaultStyles = {};
-
-          if (schemaSerie.defaultStyle) {
-            defaultStyle = schemaSerie.defaultStyle;
-          }
-
-          if (schemaSerie.defaultStyles) {
-            defaultStyles = schemaSerie.defaultStyles;
-          }
-
-          if (schemaSerie.styles) {
-
-            let individualStyles;
-
-            if (Array.isArray(schemaSerie.styles)) {
-              individualStyles = {
-                unselected: schemaSerie.styles
-              };
-            } else {
-              individualStyles = schemaSerie.styles;
-            }
-
-            let styleNames = new Set(Object.keys(defaultStyles).concat(Object.keys(individualStyles)));
-
-            styleNames.forEach(styleName => {
-
-              var styleSerie = {};
-              let style = [],
-                  styles;
-
-              if (individualStyles && individualStyles[styleName]) {
-
-                style = individualStyles[styleName];
-
-                if (!Array.isArray(style)) {
-                  style = [style];
-                }
-
-                styles = style.map(function (eachStyleElement) {
-
-                  switch (serieType) {
-
-                    case Graph.SERIE_LINE:
-
-                      return {
-                        type: eachStyleElement.shape,
-                        zoom: eachStyleElement.zoom,
-                        strokeWidth: eachStyleElement.lineWidth,
-                        strokeColor: eachStyleElement.lineColor,
-                        fillColor: eachStyleElement.color,
-                        points: eachStyleElement.points
-                      };
-
-                      break;
-
-                    case Graph.SERIE_BOX:
-
-                      return eachStyleElement;
-
-                      break;
-
-                    case Graph.SERIE_SCATTER:
-                      return eachStyleElement;
-
-                      break;
-                  }
-                });
-              }
-
-              switch (serieType) {
-
-                case Graph.SERIE_LINE:
-
-                  serie.setMarkers(styles, styleName);
-                  break;
-
-                case Graph.SERIE_SCATTER:
-                  serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[styleName] || {}), styles, styleName);
-                  break;
-
-                case Graph.SERIE_BOX:
-
-                  serie.setStyle(styles[0], styleName || 'unselected');
-                  break;
-              }
-            });
-          }
-
-          if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
-            serie.setColors(schemaSerie.color);
-          }
-
-          if (serieType !== Graph.SERIE_BOX) {
-            waveform.setData(schemaSerie.y, schemaSerie.x);
-          }
-
-          if (!serie) {
-            return;
-          }
-
-          let errorBarsXAbove = [],
-              errorBarsXBelow = [],
-              errorBarsYAbove = [],
-              errorBarsYBelow = [],
-              errorBoxesXAbove = [],
-              errorBoxesXBelow = [],
-              errorBoxesYAbove = [],
-              errorBoxesYBelow = [];
-
-          if (waveform !== undefined) {
-            var errors = [];
-            if (schemaSerie.errorX) {
-
-              for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
-
-                if (Array.isArray(schemaSerie.errorX[i])) {
-
-                  errorBarsXAbove.push(schemaSerie.errorX[i][0]);
-                  errorBarsXBelow.push(schemaSerie.errorX[i][1]);
-                } else {
-                  errorBarsXAbove.push(schemaSerie.errorX[i]);
-                  errorBarsXBelow.push(schemaSerie.errorX[i]);
-                }
-              }
-            } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
-
-              if (schemaSerie.errorBarX) {
-
-                for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
-
-                  if (Array.isArray(schemaSerie.errorBarX[i])) {
-
-                    errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
-                    errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
-                  } else {
-                    errorBarsXAbove.push(schemaSerie.errorBarX[i]);
-                    errorBarsXBelow.push(schemaSerie.errorBarX[i]);
-                  }
-                }
-              }
-
-              if (schemaSerie.errorBoxX) {
-
-                for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
-
-                  if (Array.isArray(schemaSerie.errorBoxX[i])) {
-
-                    errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
-                    errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
-                  } else {
-                    errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
-                    errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
-                  }
-                }
-              }
-            }
-
-            if (schemaSerie.errorY) {
-
-              for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
-
-                if (Array.isArray(schemaSerie.errorY[i])) {
-
-                  errorBarsYAbove.push(schemaSerie.errorY[i][0]);
-                  errorBarsYBelow.push(schemaSerie.errorY[i][1]);
-                } else {
-                  errorBarsYAbove.push(schemaSerie.errorY[i]);
-                  errorBarsYBelow.push(schemaSerie.errorY[i]);
-                }
-              }
-            } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
-
-              if (schemaSerie.errorBarY) {
-
-                for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
-
-                  if (Array.isArray(schemaSerie.errorBarY[i])) {
-
-                    errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
-                    errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
-                  } else {
-                    errorBarsYAbove.push(schemaSerie.errorBarY[i]);
-                    errorBarsYBelow.push(schemaSerie.errorBarY[i]);
-                  }
-                }
-              }
-
-              if (schemaSerie.errorBoxY) {
-
-                for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
-
-                  if (Array.isArray(schemaSerie.errorBoxY[i])) {
-
-                    errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
-                    errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
-                  } else {
-                    errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
-                    errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
-                  }
-                }
-              }
-            }
-
-            style = {};
-            if (errorBarsXAbove.length > 0) {
-              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
-              style.right = {};
-            }
-            if (errorBarsXBelow.length > 0) {
-              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
-              style.left = {};
-            }
-            if (errorBarsYAbove.length > 0) {
-              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
-              style.top = {};
-            }
-            if (errorBarsYBelow.length > 0) {
-              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
-              style.bottom = {};
-            }
-
-            serie.setErrorBarStyle(style);
-
-            style = {};
-            if (errorBoxesXAbove.length > 0) {
-              waveform.setErrorBoxXAbove(Graph.newWaveform(errorBoxesXAbove));
-              style.right = {};
-            }
-            if (errorBoxesXBelow.length > 0) {
-              waveform.setErrorBoxXBelow(Graph.newWaveform(errorBoxesXBelow));
-              style.left = {};
-            }
-            if (errorBoxesYAbove.length > 0) {
-              waveform.setErrorBoxAbove(Graph.newWaveform(errorBoxesYAbove));
-              style.top = {};
-            }
-            if (errorBoxesYBelow.length > 0) {
-              waveform.setErrorBoxBelow(Graph.newWaveform(errorBoxesYBelow));
-              style.bottom = {};
-            }
-            serie.setErrorBoxStyle(style);
-          }
-
-          if (schema.axis) {
-            serieAxis = schema.axis[schemaSerie.xAxis];
-
-            if (!serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom') {
-              util.warn('No x axis found. Setting automatically');
-              serie.setXAxis(graph.getXAxis(0));
-            } else {
-              if (serieAxis.type == 'top') {
-                serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));
-              } else if (serieAxis.type == 'bottom') {
-                serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));
-              }
-            }
-
-            serieAxis = schema.axis[schemaSerie.yAxis];
-
-            if (!serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right') {
-              util.warn('No y axis found. Setting automatically');
-              serie.setYAxis(graph.getYAxis(0));
-            } else {
-              if (serieAxis.type == 'left') {
-                serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));
-              } else if (serieAxis.type == 'right') {
-                serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));
-              }
-            }
-          } else {
-            util.warn('No axes found. Setting automatically');
-            serie.autoAxis();
-          }
-
-          switch (serieType) {
-
-            case Graph.SERIE_BOX:
-
-              serie.setData(schemaSerie.boxes);
-
-              break;
-
-            default:
-            case Graph.SERIE_SCATTER:
-            case Graph.SERIE_LINE_COLORED:
-            case Graph.SERIE_LINE:
-
-              serie.setWaveform(waveform);
-
-              break;
-          }
-        });
-      }
-
-      graph.autoscaleAxes();
-      graph.draw();
-
+      const graph = (0, _main2.default)(Graph, json, wrapper);
       return graph;
     }
 
@@ -9746,7 +9234,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       axesPositions.map(axisPosition => {
 
         if (!this.axis[axisPosition]) {
-          return;
+          return {};
         }
 
         axesExport = axesExport.concat(this.axis[axisPosition].map(axis => {
@@ -9776,21 +9264,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       let toType = type => {
         switch (type) {
 
-          case Graph.SERIE_LINE:
-            return 'line';
-            break;
-
           case Graph.SERIE_BAR:
             return 'bar';
-            break;
 
           case Graph.SERIE_LINE_COLORED:
             return 'color';
-            break;
 
           case Graph.SERIE_SCATTER:
             return 'scatter';
-            break;
+
+          default:
+          case Graph.SERIE_LINE:
+            return 'line';
         }
       };
 
@@ -9978,7 +9463,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   function refreshDrawingZone(graph) {
 
-    var i, j, l, xy, min, max, axis;
     var shift = {
       top: [],
       bottom: [],
@@ -10055,7 +9539,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       axis.setMinPx(shiftTop);
       axis.setMaxPx(graph.getDrawingHeight(true) - shiftBottom);
-
+      console.log(axis);
       if (axis.floating) {
         return;
       }
@@ -10103,7 +9587,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
 
-    [shift.left, shift.right].map(function (arr) {
+    [shift.left, shift.right].forEach(function (arr) {
       arr.reduce(function (prev, current, index) {
         arr[index] = prev + current;
         return prev + current;
@@ -10187,11 +9671,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       axis.drawLines();
     }, false, true, true);
 
-    /*
-    graph.shapeZoneRect.setAttribute('x', shift[1]);
-    graph.shapeZoneRect.setAttribute('y', shift[2]);
-    graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-    graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+    /**
+      graph.shapeZoneRect.setAttribute('x', shift[1]);
+    	graph.shapeZoneRect.setAttribute('y', shift[2]);
+    	graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+    	graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
     */
     graph.shift = shift;
     graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
@@ -10297,7 +9781,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.3'
+        'data-jsgraph-version': 'v2.1.4'
       });
     } catch (e) {
       // ignore
@@ -10851,11 +10335,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var forceTrackingLegendMode = function (graph, legend, toX, toY, skip) {
 
-    var ratio = 0,
-        start = Date.now(),
+    var start = Date.now(),
         h = legend.offsetHeight,
-        startX = parseInt(legend.style.marginLeft.replace('px', '') || 0),
-        startY = parseInt(legend.style.marginTop.replace('px', '') || 0);
+        startX = parseInt(legend.style.marginLeft.replace('px', '') || 0, 10),
+        startY = parseInt(legend.style.marginTop.replace('px', '') || 0, 10);
 
     toX = toX > graph.getWidth() / 2 ? toX - toX % 10 - 20 - legend.offsetWidth : toX - toX % 10 + 30;
     toY = toY - toY % 10 + h / 2;
@@ -10907,9 +10390,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
 
   function _handleDblClick(graph, x, y, e) {
-    //	var _x = x - graph.options.paddingLeft;
-    //	var _y = y - graph.options.paddingTop;
-    var pref = graph.options.dblclick;
+    // var _x = x - graph.options.paddingLeft;
+    // var _y = y - graph.options.paddingTop;
+    //var pref = graph.options.dblclick;
     checkMouseActions(graph, e, [x, y, e], 'onDblClick');
     /*
         if ( !pref || !pref.type ) {
@@ -11000,6 +10483,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       case 'right':
         inst = axisInstance.y;
         break;
+
+      default:
+        return;
     }
 
     num = num || 0;
@@ -11223,7 +10709,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     useKatexForLabel: false,
 
     highestMax: false,
-    lowestMin: false
+    lowestMin: false,
+
+    labelValue: ''
   };
 
   /**
@@ -13052,7 +12540,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Axis} The current axis
      */
     setLabel(label) {
-      this.options.labelValue = label;
+      this.options.label = label;
       return this;
     }
 
@@ -13066,7 +12554,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {String} The label value
      */
     getLabel() {
-      return this.options.labelValue;
+      return this.options.label;
     }
 
     setSpan(_from, _to) {
@@ -13935,25 +13423,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      *  @example serie.setErrorBarStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
      */
     setErrorBarStyle: function (errorstyle) {
-
       this.errorbarStyle = this._setErrorStyle(errorstyle);
 
       return this;
     },
 
     setErrorBoxStyle: function (errorstyle) {
-
       this.errorboxStyle = this._setErrorStyle(errorstyle);
       return this;
     },
 
     _setErrorStyle(errorstyles = {}) {
-
       var styles = [];
       var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
 
       var makePath = style => {
-
         style.dom = document.createElementNS(this.graph.ns, 'path');
         style.dom.setAttribute('fill', style.fillColor || 'none');
         style.dom.setAttribute('stroke', style.strokeColor || 'black');
@@ -13972,9 +13456,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       for (var j = 0, l = pairs.length; j < l; j++) {
-
         if (errorstyles.all) {
-
           errorstyles[pairs[j][1]] = util.extend(true, {}, errorstyles.all);
           errorstyles[pairs[j][2]] = util.extend(true, {}, errorstyles.all);
         }
@@ -13987,15 +13469,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         for (var k = 1; k <= 2; k++) {
-
           if (errorstyles[pairs[j][k]]) {
-
             styles[pairs[j][k]] = errorstyles[pairs[j][k]];
             makePath(styles[pairs[j][k]]);
           }
         }
       }
-
+      console.log(styles);
       return styles;
     },
 
@@ -14004,7 +13484,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       //  var pathError = "M 0 0 ";
 
       if (this.errorboxStyle) {
-
         this.errorboxStyle.paths = {
           top: '',
           bottom: '',
@@ -14014,7 +13493,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.errorbarStyle) {
-
         this.errorbarStyle.paths = {
           top: '',
           bottom: '',
@@ -14025,7 +13503,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     },
 
     errorAddPoint: function (index, dataX, dataY, xpx, ypx) {
-
       /* eslint-disable no-cond-assign */
       let error;
 
@@ -14083,11 +13560,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     },
 
     errorDraw: function () {
-
       if (this.errorbarStyle) {
-
         for (var j in this.errorbarStyle.paths) {
-
           if (this.errorbarStyle[j] && this.errorbarStyle[j].dom) {
             this.errorbarStyle[j].dom.setAttribute('d', this.errorbarStyle.paths[j]);
           }
@@ -14095,9 +13569,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.errorboxStyle) {
-
         for (var j in this.errorboxStyle.paths) {
-
           if (this.errorboxStyle[j] && this.errorboxStyle[j].dom) {
             this.errorboxStyle[j].dom.setAttribute('d', this.errorboxStyle.paths[j]);
           }
@@ -15280,1258 +14752,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.shape.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports, global.graphShape);
-    global.graphShapeLine = mod.exports;
-  }
-})(this, function (module, exports, _graphShape) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _graphShape2 = _interopRequireDefault(_graphShape);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  /**
-   * Represents a line
-   * @extends Shape
-   * @see Graph#newShape
-   */
-  class ShapeLine extends _graphShape2.default {
-
-    constructor(graph, options) {
-      super(graph, options);
-    }
-
-    /**
-     * Creates the DOM
-     * @private
-     * @return {Shape} The current shape
-     */
-    createDom() {
-
-      this._dom = document.createElementNS(this.graph.ns, 'line');
-
-      if (!this.getStrokeColor()) {
-        this.setStrokeColor('black');
-      }
-
-      if (!this.getStrokeWidth()) {
-        this.setStrokeWidth(1);
-      }
-    }
-
-    /**
-     * Creates the handles
-     * @private
-     * @return {Shape} The current shape
-     */
-    createHandles() {
-
-      this._createHandles(2, 'rect', {
-        transform: 'translate(-3 -3)',
-        width: 6,
-        height: 6,
-        stroke: 'black',
-        fill: 'white',
-        cursor: 'nwse-resize'
-      });
-    }
-
-    /**
-     * Recalculates the positions and applies them
-     * @private
-     * @return {Boolean} Whether the shape should be redrawn
-     */
-    applyPosition() {
-
-      var position = this.calculatePosition(0);
-      var position2 = this.calculatePosition(1);
-
-      if (!position || !position.x || !position.y) {
-        return;
-      }
-
-      this.setDom('x2', position.x);
-      this.setDom('y2', position.y);
-
-      this.setDom('y1', position2.y);
-      this.setDom('x1', position2.x);
-
-      this.currentPos2x = position2.x;
-      this.currentPos2y = position2.y;
-
-      this.currentPos1x = position.x;
-      this.currentPos1y = position.y;
-
-      return true;
-    }
-
-    /**
-     * Handles mouse move events
-     * @private
-     */
-    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-
-      if (this.isLocked()) {
-        return;
-      }
-
-      var pos = this.getPosition(0);
-      var pos2 = this.getPosition(1);
-
-      var posToChange;
-      if (this.handleSelected == 1) {
-
-        posToChange = pos;
-      } else if (this.handleSelected == 2) {
-
-        posToChange = pos2;
-      }
-
-      if (posToChange) {
-
-        if (!this._data.vertical) {
-          posToChange.deltaPosition('x', deltaX, this.getXAxis());
-        }
-
-        if (!this._data.horizontal) {
-          posToChange.deltaPosition('y', deltaY, this.getYAxis());
-        }
-      }
-
-      if (this.moving) {
-        console.log(this._data);
-        // If the pos2 is defined by a delta, no need to move them
-        if (pos.x && !this._data.noX) {
-          pos.deltaPosition('x', deltaX, this.getXAxis());
-        }
-        if (pos.y && !this._data.noY) {
-          pos.deltaPosition('y', deltaY, this.getYAxis());
-        }
-
-        // If the pos2 is defined by a delta, no need to move them
-        if (pos2.x && !this._data.noX) {
-          pos2.deltaPosition('x', deltaX, this.getXAxis());
-        }
-        if (pos2.y && !this._data.noY) {
-          pos2.deltaPosition('y', deltaY, this.getYAxis());
-        }
-      }
-
-      if (this._data.forcedCoords) {
-
-        var forced = this._data.forcedCoords;
-
-        if (forced.y !== undefined) {
-
-          if (typeof forced.y == 'function') {
-            pos2.y = pos.y = forced.y(this);
-          } else {
-            pos2.y = forced.y;
-            pos.y = forced.y;
-          }
-        }
-
-        if (forced.x !== undefined) {
-
-          if (typeof forced.x == 'function') {
-            pos2.x = pos.x = forced.x(this);
-          } else {
-            pos2.x = forced.x;
-            pos.x = forced.x;
-          }
-        }
-      }
-
-      if (this.rectEvent) {
-        this.setEventReceptacle();
-      }
-
-      this.redraw();
-      this.changed();
-      this.setHandles();
-
-      return true;
-    }
-
-    /**
-     * Sets the handle position
-     * @private
-     */
-    setHandles() {
-
-      if (!this.areHandlesInDom()) {
-        return;
-      }
-
-      if (isNaN(this.currentPos1x)) {
-        return;
-      }
-
-      this.handles[1].setAttribute('x', this.currentPos1x);
-      this.handles[1].setAttribute('y', this.currentPos1y);
-
-      this.handles[2].setAttribute('x', this.currentPos2x);
-      this.handles[2].setAttribute('y', this.currentPos2y);
-    }
-
-    /**
-     * Creates an line receptacle with the coordinates of the line, but continuous and thicker
-     * @return {Shape} The current shape
-     */
-    setEventReceptacle() {
-
-      if (!this.currentPos1x) {
-        return;
-      }
-
-      if (!this.rectEvent) {
-        this.rectEvent = document.createElementNS(this.graph.ns, 'line');
-        this.rectEvent.setAttribute('pointer-events', 'stroke');
-        this.rectEvent.setAttribute('stroke', 'transparent');
-        this.rectEvent.jsGraphIsShape = this;
-        this.group.appendChild(this.rectEvent);
-      }
-
-      this.rectEvent.setAttribute('x1', this.currentPos1x);
-      this.rectEvent.setAttribute('y1', this.currentPos1y);
-      this.rectEvent.setAttribute('x2', this.currentPos2x);
-      this.rectEvent.setAttribute('y2', this.currentPos2y);
-      this.rectEvent.setAttribute('stroke-width', this.getProp('strokeWidth') + 2);
-    }
-  }
-
-  exports.default = ShapeLine;
-  module.exports = exports['default'];
-});
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports);
-    global.fit_lm = mod.exports;
-  }
-})(this, function (module, exports) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  class FitHost {
-
-    constructor(options) {
-
-      this.DELTAP = 1e-6;
-      this.BIGVAL = 9e99;
-      this.WEIGHT = 1.0;
-
-      this.setYData(options.dataY);
-      this.setXData(options.dataX);
-      this.setWeight(options.weight);
-      this.setInitialParams(options.params);
-
-      if (options.subsetIndex) {
-        this.setSubset(...options.subsetIndex);
-      }
-
-      this.setFunction(options.function);
-
-      if (options.progress) {
-        this.hookIteration(options.progress);
-      }
-
-      this.options = options;
-    }
-
-    //[ [ x1, y1 ], [ x2, y2 ] ]
-    setYData(data) {
-      // Waveform instance
-      this.data = data;
-    }
-
-    setXData(data) {
-      // Waveform instance
-      this.dataX = data;
-    }
-
-    setWeight(weight) {
-      // Waveform instance
-      this.weight = weight;
-    }
-
-    setInitialParams(params) {
-      this.parms = params;
-
-      this.parms = this.parms.map(el => {
-        if (typeof el == 'function') {
-          return el(this.data, this.dataX);
-        } else {
-          return el;
-        }
-      });
-      this.NPARMS = params.length;
-    }
-
-    setSubset(fromIndex, toIndex) {
-      if (fromIndex !== undefined && toIndex !== undefined) {
-        this._from = fromIndex;
-        this._to = toIndex;
-      }
-    }
-
-    hookIteration(f) {
-      this._hookIteration = params => {
-        let data = this.buildFit(params, 200);
-        f(data);
-      };
-    }
-
-    setFunction(func) {
-      this._func = func;
-    }
-
-    init() {
-
-      // Get data length
-      if (this._from !== undefined && this._to !== undefined) {
-
-        if (this._from >= this._to) {
-          throw 'Impossible to fit negative subranges. The starting index must be lower than the ending index';
-        }
-
-        this.NPTS = this._to - this._from + 1;
-
-        if (this.data && this.data.getLength() <= this._to) {
-          throw `Wave Y has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
-        }
-
-        if (this._from < 0) {
-          throw 'Impossible to fit a subrange with negative indices';
-        }
-      } else {
-
-        this.NPTS = this.data.getLength();
-        this._from = 0;
-        this._to = this.data.getLength() - 1;
-      }
-
-      if (this.dataX && this.dataX.getLength() <= this._to) {
-        throw `Wave X has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
-      }
-
-      this.arrY = this.data.getDataY();
-
-      if (this.dataX) {
-        this.arrX = this.dataX.getDataY();
-      } else {
-        this.arrX = this.data.getDataX();
-      }
-
-      this.resid = new Array(this.NPTS).fill(0);
-      this.jac = new Array(this.NPTS).fill(0);
-      this.jac = this.jac.map(el => new Array(this.NPARMS));
-    }
-
-    fit() {
-
-      this.log(`Starting the fit with initial parameter list {${this.parms.join()}};`);
-      new LM(this, this.NPARMS, this.NPTS, this._hookIteration);
-      this.log(`Fit successful. Output parameters {${this.parms.join()}};`);
-
-      this._result = this.buildFit(this.parms, 200);
-
-      if (this.options.done) {
-        this.options.done(this.parms, this._result);
-      }
-
-      return this._result;
-    }
-
-    func(x, param) {
-      return this._func(x, param);
-    }
-
-    computeResiduals() {
-      var sumsq = 0;
-      for (var i = 0; i < this.NPTS; i++) {
-        this.resid[i] = (this.func(this.arrX[i + this._from], this.parms) - this.arrY[i + this._from]) * this.WEIGHT;
-        sumsq += this.resid[i] * this.resid[i];
-      }
-
-      return sumsq;
-    }
-
-    log(message) {
-      if (this.options.log) {
-        console.log(message);
-      }
-    }
-
-    //------the four mandated interface methods------------
-    nudge(dp) {
-
-      for (var j = 0; j < this.NPARMS; j++) {
-        this.parms[j] += dp[j];
-      }
-      return this.computeResiduals();
-    }
-
-    buildJacobian() {
-      // Allows LM to compute a new Jacobian.
-      // Uses current parms[] and two-sided finite difference.
-      // If current parms[] is bad, returns false.
-      var delta = new Array(this.NPARMS);
-      var FACTOR = 0.5 / this.DELTAP;
-      var d = 0;
-
-      for (var j = 0; j < this.NPARMS; j++) {
-        for (var k = 0; k < this.NPARMS; k++) delta[k] = k == j ? this.DELTAP : 0.0;
-
-        d = this.nudge(delta); // resid at pplus
-        if (d == this.BIGVAL) {
-          throw 'Bad dBuildJacobian() exit 2';
-        }
-
-        for (var i = 0; i < this.NPTS; i++) {
-          this.jac[i][j] = this.getResidualElement(i);
-        }
-
-        for (var k = 0; k < this.NPARMS; k++) {
-          delta[k] = k == j ? -2 * this.DELTAP : 0.0;
-        }
-
-        d = this.nudge(delta); // resid at pminus
-        if (d == this.BIGVAL) {
-          throw 'Bad dBuildJacobian(). exit 3';
-        }
-
-        for (var i = 0; i < this.NPTS; i++) this.jac[i][j] -= this.getResidualElement(i); // fetches resid[]
-
-        for (var i = 0; i < this.NPTS; i++) this.jac[i][j] *= FACTOR;
-
-        for (var k = 0; k < this.NPARMS; k++) delta[k] = k == j ? this.DELTAP : 0.0;
-
-        d = this.nudge(delta);
-        if (d == this.BIGVAL) {
-          throw 'Bad dBuildJacobian(). exit 4';
-        }
-      }
-      return true;
-    }
-
-    getResidualElement(i) {
-      // Allows LM to see one element of the resid[] vector.
-      return this.resid[i];
-    }
-
-    getJacobianElement(i, j) {
-      // Allows LM to see one element of the Jacobian matrix.
-      return this.jac[i][j];
-    }
-
-    buildFit(parms, length) {
-      let x;
-
-      if (!length) {
-        x = this.arrX;
-      } else {
-
-        const xmin = this.dataX.getMin(this._from, this._to);
-        const xmax = this.dataX.getMax(this._from, this._to);
-
-        x = new Array(length).fill(0).map((el, index) => index * (xmax - xmin) / (length - 1) + xmin);
-      }
-
-      var fit = new Array(x.length);
-      for (var i = 0, l = x.length; i < l; i++) {
-        fit[i] = this.func(x[i], this.parms);
-      }
-
-      let waveformResult = this.options.waveform;
-      waveformResult.setData(fit, x);
-      //waveformResult.setXWaveform( x );
-
-      return waveformResult;
-    }
-  }
-
-  class LM {
-
-    constructor(gH, gnadj, gnpnts, hook) {
-
-      this.LMITER = 100; // max number of L-M iterations
-      this.LMBOOST = 2.0; // damping increase per failed step
-      this.LMSHRINK = 0.10; // damping decrease per successful step
-      this.LAMBDAZERO = 0.001; // initial damping
-      this.LAMBDAMAX = 1E9; // max damping
-      this.LMTOL = 1E-12; // exit tolerance
-      this.BIGVAL = 9e99; // trouble flag
-
-      this.sos;
-      this.sosprev;
-      this.lambda;
-
-      this.myH = null; // overwritten by constructor
-      this.nadj = 0; // overwritten by constructor
-      this.npts = 0; // overwritten by constructor
-
-      this.delta; // local parm change
-      this.beta;
-      this.alpha;
-      this.amatrix;
-
-      // Constructor sets up fields and drives iterations.
-      this.myH = gH;
-      this.nadj = gnadj;
-      this.npts = gnpnts;
-
-      this.delta = new Array(this.nadj).fill(0);
-      this.beta = new Array(this.nadj).fill(0);
-
-      this.alpha = new Array(this.nadj).fill(0);
-      this.amatrix = new Array(this.nadj).fill(0);
-
-      this.alpha = this.alpha.map(() => new Array(this.nadj));
-      this.amatrix = this.amatrix.map(() => new Array(this.nadj));
-
-      this.lambda = this.LAMBDAZERO;
-
-      var niter = 0;
-      var done = false;
-      do {
-        done = this.bLMiter();
-
-        if (hook) {
-          hook(this.myH.params);
-        }
-
-        niter++;
-      } while (!done && niter < this.LMITER);
-    }
-
-    bLMiter() {
-      // Each call performs one LM iteration.
-      // Returns true if done with iterations; false=wants more.
-      // Global nadj, npts; needs nadj, myH to be preset.
-      // Ref: M.Lampton, Computers in Physics v.11 pp.110-115 1997.
-      for (var k = 0; k < this.nadj; k++) this.delta[k] = 0.0;
-      this.sos = this.myH.nudge(this.delta);
-      if (this.sos == this.BIGVAL) {
-        console.error('  bLMiter finds faulty initial nudge()');
-        return false;
-      }
-      this.sosprev = this.sos;
-
-      this.myH.log(`  bLMiter..SumOfSquares= ${this.sos}`);
-      if (!this.myH.buildJacobian()) {
-        console.error('  bLMiter finds buildJacobian()=false');
-        return false;
-      }
-
-      for (var k = 0; k < this.nadj; k++) // get downhill gradient beta
-      {
-        this.beta[k] = 0.0;
-        for (var i = 0; i < this.npts; i++) {
-          this.beta[k] -= this.myH.getResidualElement(i) * this.myH.getJacobianElement(i, k);
-        }
-      }
-
-      for (var k = 0; k < this.nadj; k++) // get curvature matrix alpha
-      for (var j = 0; j < this.nadj; j++) {
-        this.alpha[j][k] = 0.0;
-        for (var i = 0; i < this.npts; i++) {
-          this.alpha[j][k] += this.myH.getJacobianElement(i, j) * this.myH.getJacobianElement(i, k);
-        }
-      }
-      var rrise = 0;
-      do // inner damping loop searches for one downhill step
-      {
-        for (var k = 0; k < this.nadj; k++) {
-          // copy and damp it
-          for (var j = 0; j < this.nadj; j++) {
-            this.amatrix[j][k] = this.alpha[j][k] + (j == k ? this.lambda : 0.0);
-          }
-        }
-
-        this.gaussj(this.amatrix, this.nadj); // invert
-
-        for (var k = 0; k < this.nadj; k++) // compute delta[]
-        {
-          this.delta[k] = 0.0;
-          for (var j = 0; j < this.nadj; j++) this.delta[k] += this.amatrix[j][k] * this.beta[j];
-        }
-        this.sos = this.myH.nudge(this.delta); // try it out.
-        if (this.sos == this.BIGVAL) {
-          console.error('  LMinner failed SOS step');
-          return false;
-        }
-        rrise = (this.sos - this.sosprev) / (1 + this.sos);
-        if (rrise <= 0.0) // good step!
-          {
-            this.lambda *= this.LMSHRINK; // shrink lambda
-            break; // leave lmInner.
-          }
-        for (var q = 0; q < this.nadj; q++) {
-          // reverse course!
-          this.delta[q] *= -1.0;
-        }
-        this.myH.nudge(this.delta); // sosprev should still be OK
-        if (rrise < this.LMTOL) {
-          // finished but keep prev parms
-          break; // leave inner loop
-        }
-        this.lambda *= this.LMBOOST; // else try more damping.
-      } while (this.lambda < this.LAMBDAMAX);
-      return rrise > -this.LMTOL || this.lambda > this.LAMBDAMAX;
-    }
-
-    gaussj(a, N) {
-      // Inverts the double array a[N][N] by Gauss-Jordan method
-      // M.Lampton UCB SSL (c)2003, 2005
-
-      var det = 1.0,
-          big,
-          save;
-      var i, j, k, L;
-      var ik = new Array(100);
-      var jk = new Array(100);
-
-      for (k = 0; k < N; k++) {
-        big = 0.0;
-        for (i = k; i < N; i++) for (j = k; j < N; j++) // find biggest element
-        if (Math.abs(big) <= Math.abs(a[i][j])) {
-          big = a[i][j];
-          ik[k] = i;
-          jk[k] = j;
-        }
-        if (big == 0.0) return 0.0;
-        i = ik[k];
-        if (i > k) for (j = 0; j < N; j++) // exchange rows
-        {
-          save = a[k][j];
-          a[k][j] = a[i][j];
-          a[i][j] = -save;
-        }
-        j = jk[k];
-        if (j > k) for (i = 0; i < N; i++) {
-          save = a[i][k];
-          a[i][k] = a[i][j];
-          a[i][j] = -save;
-        }
-        for (i = 0; i < N; i++) // build the inverse
-        if (i != k) a[i][k] = -a[i][k] / big;
-        for (i = 0; i < N; i++) for (j = 0; j < N; j++) if (i != k && j != k) a[i][j] += a[i][k] * a[k][j];
-        for (j = 0; j < N; j++) if (j != k) a[k][j] /= big;
-        a[k][k] = 1.0 / big;
-        det *= big; // bomb point
-      } // end k loop
-      for (L = 0; L < N; L++) {
-        k = N - L - 1;
-        j = ik[k];
-        if (j > k) for (i = 0; i < N; i++) {
-          save = a[i][k];
-          a[i][k] = -a[i][j];
-          a[i][j] = save;
-        }
-        i = jk[k];
-        if (i > k) for (j = 0; j < N; j++) {
-          save = a[k][j];
-          a[k][j] = -a[i][j];
-          a[i][j] = save;
-        }
-      }
-      return det;
-    }
-  }
-
-  exports.default = FitHost;
-  module.exports = exports['default'];
-});
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports, require('./graph.axis.js'));
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports, global.graphAxis);
-    global.graphAxisY = mod.exports;
-  }
-})(this, function (module, exports, _graphAxis) {
-  'use strict';
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-
-  var _graphAxis2 = _interopRequireDefault(_graphAxis);
-
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  /**
-   * Generic constructor of a y axis
-   * @extends Axis
-   */
-  class AxisY extends _graphAxis2.default {
-
-    constructor(graph, leftright, options) {
-
-      super(graph, leftright, options);
-      this.leftright = leftright;
-      this.left = leftright == 'left';
-    }
-
-    /**
-     *  @private
-     */
-    setAxisPosition(shift) {
-      this.shiftPosition = shift;
-    }
-
-    getAxisPosition() {
-      return this.shiftPosition || 0;
-    }
-
-    getAdditionalWidth() {
-      let pos = 0;
-      if (this.getLabel()) {
-        pos += this.graph.options.fontSize;
-      }
-
-      if (this.isShown()) {
-        pos += Math.abs(this.tickMargin);
-      }
-      return pos;
-    }
-
-    /**
-     *  @returns {Boolean} always ```false```
-     */
-    isX() {
-      return false;
-    }
-
-    /**
-     *  @returns {Boolean} always ```true```
-     */
-    isY() {
-      return true;
-    }
-
-    /**
-     *  @private
-     */
-    resetTicksLength() {
-      this.longestTick = [false, 0];
-    }
-
-    /**
-     *  @private
-     */
-    getMaxSizeTick() {
-      // Gives an extra margin of 5px
-      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() + 5 : 0; //(this.left ? 10 : 0);
-    }
-
-    draw() {
-
-      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 2 - this.tickPx1 * this.tickScaling[1];
-      var tickWidth = super.draw(...arguments);
-      tickWidth += this.getAdditionalWidth();
-      this.drawSpecifics(tickWidth);
-
-      this.fullwidthlabel = tickWidth;
-
-      return tickWidth;
-    }
-
-    equalizePosition(width) {
-
-      this.placeLabel(this.left ? -width : width);
-
-      if (this.getLabel()) {
-        return width + this.graph.options.fontSize;
-      }
-
-      return 0;
-    }
-
-    /**
-     *  @private
-     */
-    drawTick(value, level, options, forcedPos) {
-      let pos, tick, tickLabel;
-
-      pos = forcedPos || this.getPos(value);
-
-      if (pos == undefined || isNaN(pos)) {
-        return;
-      }
-
-      tick = this.nextTick(level, tick => {
-
-        tick.setAttribute('x1', (this.left ? 1 : -1) * this.tickPx1 * this.tickScaling[level]);
-        tick.setAttribute('x2', (this.left ? 1 : -1) * this.tickPx2 * this.tickScaling[level]);
-
-        if (level == 1) {
-          tick.setAttribute('stroke', this.getPrimaryTicksColor());
-        } else {
-          tick.setAttribute('stroke', this.getSecondaryTicksColor());
-        }
-      });
-
-      tick.setAttribute('y1', pos);
-      tick.setAttribute('y2', pos);
-
-      this.nextGridLine(level == 1, 0, this.graph.getDrawingWidth(), pos, pos);
-
-      //  this.groupTicks.appendChild( tick );
-      if (level == 1) {
-        tickLabel = this.nextTickLabel(tickLabel => {
-
-          tickLabel.setAttribute('x', this.tickMargin + this.options.tickLabelOffset);
-          if (this.getTicksLabelColor() !== 'black') {
-            tickLabel.setAttribute('fill', this.getTicksLabelColor());
-          }
-
-          if (this.left) {
-            tickLabel.setAttribute('text-anchor', 'end');
-          } else {
-            tickLabel.setAttribute('text-anchor', 'start');
-          }
-          tickLabel.style.dominantBaseline = 'central';
-        });
-
-        tickLabel.setAttribute('y', pos);
-        this.setTickContent(tickLabel, value, options);
-
-        if (String(tickLabel.textContent).length >= this.longestTick[1]) {
-          this.longestTick[0] = tickLabel;
-          this.longestTick[1] = String(tickLabel.textContent).length;
-        }
-      }
-    }
-
-    drawLabel() {
-
-      if (this.getLabelColor() !== 'black') {
-        this.label.setAttribute('fill', this.getLabelColor());
-      }
-
-      this.label.setAttribute('dominant-baseline', !this.left ? 'auto' : 'auto');
-      this.labelTspan.textContent = this.getLabel();
-    }
-
-    placeLabel(y) {
-      this.label.setAttribute('transform', `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) / 2}) rotate(-90)`);
-    }
-
-    /**
-     *  @private
-     */
-    drawSpecifics() {
-      // Place label correctly
-      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-      /*
-      if ( !this.left ) {
-         this.labelTspan.style.dominantBaseline = 'hanging';
-        this.expTspan.style.dominantBaseline = 'hanging';
-        this.expTspanExp.style.dominantBaseline = 'hanging';
-         this.unitTspan.style.dominantBaseline = 'hanging';
-        this.preunitTspan.style.dominantBaseline = 'hanging';
-      }
-      */
-      this.line.setAttribute('y1', this.getMinPx());
-      this.line.setAttribute('y2', this.getMaxPx());
-      this.line.setAttribute('x1', 0);
-      this.line.setAttribute('x2', 0);
-
-      this.line.setAttribute('stroke', this.getAxisColor());
-
-      var span = this.getSpan();
-      this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
-      this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
-    }
-
-    /**
-     *  @private
-     */
-    setShift(shift) {
-
-      this.shift = shift;
-
-      if (!this.shift || !this.graph.getWidth()) {
-        return;
-      }
-
-      let xshift = this.shift;
-      xshift = this.floating ? xshift : this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift;
-      this.group.setAttribute('transform', `translate( ${xshift} 0 )`);
-      this.drawLabel();
-    }
-
-    /**
-     *  @private
-     */
-    isLeft() {
-      return this.left;
-    }
-
-    /**
-     *  @private
-     */
-    isRight() {
-      return !this.left;
-    }
-
-    /**
-     *  @private
-     */
-    isFlipped() {
-      return !this.options.flipped;
-    }
-
-    /**
-     *  @private
-     */
-    _drawLine(pos, line) {
-
-      let px = this.getPx(pos);
-
-      if (!line) {
-        line = document.createElementNS(this.graph.ns, 'line');
-      } else {
-        line.setAttribute('display', 'initial');
-      }
-
-      line.setAttribute('y1', px);
-      line.setAttribute('y2', px);
-
-      line.setAttribute('x1', 0);
-      line.setAttribute('x2', this.graph.drawingSpaceWidth);
-
-      line.setAttribute('stroke', 'black');
-      this.group.appendChild(line);
-
-      return line;
-    }
-
-    _hideLine(line) {
-      if (!line) {
-        return;
-      }
-
-      line.setAttribute('display', 'none');
-    }
-
-    /**
-     *  @private
-     */
-    handleMouseMoveLocal(x, y) {
-      y -= this.graph.getPaddingTop();
-      this.mouseVal = this.getVal(y);
-    }
-
-    /**
-     * Scales the axis with respect to the series contained in an x axis
-     * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
-     * @param {Serie} [ excludeSerie ] - A serie to exclude
-     * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
-     * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
-     * @param {Boolean} [ min = true ] - Adapt the min
-     * @param {Boolean} [ max = true ] - Adapt the max
-     * @returns {Axis} The current axis
-     */
-    scaleToFitAxis(axis, excludeSerie, start, end, min, max) {
-      //console.log( axis instanceof GraphAxis );
-      if (!axis || !axis.isX()) {
-        axis = this.graph.getXAxis();
-      }
-
-      if (isNaN(start)) {
-        start = axis.getCurrentMin();
-      }
-
-      if (isNaN(end)) {
-        end = axis.getCurrentMax();
-      }
-
-      if (min === undefined) {
-        min = true;
-      }
-
-      if (max === undefined) {
-        max = true;
-      }
-
-      if (typeof excludeSerie == 'number') {
-        end = start;
-        start = excludeSerie;
-        excludeSerie = false;
-      }
-
-      var maxV = -Infinity,
-          minV = Infinity,
-          j = 0;
-
-      for (var i = 0, l = this.graph.series.length; i < l; i++) {
-
-        if (!this.graph.series[i].isShown()) {
-          continue;
-        }
-
-        if (this.graph.series[i] == excludeSerie) {
-          continue;
-        }
-
-        if (!(this.graph.series[i].getXAxis() == axis) || this.graph.series[i].getYAxis() !== this) {
-          continue;
-        }
-
-        j++;
-
-        maxV = max ? Math.max(maxV, this.graph.series[i].getMax(start, end)) : 0;
-        minV = min ? Math.min(minV, this.graph.series[i].getMin(start, end)) : 0;
-      }
-
-      if (j == 0) {
-
-        this.setMinMaxToFitSeries(); // No point was found
-      } else {
-
-        // If we wanted originally to resize min and max. Otherwise we use the current value
-        minV = min ? minV : this.getCurrentMin();
-        maxV = max ? maxV : this.getCurrentMax();
-
-        var interval = maxV - minV;
-
-        minV -= this.options.axisDataSpacing.min * interval;
-        maxV += this.options.axisDataSpacing.max * interval;
-
-        this._doZoomVal(minV, maxV);
-      }
-
-      return this;
-    }
-
-    /**
-     *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
-     *  @return {Axis} The current axis instance
-     */
-    setMinMaxFlipped() {
-
-      var interval = this.maxPx - this.minPx;
-
-      if (isNaN(interval)) {
-        return;
-      }
-
-      var maxPx = this.maxPx - interval * this.options.span[0] - this.options.marginMin;
-      var minPx = this.maxPx - interval * this.options.span[1] + this.options.marginMax;
-
-      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-    }
-
-    getZProj(zValue) {
-      return zValue * this.graph.options.zAxis.shiftY;
-    }
-
-  }
-
-  exports.default = AxisY;
-  module.exports = exports['default'];
-});
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports !== "undefined") {
-    factory(module, exports);
-  } else {
-    var mod = {
-      exports: {}
-    };
-    factory(mod, mod.exports);
-    global.graphMixinSerie3d = mod.exports;
-  }
-})(this, function (module, exports) {
-  "use strict";
-
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  var Serie3DMixin = {
-
-    /**
-     * Returns the x position of a certain value in pixels position, based on the serie's axis
-     * @memberof Serie
-     * @param {Number} val - Value to convert to pixels position
-     * @returns {Number} The x position in px corresponding to the x value
-     */
-    getX: function (val) {
-      return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.getXAxis().getZProj(this.options.zpos);
-    },
-
-    /**
-     * Returns the y position of a certain value in pixels position, based on the serie's axis
-     * @memberof Serie3DMixin
-     * @param {Number} val - Value to convert to pixels position
-     * @returns {Number} The y position in px corresponding to the y value
-     */
-    getY: function (val) {
-      return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.getYAxis().getZProj(this.options.zpos);
-    },
-
-    getZPos: function () {
-      return this.options.zpos;
-    },
-
-    /**
-     * @returns {Number} Lowest x value of the serie's data
-     * @memberof Serie
-     */
-    getMinX: function (useZValues) {
-      if (!useZValues) {
-        return this.minX;
-      }
-
-      return getZCorrectedValue(this, true, true);
-    },
-
-    /**
-     * @returns {Number} Highest x value of the serie's data
-     * @memberof Serie
-     */
-    getMaxX: function (useZValues) {
-
-      if (!useZValues) {
-        return this.maxX;
-      }
-      return getZCorrectedValue(this, true, false);
-    },
-
-    /**
-     * @returns {Number} Lowest y value of the serie's data
-     * @memberof Serie
-     */
-    getMinY: function (useZValues) {
-
-      if (!useZValues) {
-        return this.minY;
-      }
-      return getZCorrectedValue(this, false, true);
-    },
-
-    /**
-     * @returns {Number} Highest y value of the serie's data
-     * @memberof Serie
-     */
-    getMaxY: function (useZValues) {
-
-      if (!useZValues) {
-        return this.maxY;
-      }
-      return getZCorrectedValue(this, false, false);
-    }
-
-  };
-
-  function getZCorrectedValue(serie, x, min) {
-
-    let i, l, data, val, valFinal;
-    let wf = serie.getWaveforms();
-
-    for (let wave of wf) {
-
-      i = 0;
-      l = wave.getLength();
-      data = wave.getData();
-
-      for (; i < l; i += 1) {
-
-        if (x) {
-          val = serie.getXAxis().getVal(serie.getX(wave.getX(i, true)));
-        } else {
-          val = serie.getYAxis().getVal(serie.getY(data[i]));
-        }
-
-        if (i == 0) {
-          valFinal = val;
-        } else {
-
-          if (min) {
-            valFinal = Math.min(valFinal, val);
-          } else {
-            valFinal = Math.max(valFinal, val);
-          }
-        }
-      }
-    }
-    return valFinal;
-  }
-
-  exports.default = Serie3DMixin;
-  module.exports = exports["default"];
-});
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-  if (true) {
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(0), __webpack_require__(9), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
@@ -17079,6 +15299,1248 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   exports.default = SerieScatter;
   module.exports = exports['default'];
+});
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports, require('./graph.shape.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports, global.graphShape);
+    global.graphShapeLine = mod.exports;
+  }
+})(this, function (module, exports, _graphShape) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _graphShape2 = _interopRequireDefault(_graphShape);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  /**
+   * Represents a line
+   * @extends Shape
+   * @see Graph#newShape
+   */
+  class ShapeLine extends _graphShape2.default {
+
+    constructor(graph, options) {
+      super(graph, options);
+    }
+
+    /**
+     * Creates the DOM
+     * @private
+     * @return {Shape} The current shape
+     */
+    createDom() {
+
+      this._dom = document.createElementNS(this.graph.ns, 'line');
+
+      if (!this.getStrokeColor()) {
+        this.setStrokeColor('black');
+      }
+
+      if (!this.getStrokeWidth()) {
+        this.setStrokeWidth(1);
+      }
+    }
+
+    /**
+     * Creates the handles
+     * @private
+     * @return {Shape} The current shape
+     */
+    createHandles() {
+
+      this._createHandles(2, 'rect', {
+        transform: 'translate(-3 -3)',
+        width: 6,
+        height: 6,
+        stroke: 'black',
+        fill: 'white',
+        cursor: 'nwse-resize'
+      });
+    }
+
+    /**
+     * Recalculates the positions and applies them
+     * @private
+     * @return {Boolean} Whether the shape should be redrawn
+     */
+    applyPosition() {
+
+      var position = this.calculatePosition(0);
+      var position2 = this.calculatePosition(1);
+
+      if (!position || !position.x || !position.y) {
+        return;
+      }
+
+      this.setDom('x2', position.x);
+      this.setDom('y2', position.y);
+
+      this.setDom('y1', position2.y);
+      this.setDom('x1', position2.x);
+
+      this.currentPos2x = position2.x;
+      this.currentPos2y = position2.y;
+
+      this.currentPos1x = position.x;
+      this.currentPos1y = position.y;
+
+      return true;
+    }
+
+    /**
+     * Handles mouse move events
+     * @private
+     */
+    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+
+      if (this.isLocked()) {
+        return;
+      }
+
+      var pos = this.getPosition(0);
+      var pos2 = this.getPosition(1);
+
+      var posToChange;
+      if (this.handleSelected == 1) {
+
+        posToChange = pos;
+      } else if (this.handleSelected == 2) {
+
+        posToChange = pos2;
+      }
+
+      if (posToChange) {
+
+        if (!this._data.vertical) {
+          posToChange.deltaPosition('x', deltaX, this.getXAxis());
+        }
+
+        if (!this._data.horizontal) {
+          posToChange.deltaPosition('y', deltaY, this.getYAxis());
+        }
+      }
+
+      if (this.moving) {
+        console.log(this._data);
+        // If the pos2 is defined by a delta, no need to move them
+        if (pos.x && !this._data.noX) {
+          pos.deltaPosition('x', deltaX, this.getXAxis());
+        }
+        if (pos.y && !this._data.noY) {
+          pos.deltaPosition('y', deltaY, this.getYAxis());
+        }
+
+        // If the pos2 is defined by a delta, no need to move them
+        if (pos2.x && !this._data.noX) {
+          pos2.deltaPosition('x', deltaX, this.getXAxis());
+        }
+        if (pos2.y && !this._data.noY) {
+          pos2.deltaPosition('y', deltaY, this.getYAxis());
+        }
+      }
+
+      if (this._data.forcedCoords) {
+
+        var forced = this._data.forcedCoords;
+
+        if (forced.y !== undefined) {
+
+          if (typeof forced.y == 'function') {
+            pos2.y = pos.y = forced.y(this);
+          } else {
+            pos2.y = forced.y;
+            pos.y = forced.y;
+          }
+        }
+
+        if (forced.x !== undefined) {
+
+          if (typeof forced.x == 'function') {
+            pos2.x = pos.x = forced.x(this);
+          } else {
+            pos2.x = forced.x;
+            pos.x = forced.x;
+          }
+        }
+      }
+
+      if (this.rectEvent) {
+        this.setEventReceptacle();
+      }
+
+      this.redraw();
+      this.changed();
+      this.setHandles();
+
+      return true;
+    }
+
+    /**
+     * Sets the handle position
+     * @private
+     */
+    setHandles() {
+
+      if (!this.areHandlesInDom()) {
+        return;
+      }
+
+      if (isNaN(this.currentPos1x)) {
+        return;
+      }
+
+      this.handles[1].setAttribute('x', this.currentPos1x);
+      this.handles[1].setAttribute('y', this.currentPos1y);
+
+      this.handles[2].setAttribute('x', this.currentPos2x);
+      this.handles[2].setAttribute('y', this.currentPos2y);
+    }
+
+    /**
+     * Creates an line receptacle with the coordinates of the line, but continuous and thicker
+     * @return {Shape} The current shape
+     */
+    setEventReceptacle() {
+
+      if (!this.currentPos1x) {
+        return;
+      }
+
+      if (!this.rectEvent) {
+        this.rectEvent = document.createElementNS(this.graph.ns, 'line');
+        this.rectEvent.setAttribute('pointer-events', 'stroke');
+        this.rectEvent.setAttribute('stroke', 'transparent');
+        this.rectEvent.jsGraphIsShape = this;
+        this.group.appendChild(this.rectEvent);
+      }
+
+      this.rectEvent.setAttribute('x1', this.currentPos1x);
+      this.rectEvent.setAttribute('y1', this.currentPos1y);
+      this.rectEvent.setAttribute('x2', this.currentPos2x);
+      this.rectEvent.setAttribute('y2', this.currentPos2y);
+      this.rectEvent.setAttribute('stroke-width', this.getProp('strokeWidth') + 2);
+    }
+  }
+
+  exports.default = ShapeLine;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports);
+    global.fit_lm = mod.exports;
+  }
+})(this, function (module, exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  class FitHost {
+    constructor(options) {
+      this.DELTAP = 1e-6;
+      this.BIGVAL = 9e99;
+      this.WEIGHT = 1.0;
+
+      this.setYData(options.dataY);
+      this.setXData(options.dataX);
+      this.setWeight(options.weight);
+      this.setInitialParams(options.params);
+
+      if (options.subsetIndex) {
+        this.setSubset(...options.subsetIndex);
+      }
+
+      this.setFunction(options.function);
+
+      if (options.progress) {
+        this.hookIteration(options.progress);
+      }
+
+      this.options = options;
+    }
+
+    //[ [ x1, y1 ], [ x2, y2 ] ]
+    setYData(data) {
+      // Waveform instance
+      this.data = data;
+    }
+
+    setXData(data) {
+      // Waveform instance
+      this.dataX = data;
+    }
+
+    setWeight(weight) {
+      // Waveform instance
+      this.weight = weight;
+    }
+
+    setInitialParams(params) {
+      this.parms = params;
+
+      this.parms = this.parms.map(el => {
+        if (typeof el == 'function') {
+          return el(this.data, this.dataX);
+        } else {
+          return el;
+        }
+      });
+      this.NPARMS = params.length;
+    }
+
+    setSubset(fromIndex, toIndex) {
+      if (fromIndex !== undefined && toIndex !== undefined) {
+        this._from = fromIndex;
+        this._to = toIndex;
+      }
+    }
+
+    hookIteration(f) {
+      this._hookIteration = params => {
+        let data = this.buildFit(params, 200);
+        f(data);
+      };
+    }
+
+    setFunction(func) {
+      this._func = func;
+    }
+
+    init() {
+      // Get data length
+      if (this._from !== undefined && this._to !== undefined) {
+        if (this._from >= this._to) {
+          throw 'Impossible to fit negative subranges. The starting index must be lower than the ending index';
+        }
+
+        this.NPTS = this._to - this._from + 1;
+
+        if (this.data && this.data.getLength() <= this._to) {
+          throw `Wave Y has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
+        }
+
+        if (this._from < 0) {
+          throw 'Impossible to fit a subrange with negative indices';
+        }
+      } else {
+        this.NPTS = this.data.getLength();
+        this._from = 0;
+        this._to = this.data.getLength() - 1;
+      }
+
+      if (this.dataX && this.dataX.getLength() <= this._to) {
+        throw `Wave X has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
+      }
+
+      this.arrY = this.data.getDataY();
+
+      if (this.dataX) {
+        this.arrX = this.dataX.getDataY();
+      } else {
+        this.arrX = this.data.getDataX();
+      }
+
+      this.resid = new Array(this.NPTS).fill(0);
+      this.jac = new Array(this.NPTS).fill(0);
+      this.jac = this.jac.map(el => new Array(this.NPARMS));
+    }
+
+    fit() {
+      this.log(`Starting the fit with initial parameter list {${this.parms.join()}};`);
+      new LM(this, this.NPARMS, this.NPTS, this._hookIteration);
+      this.log(`Fit successful. Output parameters {${this.parms.join()}};`);
+
+      this._result = this.buildFit(this.parms, 200);
+
+      if (this.options.done) {
+        this.options.done(this.parms, this._result);
+      }
+
+      return this._result;
+    }
+
+    func(x, param) {
+      return this._func(x, param);
+    }
+
+    computeResiduals() {
+      var sumsq = 0;
+      for (var i = 0; i < this.NPTS; i++) {
+        this.resid[i] = (this.func(this.arrX[i + this._from], this.parms) - this.arrY[i + this._from]) * this.WEIGHT;
+        sumsq += this.resid[i] * this.resid[i];
+      }
+
+      return sumsq;
+    }
+
+    log(message) {
+      if (this.options.log) {
+        console.log(message);
+      }
+    }
+
+    //------the four mandated interface methods------------
+    nudge(dp) {
+      for (var j = 0; j < this.NPARMS; j++) {
+        this.parms[j] += dp[j];
+      }
+      return this.computeResiduals();
+    }
+
+    buildJacobian() {
+      // Allows LM to compute a new Jacobian.
+      // Uses current parms[] and two-sided finite difference.
+      // If current parms[] is bad, returns false.
+      var delta = new Array(this.NPARMS);
+      var FACTOR = 0.5 / this.DELTAP;
+      var d = 0;
+
+      for (var j = 0; j < this.NPARMS; j++) {
+        for (var k = 0; k < this.NPARMS; k++) delta[k] = k == j ? this.DELTAP : 0.0;
+
+        d = this.nudge(delta); // resid at pplus
+        if (d == this.BIGVAL) {
+          throw 'Bad dBuildJacobian() exit 2';
+        }
+
+        for (var i = 0; i < this.NPTS; i++) {
+          this.jac[i][j] = this.getResidualElement(i);
+        }
+
+        for (var k = 0; k < this.NPARMS; k++) {
+          delta[k] = k == j ? -2 * this.DELTAP : 0.0;
+        }
+
+        d = this.nudge(delta); // resid at pminus
+        if (d == this.BIGVAL) {
+          throw 'Bad dBuildJacobian(). exit 3';
+        }
+
+        for (var i = 0; i < this.NPTS; i++) this.jac[i][j] -= this.getResidualElement(i); // fetches resid[]
+
+        for (var i = 0; i < this.NPTS; i++) this.jac[i][j] *= FACTOR;
+
+        for (var k = 0; k < this.NPARMS; k++) delta[k] = k == j ? this.DELTAP : 0.0;
+
+        d = this.nudge(delta);
+        if (d == this.BIGVAL) {
+          throw 'Bad dBuildJacobian(). exit 4';
+        }
+      }
+      return true;
+    }
+
+    getResidualElement(i) {
+      // Allows LM to see one element of the resid[] vector.
+      return this.resid[i];
+    }
+
+    getJacobianElement(i, j) {
+      // Allows LM to see one element of the Jacobian matrix.
+      return this.jac[i][j];
+    }
+
+    buildFit(parms, length) {
+      let x;
+
+      if (!length) {
+        x = this.arrX;
+      } else {
+        const xmin = this.dataX.getMin(this._from, this._to);
+        const xmax = this.dataX.getMax(this._from, this._to);
+
+        x = new Array(length).fill(0).map((el, index) => index * (xmax - xmin) / (length - 1) + xmin);
+      }
+
+      var fit = new Array(x.length);
+      for (var i = 0, l = x.length; i < l; i++) {
+        fit[i] = this.func(x[i], this.parms);
+      }
+
+      let waveformResult = this.options.waveform;
+      waveformResult.setData(fit, x);
+      //waveformResult.setXWaveform( x );
+
+      return waveformResult;
+    }
+  }
+
+  class LM {
+    constructor(gH, gnadj, gnpnts, hook) {
+      this.LMITER = 100; // max number of L-M iterations
+      this.LMBOOST = 2.0; // damping increase per failed step
+      this.LMSHRINK = 0.1; // damping decrease per successful step
+      this.LAMBDAZERO = 0.001; // initial damping
+      this.LAMBDAMAX = 1e9; // max damping
+      this.LMTOL = 1e-12; // exit tolerance
+      this.BIGVAL = 9e99; // trouble flag
+
+      this.sos;
+      this.sosprev;
+      this.lambda;
+
+      this.myH = null; // overwritten by constructor
+      this.nadj = 0; // overwritten by constructor
+      this.npts = 0; // overwritten by constructor
+
+      this.delta; // local parm change
+      this.beta;
+      this.alpha;
+      this.amatrix;
+
+      // Constructor sets up fields and drives iterations.
+      this.myH = gH;
+      this.nadj = gnadj;
+      this.npts = gnpnts;
+
+      this.delta = new Array(this.nadj).fill(0);
+      this.beta = new Array(this.nadj).fill(0);
+
+      this.alpha = new Array(this.nadj).fill(0);
+      this.amatrix = new Array(this.nadj).fill(0);
+
+      this.alpha = this.alpha.map(() => new Array(this.nadj));
+      this.amatrix = this.amatrix.map(() => new Array(this.nadj));
+
+      this.lambda = this.LAMBDAZERO;
+
+      var niter = 0;
+      var done = false;
+      do {
+        done = this.bLMiter();
+
+        if (hook) {
+          hook(this.myH.params);
+        }
+
+        niter++;
+      } while (!done && niter < this.LMITER);
+    }
+
+    bLMiter() {
+      // Each call performs one LM iteration.
+      // Returns true if done with iterations; false=wants more.
+      // Global nadj, npts; needs nadj, myH to be preset.
+      // Ref: M.Lampton, Computers in Physics v.11 pp.110-115 1997.
+      for (var k = 0; k < this.nadj; k++) this.delta[k] = 0.0;
+      this.sos = this.myH.nudge(this.delta);
+      if (this.sos == this.BIGVAL) {
+        console.error('  bLMiter finds faulty initial nudge()');
+        return false;
+      }
+      this.sosprev = this.sos;
+
+      this.myH.log(`  bLMiter..SumOfSquares= ${this.sos}`);
+      if (!this.myH.buildJacobian()) {
+        console.error('  bLMiter finds buildJacobian()=false');
+        return false;
+      }
+
+      for (var k = 0; k < this.nadj; k++ // get downhill gradient beta
+      ) {
+        this.beta[k] = 0.0;
+        for (var i = 0; i < this.npts; i++) {
+          this.beta[k] -= this.myH.getResidualElement(i) * this.myH.getJacobianElement(i, k);
+        }
+      }
+
+      for (var k = 0; k < this.nadj; k++ // get curvature matrix alpha
+      ) for (var j = 0; j < this.nadj; j++) {
+        this.alpha[j][k] = 0.0;
+        for (var i = 0; i < this.npts; i++) {
+          this.alpha[j][k] += this.myH.getJacobianElement(i, j) * this.myH.getJacobianElement(i, k);
+        }
+      }
+      var rrise = 0;
+      do // inner damping loop searches for one downhill step
+      {
+        for (var k = 0; k < this.nadj; k++) {
+          // copy and damp it
+          for (var j = 0; j < this.nadj; j++) {
+            this.amatrix[j][k] = this.alpha[j][k] + (j == k ? this.lambda : 0.0);
+          }
+        }
+
+        this.gaussj(this.amatrix, this.nadj); // invert
+
+        for (var k = 0; k < this.nadj; k++ // compute delta[]
+        ) {
+          this.delta[k] = 0.0;
+          for (var j = 0; j < this.nadj; j++) this.delta[k] += this.amatrix[j][k] * this.beta[j];
+        }
+        this.sos = this.myH.nudge(this.delta); // try it out.
+        if (this.sos == this.BIGVAL) {
+          console.error('  LMinner failed SOS step');
+          return false;
+        }
+        rrise = (this.sos - this.sosprev) / (1 + this.sos);
+        if (rrise <= 0.0) {
+          // good step!
+          this.lambda *= this.LMSHRINK; // shrink lambda
+          break; // leave lmInner.
+        }
+        for (var q = 0; q < this.nadj; q++) {
+          // reverse course!
+          this.delta[q] *= -1.0;
+        }
+        this.myH.nudge(this.delta); // sosprev should still be OK
+        if (rrise < this.LMTOL) {
+          // finished but keep prev parms
+          break; // leave inner loop
+        }
+        this.lambda *= this.LMBOOST; // else try more damping.
+      } while (this.lambda < this.LAMBDAMAX);
+      return rrise > -this.LMTOL || this.lambda > this.LAMBDAMAX;
+    }
+
+    gaussj(a, N) {
+      // Inverts the double array a[N][N] by Gauss-Jordan method
+      // M.Lampton UCB SSL (c)2003, 2005
+
+      var det = 1.0,
+          big,
+          save;
+      var i, j, k, L;
+      var ik = new Array(100);
+      var jk = new Array(100);
+
+      for (k = 0; k < N; k++) {
+        big = 0.0;
+        for (i = k; i < N; i++) for (j = k; j < N; j++ // find biggest element
+        ) if (Math.abs(big) <= Math.abs(a[i][j])) {
+          big = a[i][j];
+          ik[k] = i;
+          jk[k] = j;
+        }
+        if (big == 0.0) return 0.0;
+        i = ik[k];
+        if (i > k) for (j = 0; j < N; j++ // exchange rows
+        ) {
+          save = a[k][j];
+          a[k][j] = a[i][j];
+          a[i][j] = -save;
+        }
+        j = jk[k];
+        if (j > k) for (i = 0; i < N; i++) {
+          save = a[i][k];
+          a[i][k] = a[i][j];
+          a[i][j] = -save;
+        }
+        for (i = 0; i < N; i++ // build the inverse
+        ) if (i != k) a[i][k] = -a[i][k] / big;
+        for (i = 0; i < N; i++) for (j = 0; j < N; j++) if (i != k && j != k) a[i][j] += a[i][k] * a[k][j];
+        for (j = 0; j < N; j++) if (j != k) a[k][j] /= big;
+        a[k][k] = 1.0 / big;
+        det *= big; // bomb point
+      } // end k loop
+      for (L = 0; L < N; L++) {
+        k = N - L - 1;
+        j = ik[k];
+        if (j > k) for (i = 0; i < N; i++) {
+          save = a[i][k];
+          a[i][k] = -a[i][j];
+          a[i][j] = save;
+        }
+        i = jk[k];
+        if (i > k) for (j = 0; j < N; j++) {
+          save = a[k][j];
+          a[k][j] = -a[i][j];
+          a[i][j] = save;
+        }
+      }
+      return det;
+    }
+  }
+
+  exports.default = FitHost;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports, require('./graph.axis.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports, global.graphAxis);
+    global.graphAxisY = mod.exports;
+  }
+})(this, function (module, exports, _graphAxis) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _graphAxis2 = _interopRequireDefault(_graphAxis);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  /**
+   * Generic constructor of a y axis
+   * @extends Axis
+   */
+  class AxisY extends _graphAxis2.default {
+
+    constructor(graph, leftright, options) {
+
+      super(graph, leftright, options);
+      this.leftright = leftright;
+      this.left = leftright == 'left';
+    }
+
+    /**
+     *  @private
+     */
+    setAxisPosition(shift) {
+      this.shiftPosition = shift;
+    }
+
+    getAxisPosition() {
+      return this.shiftPosition || 0;
+    }
+
+    getAdditionalWidth() {
+      let pos = 0;
+      if (this.getLabel()) {
+        pos += this.graph.options.fontSize;
+      }
+
+      if (this.isShown()) {
+        pos += Math.abs(this.tickMargin);
+      }
+      return pos;
+    }
+
+    /**
+     *  @returns {Boolean} always ```false```
+     */
+    isX() {
+      return false;
+    }
+
+    /**
+     *  @returns {Boolean} always ```true```
+     */
+    isY() {
+      return true;
+    }
+
+    /**
+     *  @private
+     */
+    resetTicksLength() {
+      this.longestTick = [false, 0];
+    }
+
+    /**
+     *  @private
+     */
+    getMaxSizeTick() {
+      // Gives an extra margin of 5px
+      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() + 5 : 0; //(this.left ? 10 : 0);
+    }
+
+    draw() {
+
+      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 2 - this.tickPx1 * this.tickScaling[1];
+      var tickWidth = super.draw(...arguments);
+      tickWidth += this.getAdditionalWidth();
+      this.drawSpecifics(tickWidth);
+
+      this.fullwidthlabel = tickWidth;
+
+      return tickWidth;
+    }
+
+    equalizePosition(width) {
+
+      this.placeLabel(this.left ? -width : width);
+
+      if (this.getLabel()) {
+        return width + this.graph.options.fontSize;
+      }
+
+      return 0;
+    }
+
+    /**
+     *  @private
+     */
+    drawTick(value, level, options, forcedPos) {
+      let pos, tick, tickLabel;
+
+      pos = forcedPos || this.getPos(value);
+
+      if (pos == undefined || isNaN(pos)) {
+        return;
+      }
+
+      tick = this.nextTick(level, tick => {
+
+        tick.setAttribute('x1', (this.left ? 1 : -1) * this.tickPx1 * this.tickScaling[level]);
+        tick.setAttribute('x2', (this.left ? 1 : -1) * this.tickPx2 * this.tickScaling[level]);
+
+        if (level == 1) {
+          tick.setAttribute('stroke', this.getPrimaryTicksColor());
+        } else {
+          tick.setAttribute('stroke', this.getSecondaryTicksColor());
+        }
+      });
+
+      tick.setAttribute('y1', pos);
+      tick.setAttribute('y2', pos);
+
+      this.nextGridLine(level == 1, 0, this.graph.getDrawingWidth(), pos, pos);
+
+      //  this.groupTicks.appendChild( tick );
+      if (level == 1) {
+        tickLabel = this.nextTickLabel(tickLabel => {
+
+          tickLabel.setAttribute('x', this.tickMargin + this.options.tickLabelOffset);
+          if (this.getTicksLabelColor() !== 'black') {
+            tickLabel.setAttribute('fill', this.getTicksLabelColor());
+          }
+
+          if (this.left) {
+            tickLabel.setAttribute('text-anchor', 'end');
+          } else {
+            tickLabel.setAttribute('text-anchor', 'start');
+          }
+          tickLabel.style.dominantBaseline = 'central';
+        });
+
+        tickLabel.setAttribute('y', pos);
+        this.setTickContent(tickLabel, value, options);
+
+        if (String(tickLabel.textContent).length >= this.longestTick[1]) {
+          this.longestTick[0] = tickLabel;
+          this.longestTick[1] = String(tickLabel.textContent).length;
+        }
+      }
+    }
+
+    drawLabel() {
+
+      if (this.getLabelColor() !== 'black') {
+        this.label.setAttribute('fill', this.getLabelColor());
+      }
+
+      this.label.setAttribute('dominant-baseline', !this.left ? 'auto' : 'auto');
+      this.labelTspan.textContent = this.getLabel();
+    }
+
+    placeLabel(y) {
+      this.label.setAttribute('transform', `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) / 2}) rotate(-90)`);
+    }
+
+    /**
+     *  @private
+     */
+    drawSpecifics() {
+      // Place label correctly
+      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
+      /*
+      if ( !this.left ) {
+         this.labelTspan.style.dominantBaseline = 'hanging';
+        this.expTspan.style.dominantBaseline = 'hanging';
+        this.expTspanExp.style.dominantBaseline = 'hanging';
+         this.unitTspan.style.dominantBaseline = 'hanging';
+        this.preunitTspan.style.dominantBaseline = 'hanging';
+      }
+      */
+      this.line.setAttribute('y1', this.getMinPx());
+      this.line.setAttribute('y2', this.getMaxPx());
+      this.line.setAttribute('x1', 0);
+      this.line.setAttribute('x2', 0);
+
+      this.line.setAttribute('stroke', this.getAxisColor());
+
+      var span = this.getSpan();
+      this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
+      this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
+    }
+
+    /**
+     *  @private
+     */
+    setShift(shift) {
+
+      this.shift = shift;
+
+      if (!this.shift || !this.graph.getWidth()) {
+        return;
+      }
+
+      let xshift = this.shift;
+      xshift = this.floating ? xshift : this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift;
+      this.group.setAttribute('transform', `translate( ${xshift} 0 )`);
+      this.drawLabel();
+    }
+
+    /**
+     *  @private
+     */
+    isLeft() {
+      return this.left;
+    }
+
+    /**
+     *  @private
+     */
+    isRight() {
+      return !this.left;
+    }
+
+    /**
+     *  @private
+     */
+    isFlipped() {
+      return !this.options.flipped;
+    }
+
+    /**
+     *  @private
+     */
+    _drawLine(pos, line) {
+
+      let px = this.getPx(pos);
+
+      if (!line) {
+        line = document.createElementNS(this.graph.ns, 'line');
+      } else {
+        line.setAttribute('display', 'initial');
+      }
+
+      line.setAttribute('y1', px);
+      line.setAttribute('y2', px);
+
+      line.setAttribute('x1', 0);
+      line.setAttribute('x2', this.graph.drawingSpaceWidth);
+
+      line.setAttribute('stroke', 'black');
+      this.group.appendChild(line);
+
+      return line;
+    }
+
+    _hideLine(line) {
+      if (!line) {
+        return;
+      }
+
+      line.setAttribute('display', 'none');
+    }
+
+    /**
+     *  @private
+     */
+    handleMouseMoveLocal(x, y) {
+      y -= this.graph.getPaddingTop();
+      this.mouseVal = this.getVal(y);
+    }
+
+    /**
+     * Scales the axis with respect to the series contained in an x axis
+     * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
+     * @param {Serie} [ excludeSerie ] - A serie to exclude
+     * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
+     * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
+     * @param {Boolean} [ min = true ] - Adapt the min
+     * @param {Boolean} [ max = true ] - Adapt the max
+     * @returns {Axis} The current axis
+     */
+    scaleToFitAxis(axis, excludeSerie, start, end, min, max) {
+      //console.log( axis instanceof GraphAxis );
+      if (!axis || !axis.isX()) {
+        axis = this.graph.getXAxis();
+      }
+
+      if (isNaN(start)) {
+        start = axis.getCurrentMin();
+      }
+
+      if (isNaN(end)) {
+        end = axis.getCurrentMax();
+      }
+
+      if (min === undefined) {
+        min = true;
+      }
+
+      if (max === undefined) {
+        max = true;
+      }
+
+      if (typeof excludeSerie == 'number') {
+        end = start;
+        start = excludeSerie;
+        excludeSerie = false;
+      }
+
+      var maxV = -Infinity,
+          minV = Infinity,
+          j = 0;
+
+      for (var i = 0, l = this.graph.series.length; i < l; i++) {
+
+        if (!this.graph.series[i].isShown()) {
+          continue;
+        }
+
+        if (this.graph.series[i] == excludeSerie) {
+          continue;
+        }
+
+        if (!(this.graph.series[i].getXAxis() == axis) || this.graph.series[i].getYAxis() !== this) {
+          continue;
+        }
+
+        j++;
+
+        maxV = max ? Math.max(maxV, this.graph.series[i].getMax(start, end)) : 0;
+        minV = min ? Math.min(minV, this.graph.series[i].getMin(start, end)) : 0;
+      }
+
+      if (j == 0) {
+
+        this.setMinMaxToFitSeries(); // No point was found
+      } else {
+
+        // If we wanted originally to resize min and max. Otherwise we use the current value
+        minV = min ? minV : this.getCurrentMin();
+        maxV = max ? maxV : this.getCurrentMax();
+
+        var interval = maxV - minV;
+
+        minV -= this.options.axisDataSpacing.min * interval;
+        maxV += this.options.axisDataSpacing.max * interval;
+
+        this._doZoomVal(minV, maxV);
+      }
+
+      return this;
+    }
+
+    /**
+     *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
+     *  @return {Axis} The current axis instance
+     */
+    setMinMaxFlipped() {
+
+      var interval = this.maxPx - this.minPx;
+
+      if (isNaN(interval)) {
+        return;
+      }
+
+      var maxPx = this.maxPx - interval * this.options.span[0] - this.options.marginMin;
+      var minPx = this.maxPx - interval * this.options.span[1] + this.options.marginMax;
+
+      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+    }
+
+    getZProj(zValue) {
+      return zValue * this.graph.options.zAxis.shiftY;
+    }
+
+  }
+
+  exports.default = AxisY;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports);
+    global.graphMixinSerie3d = mod.exports;
+  }
+})(this, function (module, exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  var Serie3DMixin = {
+
+    /**
+     * Returns the x position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The x position in px corresponding to the x value
+     */
+    getX: function (val) {
+      return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.getXAxis().getZProj(this.options.zpos);
+    },
+
+    /**
+     * Returns the y position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie3DMixin
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The y position in px corresponding to the y value
+     */
+    getY: function (val) {
+      return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.getYAxis().getZProj(this.options.zpos);
+    },
+
+    getZPos: function () {
+      return this.options.zpos;
+    },
+
+    /**
+     * @returns {Number} Lowest x value of the serie's data
+     * @memberof Serie
+     */
+    getMinX: function (useZValues) {
+      if (!useZValues) {
+        return this.minX;
+      }
+
+      return getZCorrectedValue(this, true, true);
+    },
+
+    /**
+     * @returns {Number} Highest x value of the serie's data
+     * @memberof Serie
+     */
+    getMaxX: function (useZValues) {
+
+      if (!useZValues) {
+        return this.maxX;
+      }
+      return getZCorrectedValue(this, true, false);
+    },
+
+    /**
+     * @returns {Number} Lowest y value of the serie's data
+     * @memberof Serie
+     */
+    getMinY: function (useZValues) {
+
+      if (!useZValues) {
+        return this.minY;
+      }
+      return getZCorrectedValue(this, false, true);
+    },
+
+    /**
+     * @returns {Number} Highest y value of the serie's data
+     * @memberof Serie
+     */
+    getMaxY: function (useZValues) {
+
+      if (!useZValues) {
+        return this.maxY;
+      }
+      return getZCorrectedValue(this, false, false);
+    }
+
+  };
+
+  function getZCorrectedValue(serie, x, min) {
+
+    let i, l, data, val, valFinal;
+    let wf = serie.getWaveforms();
+
+    for (let wave of wf) {
+
+      i = 0;
+      l = wave.getLength();
+      data = wave.getData();
+
+      for (; i < l; i += 1) {
+
+        if (x) {
+          val = serie.getXAxis().getVal(serie.getX(wave.getX(i, true)));
+        } else {
+          val = serie.getYAxis().getVal(serie.getY(data[i]));
+        }
+
+        if (i == 0) {
+          valFinal = val;
+        } else {
+
+          if (min) {
+            valFinal = Math.min(valFinal, val);
+          } else {
+            valFinal = Math.max(valFinal, val);
+          }
+        }
+      }
+    }
+    return valFinal;
+  }
+
+  exports.default = Serie3DMixin;
+  module.exports = exports["default"];
 });
 
 /***/ }),
@@ -17889,7 +17351,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(4), __webpack_require__(21), __webpack_require__(11), __webpack_require__(14), __webpack_require__(22), __webpack_require__(23), __webpack_require__(3), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(16), __webpack_require__(17), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(1), __webpack_require__(31), __webpack_require__(32), __webpack_require__(50), __webpack_require__(33), __webpack_require__(34), __webpack_require__(12), __webpack_require__(35), __webpack_require__(36), __webpack_require__(18), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(2), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(49), __webpack_require__(6), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(4), __webpack_require__(25), __webpack_require__(11), __webpack_require__(15), __webpack_require__(26), __webpack_require__(27), __webpack_require__(3), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(31), __webpack_require__(12), __webpack_require__(17), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(1), __webpack_require__(35), __webpack_require__(36), __webpack_require__(54), __webpack_require__(37), __webpack_require__(38), __webpack_require__(13), __webpack_require__(39), __webpack_require__(40), __webpack_require__(18), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(2), __webpack_require__(44), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(50), __webpack_require__(51), __webpack_require__(52), __webpack_require__(53), __webpack_require__(6), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -18074,6 +17536,433 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(21), __webpack_require__(22), __webpack_require__(23)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports, require('./style.js'), require('./axes.js'), require('./annotations.js'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports, global.style, global.axes, global.annotations);
+    global.main = mod.exports;
+  }
+})(this, function (module, exports, _style, _axes, _annotations) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+
+  var _style2 = _interopRequireDefault(_style);
+
+  var _axes2 = _interopRequireDefault(_axes);
+
+  var _annotations2 = _interopRequireDefault(_annotations);
+
+  function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+      default: obj
+    };
+  }
+
+  const makeGraph = (Graph, json, wrapper) => {
+    const graph = new Graph(wrapper);
+    let axes = [];
+
+    graph.resize(json.width || 400, json.height || 300);
+
+    if (json.axes) {
+      (0, _axes2.default)(Graph, graph, json.axes);
+    }
+
+    if (json.series) {
+      if (!Array.isArray(json.series)) {
+        json.series = [json.series];
+      }
+
+      json.series.forEach((jsonSerie, index) => {
+        let type, data;
+
+        switch (jsonSerie.type) {
+          case 'scatter':
+            type = Graph.SERIE_SCATTER;
+            break;
+
+          case 'bar':
+            type = Graph.SERIE_BAR;
+            break;
+
+          case 'box':
+            type = Graph.SERIE_BOX;
+            break;
+
+          case 'line':
+          default:
+            type = Graph.SERIE_LINE;
+            break;
+        }
+
+        switch (jsonSerie.type) {
+          case 'bar':
+            data = Graph.newWaveformHash();
+            if (jsonSerie.data.errors) {
+              data.setData(jsonSerie.data.values);
+            } else {
+              data.setData(jsonSerie.data);
+            }
+
+            break;
+
+          default:
+          case 'line':
+          case 'scatter':
+            data = Graph.newWaveform();
+            data.setData(jsonSerie.data.y, jsonSerie.data.x);
+            break;
+        }
+
+        if (jsonSerie.data.errors) {
+          if (jsonSerie.data.errors.xBar) {
+            data.setErrorBarX(jsonSerie.data.errors.xBar);
+          }
+          if (jsonSerie.data.errors.xBarAbove) {
+            data.setErrorBarXAbove(jsonSerie.data.errors.xBarAbove);
+          }
+          if (jsonSerie.data.errors.xBarBelow) {
+            data.setErrorBarXBelow(jsonSerie.data.errors.xBarBelow);
+          }
+
+          if (jsonSerie.data.errors.yBar) {
+            data.setErrorBar(jsonSerie.data.errors.yBar);
+          }
+          if (jsonSerie.data.errors.yBarAbove) {
+            data.setErrorBarAbove(jsonSerie.data.errors.yBarAbove);
+          }
+          if (jsonSerie.data.errors.yBarBelow) {
+            data.setErrorBarBelow(jsonSerie.data.errors.yBarBelow);
+          }
+
+          if (jsonSerie.data.errors.xBox) {
+            data.setErrorBoxX(jsonSerie.data.errors.xBox);
+          }
+          if (jsonSerie.data.errors.xBoxAbove) {
+            data.setErrorBoxXAbove(jsonSerie.data.errors.xBoxAbove);
+          }
+          if (jsonSerie.data.errors.xBoxBelow) {
+            data.setErrorBoxXBelow(jsonSerie.data.errors.xBoxBelow);
+          }
+
+          if (jsonSerie.data.errors.yBox) {
+            data.setErrorBox(jsonSerie.data.errors.yBox);
+          }
+          if (jsonSerie.data.errors.yBoxAbove) {
+            data.setErrorBoxAbove(jsonSerie.data.errors.yBoxAbove);
+          }
+          if (jsonSerie.data.errors.yBoxBelow) {
+            data.setErrorBoxBelow(jsonSerie.data.errors.yBoxBelow);
+          }
+        }
+
+        const serie = graph.newSerie(jsonSerie.name || `_serie_${index}`, {}, type);
+        serie.autoAxis();
+
+        if (data.xAxis && axes[data.xAxis]) {
+          serie.setXAxis(axes[data.xAxis]);
+        }
+
+        if (data.yAxis && axes[data.yAxis]) {
+          serie.setYAxis(axes[data.yAxis]);
+        }
+
+        if (data) {
+          serie.setWaveform(data);
+        }
+
+        if (jsonSerie.style) {
+          (0, _style2.default)(Graph, serie, jsonSerie, type);
+        }
+
+        if (jsonSerie.annotations) {
+          jsonSerie.annotations.forEach(annotation => {
+            (0, _annotations2.default)(graph, annotation, undefined, axes);
+          });
+        }
+      });
+    }
+
+    if (json.annotations) {
+      json.annotations.forEach(annotation => {
+        (0, _annotations2.default)(graph, annotation, undefined, axes);
+      });
+    }
+
+    return graph;
+  };
+
+  exports.default = makeGraph;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports);
+    global.style = mod.exports;
+  }
+})(this, function (module, exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  const setMarkerStyle = (serie, style) => {
+    serie.showMarkers();
+    let _default = {};
+    let modifiers = [];
+
+    if (style.default) {
+      _default = style.default;
+      if (style.modifiers) {
+        modifiers = style.modifiers;
+      }
+    } else {
+      _default = style;
+      modifiers = [];
+    }
+
+    serie.setMarkerStyle(_default, modifiers);
+  };
+
+  const setSerieStyle = (Graph, serie, jsonSerie, type) => {
+    console.log('sdfdsf');
+    let styles = jsonSerie.style;
+
+    if (!Array.isArray(styles)) {
+      styles = [{ name: 'unselected', style: styles }];
+    }
+
+    styles.map(({ name, style }, index) => {
+      console.log(style);
+      if (style.line && (type == Graph.SERIE_LINE || type == Graph.SERIE_BAR)) {
+        if (style.line.color) {
+          serie.setLineColor(style.line.color, name);
+        }
+
+        if (style.line.width) {
+          serie.setLineWidth(style.line.width, name);
+        }
+
+        if (style.line.dash) {
+          serie.setLineStyle(style.line.dash, name);
+        }
+
+        if (style.line.fill) {
+          serie.setFillColor(style.line.fill, name);
+        }
+
+        if (style.line.fillOpacity && serie.setFillOpacity) {
+          serie.setFillOpacity(style.line.fillOpacity, name);
+        }
+      }
+      console.log(style);
+      if (style.errorBar) {
+        serie.setErrorBarStyle(style.errorBar);
+      }
+
+      if (style.errorBox) {
+        serie.setErrorBoxStyle(style.errorBox);
+      }
+
+      if (style.marker && (type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER)) {
+        setMarkerStyle(serie, style.marker);
+      }
+    });
+  };
+
+  exports.default = setSerieStyle;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports);
+    global.axes = mod.exports;
+  }
+})(this, function (module, exports) {
+  'use strict';
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  const processAxes = (Graph, graph, type, axisOptions, allAxes) => {
+    if (!Array.isArray(axisOptions)) {
+      axisOptions = [axisOptions];
+    }
+
+    axisOptions.forEach(options => {
+      let constructorName;
+
+      if (type == 'x') {
+        type = 'bottom';
+      } else if (type == 'y') {
+        type = 'left';
+      }
+
+      if (type == 'bottom' || type == 'top') {
+        constructorName = 'graph.axis.x';
+
+        if (options.type == 'category') {
+          constructorName += '.bar';
+        }
+      } else {
+        constructorName = 'graph.axis.y';
+      }
+
+      var axis = new (Graph.getConstructor(constructorName))(graph, type);
+      axis.init(graph, options);
+
+      if (type == 'bottom') {
+        graph.setBottomAxis(axis, graph.getNumAxes('bottom'));
+      } else if (type == 'top') {
+        graph.setTopAxis(axis, graph.getNumAxes('top'));
+      } else if (type == 'left') {
+        graph.setLeftAxis(axis, graph.getNumAxes('left'));
+      } else if (type == 'right') {
+        graph.setRightAxis(axis, graph.getNumAxes('right'));
+      }
+
+      if (options.type == 'category') {
+        axis.categories = options.categories;
+      }
+
+      if (options.name) {
+        allAxes[name] = axis;
+      }
+    });
+  };
+
+  const makeAxes = (Graph, graph, jsonAxes) => {
+    const allAxes = [];
+
+    if (jsonAxes.x) {
+      processAxes(Graph, graph, 'x', jsonAxes.x, allAxes);
+    }
+
+    if (jsonAxes.y) {
+      processAxes(Graph, graph, 'y', jsonAxes.y, allAxes);
+    }
+
+    if (jsonAxes.top) {
+      processAxes(Graph, graph, 'top', jsonAxes.top, allAxes);
+    }
+
+    if (jsonAxes.left) {
+      processAxes(Graph, graph, 'left', jsonAxes.left, allAxes);
+    }
+
+    if (jsonAxes.bottom) {
+      processAxes(Graph, graph, 'bottom', jsonAxes.bottom, allAxes);
+    }
+
+    if (jsonAxes.right) {
+      processAxes(Graph, graph, 'right', jsonAxes.right, allAxes);
+    }
+  };
+
+  exports.default = makeAxes;
+  module.exports = exports['default'];
+});
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(module, exports);
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod, mod.exports);
+    global.annotations = mod.exports;
+  }
+})(this, function (module, exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  const makeAnnotation = (graph, json, serie, axes) => {
+    if (json.type) {
+      const shape = graph.newShape(json.type, {}, false, json.properties);
+
+      if (json.serie) {
+        shape.setSerie(json.serie);
+      }
+
+      if (json.layer) {
+        shape.setLayer(json.layer);
+      }
+
+      if (json.xAxis) {
+        shape.setXAxis(axes[json.xAxis]);
+      }
+
+      if (json.yAxis) {
+        shape.setYAxis(axes[json.yAxis]);
+      }
+
+      shape.draw();
+      shape.redraw();
+    }
+  };
+
+  exports.default = makeAnnotation;
+  module.exports = exports["default"];
+});
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
@@ -18102,9 +17991,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var queue = {};
 
     let string = function () {
-
       onmessage = function (e) {
-
         const data = e.data.data,
               // The initial data
         maxX = e.data.maxX,
@@ -18130,7 +18017,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         let newAggregationX;
 
         if (e.data.xdata) {
-
           getX = function getX(index) {
             return e.data.xdata[index];
           };
@@ -18147,7 +18033,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           const dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
 
           for (; i < l; i++) {
-
             // dataPerSlot: 1 / 1000 ( compression by 1'000 )
             //console.log( dataPerSlot, getX( i ) );
             slotNumber = Math.floor((getX(i) - minX) * dataPerSlot);
@@ -18181,7 +18066,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           const dataPerSlot = numPoints / (maxY - minY); // Computed number of aggregation per slot
 
           for (; i < l; i++) {
-
             // dataPerSlot: 1 / 1000 ( compression by 1'000 )
             //console.log( dataPerSlot, getX( i ) );
             slotNumber = Math.floor((data[i] - minY) * dataPerSlot);
@@ -18221,7 +18105,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         lastAggregationSum = aggregationSum;
 
         while (numPoints > 256) {
-
           numPoints /= 2;
 
           newAggregation = [];
@@ -18230,9 +18113,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           k = 0;
 
           if (direction == 'x') {
-
             for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
-
               newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
               newAggregationX[k + 1] = newAggregationX[k];
               newAggregationX[k + 2] = newAggregationX[k];
@@ -18248,9 +18129,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               k += 4;
             }
           } else {
-
             for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
-
               newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
               newAggregation[k + 1] = newAggregation[k];
               newAggregation[k + 2] = newAggregation[k];
@@ -18302,7 +18181,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     aggregatorWorker = new Worker(workerUrl);
 
     aggregatorWorker.onmessage = function (e) {
-
       var id = e.data._queueId;
       delete e.data._queueId;
       queue[id](e.data);
@@ -18310,7 +18188,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
 
     dataAggregator = function (toOptimize) {
-
       var requestId = Date.now();
       toOptimize._queueId = requestId;
 
@@ -18328,7 +18205,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -19050,7 +18927,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 22 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -19089,7 +18966,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
    * @augments Axis
    */
   class AxisXBar extends _graphAxisX2.default {
-
     constructor(graph, topbottom, options = {}) {
       super(graph, topbottom, options);
     }
@@ -19106,10 +18982,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     draw() {
-
       var self = this,
           tickLabel,
           elements = this._barCategories;
+
+      if (!this.series || this.series.length == 0) {
+        this.autoSeries();
+      }
 
       this.forceMin(0);
       this.forceMax(1);
@@ -19134,7 +19013,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (i < elements.length) {
           tickLabel = this.nextTickLabel(function (tickLabel) {
-
             tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)));
             tickLabel.setAttribute('text-anchor', 'middle');
             if (self.getTicksLabelColor() !== 'black') {
@@ -19157,14 +19035,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {AxisBar} The current axis instance
      */
     autoSeries() {
-
       let series = [];
       for (let serie of this.graph.series) {
         if (serie.getXAxis() == this) {
           series.push(serie);
         }
       }
-
+      console.log(series);
       this.setSeries(...series);
       return this;
     }
@@ -19175,12 +19052,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @returns {AxisBar} The current axis instance
      */
     setSeries() {
-
       var self = this;
       this.series = arguments;
 
       Array.prototype.map.call(this.series, function (serie, index) {
-
         if (!(typeof serie == 'object')) {
           serie = self.graph.getSerie(serie);
         }
@@ -19196,14 +19071,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     _getUsedCategories() {
-
       let categories = {},
           total = 0;
 
       Array.prototype.map.call(this.series, serie => {
         let usedCategories = serie.getUsedCategories();
         for (let cat of usedCategories) {
-
           if (!categories.hasOwnProperty(cat)) {
             categories[cat] = 1;
             total += 1;
@@ -19213,7 +19086,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           total++;
         }
       });
-
+      console.log(categories);
       let accumulator = 0;
       for (let i in categories) {
         let temp = categories[i];
@@ -19224,12 +19097,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       let dispatchedCategories = {};
 
       Array.prototype.map.call(this.series, serie => {
-
         let scategories = serie.getUsedCategories(),
             indices = {};
 
         scategories.forEach(cat => {
-
           dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
           indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
           dispatchedCategories[cat]++;
@@ -19249,7 +19120,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 23 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -20243,12 +20114,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 24 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(15), __webpack_require__(0), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(16), __webpack_require__(0), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -20335,7 +20206,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 25 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -20541,7 +20412,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 26 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -21397,7 +21268,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 27 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -21746,12 +21617,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(15), __webpack_require__(0), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(16), __webpack_require__(0), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -21839,7 +21710,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -22575,7 +22446,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23025,7 +22896,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23258,12 +23129,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -23326,7 +23197,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23385,7 +23256,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23507,7 +23378,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23934,7 +23805,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24004,7 +23875,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 37 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24156,12 +24027,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(12)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(13)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -24421,7 +24292,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24560,7 +24431,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 40 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24774,7 +24645,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 41 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24981,7 +24852,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 42 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25173,7 +25044,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 43 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25841,12 +25712,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 44 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(45), __webpack_require__(0), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(49), __webpack_require__(0), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -26403,7 +26274,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 45 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26547,7 +26418,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 46 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26828,12 +26699,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(11), __webpack_require__(14), __webpack_require__(0), __webpack_require__(3), __webpack_require__(16), __webpack_require__(8), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(7), __webpack_require__(11), __webpack_require__(15), __webpack_require__(0), __webpack_require__(3), __webpack_require__(12), __webpack_require__(8), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -27643,7 +27514,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -27883,7 +27754,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -28247,7 +28118,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {

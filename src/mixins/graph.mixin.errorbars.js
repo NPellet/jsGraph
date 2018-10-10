@@ -169,7 +169,10 @@ var ErrorBarMixin = {
 
   _setErrorStyle( errorstyles = {} ) {
     var styles = [];
-    var pairs = [ [ 'y', 'top', 'bottom' ], [ 'x', 'left', 'right' ] ];
+    var pairs = [
+      [ 'y', 'top', 'bottom' ],
+      [ 'x', 'left', 'right' ]
+    ];
 
     var makePath = ( style ) => {
       style.dom = document.createElementNS( this.graph.ns, 'path' );
@@ -191,29 +194,27 @@ var ErrorBarMixin = {
 
     for ( var j = 0, l = pairs.length; j < l; j++ ) {
       if ( errorstyles.all ) {
-        errorstyles[pairs[j][1]] = util.extend( true, {}, errorstyles.all );
-        errorstyles[pairs[j][2]] = util.extend( true, {}, errorstyles.all );
+        errorstyles[ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles.all );
+        errorstyles[ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles.all );
       }
 
-      if ( errorstyles[pairs[j][0]] ) {
+      if ( errorstyles[ pairs[ j ][ 0 ] ] ) {
         //.x, .y
 
-        errorstyles[pairs[j][1]] = util.extend(
-          true,
-          {},
-          errorstyles[pairs[j][0]]
+        errorstyles[ pairs[ j ][ 1 ] ] = util.extend(
+          true, {},
+          errorstyles[ pairs[ j ][ 0 ] ]
         );
-        errorstyles[pairs[j][2]] = util.extend(
-          true,
-          {},
-          errorstyles[pairs[j][0]]
+        errorstyles[ pairs[ j ][ 2 ] ] = util.extend(
+          true, {},
+          errorstyles[ pairs[ j ][ 0 ] ]
         );
       }
 
       for ( var k = 1; k <= 2; k++ ) {
-        if ( errorstyles[pairs[j][k]] ) {
-          styles[pairs[j][k]] = errorstyles[pairs[j][k]];
-          makePath( styles[pairs[j][k]] );
+        if ( errorstyles[ pairs[ j ][ k ] ] ) {
+          styles[ pairs[ j ][ k ] ] = errorstyles[ pairs[ j ][ k ] ];
+          makePath( styles[ pairs[ j ][ k ] ] );
         }
       }
     }
@@ -328,7 +329,7 @@ var ErrorBarMixin = {
 
   errorAddPointBarChart: function( j, posY, xpx, ypx ) {
     var error;
-    if ( this.error && ( error = this.error[j] ) ) {
+    if ( this.error && ( error = this.error[ j ] ) ) {
       this.doErrorDraw( 'y', error, posY, ypx, xpx, ypx );
     }
   },
@@ -336,10 +337,10 @@ var ErrorBarMixin = {
   errorDraw: function() {
     if ( this.errorbarStyle ) {
       for ( var j in this.errorbarStyle.paths ) {
-        if ( this.errorbarStyle[j] && this.errorbarStyle[j].dom ) {
-          this.errorbarStyle[j].dom.setAttribute(
+        if ( this.errorbarStyle[ j ] && this.errorbarStyle[ j ].dom ) {
+          this.errorbarStyle[ j ].dom.setAttribute(
             'd',
-            this.errorbarStyle.paths[j]
+            this.errorbarStyle.paths[ j ]
           );
         }
       }
@@ -347,10 +348,10 @@ var ErrorBarMixin = {
 
     if ( this.errorboxStyle ) {
       for ( var j in this.errorboxStyle.paths ) {
-        if ( this.errorboxStyle[j] && this.errorboxStyle[j].dom ) {
-          this.errorboxStyle[j].dom.setAttribute(
+        if ( this.errorboxStyle[ j ] && this.errorboxStyle[ j ].dom ) {
+          this.errorboxStyle[ j ].dom.setAttribute(
             'd',
-            this.errorboxStyle.paths[j]
+            this.errorboxStyle.paths[ j ]
           );
         }
       }

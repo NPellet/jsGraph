@@ -21,10 +21,16 @@ const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
   let styles = jsonSerie.style;
 
   if ( !Array.isArray( styles ) ) {
-    styles = [ { name: 'unselected', style: styles } ];
+    styles = [ {
+      name: 'unselected',
+      style: styles
+    } ];
   }
 
-  styles.map( ( { name, style }, index ) => {
+  styles.map( ( {
+    name,
+    style
+  }, index ) => {
     console.log( style );
     if ( style.line && ( type == Graph.SERIE_LINE || type == Graph.SERIE_BAR ) ) {
       if ( style.line.color ) {

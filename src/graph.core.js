@@ -63,7 +63,6 @@ const GraphOptionsDefault = {
   shapesUniqueSelection: true
 };
 
-
 var _constructors = new Map();
 
 /**
@@ -2444,7 +2443,7 @@ class Graph extends EventEmitter {
 
         default:
         case Graph.SERIE_LINE:
-        return 'line';
+          return 'line';
       }
     };
 
@@ -2713,7 +2712,7 @@ function refreshDrawingZone( graph ) {
 
     axis.setMinPx( shiftTop );
     axis.setMaxPx( graph.getDrawingHeight( true ) - shiftBottom );
-console.log( axis );
+    console.log( axis );
     if ( axis.floating ) {
       return;
     }
@@ -2851,12 +2850,12 @@ console.log( axis );
 
   }, false, true, true );
 
-/**
-  graph.shapeZoneRect.setAttribute('x', shift[1]);
-	graph.shapeZoneRect.setAttribute('y', shift[2]);
-	graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-	graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
-*/
+  /**
+    graph.shapeZoneRect.setAttribute('x', shift[1]);
+  	graph.shapeZoneRect.setAttribute('y', shift[2]);
+  	graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+  	graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+  */
   graph.shift = shift;
   graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
 }

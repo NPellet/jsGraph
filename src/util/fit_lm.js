@@ -135,11 +135,11 @@ class FitHost {
   computeResiduals() {
     var sumsq = 0;
     for ( var i = 0; i < this.NPTS; i++ ) {
-      this.resid[i] =
-        ( this.func( this.arrX[i + this._from], this.parms ) -
-          this.arrY[i + this._from] ) *
+      this.resid[ i ] =
+        ( this.func( this.arrX[ i + this._from ], this.parms ) -
+          this.arrY[ i + this._from ] ) *
         this.WEIGHT;
-      sumsq += this.resid[i] * this.resid[i];
+      sumsq += this.resid[ i ] * this.resid[ i ];
     }
 
     return sumsq;
@@ -154,7 +154,7 @@ class FitHost {
   //------the four mandated interface methods------------
   nudge( dp ) {
     for ( var j = 0; j < this.NPARMS; j++ ) {
-      this.parms[j] += dp[j];
+      this.parms[ j ] += dp[ j ];
     }
     return this.computeResiduals();
   }
@@ -169,7 +169,7 @@ class FitHost {
 
     for ( var j = 0; j < this.NPARMS; j++ ) {
       for ( var k = 0; k < this.NPARMS; k++ )
-        delta[k] = k == j ? this.DELTAP : 0.0;
+        delta[ k ] = k == j ? this.DELTAP : 0.0;
 
       d = this.nudge( delta ); // resid at pplus
       if ( d == this.BIGVAL ) {
@@ -177,11 +177,11 @@ class FitHost {
       }
 
       for ( var i = 0; i < this.NPTS; i++ ) {
-        this.jac[i][j] = this.getResidualElement( i );
+        this.jac[ i ][ j ] = this.getResidualElement( i );
       }
 
       for ( var k = 0; k < this.NPARMS; k++ ) {
-        delta[k] = k == j ? -2 * this.DELTAP : 0.0;
+        delta[ k ] = k == j ? -2 * this.DELTAP : 0.0;
       }
 
       d = this.nudge( delta ); // resid at pminus
@@ -190,12 +190,12 @@ class FitHost {
       }
 
       for ( var i = 0; i < this.NPTS; i++ )
-        this.jac[i][j] -= this.getResidualElement( i ); // fetches resid[]
+        this.jac[ i ][ j ] -= this.getResidualElement( i ); // fetches resid[]
 
-      for ( var i = 0; i < this.NPTS; i++ ) this.jac[i][j] *= FACTOR;
+      for ( var i = 0; i < this.NPTS; i++ ) this.jac[ i ][ j ] *= FACTOR;
 
       for ( var k = 0; k < this.NPARMS; k++ )
-        delta[k] = k == j ? this.DELTAP : 0.0;
+        delta[ k ] = k == j ? this.DELTAP : 0.0;
 
       d = this.nudge( delta );
       if ( d == this.BIGVAL ) {
@@ -207,12 +207,12 @@ class FitHost {
 
   getResidualElement( i ) {
     // Allows LM to see one element of the resid[] vector.
-    return this.resid[i];
+    return this.resid[ i ];
   }
 
   getJacobianElement( i, j ) {
     // Allows LM to see one element of the Jacobian matrix.
-    return this.jac[i][j];
+    return this.jac[ i ][ j ];
   }
 
   buildFit( parms, length ) {
@@ -231,7 +231,7 @@ class FitHost {
 
     var fit = new Array( x.length );
     for ( var i = 0, l = x.length; i < l; i++ ) {
-      fit[i] = this.func( x[i], this.parms );
+      fit[ i ] = this.func( x[ i ], this.parms );
     }
 
     let waveformResult = this.options.waveform;
@@ -299,7 +299,7 @@ class LM {
     // Returns true if done with iterations; false=wants more.
     // Global nadj, npts; needs nadj, myH to be preset.
     // Ref: M.Lampton, Computers in Physics v.11 pp.110-115 1997.
-    for ( var k = 0; k < this.nadj; k++ ) this.delta[k] = 0.0;
+    for ( var k = 0; k < this.nadj; k++ ) this.delta[ k ] = 0.0;
     this.sos = this.myH.nudge( this.delta );
     if ( this.sos == this.BIGVAL ) {
       console.error( '  bLMiter finds faulty initial nudge()' );
@@ -314,26 +314,22 @@ class LM {
     }
 
     for (
-      var k = 0;
-      k < this.nadj;
-      k++ // get downhill gradient beta
+      var k = 0; k < this.nadj; k++ // get downhill gradient beta
     ) {
-      this.beta[k] = 0.0;
+      this.beta[ k ] = 0.0;
       for ( var i = 0; i < this.npts; i++ ) {
-        this.beta[k] -=
+        this.beta[ k ] -=
           this.myH.getResidualElement( i ) * this.myH.getJacobianElement( i, k );
       }
     }
 
     for (
-      var k = 0;
-      k < this.nadj;
-      k++ // get curvature matrix alpha
+      var k = 0; k < this.nadj; k++ // get curvature matrix alpha
     )
       for ( var j = 0; j < this.nadj; j++ ) {
-        this.alpha[j][k] = 0.0;
+        this.alpha[ j ][ k ] = 0.0;
         for ( var i = 0; i < this.npts; i++ ) {
-          this.alpha[j][k] +=
+          this.alpha[ j ][ k ] +=
             this.myH.getJacobianElement( i, j ) *
             this.myH.getJacobianElement( i, k );
         }
@@ -344,20 +340,18 @@ class LM {
       for ( var k = 0; k < this.nadj; k++ ) {
         // copy and damp it
         for ( var j = 0; j < this.nadj; j++ ) {
-          this.amatrix[j][k] = this.alpha[j][k] + ( j == k ? this.lambda : 0.0 );
+          this.amatrix[ j ][ k ] = this.alpha[ j ][ k ] + ( j == k ? this.lambda : 0.0 );
         }
       }
 
       this.gaussj( this.amatrix, this.nadj ); // invert
 
       for (
-        var k = 0;
-        k < this.nadj;
-        k++ // compute delta[]
+        var k = 0; k < this.nadj; k++ // compute delta[]
       ) {
-        this.delta[k] = 0.0;
+        this.delta[ k ] = 0.0;
         for ( var j = 0; j < this.nadj; j++ )
-          this.delta[k] += this.amatrix[j][k] * this.beta[j];
+          this.delta[ k ] += this.amatrix[ j ][ k ] * this.beta[ j ];
       }
       this.sos = this.myH.nudge( this.delta ); // try it out.
       if ( this.sos == this.BIGVAL ) {
@@ -372,7 +366,7 @@ class LM {
       }
       for ( var q = 0; q < this.nadj; q++ ) {
         // reverse course!
-        this.delta[q] *= -1.0;
+        this.delta[ q ] *= -1.0;
       }
       this.myH.nudge( this.delta ); // sosprev should still be OK
       if ( rrise < this.LMTOL ) {
@@ -399,62 +393,57 @@ class LM {
       big = 0.0;
       for ( i = k; i < N; i++ )
         for (
-          j = k;
-          j < N;
-          j++ // find biggest element
+          j = k; j < N; j++ // find biggest element
         )
-          if ( Math.abs( big ) <= Math.abs( a[i][j] ) ) {
-            big = a[i][j];
-            ik[k] = i;
-            jk[k] = j;
+          if ( Math.abs( big ) <= Math.abs( a[ i ][ j ] ) ) {
+            big = a[ i ][ j ];
+            ik[ k ] = i;
+            jk[ k ] = j;
           }
       if ( big == 0.0 ) return 0.0;
-      i = ik[k];
+      i = ik[ k ];
       if ( i > k )
         for (
-          j = 0;
-          j < N;
-          j++ // exchange rows
+          j = 0; j < N; j++ // exchange rows
         ) {
-          save = a[k][j];
-          a[k][j] = a[i][j];
-          a[i][j] = -save;
+          save = a[ k ][ j ];
+          a[ k ][ j ] = a[ i ][ j ];
+          a[ i ][ j ] = -save;
         }
-      j = jk[k];
+      j = jk[ k ];
       if ( j > k )
         for ( i = 0; i < N; i++ ) {
-          save = a[i][k];
-          a[i][k] = a[i][j];
-          a[i][j] = -save;
+          save = a[ i ][ k ];
+          a[ i ][ k ] = a[ i ][ j ];
+          a[ i ][ j ] = -save;
         }
       for (
-        i = 0;
-        i < N;
-        i++ // build the inverse
+        i = 0; i < N; i++ // build the inverse
       )
-        if ( i != k ) a[i][k] = -a[i][k] / big;
+        if ( i != k ) a[ i ][ k ] = -a[ i ][ k ] / big;
       for ( i = 0; i < N; i++ )
         for ( j = 0; j < N; j++ )
-          if ( i != k && j != k ) a[i][j] += a[i][k] * a[k][j];
-      for ( j = 0; j < N; j++ ) if ( j != k ) a[k][j] /= big;
-      a[k][k] = 1.0 / big;
+          if ( i != k && j != k ) a[ i ][ j ] += a[ i ][ k ] * a[ k ][ j ];
+      for ( j = 0; j < N; j++ )
+        if ( j != k ) a[ k ][ j ] /= big;
+      a[ k ][ k ] = 1.0 / big;
       det *= big; // bomb point
     } // end k loop
     for ( L = 0; L < N; L++ ) {
       k = N - L - 1;
-      j = ik[k];
+      j = ik[ k ];
       if ( j > k )
         for ( i = 0; i < N; i++ ) {
-          save = a[i][k];
-          a[i][k] = -a[i][j];
-          a[i][j] = save;
+          save = a[ i ][ k ];
+          a[ i ][ k ] = -a[ i ][ j ];
+          a[ i ][ j ] = save;
         }
-      i = jk[k];
+      i = jk[ k ];
       if ( i > k )
         for ( j = 0; j < N; j++ ) {
-          save = a[k][j];
-          a[k][j] = -a[i][j];
-          a[i][j] = save;
+          save = a[ k ][ j ];
+          a[ k ][ j ] = -a[ i ][ j ];
+          a[ i ][ j ] = save;
         }
     }
     return det;

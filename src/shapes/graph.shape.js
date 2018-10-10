@@ -439,13 +439,13 @@ class Shape extends EventEmitter {
     }
     var self = this;
     for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
-      var pos = GraphPosition.check( this.properties.position[i], function(
+      var pos = GraphPosition.check( this.properties.position[ i ], function(
         relativeTo
       ) {
         return self.getRelativePosition( relativeTo );
       } );
 
-      this.properties.position[i] = pos;
+      this.properties.position[ i ] = pos;
     }
 
     this.emit( 'propertiesChanged' );
@@ -455,11 +455,11 @@ class Shape extends EventEmitter {
   getRelativePosition( relativePosition ) {
     var result;
     if ( ( result = /position([0-9]*)/.exec( relativePosition ) ) !== null ) {
-      return this.getPosition( result[1] );
+      return this.getPosition( result[ 1 ] );
     } else if (
       ( result = /labelPosition([0-9]*)/.exec( relativePosition ) ) !== null
     ) {
-      return this.getLabelPosition( result[1] );
+      return this.getLabelPosition( result[ 1 ] );
     }
   }
 
@@ -480,8 +480,8 @@ class Shape extends EventEmitter {
    */
   setProp( prop, val, index ) {
     this.properties = this.properties || {};
-    this.properties[prop] = this.properties[prop] || [];
-    this.properties[prop][index || 0] = val;
+    this.properties[ prop ] = this.properties[ prop ] || [];
+    this.properties[ prop ][ index || 0 ] = val;
     this.emit( 'propertyChanged', prop );
     return this;
   }
@@ -492,10 +492,10 @@ class Shape extends EventEmitter {
    * @param [ index = 0 ] - The index of the property array
    */
   getProp( prop, index ) {
-    if ( !Array.isArray( this.properties[prop] || [] ) ) {
-      return this.properties[prop];
+    if ( !Array.isArray( this.properties[ prop ] || [] ) ) {
+      return this.properties[ prop ];
     }
-    return ( this.properties[prop] || [] )[index || 0];
+    return ( this.properties[ prop ] || [] )[ index || 0 ];
   }
 
   /**
@@ -503,7 +503,7 @@ class Shape extends EventEmitter {
    * @param {String} prop - The property to retrieve
    */
   getProps( prop, index ) {
-    return this.properties[prop] || [];
+    return this.properties[ prop ] || [];
   }
 
   /**
@@ -512,8 +512,8 @@ class Shape extends EventEmitter {
    * @param val - The value to save
    */
   addProp( prop, value ) {
-    this.properties[prop] = this.properties[prop] || [];
-    this.properties[prop].push( value );
+    this.properties[ prop ] = this.properties[ prop ] || [];
+    this.properties[ prop ].push( value );
   }
 
   /**
@@ -521,7 +521,7 @@ class Shape extends EventEmitter {
    * @param {String} prop - The property to reset
    */
   resetProp( prop ) {
-    this.properties[prop] = [];
+    this.properties[ prop ] = [];
   }
 
   /**
@@ -653,7 +653,7 @@ class Shape extends EventEmitter {
    */
   addAttribute( attributeName, attributeValue ) {
     var added = {};
-    added[attributeName] = attributeValue;
+    added[ attributeName ] = attributeValue;
     this.addProp( 'attributes', added );
     return this;
   }
@@ -881,12 +881,12 @@ class Shape extends EventEmitter {
 
     var attributes = this.getProps( 'attributes' );
     for ( var j = 0, l = attributes.length; j < l; j++ ) {
-      for ( var i in attributes[j] ) {
+      for ( var i in attributes[ j ] ) {
         this.setDom(
           i,
-          typeof attributes[j][i] == 'function'
-            ? attributes[j][i].call( this, i )
-            : attributes[j][i],
+          typeof attributes[ j ][ i ] == 'function' ?
+          attributes[ j ][ i ].call( this, i ) :
+          attributes[ j ][ i ],
           true
         );
       }
@@ -990,17 +990,17 @@ class Shape extends EventEmitter {
       transformString += `${transforms[i].type}(`;
 
       let transform;
-      switch ( transforms[i].type ) {
+      switch ( transforms[ i ].type ) {
         case 'translate':
-          if ( transforms[i].arguments ) {
-            transform = transforms[i].arguments[0].compute(
+          if ( transforms[ i ].arguments ) {
+            transform = transforms[ i ].arguments[ 0 ].compute(
               this.graph,
               this.getXAxis(),
               this.getYAxis(),
               this.getSerie()
             );
           } else {
-            const value = GraphPosition.check( transforms[i].value );
+            const value = GraphPosition.check( transforms[ i ].value );
 
             transform = value.compute(
               this.graph,
@@ -1017,19 +1017,18 @@ class Shape extends EventEmitter {
           break;
 
         case 'rotate':
-          if ( !transforms[i].arguments ) {
-            transformString += transforms[i].angle;
-            
+          if ( !transforms[ i ].arguments ) {
+            transformString += transforms[ i ].angle;
 
-            if ( !transforms[i].center ) {
+            if ( !transforms[ i ].center ) {
               var p = this.computePosition( 0 );
               transformString += `, ${p.x}, ${p.y}`;
             } else {
               console.log( GraphPosition.check(
-                transforms[i].center
+                transforms[ i ].center
               ) );
               const posCenter = GraphPosition.check(
-                transforms[i].center
+                transforms[ i ].center
               ).compute(
                 this.graph,
                 this.getXAxis(),
@@ -1037,30 +1036,30 @@ class Shape extends EventEmitter {
                 this.getSerie()
               );
 
-              if( posCenter.x === posCenter.x && posCenter.y === posCenter.y ) {
+              if ( posCenter.x === posCenter.x && posCenter.y === posCenter.y ) {
                 transformString += ', ';
                 transformString += posCenter.x;
-              transformString += ', ';
-              transformString += posCenter.y;
+                transformString += ', ';
+                transformString += posCenter.y;
 
               }
-              
+
             }
           } else {
-            transformString += transforms[i].arguments[0];
+            transformString += transforms[ i ].arguments[ 0 ];
             transformString += ', ';
 
-            if ( transforms[i].arguments.length == 1 ) {
+            if ( transforms[ i ].arguments.length == 1 ) {
               var p = this.computePosition( 0 );
               transformString += `${p.x}, ${p.y}`;
             } else {
               transformString += GraphPosition.getDeltaPx(
-                transforms[i].arguments[1],
+                transforms[ i ].arguments[ 1 ],
                 this.getXAxis()
               ).replace( 'px', '' );
               transformString += ', ';
               transformString += GraphPosition.getDeltaPx(
-                transforms[i].arguments[2],
+                transforms[ i ].arguments[ 2 ],
                 this.getYAxis()
               ).replace( 'px', '' );
             }
@@ -1094,33 +1093,33 @@ class Shape extends EventEmitter {
     } );
 
     this._labels = [];
-    this._labelsBackground[i] = [];
+    this._labelsBackground[ i ] = [];
 
     var i = 0;
 
     while ( this.getProp( 'labelText', i ) !== undefined ) {
-      if ( !this._labels[i] ) {
-        this._labels[i] = document.createElementNS( this.graph.ns, 'text' );
-        this._labels[i].setAttribute( 'data-label-i', i );
-        this._labels[i].jsGraphIsShape = this;
+      if ( !this._labels[ i ] ) {
+        this._labels[ i ] = document.createElementNS( this.graph.ns, 'text' );
+        this._labels[ i ].setAttribute( 'data-label-i', i );
+        this._labels[ i ].jsGraphIsShape = this;
 
-        this._labelsBackground[i] = document.createElementNS(
+        this._labelsBackground[ i ] = document.createElementNS(
           this.graph.ns,
           'rect'
         );
-        this._labelsBackground[i].setAttribute( 'data-label-i', i );
-        this._labelsBackground[i].jsGraphIsShape = this;
+        this._labelsBackground[ i ].setAttribute( 'data-label-i', i );
+        this._labelsBackground[ i ].jsGraphIsShape = this;
 
-        this.group.appendChild( this._labelsBackground[i] );
-        this.group.appendChild( this._labels[i] );
+        this.group.appendChild( this._labelsBackground[ i ] );
+        this.group.appendChild( this._labels[ i ] );
 
-        this._labels[i].addEventListener( 'dblclick', ( e ) => {
+        this._labels[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
 
           this.labelDblClickListener( e );
         } );
 
-        this._labelsBackground[i].addEventListener( 'dblclick', ( e ) => {
+        this._labelsBackground[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
 
           this.labelDblClickListener( e );
@@ -1177,12 +1176,12 @@ class Shape extends EventEmitter {
     var visible = this.getProp( 'labelVisible', labelIndex );
 
     if ( visible === false ) {
-      this._labels[labelIndex].setAttribute( 'display', 'none' );
-      this._labelsBackground[labelIndex].setAttribute( 'display', 'none' );
+      this._labels[ labelIndex ].setAttribute( 'display', 'none' );
+      this._labelsBackground[ labelIndex ].setAttribute( 'display', 'none' );
       return;
     } else {
-      this._labels[labelIndex].setAttribute( 'display', 'initial' );
-      this._labelsBackground[labelIndex].setAttribute( 'display', 'initial' );
+      this._labels[ labelIndex ].setAttribute( 'display', 'initial' );
+      this._labelsBackground[ labelIndex ].setAttribute( 'display', 'initial' );
     }
 
     var position = this.calculatePosition(
@@ -1207,17 +1206,17 @@ class Shape extends EventEmitter {
       position.x !== 'NaN' &&
       position.x !== false
     ) {
-      this._labels[labelIndex].setAttribute( 'x', position.x );
-      this._labels[labelIndex].setAttribute( 'y', position.y );
+      this._labels[ labelIndex ].setAttribute( 'x', position.x );
+      this._labels[ labelIndex ].setAttribute( 'y', position.y );
     }
 
     /** Sets the angle */
     var currAngle = this.getProp( 'labelAngle', labelIndex ) || 0;
     if ( currAngle != 0 ) {
-      var x = this._labels[labelIndex].getAttribute( 'x' ),
-        y = this._labels[labelIndex].getAttribute( 'y' );
+      var x = this._labels[ labelIndex ].getAttribute( 'x' ),
+        y = this._labels[ labelIndex ].getAttribute( 'y' );
 
-      this._labels[labelIndex].setAttribute(
+      this._labels[ labelIndex ].setAttribute(
         'transform',
         `rotate(${currAngle} ${x} ${y})`
       );
@@ -1227,66 +1226,66 @@ class Shape extends EventEmitter {
     let labelData = this.getProp( 'labelHTMLData', labelIndex ) || {};
 
     for ( var i in labelData ) {
-      this._labels[labelIndex].setAttribute( i, labelData[i] );
-      this._labelsBackground[labelIndex].setAttribute( i, labelData[i] );
+      this._labels[ labelIndex ].setAttribute( i, labelData[ i ] );
+      this._labelsBackground[ labelIndex ].setAttribute( i, labelData[ i ] );
     }
 
     /** Sets the baseline */
-    this._labels[labelIndex].setAttribute(
+    this._labels[ labelIndex ].setAttribute(
       'dominant-baseline',
       this.getProp( 'labelBaseline', labelIndex ) || 'no-change'
     );
 
     /** Sets the text */
-    this._labels[labelIndex].textContent = this.getProp(
+    this._labels[ labelIndex ].textContent = this.getProp(
       'labelText',
       labelIndex
     );
 
     /** Sets the color */
-    this._labels[labelIndex].setAttribute(
+    this._labels[ labelIndex ].setAttribute(
       'fill',
       this.getProp( 'labelColor', labelIndex ) || 'black'
     );
 
     /** Sets the size */
-    this._labels[labelIndex].setAttribute(
+    this._labels[ labelIndex ].setAttribute(
       'font-size',
       `${this.getProp( 'labelSize', labelIndex )}px` || '12px'
     );
 
     /** Sets the anchor */
-    this._labels[labelIndex].setAttribute(
+    this._labels[ labelIndex ].setAttribute(
       'text-anchor',
       this._getLabelAnchor( labelIndex )
     );
 
     /** Sets the stroke */
-    this._labels[labelIndex].setAttribute(
+    this._labels[ labelIndex ].setAttribute(
       'stroke',
       this.getProp( 'labelStrokeColor', labelIndex ) || 'black'
     );
 
     /** Sets the stroke */
-    this._labels[labelIndex].setAttribute(
+    this._labels[ labelIndex ].setAttribute(
       'stroke-width',
       this.getProp( 'labelStrokeWidth', labelIndex ) || `${0}px`
     );
 
-    this._labels[labelIndex].setAttribute( 'stroke-location', 'outside' );
+    this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
 
-    let rect = this._labels[labelIndex].getBBox();
+    let rect = this._labels[ labelIndex ].getBBox();
 
-    this._labelsBackground[labelIndex].setAttribute( 'x', rect.x );
-    this._labelsBackground[labelIndex].setAttribute( 'y', rect.y );
-    this._labelsBackground[labelIndex].setAttribute( 'width', rect.width );
-    this._labelsBackground[labelIndex].setAttribute( 'height', rect.height );
+    this._labelsBackground[ labelIndex ].setAttribute( 'x', rect.x );
+    this._labelsBackground[ labelIndex ].setAttribute( 'y', rect.y );
+    this._labelsBackground[ labelIndex ].setAttribute( 'width', rect.width );
+    this._labelsBackground[ labelIndex ].setAttribute( 'height', rect.height );
 
-    this._labelsBackground[labelIndex].setAttribute(
+    this._labelsBackground[ labelIndex ].setAttribute(
       'fill',
       this.getProp( 'labelBackgroundColor' ) || 'transparent'
     );
-    this._labelsBackground[labelIndex].setAttribute(
+    this._labelsBackground[ labelIndex ].setAttribute(
       'fill-opacity',
       this.getProp( 'labelBackgroundOpacity' ) || 1
     );
@@ -1302,7 +1301,7 @@ class Shape extends EventEmitter {
   emptyLabels() {
     for ( var i = 0, l = this._labels.length; i < l; i++ ) {
       /** Sets the baseline */
-      this._labels[i].textContent = '';
+      this._labels[ i ].textContent = '';
     }
 
     return this;
@@ -1375,8 +1374,8 @@ class Shape extends EventEmitter {
       this.handlesInDom = true;
 
       for ( var i = 1; i < this.handles.length; i++ ) {
-        if ( this.handles[i] ) {
-          this.group.appendChild( this.handles[i] );
+        if ( this.handles[ i ] ) {
+          this.group.appendChild( this.handles[ i ] );
         }
       }
     }
@@ -1405,7 +1404,7 @@ class Shape extends EventEmitter {
     }
 
     for ( var i = 1; i < this.handles.length; i++ ) {
-      this.group.removeChild( this.handles[i] );
+      this.group.removeChild( this.handles[ i ] );
     }
 
     this.handlesInDom = false;
@@ -1457,10 +1456,10 @@ class Shape extends EventEmitter {
     var style = this.getSelectStyle();
     var style2 = {};
     for ( var i in style ) {
-      if ( typeof style[i] == 'function' ) {
-        style2[i] = style[i].call( this );
+      if ( typeof style[ i ] == 'function' ) {
+        style2[ i ] = style[ i ].call( this );
       } else {
-        style2[i] = style[i];
+        style2[ i ] = style[ i ];
       }
     }
 
@@ -1549,7 +1548,7 @@ class Shape extends EventEmitter {
 
         if ( attr ) {
           for ( var k in attr ) {
-            handle.setAttribute( k, attr[k] );
+            handle.setAttribute( k, attr[ k ] );
           }
         }
 
@@ -1570,10 +1569,10 @@ class Shape extends EventEmitter {
         } );
 
         if ( callbackEach ) {
-          callbackEach( self.handles[j] );
+          callbackEach( self.handles[ j ] );
         }
 
-        self.handles[j] = handle;
+        self.handles[ j ] = handle;
       } ).call( this, i );
     }
 
@@ -2001,8 +2000,8 @@ class Shape extends EventEmitter {
 
     for ( var i = 0; i < this._dom.attributes.length; i++ ) {
       this.maskDom.setAttribute(
-        this._dom.attributes[i].name,
-        this._dom.attributes[i].value
+        this._dom.attributes[ i ].name,
+        this._dom.attributes[ i ].value
       );
     }
 
@@ -2050,7 +2049,7 @@ class Shape extends EventEmitter {
 
     const blurEvent = function() {
       self.setLabelText( shapeLabel.value, i );
-      self._labels[i].textContent = shapeLabel.value;
+      self._labels[ i ].textContent = shapeLabel.value;
 
       const nextValue = shapeLabel.value;
 
