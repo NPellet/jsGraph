@@ -8,7 +8,6 @@ import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
  * @static
  */
 class Shape extends EventEmitter {
-
   constructor() {
     super();
   }
@@ -20,7 +19,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   init( graph, properties ) {
-
     var self = this;
 
     this.graph = graph;
@@ -30,7 +28,7 @@ class Shape extends EventEmitter {
 
     this.group = document.createElementNS( this.graph.ns, 'g' );
 
-    this.group.setAttribute( 'clip-path', `url(#_clipplot${ graph._creation })` );
+    this.group.setAttribute( 'clip-path', `url(#_clipplot${graph._creation})` );
 
     this._selected = false;
     this.createDom();
@@ -45,7 +43,6 @@ class Shape extends EventEmitter {
     this.transforms = [];
 
     if ( this._data.masker ) {
-
       var maskPath = document.createElementNS( this.graph.ns, 'mask' );
       this.maskingId = Math.random();
       maskPath.setAttribute( 'id', this.maskingId );
@@ -63,25 +60,19 @@ class Shape extends EventEmitter {
     }
 
     if ( this.group ) {
-
       if ( this._dom && !this.isHTML() ) {
         this.group.appendChild( this._dom );
       }
 
       this.group.addEventListener( 'mouseover', function( e ) {
-
         self.handleMouseOver( e );
-
       } );
 
       this.group.addEventListener( 'mouseout', function( e ) {
-
         self.handleMouseOut( e );
-
       } );
 
       this.group.addEventListener( 'mousedown', function( e ) {
-
         self.graph.focus();
 
         self.handleMouseDown( e );
@@ -90,7 +81,6 @@ class Shape extends EventEmitter {
       this.group.addEventListener( 'click', this.handleClick.bind( this ) );
 
       this.group.addEventListener( 'dblclick', function( e ) {
-
         //e.preventDefault();
         // e.stopPropagation();
 
@@ -130,7 +120,6 @@ class Shape extends EventEmitter {
    * Removes the shape from the DOM and unlinks it from the graph
    */
   kill( keepDom ) {
-
     if ( this._inDom && !keepDom ) {
       this.graph.removeShapeFromDom( this );
     }
@@ -151,7 +140,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   hide() {
-
     if ( this.hidden ) {
       return this;
     }
@@ -186,7 +174,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   show() {
-
     if ( !this.hidden ) {
       return this;
     }
@@ -200,7 +187,6 @@ class Shape extends EventEmitter {
 
     this.redraw();
     return this;
-
   }
 
   /**
@@ -234,7 +220,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   makeClasses() {
-
     if ( this._dom ) {
       this._dom.setAttribute( 'class', this.classes.join( ' ' ) );
     }
@@ -247,7 +232,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   changed( event, parameters ) {
-
     if ( event ) {
       this.graph.emit( event, this, parameters );
       this.emit( event, this, parameters );
@@ -263,7 +247,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setEventReceptacle() {
-
     if ( !this.rectEvent ) {
       this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
       this.rectEvent.setAttribute( 'pointer-events', 'fill' );
@@ -277,7 +260,6 @@ class Shape extends EventEmitter {
     this.rectEvent.setAttribute( 'y', box.y - 10 );
     this.rectEvent.setAttribute( 'width', box.width );
     this.rectEvent.setAttribute( 'height', box.height + 20 );
-
   }
 
   /**
@@ -286,7 +268,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setSerie( serie ) {
-
     if ( !serie ) {
       return;
     }
@@ -316,7 +297,6 @@ class Shape extends EventEmitter {
    * @see Graph#getYAxis
    */
   autoAxes() {
-
     if ( !this.xAxis ) {
       this.xAxis = this.graph.getXAxis();
     }
@@ -352,7 +332,6 @@ class Shape extends EventEmitter {
    * @return {XAxis} The x axis associated to the shape.
    */
   getXAxis() {
-
     if ( !this.xAxis ) {
       this.autoAxes();
     }
@@ -365,7 +344,6 @@ class Shape extends EventEmitter {
    * @return {YAxis} The y axis associated to the shape.
    */
   getYAxis() {
-
     if ( !this.yAxis ) {
       this.autoAxes();
     }
@@ -405,9 +383,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   draw( force, preventRedraw ) {
-
     if ( !this._inDom || force ) {
-
       this.appendToDom();
       this._inDom = true;
     }
@@ -428,7 +404,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   redraw() {
-
     if ( this.hidden ) {
       return this;
     }
@@ -464,12 +439,13 @@ class Shape extends EventEmitter {
     }
     var self = this;
     for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
-
-      var pos = GraphPosition.check( this.properties.position[ i ], function( relativeTo ) {
+      var pos = GraphPosition.check( this.properties.position[i], function(
+        relativeTo
+      ) {
         return self.getRelativePosition( relativeTo );
       } );
 
-      this.properties.position[ i ] = pos;
+      this.properties.position[i] = pos;
     }
 
     this.emit( 'propertiesChanged' );
@@ -477,14 +453,14 @@ class Shape extends EventEmitter {
   }
 
   getRelativePosition( relativePosition ) {
-
     var result;
     if ( ( result = /position([0-9]*)/.exec( relativePosition ) ) !== null ) {
-      return this.getPosition( result[ 1 ] );
-    } else if ( ( result = /labelPosition([0-9]*)/.exec( relativePosition ) ) !== null ) {
-      return this.getLabelPosition( result[ 1 ] );
+      return this.getPosition( result[1] );
+    } else if (
+      ( result = /labelPosition([0-9]*)/.exec( relativePosition ) ) !== null
+    ) {
+      return this.getLabelPosition( result[1] );
     }
-
   }
 
   /**
@@ -504,8 +480,8 @@ class Shape extends EventEmitter {
    */
   setProp( prop, val, index ) {
     this.properties = this.properties || {};
-    this.properties[ prop ] = this.properties[ prop ] || [];
-    this.properties[ prop ][ index || 0 ] = val;
+    this.properties[prop] = this.properties[prop] || [];
+    this.properties[prop][index || 0] = val;
     this.emit( 'propertyChanged', prop );
     return this;
   }
@@ -516,7 +492,10 @@ class Shape extends EventEmitter {
    * @param [ index = 0 ] - The index of the property array
    */
   getProp( prop, index ) {
-    return ( this.properties[ prop ] || [] )[ index || 0 ];
+    if ( !Array.isArray( this.properties[prop] || [] ) ) {
+      return this.properties[prop];
+    }
+    return ( this.properties[prop] || [] )[index || 0];
   }
 
   /**
@@ -524,7 +503,7 @@ class Shape extends EventEmitter {
    * @param {String} prop - The property to retrieve
    */
   getProps( prop, index ) {
-    return ( this.properties[ prop ] || [] );
+    return this.properties[prop] || [];
   }
 
   /**
@@ -533,8 +512,8 @@ class Shape extends EventEmitter {
    * @param val - The value to save
    */
   addProp( prop, value ) {
-    this.properties[ prop ] = this.properties[ prop ] || [];
-    this.properties[ prop ].push( value );
+    this.properties[prop] = this.properties[prop] || [];
+    this.properties[prop].push( value );
   }
 
   /**
@@ -542,7 +521,7 @@ class Shape extends EventEmitter {
    * @param {String} prop - The property to reset
    */
   resetProp( prop ) {
-    this.properties[ prop ] = [];
+    this.properties[prop] = [];
   }
 
   /**
@@ -550,7 +529,6 @@ class Shape extends EventEmitter {
    */
   setDom( prop, val, noForce ) {
     if ( this._dom ) {
-
       if ( !noForce || !util.hasSavedAttribute( this._dom, prop ) ) {
         this._dom.setAttribute( prop, val );
       }
@@ -591,7 +569,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setFillColor( color ) {
-
     this.setProp( 'fillColor', color );
     this.overwriteSavedProp( 'fill', color );
     this.applySelectedStyle();
@@ -676,7 +653,7 @@ class Shape extends EventEmitter {
    */
   addAttribute( attributeName, attributeValue ) {
     var added = {};
-    added[ attributeName ] = attributeValue;
+    added[attributeName] = attributeValue;
     this.addProp( 'attributes', added );
     return this;
   }
@@ -794,7 +771,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setLabelPosition( position, index ) {
-
     var self;
     var pos = GraphPosition.check( position, function( relativeTo ) {
       return self.getRelativePosition( relativeTo );
@@ -897,7 +873,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   applyGenericStyle() {
-
     this.setDom( 'fill', this.getProp( 'fillColor' ), true );
     this.setDom( 'fill-opacity', this.getProp( 'fillOpacity' ), true );
     this.setDom( 'stroke', this.getProp( 'strokeColor' ), true );
@@ -906,11 +881,15 @@ class Shape extends EventEmitter {
 
     var attributes = this.getProps( 'attributes' );
     for ( var j = 0, l = attributes.length; j < l; j++ ) {
-
-      for ( var i in attributes[ j ] ) {
-        this.setDom( i, typeof attributes[ j ][ i ] == 'function' ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ], true );
+      for ( var i in attributes[j] ) {
+        this.setDom(
+          i,
+          typeof attributes[j][i] == 'function'
+            ? attributes[j][i].call( this, i )
+            : attributes[j][i],
+          true
+        );
       }
-
     }
 
     this._applyTransforms();
@@ -923,7 +902,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   applyStyle() {
-
     return this.applyGenericStyle();
   }
 
@@ -934,17 +912,21 @@ class Shape extends EventEmitter {
    * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
    */
   calculatePosition( index ) {
-
     var position;
 
-    position = ( index instanceof GraphPosition ) ? index : this.getPosition( index );
+    position = index instanceof GraphPosition ? index : this.getPosition( index );
 
     if ( !position ) {
       return;
     }
 
     if ( position && position.compute ) {
-      return position.compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie() );
+      return position.compute(
+        this.graph,
+        this.getXAxis(),
+        this.getYAxis(),
+        this.getSerie()
+      );
     }
 
     this.graph.throw();
@@ -956,8 +938,7 @@ class Shape extends EventEmitter {
    * @return {Position} The position at the proper index, or undefined
    */
   getPosition( index ) {
-
-    var pos = this.getProp( 'position', ( index || 0 ) );
+    var pos = this.getProp( 'position', index || 0 );
     this.setProp( 'position', ( pos = GraphPosition.check( pos ) ), index );
     return pos;
   }
@@ -969,13 +950,12 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setPosition( position, index ) {
-
     var self = this;
     var pos = GraphPosition.check( position, function( relativeTo ) {
       return self.getRelativePosition( relativeTo );
     } );
 
-    return this.setProp( 'position', pos, ( index || 0 ) );
+    return this.setProp( 'position', pos, index || 0 );
   }
 
   /**
@@ -994,8 +974,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   _applyTransforms() {
-
-    var transforms = this.getProp( 'transforms' ),
+    var transforms = this.getProps( 'transforms' ),
       transformString = '';
 
     if ( !transforms ) {
@@ -1008,34 +987,82 @@ class Shape extends EventEmitter {
     }
 
     for ( var i = 0; i < transforms.length; i++ ) {
+      transformString += `${transforms[i].type}(`;
 
-      transformString += `${transforms[ i ].type }(`;
-
-      switch ( transforms[ i ].type ) {
-
+      let transform;
+      switch ( transforms[i].type ) {
         case 'translate':
+          if ( transforms[i].arguments ) {
+            transform = transforms[i].arguments[0].compute(
+              this.graph,
+              this.getXAxis(),
+              this.getYAxis(),
+              this.getSerie()
+            );
+          } else {
+            const value = GraphPosition.check( transforms[i].value );
 
-          let transform = transforms[ i ].arguments[ 0 ].compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie() );
+            transform = value.compute(
+              this.graph,
+              this.getXAxis(),
+              this.getYAxis(),
+              this.getSerie()
+            );
+          }
 
-          transformString += transform.x;
+          transformString += transform.x || transform.dx || 0;
           transformString += ', ';
-          transformString += transform.y;
+          transformString += transform.y || transform.dy || 0;
+
           break;
 
         case 'rotate':
-
-          transformString += transforms[ i ].arguments[ 0 ];
-          transformString += ', ';
-
-          if ( transforms[ i ].arguments.length == 1 ) {
-            var p = this.computePosition( 0 );
-            transformString += `${p.x }, ${ p.y}`;
-
-          } else {
-
-            transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
+          if ( !transforms[i].arguments ) {
+            transformString += transforms[i].angle;
             transformString += ', ';
-            transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
+
+            if ( !transforms[i].center ) {
+              var p = this.computePosition( 0 );
+              transformString += `${p.x}, ${p.y}`;
+            } else {
+              console.log( GraphPosition.check(
+                transforms[i].center
+              ) );
+              const posCenter = GraphPosition.check(
+                transforms[i].center
+              ).compute(
+                this.graph,
+                this.getXAxis(),
+                this.getYAxis(),
+                this.getSerie()
+              );
+
+              if( posCenter.x === posCenter.x && posCenter.y === posCenter.y ) {
+                transformString += posCenter.x;
+              transformString += ', ';
+              transformString += posCenter.y;
+
+              }
+              
+            }
+          } else {
+            transformString += transforms[i].arguments[0];
+            transformString += ', ';
+
+            if ( transforms[i].arguments.length == 1 ) {
+              var p = this.computePosition( 0 );
+              transformString += `${p.x}, ${p.y}`;
+            } else {
+              transformString += GraphPosition.getDeltaPx(
+                transforms[i].arguments[1],
+                this.getXAxis()
+              ).replace( 'px', '' );
+              transformString += ', ';
+              transformString += GraphPosition.getDeltaPx(
+                transforms[i].arguments[2],
+                this.getYAxis()
+              ).replace( 'px', '' );
+            }
           }
 
           break;
@@ -1054,7 +1081,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   makeLabels() {
-
     this._labels = this._labels || [];
     this._labelsBackground = this._labelsBackground || [];
 
@@ -1067,37 +1093,41 @@ class Shape extends EventEmitter {
     } );
 
     this._labels = [];
-    this._labelsBackground[ i ] = [];
+    this._labelsBackground[i] = [];
 
     var i = 0;
 
     while ( this.getProp( 'labelText', i ) !== undefined ) {
+      if ( !this._labels[i] ) {
+        this._labels[i] = document.createElementNS( this.graph.ns, 'text' );
+        this._labels[i].setAttribute( 'data-label-i', i );
+        this._labels[i].jsGraphIsShape = this;
 
-      if ( !this._labels[ i ] ) {
+        this._labelsBackground[i] = document.createElementNS(
+          this.graph.ns,
+          'rect'
+        );
+        this._labelsBackground[i].setAttribute( 'data-label-i', i );
+        this._labelsBackground[i].jsGraphIsShape = this;
 
-        this._labels[ i ] = document.createElementNS( this.graph.ns, 'text' );
-        this._labels[ i ].setAttribute( 'data-label-i', i );
-        this._labels[ i ].jsGraphIsShape = this;
+        this.group.appendChild( this._labelsBackground[i] );
+        this.group.appendChild( this._labels[i] );
 
-        this._labelsBackground[ i ] = document.createElementNS( this.graph.ns, 'rect' );
-        this._labelsBackground[ i ].setAttribute( 'data-label-i', i );
-        this._labelsBackground[ i ].jsGraphIsShape = this;
-
-        this.group.appendChild( this._labelsBackground[ i ] );
-        this.group.appendChild( this._labels[ i ] );
-
-        this._labels[ i ].addEventListener( 'dblclick', ( e ) => {
+        this._labels[i].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
 
           this.labelDblClickListener( e );
         } );
 
-        this._labelsBackground[ i ].addEventListener( 'dblclick', ( e ) => {
+        this._labelsBackground[i].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
 
           this.labelDblClickListener( e );
         } );
+      }
 
+      if ( !Array.isArray( this.getProp( 'labelText', i ) ) ) {
+        break;
       }
 
       i++;
@@ -1124,14 +1154,12 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   updateLabels() {
-
     var self = this;
     this._labels = this._labels || [];
 
     for ( var i = 0, l = this._labels.length; i < l; i++ ) {
       this._applyLabelData( i );
     }
-
   }
 
   /**
@@ -1141,7 +1169,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   _applyLabelData( labelIndex ) {
-
     labelIndex = labelIndex || 0;
 
     /** Sets the position */
@@ -1149,81 +1176,119 @@ class Shape extends EventEmitter {
     var visible = this.getProp( 'labelVisible', labelIndex );
 
     if ( visible === false ) {
-      this._labels[ labelIndex ].setAttribute( 'display', 'none' );
-      this._labelsBackground[ labelIndex ].setAttribute( 'display', 'none' );
+      this._labels[labelIndex].setAttribute( 'display', 'none' );
+      this._labelsBackground[labelIndex].setAttribute( 'display', 'none' );
       return;
     } else {
-      this._labels[ labelIndex ].setAttribute( 'display', 'initial' );
-      this._labelsBackground[ labelIndex ].setAttribute( 'display', 'initial' );
+      this._labels[labelIndex].setAttribute( 'display', 'initial' );
+      this._labelsBackground[labelIndex].setAttribute( 'display', 'initial' );
     }
 
-    var position = this.calculatePosition( GraphPosition.check( this.getProp( 'labelPosition', labelIndex ) ) );
+    var position = this.calculatePosition(
+      GraphPosition.check( this.getProp( 'labelPosition', labelIndex ) )
+    );
 
-    if ( isNaN( position.x ) || isNaN( position.y ) || position.y === false || position.x === false ) {
+    if (
+      isNaN( position.x ) ||
+      isNaN( position.y ) ||
+      position.y === false ||
+      position.x === false
+    ) {
       /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
       console.log( this, this._labels );
       console.trace();*/
       return;
-
     }
 
-    if ( position.x != 'NaNpx' && !isNaN( position.x ) && position.x !== 'NaN' && position.x !== false ) {
-
-      this._labels[ labelIndex ].setAttribute( 'x', position.x );
-      this._labels[ labelIndex ].setAttribute( 'y', position.y );
+    if (
+      position.x != 'NaNpx' &&
+      !isNaN( position.x ) &&
+      position.x !== 'NaN' &&
+      position.x !== false
+    ) {
+      this._labels[labelIndex].setAttribute( 'x', position.x );
+      this._labels[labelIndex].setAttribute( 'y', position.y );
     }
 
     /** Sets the angle */
     var currAngle = this.getProp( 'labelAngle', labelIndex ) || 0;
     if ( currAngle != 0 ) {
+      var x = this._labels[labelIndex].getAttribute( 'x' ),
+        y = this._labels[labelIndex].getAttribute( 'y' );
 
-      var x = this._labels[ labelIndex ].getAttribute( 'x' ),
-        y = this._labels[ labelIndex ].getAttribute( 'y' );
-
-      this._labels[ labelIndex ].setAttribute( 'transform', `rotate(${ currAngle } ${ x } ${ y })` );
+      this._labels[labelIndex].setAttribute(
+        'transform',
+        `rotate(${currAngle} ${x} ${y})`
+      );
       //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
     }
 
     let labelData = this.getProp( 'labelHTMLData', labelIndex ) || {};
 
     for ( var i in labelData ) {
-
-      this._labels[ labelIndex ].setAttribute( i, labelData[ i ] );
-      this._labelsBackground[ labelIndex ].setAttribute( i, labelData[ i ] );
+      this._labels[labelIndex].setAttribute( i, labelData[i] );
+      this._labelsBackground[labelIndex].setAttribute( i, labelData[i] );
     }
 
     /** Sets the baseline */
-    this._labels[ labelIndex ].setAttribute( 'dominant-baseline', this.getProp( 'labelBaseline', labelIndex ) || 'no-change' );
+    this._labels[labelIndex].setAttribute(
+      'dominant-baseline',
+      this.getProp( 'labelBaseline', labelIndex ) || 'no-change'
+    );
 
     /** Sets the text */
-    this._labels[ labelIndex ].textContent = this.getProp( 'labelText', labelIndex );
+    this._labels[labelIndex].textContent = this.getProp(
+      'labelText',
+      labelIndex
+    );
 
     /** Sets the color */
-    this._labels[ labelIndex ].setAttribute( 'fill', this.getProp( 'labelColor', labelIndex ) || 'black' );
+    this._labels[labelIndex].setAttribute(
+      'fill',
+      this.getProp( 'labelColor', labelIndex ) || 'black'
+    );
 
     /** Sets the size */
-    this._labels[ labelIndex ].setAttribute( 'font-size', `${this.getProp( 'labelSize', labelIndex ) }px` || '12px' );
+    this._labels[labelIndex].setAttribute(
+      'font-size',
+      `${this.getProp( 'labelSize', labelIndex )}px` || '12px'
+    );
 
     /** Sets the anchor */
-    this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
+    this._labels[labelIndex].setAttribute(
+      'text-anchor',
+      this._getLabelAnchor( labelIndex )
+    );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) || 'black' );
+    this._labels[labelIndex].setAttribute(
+      'stroke',
+      this.getProp( 'labelStrokeColor', labelIndex ) || 'black'
+    );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || `${0 }px` );
+    this._labels[labelIndex].setAttribute(
+      'stroke-width',
+      this.getProp( 'labelStrokeWidth', labelIndex ) || `${0}px`
+    );
 
-    this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
+    this._labels[labelIndex].setAttribute( 'stroke-location', 'outside' );
 
-    let rect = this._labels[ labelIndex ].getBBox();
+    let rect = this._labels[labelIndex].getBBox();
 
-    this._labelsBackground[ labelIndex ].setAttribute( 'x', rect.x );
-    this._labelsBackground[ labelIndex ].setAttribute( 'y', rect.y );
-    this._labelsBackground[ labelIndex ].setAttribute( 'width', rect.width );
-    this._labelsBackground[ labelIndex ].setAttribute( 'height', rect.height );
+    this._labelsBackground[labelIndex].setAttribute( 'x', rect.x );
+    this._labelsBackground[labelIndex].setAttribute( 'y', rect.y );
+    this._labelsBackground[labelIndex].setAttribute( 'width', rect.width );
+    this._labelsBackground[labelIndex].setAttribute( 'height', rect.height );
 
-    this._labelsBackground[ labelIndex ].setAttribute( 'fill', this.getProp( 'labelBackgroundColor' ) || 'transparent' );
-    this._labelsBackground[ labelIndex ].setAttribute( 'fill-opacity', this.getProp( 'labelBackgroundOpacity' ) || 1 );
+    this._labelsBackground[labelIndex].setAttribute(
+      'fill',
+      this.getProp( 'labelBackgroundColor' ) || 'transparent'
+    );
+    this._labelsBackground[labelIndex].setAttribute(
+      'fill-opacity',
+      this.getProp( 'labelBackgroundOpacity' ) || 1
+    );
 
     return this;
   }
@@ -1234,10 +1299,9 @@ class Shape extends EventEmitter {
    *  @returns {Shape} The current shape instance
    */
   emptyLabels() {
-
     for ( var i = 0, l = this._labels.length; i < l; i++ ) {
       /** Sets the baseline */
-      this._labels[ i ].textContent = '';
+      this._labels[i].textContent = '';
     }
 
     return this;
@@ -1289,7 +1353,6 @@ class Shape extends EventEmitter {
    * @example Shape.hasHandles( ); // Queries the shape to determine if it has handles or not. Also returns true if handles are static
    */
   hasHandles( setter ) {
-
     if ( setter !== undefined ) {
       this.setProp( 'handles', setter );
     }
@@ -1303,19 +1366,16 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   addHandles() {
-
     if ( this.isLocked() ) {
       return;
     }
 
     if ( !this.handlesInDom ) {
-
       this.handlesInDom = true;
 
       for ( var i = 1; i < this.handles.length; i++ ) {
-
-        if ( this.handles[ i ] ) {
-          this.group.appendChild( this.handles[ i ] );
+        if ( this.handles[i] ) {
+          this.group.appendChild( this.handles[i] );
         }
       }
     }
@@ -1329,7 +1389,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   removeHandles() {
-
     this.hideHandles();
     this.handles = [];
   }
@@ -1340,13 +1399,12 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   hideHandles() {
-
     if ( !this.handlesInDom ) {
       return this;
     }
 
     for ( var i = 1; i < this.handles.length; i++ ) {
-      this.group.removeChild( this.handles[ i ] );
+      this.group.removeChild( this.handles[i] );
     }
 
     this.handlesInDom = false;
@@ -1358,7 +1416,6 @@ class Shape extends EventEmitter {
    * @return {Boolean} ```true``` if the handles are in the DOM
    */
   areHandlesInDom() {
-
     return this.handlesInDom;
   }
 
@@ -1369,7 +1426,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} the current shape
    */
   _select( mute ) {
-
     if ( !this.isSelectable() ) {
       return false;
     }
@@ -1383,10 +1439,8 @@ class Shape extends EventEmitter {
     this.applySelectedStyle();
 
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
-
       this.addHandles();
       this.setHandles();
-
     }
 
     if ( !mute ) {
@@ -1395,7 +1449,6 @@ class Shape extends EventEmitter {
   }
 
   applySelectedStyle() {
-
     if ( !this._selectStatus ) {
       return;
     }
@@ -1403,10 +1456,10 @@ class Shape extends EventEmitter {
     var style = this.getSelectStyle();
     var style2 = {};
     for ( var i in style ) {
-      if ( typeof style[ i ] == 'function' ) {
-        style2[ i ] = style[ i ].call( this );
+      if ( typeof style[i] == 'function' ) {
+        style2[i] = style[i].call( this );
       } else {
-        style2[ i ] = style[ i ];
+        style2[i] = style[i];
       }
     }
 
@@ -1420,7 +1473,6 @@ class Shape extends EventEmitter {
    * @returns {Shape} the current shape
    */
   _unselect( mute ) {
-
     this._selectStatus = false;
 
     util.restoreDomAttributes( this._dom, 'select' );
@@ -1481,7 +1533,6 @@ class Shape extends EventEmitter {
    * @private
    */
   _createHandles( nb, type, attr, callbackEach ) {
-
     if ( this.handles && this.handles.length > 0 ) {
       return;
     }
@@ -1489,9 +1540,7 @@ class Shape extends EventEmitter {
     var self = this;
 
     for ( var i = 1, l = nb; i <= l; i++ ) {
-
       ( ( j ) => {
-
         var self = this;
 
         var handle = document.createElementNS( self.graph.ns, type );
@@ -1499,39 +1548,32 @@ class Shape extends EventEmitter {
 
         if ( attr ) {
           for ( var k in attr ) {
-            handle.setAttribute( k, attr[ k ] );
+            handle.setAttribute( k, attr[k] );
           }
         }
 
-        handle
-          .addEventListener( 'mousedown', ( e ) => {
+        handle.addEventListener( 'mousedown', ( e ) => {
+          if ( self.isResizable() ) {
+            e.preventDefault();
+            e.stopPropagation();
 
-            if ( self.isResizable() ) {
+            self.graph.emit( 'beforeShapeResize', self );
+            this.emit( 'beforeShapeResize' );
 
-              e.preventDefault();
-              e.stopPropagation();
-
-              self.graph.emit( 'beforeShapeResize', self );
-              this.emit( 'beforeShapeResize' );
-
-              if ( !self.graph.prevent( false ) ) {
-
-                self.resizing = true;
-                self.handleSelected = j;
-                self.handleMouseDown( e );
-              }
+            if ( !self.graph.prevent( false ) ) {
+              self.resizing = true;
+              self.handleSelected = j;
+              self.handleMouseDown( e );
             }
-
-          } );
+          }
+        } );
 
         if ( callbackEach ) {
-          callbackEach( self.handles[ j ] );
+          callbackEach( self.handles[j] );
         }
 
-        self.handles[ j ] = handle;
-
+        self.handles[j] = handle;
       } ).call( this, i );
-
     }
 
     return this.handles;
@@ -1541,12 +1583,10 @@ class Shape extends EventEmitter {
    * Creates the handles for the shape. Should be implemented by the children shapes classes.
    */
   createHandles() {
-
     if ( this.hasStaticHandles() ) {
       this.addHandles();
       this.setHandles();
     }
-
   }
 
   /**
@@ -1583,7 +1623,6 @@ class Shape extends EventEmitter {
    * @return The result of the {@link Shape#handleMouseDownImpl} method.prototype
    */
   handleMouseDown( e ) {
-
     //this.handleSelected = false;
 
     if ( this.isLocked() ) {
@@ -1591,7 +1630,6 @@ class Shape extends EventEmitter {
     }
 
     if ( this.isMovable() || this.isResizable() ) {
-
       this.graph.elementMoving( this );
     }
 
@@ -1601,11 +1639,9 @@ class Shape extends EventEmitter {
 
     if ( this.isMovable() ) {
       if ( !this.resizing ) {
-
         this.graph.emit( 'beforeShapeMove', self );
 
         if ( !this.graph.prevent( false ) ) {
-
           this.moving = true;
           this.moved = false;
         }
@@ -1623,7 +1659,6 @@ class Shape extends EventEmitter {
    * @private
    */
   handleClick( e ) {
-
     this.graph.emit( 'shapeClicked', this );
     this.emit( 'shapeClicked' );
 
@@ -1636,7 +1671,6 @@ class Shape extends EventEmitter {
     }
 
     if ( this.getProp( 'selectOnClick' ) ) {
-
       this.graph.selectShape( this );
     }
   }
@@ -1662,8 +1696,7 @@ class Shape extends EventEmitter {
 
     this.moved = true;
     var coords = this.graph._getXY( e );
-    var
-      deltaX = this.getXAxis().getRelVal( coords.x - this._mouseCoords.x ),
+    var deltaX = this.getXAxis().getRelVal( coords.x - this._mouseCoords.x ),
       deltaY = this.getYAxis().getRelVal( coords.y - this._mouseCoords.y );
 
     if ( deltaX != 0 || deltaY !== 0 ) {
@@ -1672,10 +1705,15 @@ class Shape extends EventEmitter {
 
     this._mouseCoords = coords;
 
-    var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this._mouseCoords.x, coords.y - this._mouseCoords.y );
+    var ret = this.handleMouseMoveImpl(
+      e,
+      deltaX,
+      deltaY,
+      coords.x - this._mouseCoords.x,
+      coords.y - this._mouseCoords.y
+    );
 
     return ret;
-
   }
 
   /**
@@ -1685,19 +1723,14 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseUp( e ) {
-
     if ( this.moving && this.moved ) {
-
       this.graph.emit( 'shapeMoved', this );
       this.emit( 'shapeMoved' );
-
     }
 
     if ( this.handleSelected || this.resize ) {
-
       this.graph.emit( 'shapeResized', this );
       this.emit( 'shapeResized' );
-
     }
 
     this.moving = false;
@@ -1714,9 +1747,7 @@ class Shape extends EventEmitter {
    * @return The result of the {@link Shape#handleMouseDblClickImpl} method
    * @private
    */
-  handleDblClick( e ) {
-
-  }
+  handleDblClick( e ) {}
 
   /**
    * Handles mouse over events
@@ -1725,9 +1756,7 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseOver() {
-
     if ( this.getProp( 'highlightOnMouseOver' ) ) {
-
       if ( !this.moving && !this.resizing ) {
         this.highlight();
       }
@@ -1743,7 +1772,6 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseOut() {
-
     if ( this.getProp( 'highlightOnMouseOver' ) ) {
       this.unHighlight();
     }
@@ -1860,7 +1888,6 @@ class Shape extends EventEmitter {
    * @see Shape#unHighlight
    */
   highlight( attributes, saveDomName ) {
-
     if ( !attributes ) {
       attributes = this.getHighlightAttributes();
     }
@@ -1881,7 +1908,6 @@ class Shape extends EventEmitter {
    * @see Shape#highlight
    */
   unHighlight( saveDomName ) {
-
     if ( !saveDomName ) {
       saveDomName = 'highlight';
     }
@@ -1927,15 +1953,11 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   maskWith( maskingShape ) {
-
     const maskingId = maskingShape.getMaskingID();
 
     if ( maskingId ) {
-
-      this._dom.setAttribute( 'mask', `url(#${ maskingId })` );
-
+      this._dom.setAttribute( 'mask', `url(#${maskingId})` );
     } else {
-
       this._dom.removeAttribute( 'mask' );
     }
   }
@@ -1967,11 +1989,20 @@ class Shape extends EventEmitter {
     this.maskDomWrapper.setAttribute( 'x', Math.min( position.x, position2.x ) );
     this.maskDomWrapper.setAttribute( 'y', Math.min( position.y, position2.y ) );
 
-    this.maskDomWrapper.setAttribute( 'width', Math.abs( position2.x - position.x ) );
-    this.maskDomWrapper.setAttribute( 'height', Math.abs( position2.y - position.y ) );
+    this.maskDomWrapper.setAttribute(
+      'width',
+      Math.abs( position2.x - position.x )
+    );
+    this.maskDomWrapper.setAttribute(
+      'height',
+      Math.abs( position2.y - position.y )
+    );
 
     for ( var i = 0; i < this._dom.attributes.length; i++ ) {
-      this.maskDom.setAttribute( this._dom.attributes[ i ].name, this._dom.attributes[ i ].value );
+      this.maskDom.setAttribute(
+        this._dom.attributes[i].name,
+        this._dom.attributes[i].value
+      );
     }
 
     this.maskDom.setAttribute( 'fill', 'black' );
@@ -1980,7 +2011,6 @@ class Shape extends EventEmitter {
   }
 
   labelDblClickListener( e ) {
-
     var i = parseInt( e.target.getAttribute( 'data-label-i' ) );
 
     var self = this;
@@ -2005,8 +2035,12 @@ class Shape extends EventEmitter {
 
     util.setCSS( shapeLabel, {
       position: 'absolute',
-      marginTop: `${parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) + this.graph.getPaddingTop() - 10 }px`,
-      marginLeft: `${parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) + this.graph.getPaddingLeft() - 50 }px`,
+      marginTop: `${parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) +
+        this.graph.getPaddingTop() -
+        10}px`,
+      marginLeft: `${parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) +
+        this.graph.getPaddingLeft() -
+        50}px`,
       textAlign: 'center',
       width: '100px'
     } );
@@ -2014,9 +2048,8 @@ class Shape extends EventEmitter {
     const previousValue = self.getLabelText( i );
 
     const blurEvent = function() {
-
       self.setLabelText( shapeLabel.value, i );
-      self._labels[ i ].textContent = shapeLabel.value;
+      self._labels[i].textContent = shapeLabel.value;
 
       const nextValue = shapeLabel.value;
 
@@ -2033,7 +2066,6 @@ class Shape extends EventEmitter {
     shapeLabel.addEventListener( 'blur', blurEvent );
 
     shapeLabel.addEventListener( 'keyup', function( e ) {
-
       if ( e.keyCode === 13 ) {
         blurEvent();
       }
@@ -2045,7 +2077,6 @@ class Shape extends EventEmitter {
       e.stopPropagation();
     } );
     shapeLabel.focus();
-
   }
 
   /**
@@ -2054,9 +2085,7 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   appendToDom() {
-
     if ( this._forcedParentDom ) {
-
       this._forcedParentDom.appendChild( this.group );
     } else {
       this.graph.appendShapeToDom( this );
@@ -2069,7 +2098,6 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   forceParentDom( dom ) {
-
     this._forcedParentDom = dom;
 
     return this;

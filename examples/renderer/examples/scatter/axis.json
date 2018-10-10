@@ -1,14 +1,4 @@
-
-<!doctype html>
-<html>
-    <body>
-        <div id="graph"></div>
-    </body>
-    <script type="module">
-    console.log('a');
-        import Graph from '/src/graph.js'
-        console.log('a');
-        const graph = Graph.fromJSON( {
+{
   "axes": {
     "x": {
       "forcedMin": 0,
@@ -36,8 +26,3 @@
     }
   }
 }
-, "graph" );
-        console.log('a');
-        graph.draw();
-    </script>
-</html>

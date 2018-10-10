@@ -1,5 +1,6 @@
 import serieStyle from './style.js';
 import makeAxes from './axes.js';
+import makeAnnotation from './annotations.js';
 
 const makeGraph = ( Graph, json, wrapper ) => {
   const graph = new Graph( wrapper );
@@ -74,6 +75,18 @@ const makeGraph = ( Graph, json, wrapper ) => {
       if ( jsonSerie.style ) {
         serieStyle( Graph, serie, jsonSerie, type );
       }
+
+      if ( jsonSerie.annotations ) {
+        jsonSerie.annotations.forEach( ( annotation ) => {
+          makeAnnotation( graph, annotation, undefined, axes );
+        } );
+      }
+    } );
+  }
+
+  if ( json.annotations ) {
+    json.annotations.forEach( ( annotation ) => {
+      makeAnnotation( graph, annotation, undefined, axes );
     } );
   }
 
