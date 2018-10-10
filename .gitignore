@@ -7,3 +7,5 @@ examples/workingplace
 examples/DD/
 .eslintcache
 /coverage/
+.vscode
+
