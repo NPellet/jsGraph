@@ -26509,7 +26509,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var styles = jsonSerie.style;
 
     if (!Array.isArray(styles)) {
-      styles = [{ name: 'unselected', style: styles }];
+      styles = [{
+        name: 'unselected',
+        style: styles
+      }];
     }
 
     styles.map(function (_ref, index) {

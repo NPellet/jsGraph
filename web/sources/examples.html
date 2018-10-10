@@ -1,48 +1,29 @@
 ---
-layout: page
+layout: page-examples
 title: Examples
 subtitle: Browse through examples to help getting you started
 permalink: /examples
 ---
 
-<h3>Available examples</h3>
-
-  
-{% for example in site.data.examples %}
-
 <div class="example" data-example="{{ example.id }}">
 
 	<div class="row">
-		<h4>
-			{{ example.title }}
+		<h4 id="example-title">
+
 		</h4>
-		<div class="col-sm-6 graph-example-wrapper">
-			<div class="graph-example" id="{{ example.id }}"></div>
+		<div class="col-sm-12 graph-example-wrapper">
+			<div id="graph-example"></div>
 		</div>
-		<div class="col-sm-6">
+	</div>
+	<div class="row">
 
-			<p class="larger">
-				{{ example.description }}
-			</p>
-			<button class="btn btn-default btn-large showExampleCode">Show code</button>
-			
-		</div>
-
+		<p class="larger">
+			{{ example.description }}
+		</p>
 	</div>
 
-	<div class="code hidden">
-		{% highlight javascript %}
-{{ example.codeShown }}
-		{%endhighlight%}
-	</div>
+	<pre class="language-javascript">
+		<code id="example-code-fixed"></code>
+	</pre>
 
-	<script>
-
-		( function( domGraph ) {
-			{{ example.code }}		
-		}) ( "{{ example.id }}" );
-
-	</script>
 </div>
-{% endfor %}
-

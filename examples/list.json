@@ -1,31 +1,28 @@
 [
+  {
+    "title": "Real life examples",
+    "name": "reallife",
+    "children": [
+      {
+        "name": "30-axisspan.js",
+        "title": "Axis spanning",
+        "description": "You can use axis spanning to display multiple axes next to each other, in the x or in the y direction.\nAxes that would clash together will be shifted as to avoid collisions."
+      },
 
+      {
+        "name": "40-xrd.js",
+        "title": "XRD spectrum using axis splitting"
+      },
 
+      {
+        "name": "50-gradient.js",
+        "title": "Using color map"
+      },
 
-{
-	"file": "30-axisspan",
-	"title": "Axis spanning",
-	"description": "You can use axis spanning to display multiple axes next to each other, in the x or in the y direction.\nAxes that would clash together will be shifted as to avoid collisions."
-},
-
-
-{
-	"file": "40-xrd",
-	"title": "XRD spectrum using axis splitting"
-},
-
-
-{
-	"file": "50-gradient",
-	"title": "Using color map"
-},
-
-
-{
-	"file": "52-gradient2",
-	"title": "Density map usage"
-}
-
-
-
+      {
+        "name": "52-gradient2.js",
+        "title": "Density map usage"
+      }
+    ]
+  }
 ]

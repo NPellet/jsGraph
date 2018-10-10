@@ -10,7 +10,9 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "jquery": "^3.3.1",
-    "node-jsgraph": "^2.1.0",
+    "node-jsgraph": "^2.1.4",
+    "prism": "^4.1.2",
+    "prismjs": "^1.15.0",
     "requirejs": "^2.3.6"
   }
 }

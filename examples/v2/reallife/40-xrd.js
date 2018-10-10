@@ -1,3 +1,6 @@
+define(function (require, exports, module) {
+
+module.exports = ( domGraph ) => {
 /* START IGNORE */
 
 var data1 = [
@@ -133,3 +136,8 @@ graph.autoscaleAxes();
 
 graph.draw();
 legend.update();
+
+return graph;
+}
+
+});

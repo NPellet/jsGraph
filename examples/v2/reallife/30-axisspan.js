@@ -1,3 +1,6 @@
+define(function (require, exports, module) {
+
+  module.exports = ( domGraph ) => {
 
 var graph = new Graph( domGraph, { }, { } );
 
@@ -47,3 +50,7 @@ graph
   .setLineWidth( 2 );
 
 graph.draw();
+
+return graph;
+
+  }});
