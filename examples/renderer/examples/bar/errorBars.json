@@ -1,14 +1,4 @@
-
-<!doctype html>
-<html>
-    <body>
-        <div id="graph"></div>
-    </body>
-    <script type="module">
-    console.log('a');
-        import Graph from '/src/graph.js'
-        console.log('a');
-        const graph = Graph.fromJSON( {
+{
   "axes": {
     "left": [
       {
@@ -28,7 +18,6 @@
         { "name": "orange", "title": "Oranges" }
       ]
     }
-    // x:, y:
   },
   "series": [
     {
@@ -36,9 +25,33 @@
       "type": "bar",
       "label": "July",
       "data": {
-        "orange": 5,
-        "apple": 7,
-        "peach": 2
+        "values": {
+          "orange": 5,
+          "apple": 7,
+          "peach": 2
+        },
+        "errors": {
+          "yBar": {
+            "orange": 0.2,
+            "apple": 0.3,
+            "peach": 0.8
+          }
+        }
+      },
+      "style": {
+        "errorBar": {
+          "all": {
+            "strokeColor": "black",
+            "strokeWidth": 1,
+            "width": 20
+          }
+        },
+        "line": {
+          "color": "red",
+          "width": 1,
+          "fill": "red",
+          "fillOpacity": 0.2
+        }
       }
     },
     {
@@ -49,12 +62,15 @@
         "orange": 15,
         "apple": 20,
         "peach": 22
+      },
+      "style": {
+        "line": {
+          "color": "green",
+          "width": 1,
+          "fill": "green",
+          "fillOpacity": 0.2
+        }
       }
     }
   ]
 }
-, "graph" );
-        console.log('a');
-        graph.draw();
-    </script>
-</html>

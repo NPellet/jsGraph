@@ -20,46 +20,64 @@
     ],
     "bottom": {
       "type": "category",
+      "label": "Fruit type",
       "name": "cat_btm",
       "categories": [
-        { "name": "peach", "label": "Peaches" },
-        { "name": "apple", "label": "Apples" },
-        { "name": "orange", "label": "Oranges" }
+        { "name": "peach", "title": "Peaches" },
+        { "name": "apple", "title": "Apples" },
+        { "name": "orange", "title": "Oranges" }
       ]
     }
-    // x:, y:
   },
   "series": [
     {
+      "xAxis": "cat_btm",
       "type": "bar",
       "label": "July",
       "data": {
-        "orange": 5,
-        "apple": 7,
-        "peach": 2
+        "values": {
+          "orange": 5,
+          "apple": 7,
+          "peach": 2
+        },
+        "errors": {
+          "yBar": {
+            "orange": 0.2,
+            "apple": 0.3,
+            "peach": 0.8
+          }
+        }
       },
       "style": {
+        "errorBar": {
+          "all": {
+            "strokeColor": "black",
+            "strokeWidth": 1,
+            "width": 20
+          }
+        },
         "line": {
           "color": "red",
-          "width": 4,
+          "width": 1,
           "fill": "red",
           "fillOpacity": 0.2
         }
       }
     },
     {
+      "xAxis": "cat_btm",
       "type": "bar",
-      "label": "July",
+      "label": "August",
       "data": {
         "orange": 15,
-        "apple": 15,
-        "peach": 9
+        "apple": 20,
+        "peach": 22
       },
       "style": {
         "line": {
           "color": "green",
-          "width": 4,
-          "fill": "DarkGreen",
+          "width": 1,
+          "fill": "green",
           "fillOpacity": 0.2
         }
       }
