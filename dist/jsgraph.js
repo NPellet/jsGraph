@@ -11378,7 +11378,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.4'
+        'data-jsgraph-version': 'v2.1.5'
       });
     } catch (e) {
       // ignore
@@ -38166,12 +38166,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _createClass(PluginPeakPicking, [{
       key: 'init',
       value: function init(graph, options) {
-
         _get(PluginPeakPicking.prototype.__proto__ || Object.getPrototypeOf(PluginPeakPicking.prototype), 'init', this).call(this, graph, options);
         this.picks = [];
 
         for (var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
-
           var shape = this.graph.newShape({
             type: 'label',
             label: {
@@ -38180,7 +38178,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 x: 0
               },
               anchor: 'middle'
-
             },
 
             selectable: true,
@@ -38188,7 +38185,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             shapeOptions: {
               minPosY: 15
             }
-
           });
 
           shape.draw();
@@ -38200,21 +38196,23 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'setSerie',
       value: function setSerie(serie) {
         this.serie = serie;
+
+        this.picks.map(function (pick) {
+          pick.show();
+        });
       }
     }, {
       key: 'serieRemoved',
       value: function serieRemoved(serie) {
-
         if (this.serie == serie) {
           this.picks.map(function (pick) {
-            pick.kill();
+            pick.hide();
           });
         }
       }
     }, {
       key: 'preDraw',
       value: function preDraw() {
-
         if (!this.serie) {
           return;
         }
@@ -38225,7 +38223,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'postDraw',
       value: function postDraw() {
-
         if (!this.serie) {
           return;
         }
@@ -38245,7 +38242,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             y = void 0;
 
         for (; i < length; i++) {
-
           y = waveform.getY(i);
 
           if (this.serie.options.lineToZero) {
@@ -38259,15 +38255,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (y >= lastYPeakPicking[1] && lookForMaxima || y <= lastYPeakPicking[1] && lookForMinima) {
-
             lastYPeakPicking = [waveform.getX(i), y];
           } else if (y < lastYPeakPicking[1] && lookForMaxima || y > lastYPeakPicking[1] && lookForMinima) {
-
             if (lookForMinima) {
               lookForMinima = false;
               lookForMaxima = true;
             } else {
-
               lookForMinima = true;
               lookForMaxima = false;
 
@@ -38302,7 +38295,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         m = 0;
 
         for (; i < l; i++) {
-
           x = ys[i][0];
           px = this.serie.getX(x);
           k = 0;
@@ -38313,7 +38305,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (!this.options.autoPeakPickingAllowAllY && (y > this.serie.getYAxis().getMinPx() || y < this.serie.getYAxis().getMaxPx())) {
-
             continue;
           }
 
@@ -38343,7 +38334,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           //    this.picks[ m ].show();
 
           if (this.serie.getYAxis().getPx(ys[i][1]) - 20 < 0) {
-
             this.picks[m].setLabelPosition({
               x: x,
               y: '5px'
@@ -38351,7 +38341,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             this.picks[m].setLabelBaseline('hanging');
           } else {
-
             this.picks[m].setLabelBaseline('no-change');
 
             this.picks[m].setLabelPosition({
@@ -38364,7 +38353,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.picks[m].setProp('xval', x);
 
           if (this.options.autoPeakPickingFormat) {
-
             this.picks[m].setLabelText(this.options.autoPeakPickingFormat.call(this.picks[m], x, m));
           } else {
             this.picks[m].setLabelText(String(Math.round(x * 1000) / 1000));
@@ -38385,7 +38373,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'hidePeakPicking',
       value: function hidePeakPicking(lock) {
-
         if (!this._hidePeakPickingLocked) {
           this._hidePeakPickingLocked = lock;
         }
@@ -38400,7 +38387,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'showPeakPicking',
       value: function showPeakPicking(unlock) {
-
         if (this._hidePeakPickingLocked && !unlock) {
           return;
         }
@@ -38416,7 +38402,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'killPeakPicking',
       value: function killPeakPicking() {
-
         if (this.picks) {
           for (var i = 0, l = this.picks.length; i < l; i++) {
             this.picks[i].kill();
@@ -38431,7 +38416,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }], [{
       key: 'default',
       value: function _default() {
-
         return {
           autoPeakPicking: false,
           autoPeakPickingNb: 4,

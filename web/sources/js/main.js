@@ -97,16 +97,28 @@ const loadExamples = () => {
 
         if (graph) {
           graph.kill();
+          graph = false;
         }
-        editor.session.on('change', function(delta) {
-          const value = editor.getValue();
-          try {
-            const json = JSON.parse(value);
 
-            if (graph) {
-              graph.kill();
+        $('#run-example').bind('click', () => {
+          const value = editor.getValue();
+
+          if (graph) {
+            graph.kill();
+            graph = false;
+          }
+
+          $('#graph-example').empty();
+
+          try {
+            if (file.match(/\.json$/)) {
+              const json = JSON.parse(value);
+
               graph = Graph.fromJSON(json, 'graph-example');
               graph.draw();
+            } else {
+              let constructor = eval(value);
+              constructor('graph-example');
             }
           } catch (e) {}
         });
@@ -124,6 +136,9 @@ const loadExamples = () => {
             }
           }
         }
+
+        let stringified;
+
         if (file.match(/\.json$/)) {
           fetch(`./js/examples/${folder}/${file}`)
             .then(file => file.json())
@@ -131,29 +146,36 @@ const loadExamples = () => {
               graph = Graph.fromJSON(json, 'graph-example');
               graph.draw();
 
-              const stringified = JSON.stringify(json, undefined, '\t');
-
-              $('#example-code-fixed')
-                .parent()
-                .addClass('hidden');
-
-              $('#example-code-editable').removeClass('hidden');
-
-              editor.session.setValue(stringified); // set value and reset undo history
-
+              stringified = JSON.stringify(json, undefined, '\t');
               editor.resize();
+
+              showCode(stringified);
             });
         } else {
           requirejs([`./js/examples/${folder}/${file}`], constructor => {
             html += '</ul></li>';
 
             graph = constructor('graph-example');
-          });
 
-          $('#example-code-fixed')
-            .parent()
-            .removeClass('hidden');
-          $('#example-code-fixed').html(selectedExample.highlighted);
+            showCode(constructor.toString());
+          });
+        }
+
+        function showCode(code) {
+          if (selectedExample.editable) {
+            editor.session.setValue(code); // set value and reset undo history
+            editor.resize();
+
+            $('#example-code-fixed')
+              .parent()
+              .addClass('hidden');
+            //$('#example-code-fixed').html(code);
+          } else {
+            $('#example-code-fixed')
+              .parent()
+              .removeClass('hidden');
+            $('#example-code-fixed').html(selectedExample.highlighted);
+          }
         }
 
         $('#example-title').html(selectedExample.title);

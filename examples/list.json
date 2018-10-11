@@ -26,7 +26,8 @@
 
       {
         "name": "41-ei.js",
-        "title": "Experimental electron impact mass spectrum of 2-methoxyethanol"
+        "title": "Experimental electron impact mass spectrum of 2-methoxyethanol",
+        "editable": true
       }
     ]
   },

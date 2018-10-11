@@ -96,12 +96,7 @@ define( function( require, exports, module ) {
 
     graph.draw();
 
-    function update() {
-      eiSerie.setWaveform( wave2 );
-      graph.draw();
-    }
-
-    setTimeout( update, 2000 );
+    //setTimeout( update, 2000 );
 
     return graph;
   };

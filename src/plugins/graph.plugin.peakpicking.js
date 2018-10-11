@@ -28,14 +28,12 @@ import Plugin from './graph.plugin.js';
  * @extends Plugin
  */
 class PluginPeakPicking extends Plugin {
-
   constructor() {
     super( ...arguments );
   }
 
   static
   default () {
-
     return {
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
@@ -46,12 +44,10 @@ class PluginPeakPicking extends Plugin {
   }
 
   init( graph, options ) {
-
     super.init( graph, options );
     this.picks = [];
 
     for ( var n = 0, m = this.options.autoPeakPickingNb; n < m; n++ ) {
-
       var shape = this.graph.newShape( {
         type: 'label',
         label: {
@@ -59,8 +55,7 @@ class PluginPeakPicking extends Plugin {
           position: {
             x: 0
           },
-          anchor: 'middle',
-
+          anchor: 'middle'
         },
 
         selectable: true,
@@ -68,32 +63,31 @@ class PluginPeakPicking extends Plugin {
         shapeOptions: {
           minPosY: 15
         }
-
       } );
 
       shape.draw();
 
       this.picks.push( shape );
-
     }
-
   }
 
   setSerie( serie ) {
     this.serie = serie;
+
+    this.picks.map( ( pick ) => {
+      pick.show();
+    } );
   }
 
   serieRemoved( serie ) {
-
     if ( this.serie == serie ) {
       this.picks.map( ( pick ) => {
-        pick.kill();
+        pick.hide();
       } );
     }
   }
 
   preDraw() {
-
     if ( !this.serie ) {
       return;
     }
@@ -103,7 +97,6 @@ class PluginPeakPicking extends Plugin {
   }
 
   postDraw() {
-
     if ( !this.serie ) {
       return;
     }
@@ -123,7 +116,6 @@ class PluginPeakPicking extends Plugin {
       y;
 
     for ( ; i < length; i++ ) {
-
       y = waveform.getY( i );
 
       if ( this.serie.options.lineToZero ) {
@@ -136,18 +128,19 @@ class PluginPeakPicking extends Plugin {
         continue;
       }
 
-      if ( ( y >= lastYPeakPicking[ 1 ] && lookForMaxima ) || ( y <= lastYPeakPicking[ 1 ] && lookForMinima ) ) {
-
+      if (
+        ( y >= lastYPeakPicking[ 1 ] && lookForMaxima ) ||
+        ( y <= lastYPeakPicking[ 1 ] && lookForMinima )
+      ) {
         lastYPeakPicking = [ waveform.getX( i ), y ];
-
-      } else if ( ( y < lastYPeakPicking[ 1 ] && lookForMaxima ) || ( y > lastYPeakPicking[ 1 ] && lookForMinima ) ) {
-
+      } else if (
+        ( y < lastYPeakPicking[ 1 ] && lookForMaxima ) ||
+        ( y > lastYPeakPicking[ 1 ] && lookForMinima )
+      ) {
         if ( lookForMinima ) {
           lookForMinima = false;
           lookForMaxima = true;
-
         } else {
-
           lookForMinima = true;
           lookForMaxima = false;
 
@@ -156,7 +149,6 @@ class PluginPeakPicking extends Plugin {
         }
 
         lastYPeakPicking = [ waveform.getX( i ), y ];
-
       }
     }
 
@@ -166,7 +158,8 @@ class PluginPeakPicking extends Plugin {
       passed = [],
       px,
       l = ys.length,
-      k, m,
+      k,
+      m,
       index;
 
     i = 0;
@@ -182,24 +175,30 @@ class PluginPeakPicking extends Plugin {
     m = 0;
 
     for ( ; i < l; i++ ) {
-
       x = ys[ i ][ 0 ];
       px = this.serie.getX( x );
       k = 0;
       y = this.serie.getY( ys[ i ][ 1 ] );
 
-      if ( px < this.serie.getXAxis().getMinPx() || px > this.serie.getXAxis().getMaxPx() ) {
+      if (
+        px < this.serie.getXAxis().getMinPx() ||
+        px > this.serie.getXAxis().getMaxPx()
+      ) {
         continue;
       }
 
-      if ( !this.options.autoPeakPickingAllowAllY && ( y > this.serie.getYAxis().getMinPx() || y < this.serie.getYAxis().getMaxPx() ) ) {
-
+      if ( !this.options.autoPeakPickingAllowAllY &&
+        ( y > this.serie.getYAxis().getMinPx() ||
+          y < this.serie.getYAxis().getMaxPx() )
+      ) {
         continue;
       }
 
       // Distance check
       for ( ; k < passed.length; k++ ) {
-        if ( Math.abs( passed[ k ] - px ) < this.options.autoPeakPickingMinDistance ) {
+        if (
+          Math.abs( passed[ k ] - px ) < this.options.autoPeakPickingMinDistance
+        ) {
           break;
         }
       }
@@ -223,16 +222,13 @@ class PluginPeakPicking extends Plugin {
       //    this.picks[ m ].show();
 
       if ( this.serie.getYAxis().getPx( ys[ i ][ 1 ] ) - 20 < 0 ) {
-
         this.picks[ m ].setLabelPosition( {
           x: x,
-          y: '5px',
+          y: '5px'
         } );
 
         this.picks[ m ].setLabelBaseline( 'hanging' );
-
       } else {
-
         this.picks[ m ].setLabelBaseline( 'no-change' );
 
         this.picks[ m ].setLabelPosition( {
@@ -240,14 +236,14 @@ class PluginPeakPicking extends Plugin {
           y: ys[ i ][ 1 ],
           dy: '-15px'
         } );
-
       }
 
       this.picks[ m ].setProp( 'xval', x );
 
       if ( this.options.autoPeakPickingFormat ) {
-
-        this.picks[ m ].setLabelText( this.options.autoPeakPickingFormat.call( this.picks[ m ], x, m ) );
+        this.picks[ m ].setLabelText(
+          this.options.autoPeakPickingFormat.call( this.picks[ m ], x, m )
+        );
       } else {
         this.picks[ m ].setLabelText( String( Math.round( x * 1000 ) / 1000 ) );
       }
@@ -270,7 +266,6 @@ class PluginPeakPicking extends Plugin {
    * @memberof SerieLine
    */
   hidePeakPicking( lock ) {
-
     if ( !this._hidePeakPickingLocked ) {
       this._hidePeakPickingLocked = lock;
     }
@@ -288,7 +283,6 @@ class PluginPeakPicking extends Plugin {
    * @memberof SerieLine
    */
   showPeakPicking( unlock ) {
-
     if ( this._hidePeakPickingLocked && !unlock ) {
       return;
     }
@@ -303,7 +297,6 @@ class PluginPeakPicking extends Plugin {
   }
 
   killPeakPicking() {
-
     if ( this.picks ) {
       for ( var i = 0, l = this.picks.length; i < l; i++ ) {
         this.picks[ i ].kill();
