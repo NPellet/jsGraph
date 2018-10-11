@@ -1,9 +1,10 @@
-import Serie from './graph.serie.js';
 import Waveform from '../util/waveform.js';
 import {
   extend,
   guid
 } from '../graph.util.js';
+
+import Serie from './graph.serie.js';
 
 /**
  * @static
@@ -172,7 +173,7 @@ class SerieZone extends Serie {
               continue;
             }
 
-            line += 'L ' + xpx + ', ' + this.getY( waveform.getMinY() );
+            line += `L ${ xpx }, ${ this.getY( waveform.getMinY() )}`;
             move = true;
             continue;
           }
@@ -186,7 +187,7 @@ class SerieZone extends Serie {
           }
 
           if ( move ) {
-            line += ' M ' + xpx + ', ' + this.getY( waveform.getMinY() ) + ' ';
+            line += ` M ${ xpx }, ${ this.getY( waveform.getMinY() ) } `;
             move = false;
           }
 
@@ -195,16 +196,16 @@ class SerieZone extends Serie {
           }
 
           if ( buffer ) {
-            line += buffer[ 2 ] + ',' + buffer[ 3 ] + ' ';
+            line += `${buffer[ 2 ] },${ buffer[ 3 ] } `;
             buffer = false;
           } else {
-            line += xpx + ',' + ypx + ' ';
+            line += `${xpx },${ ypx } `;
           }
         }
       }
 
       if ( line !== '' ) {
-        this.lineZone.setAttribute( 'd', 'M ' + line + ' z' );
+        this.lineZone.setAttribute( 'd', `M ${ line } z` );
       } else {
         this.lineZone.setAttribute( 'd', '' );
       }

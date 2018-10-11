@@ -1,6 +1,7 @@
-import Serie from './graph.serie.js';
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
+
+import Serie from './graph.serie.js';
 
 const defaults = {};
 
@@ -310,7 +311,7 @@ class SerieScatter extends Serie {
 
     let shape;
     let g = document.createElementNS( this.graph.ns, 'g' );
-    g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
+    g.setAttribute( 'transform', `translate(${ xpx }, ${ ypx })` );
     g.setAttribute( 'data-shapeid', k );
 
     if ( this.extraStyle && this.extraStyle[ k ] ) {
@@ -418,7 +419,7 @@ class SerieScatter extends Serie {
       }
 
       if ( !noSetPosition ) {
-        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
+        shape.parentNode.setAttribute( 'transform', `translate(${ this.shapesDetails[ index ][ 0 ] }, ${ this.shapesDetails[ index ][ 1 ] })` );
       }
 
     }

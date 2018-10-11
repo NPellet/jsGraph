@@ -1,4 +1,5 @@
 import * as util from '../graph.util.js';
+
 import Shape from './graph.shape.js';
 
 /**

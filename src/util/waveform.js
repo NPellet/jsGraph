@@ -1,5 +1,6 @@
-import FitLM from './fit_lm.js';
 import * as util from '../graph.util.js';
+
+import FitLM from './fit_lm.js';
 
 class Waveform {
 
@@ -166,7 +167,7 @@ class Waveform {
   setTypedArrayClass( constructor ) {
 
     if ( this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed( constructor ) ) {
-      this.warn( 'NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')' );
+      this.warn( `NaN values are not allowed by the new constructor (${ constructor.name }) while it was allowed by the previous one (${ this._typedArrayClass.name })` );
     }
 
     if ( this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned( constructor ) ) {
@@ -376,7 +377,7 @@ class Waveform {
   }
 
   getDataInUse() {
-    return this.dataInUse ||  this.data;
+    return this.dataInUse || this.data;
   }
 
   getIndexFromVal( val, useDataToUse = false, roundingMethod = Math.round ) {
@@ -444,7 +445,7 @@ class Waveform {
 
     if ( this.isXMonotoneous() ) { // X lookup only
 
-      if ( this.getXMin() > xval ||  this.getXMax() < xval ) {
+      if ( this.getXMin() > xval || this.getXMax() < xval ) {
         return false;
       }
 
@@ -564,7 +565,7 @@ class Waveform {
   }
 
   getData( optimized ) {
-    if ( !optimized ||  !this.dataInUse ) {
+    if ( !optimized || !this.dataInUse ) {
       return this.data;
     }
     return this.dataInUse.y;
@@ -580,11 +581,11 @@ class Waveform {
   }
 
   getShift() {
-    return this.shift ||  0;
+    return this.shift || 0;
   }
 
   getScale() {
-    return this.scale ||  1;
+    return this.scale || 1;
   }
 
   setScale( scale = 1 ) {
@@ -1202,7 +1203,7 @@ class Waveform {
 
     if ( this._dataAggregated[ level ] ) {
 
-      this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
+      this.dataInUseType = `aggregate${ this._dataAggregationDirection}`;
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating ) {
@@ -1491,7 +1492,7 @@ class Waveform {
 
         below = true;
 
-        if ( options.edge == 'descending' ||  options.edge == 'both' ) {
+        if ( options.edge == 'descending' || options.edge == 'both' ) {
 
           for ( j = i + ( box - 1 ) / 2; j >= i - ( box - 1 ) / 2; j-- ) {
 
@@ -1566,7 +1567,7 @@ class Waveform {
     } else if ( mode == 'max1min0' ) {
 
       maxValue = this.data[ 0 ],
-        minValue = this.data[  0 ];
+        minValue = this.data[ 0 ];
 
       for ( i = 1; i < this.getLength(); i++ ) {
         if ( this.data[ i ] > maxValue ) {

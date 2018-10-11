@@ -313,14 +313,14 @@ class PluginSerieLineDifference extends Plugin {
         if ( i == 0 ) {
           d += 'M ';
         }
-        d += ' ' + Math.round( self.serie1.getXAxis().getPx( path[ 0 ][ i ] ) ) + ', ' + Math.round( self.serie1.getYAxis().getPx( path[ 0 ][ i + 1 ] ) );
+        d += ` ${ Math.round( self.serie1.getXAxis().getPx( path[ 0 ][ i ] ) ) }, ${ Math.round( self.serie1.getYAxis().getPx( path[ 0 ][ i + 1 ] ) )}`;
         if ( i < path[ 0 ].length - 2 ) {
           d += ' L ';
         }
       }
 
       for ( var i = path[ 1 ].length - 2; i >= 0; i -= 2 ) {
-        d += ' L ' + Math.round( self.serie2.getXAxis().getPx( path[ 1 ][ i ] ) ) + ', ' + Math.round( self.serie2.getYAxis().getPx( path[ 1 ][ i + 1 ] ) );
+        d += ` L ${ Math.round( self.serie2.getXAxis().getPx( path[ 1 ][ i ] ) ) }, ${ Math.round( self.serie2.getYAxis().getPx( path[ 1 ][ i + 1 ] ) )}`;
         if ( i == 0 ) {
           d += ' z ';
         }

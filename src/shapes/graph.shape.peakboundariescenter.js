@@ -73,7 +73,7 @@ class ShapePeakBoundaries extends ShapeLine {
     if ( posLeft.x && posRight.x && posCenter.x && this.posYPx ) {
 
       var height = this.lineHeight;
-      this.rectBoundary.setAttribute( 'd', 'M ' + posLeft.x + ' ' + ( this.posYPx - height ) + ' v ' + ( 2 * height ) + ' H ' + posRight.x + ' v ' + ( -2 * height ) + 'z' );
+      this.rectBoundary.setAttribute( 'd', `M ${ posLeft.x } ${ this.posYPx - height } v ${ 2 * height } H ${ posRight.x } v ${ -2 * height }z` );
       this.line1.setAttribute( 'x1', posLeft.x );
       this.line1.setAttribute( 'x2', posLeft.x );
 

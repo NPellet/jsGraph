@@ -1,4 +1,5 @@
 import * as util from '../graph.util.js';
+
 import Plugin from './graph.plugin.js';
 
 /**
@@ -66,7 +67,7 @@ class PluginMakeTracesDifferent extends Plugin {
   }
 
   buildHSLString( hsl ) {
-    return 'hsl( ' + Math.round( hsl.h ) + ', ' + Math.round( hsl.s * 100 ) + '%, ' + Math.round( hsl.l * 100 ) + '%)';
+    return `hsl( ${ Math.round( hsl.h ) }, ${ Math.round( hsl.s * 100 ) }%, ${ Math.round( hsl.l * 100 ) }%)`;
   }
 
   colorizeAll( options, callback = false ) {
@@ -154,7 +155,7 @@ class PluginMakeTracesDifferent extends Plugin {
     return series.map( ( serie, index ) => {
 
       if ( !serie.setLineColor ) {
-        throw 'The serie ' + serie.getName() + ' does not implement the method `startingColor`';
+        throw `The serie ${ serie.getName() } does not implement the method \`startingColor\``;
       }
 
       let colorString;

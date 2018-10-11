@@ -1,9 +1,9 @@
 import Graph from '../graph.core.js';
-import Serie from './graph.serie.js';
-
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 import Waveform from '../util/waveform.js';
+
+import Serie from './graph.serie.js';
 
 /**
  * Serie line
@@ -216,7 +216,7 @@ class SerieLine extends Serie {
     if ( typeof force === 'undefined' ) {
       _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
     }
-    var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
+    var el = this[ `domMarker${ hover ? 'Hover' : 'Select'}` ];
 
     if ( _on || force === true ) {
 
@@ -225,7 +225,7 @@ class SerieLine extends Serie {
         var dom = document.createElementNS( this.graph.ns, 'path' );
 
         this.setMarkerStyleTo( dom, this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ] );
-        this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
+        this[ `domMarker${ hover ? 'Hover' : 'Select'}` ][ index ] = dom;
         this.groupMarkerSelected.appendChild( dom );
 
       } else {
@@ -235,7 +235,7 @@ class SerieLine extends Serie {
       let x = this.getX( this.waveform.getX( i ) ),
         y = this.getY( this.waveform.getY( i ) );
 
-      dom.setAttribute( 'd', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
+      dom.setAttribute( 'd', `M ${ x } ${ y } ${ this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 )}` );
 
       if ( hover ) {
         this.markerHovered++;
@@ -1789,7 +1789,7 @@ class SerieLine extends Serie {
       var marker = document.createElementNS( this.graph.ns, 'path' );
       this.setMarkerStyleTo( marker, this.markerFamilies[ this.selectionType ][ 0 ] );
 
-      marker.setAttribute( 'd', 'M 14 0 ' + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
+      marker.setAttribute( 'd', `M 14 0 ${ this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] )}` );
 
       this.markerForLegend = marker;
     }
@@ -1857,15 +1857,15 @@ function drawMarkerXY( graph, family, x, y, markerDom ) {
 
   if ( graph.options.markersIndependant ) {
     var dom = graph.getMarkerDomIndependent( graph.counter2, family );
-    var p = 'M ' + x + ' ' + y + ' ';
-    p += family.markerPath + ' ';
+    var p = `M ${ x } ${ y } `;
+    p += `${family.markerPath } `;
 
     dom.setAttribute( 'd', p );
   }
 
   markerDom.path = markerDom.path || '';
-  markerDom.path += 'M ' + x + ' ' + y + ' ';
-  markerDom.path += family.markerPath + ' ';
+  markerDom.path += `M ${ x } ${ y } `;
+  markerDom.path += `${family.markerPath } `;
 }
 
 util.mix( SerieLine, ErrorBarMixin );

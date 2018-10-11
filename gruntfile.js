@@ -80,6 +80,28 @@ module.exports = function( grunt ) {
         }
       },
 
+      web: {
+        files: {
+          './web/site/js/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph-es6.js',
+          './web/site/js/node-jsgraph/dist/jsgraph.min.js':
+            'dist/jsgraph.min.js'
+        }
+      },
+
+      visualizer: {
+        files: {
+          '../visualizer/src/components/jsgraph/dist/jsgraph-es6.js':
+            'dist/jsgraph-es6.js'
+        }
+      },
+
+      raytracer: {
+        files: {
+          '/Users/normanpellet/Documents/Candlelight/code/board_generator/raytracer/node_modules/node-jsgraph/dist/jsgraph-module.js':
+            'dist/jsgraph-module.js'
+        }
+      },
+
       candlelight: {
         files: {
           '/Users/normanpellet/Documents/Candlelight/code/website/node_modules/node-jsgraph/dist/jsgraph-es6.js':
@@ -208,7 +230,11 @@ module.exports = function( grunt ) {
         options: {
           sourceMap: true,
           comments: false,
-          presets: [ 'minify' ],
+          presets: [ [ 'minify', { mangle: false,
+			deadcode: false,
+            // simplify: false,
+            builtIns: false,
+			evaluate: false } ] ],
           babelrc: false
         },
         files: {
@@ -275,7 +301,7 @@ module.exports = function( grunt ) {
     var list = JSON.parse( fs.readFileSync( 'examples/list.json', 'utf8' ) );
 
     for ( var i = 0, l = list.length; i < l; i++ ) {
-      var code = fs.readFileSync( `examples/v2/${ list[i].file }.js`, 'utf8' );
+      var code = fs.readFileSync( `examples/v2/${list[i].file}.js`, 'utf8' );
       var example = {};
       example.id = list[i].file;
       example.title = list[i].title;

@@ -1,4 +1,5 @@
 import * as util from '../graph.util.js';
+
 import Plugin from './graph.plugin.js';
 
 /**
@@ -57,7 +58,7 @@ class PluginSelectScatter extends Plugin {
       return;
     }
 
-    this.path = 'M ' + x + ' ' + y + ' ';
+    this.path = `M ${ x } ${ y } `;
     this.currentX = x;
     this.currentY = y;
 
@@ -75,14 +76,14 @@ class PluginSelectScatter extends Plugin {
 
     if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
 
-      this.path += ' L ' + x + ' ' + y + ' ';
+      this.path += ` L ${ x } ${ y } `;
       this.currentX = x;
       this.currentY = y;
 
       this.xs.push( this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
       this.ys.push( this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
 
-      this._path.setAttribute( 'd', this.path + ' z' );
+      this._path.setAttribute( 'd', `${this.path } z` );
 
       this.findPoints();
     }

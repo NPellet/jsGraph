@@ -1,6 +1,7 @@
 import * as util from '../graph.util.js';
-import Serie from './graph.serie.line.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
+
+import Serie from './graph.serie.line.js';
 
 /**
  * Represents a bar serie.
@@ -142,16 +143,16 @@ class SerieBar extends Serie {
         continue;
       }
 
-      path += 'M ' +
-        this.getXAxis().getPos( this.categoryIndices[ i ] ) +
-        ' ' +
-        this.getYAxis().getPos( 0 ) +
-        ' V ' +
-        this.getYAxis().getPos( this.data[ i ] ) +
-        ' h ' +
-        this.getXAxis().getDeltaPx( 1 / this.nbCategories ) +
-        ' V ' +
-        this.getYAxis().getPos( 0 );
+      path += `M ${
+        this.getXAxis().getPos( this.categoryIndices[ i ] )
+        } ${
+        this.getYAxis().getPos( 0 )
+        } V ${
+        this.getYAxis().getPos( this.data[ i ] )
+        } h ${
+        this.getXAxis().getDeltaPx( 1 / this.nbCategories )
+        } V ${
+        this.getYAxis().getPos( 0 )}`;
 
       if ( this.error ) {
         this.errorAddPointBarChart( i, this.data[ i ], this.getXAxis().getPos( this.categoryIndices[ i ] + 0.5 / this.nbCategories ), this.getYAxis().getPos( this.data[ i ] ) );

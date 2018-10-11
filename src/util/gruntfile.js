@@ -1,4 +1,5 @@
 const path = require( 'path' );
+
 const babel = require( 'rollup-plugin-babel' );
 
 const distPath = path.resolve( __dirname, './dist/' );

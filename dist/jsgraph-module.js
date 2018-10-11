@@ -83,7 +83,7 @@ class Position {
     for (var i in pos) {
       var axis = i == 'x' ? xAxis : yAxis;
       var val = this[i];
-      var dval = this['d' + i];
+      var dval = this[`d${i}`];
 
       if (val === undefined && (dval !== undefined && relativeTo === undefined || relativeTo === undefined)) {
         if (i == 'x') {
@@ -183,25 +183,25 @@ class Position {
     var v;
 
     if ((v = _parsePx(value)) !== false) {
-      return v + 'px';
+      return `${v}px`;
     } else {
-      return axis.getRelPx(value) + 'px';
+      return `${axis.getRelPx(value)}px`;
     }
   }
 
   deltaPosition(mode, delta, axis) {
     mode = mode == 'y' ? 'y' : 'x';
     var ref = this[mode],
-        refd = this['d' + mode],
+        refd = this[`d${mode}`],
         refPx,
         deltaPx;
 
     if (ref !== undefined) {
       if ((refPx = _parsePx(ref)) !== false) {
         if ((deltaPx = _parsePx(delta)) !== false) {
-          this[mode] = refPx + deltaPx + 'px';
+          this[mode] = `${refPx + deltaPx}px`;
         } else {
-          this[mode] = refPx + axis.getRelPx(delta) + 'px';
+          this[mode] = `${refPx + axis.getRelPx(delta)}px`;
         }
       } else {
         ref = this.getValPosition(ref, axis);
@@ -221,17 +221,17 @@ class Position {
 
       if ((refPx = _parsePx(refd)) !== false) {
         if ((deltaPx = _parsePx(delta)) !== false) {
-          this['d' + mode] = refPx + deltaPx + 'px';
+          this[`d${mode}`] = `${refPx + deltaPx}px`;
         } else {
-          this['d' + mode] = refPx + axis.getRelPx(delta) + 'px';
+          this[`d${mode}`] = `${refPx + axis.getRelPx(delta)}px`;
         }
       } else {
         refd = this.getValPosition(refd, axis);
 
         if ((deltaPx = _parsePx(delta)) !== false) {
-          this['d' + mode] = refd + axis.getRelVal(deltaPx);
+          this[`d${mode}`] = refd + axis.getRelVal(deltaPx);
         } else {
-          this['d' + mode] = refd + delta;
+          this[`d${mode}`] = refd + delta;
         }
       }
     }
@@ -543,12 +543,12 @@ function ajaxGet(options) {
         if (options.json) response = JSON.parse(response);
         resolve(response);
       } else {
-        reject(new Error('Request error: ' + request.status));
+        reject(new Error(`Request error: ${request.status}`));
       }
     };
 
     request.onerror = function () {
-      reject(new Error('Network error: ' + request.status));
+      reject(new Error(`Network error: ${request.status}`));
     };
 
     request.send();
@@ -1190,7 +1190,7 @@ class FitHost {
       this.NPTS = this._to - this._from + 1;
 
       if (this.data && this.data.getLength() <= this._to) {
-        throw 'Wave Y has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
+        throw `Wave Y has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
       }
 
       if (this._from < 0) {
@@ -1203,7 +1203,7 @@ class FitHost {
     }
 
     if (this.dataX && this.dataX.getLength() <= this._to) {
-      throw 'Wave X has not enough point to be fitted to subrange [' + this._from + ', ' + this._to + ']';
+      throw `Wave X has not enough point to be fitted to subrange [${this._from}, ${this._to}]`;
     }
 
     this.arrY = this.data.getDataY();
@@ -1220,9 +1220,9 @@ class FitHost {
   }
 
   fit() {
-    this.log('Starting the fit with initial parameter list {' + this.parms.join() + '};');
+    this.log(`Starting the fit with initial parameter list {${this.parms.join()}};`);
     new LM(this, this.NPARMS, this.NPTS, this._hookIteration);
-    this.log('Fit successful. Output parameters {' + this.parms.join() + '};');
+    this.log(`Fit successful. Output parameters {${this.parms.join()}};`);
     this._result = this.buildFit(this.parms, 200);
 
     if (this.options.done) {
@@ -1415,7 +1415,7 @@ class LM {
     }
 
     this.sosprev = this.sos;
-    this.myH.log('  bLMiter..SumOfSquares= ' + this.sos);
+    this.myH.log(`  bLMiter..SumOfSquares= ${this.sos}`);
 
     if (!this.myH.buildJacobian()) {
       console.error('  bLMiter finds buildJacobian()=false');
@@ -1709,7 +1709,7 @@ class Waveform {
 
   setTypedArrayClass(constructor) {
     if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
-      this.warn('NaN values are not allowed by the new constructor (' + constructor.name + ') while it was allowed by the previous one (' + this._typedArrayClass.name + ')');
+      this.warn(`NaN values are not allowed by the new constructor (${constructor.name}) while it was allowed by the previous one (${this._typedArrayClass.name})`);
     }
 
     if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
@@ -2648,7 +2648,7 @@ class Waveform {
     var level = pow2ceil(pxWidth);
 
     if (this._dataAggregated[level]) {
-      this.dataInUseType = 'aggregate' + this._dataAggregationDirection;
+      this.dataInUseType = `aggregate${this._dataAggregationDirection}`;
       this.dataInUse = this._dataAggregated[level];
       return;
     } else if (this._dataAggregating) {
@@ -4771,7 +4771,7 @@ class Graph$1 extends EventEmitter {
     if (typeof shapeType == 'function') {
       constructor = shapeType;
     } else {
-      constructor = this.getConstructor('graph.shape.' + shapeType);
+      constructor = this.getConstructor(`graph.shape.${shapeType}`);
     }
 
     if (!constructor) {
@@ -5232,7 +5232,7 @@ class Graph$1 extends EventEmitter {
       pluginName = i;
       console.log(pluginName);
       pluginOptions = this.options.plugins[i];
-      constructor = this.getConstructor('graph.plugin.' + pluginName);
+      constructor = this.getConstructor(`graph.plugin.${pluginName}`);
 
       if (constructor) {
         //var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
@@ -5240,7 +5240,7 @@ class Graph$1 extends EventEmitter {
         mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
         this.plugins[pluginName].init(this, pluginOptions);
       } else {
-        throwError('Plugin "' + pluginName + '" has not been registered');
+        throwError(`Plugin "${pluginName}" has not been registered`);
       }
     }
   }
@@ -5255,7 +5255,7 @@ class Graph$1 extends EventEmitter {
     var plugin = this.plugins[pluginName];
 
     if (!plugin) {
-      return throwError('Plugin "' + pluginName + '" has not been loaded or properly registered');
+      return throwError(`Plugin "${pluginName}" has not been loaded or properly registered`);
     }
 
     return plugin;
@@ -5457,7 +5457,7 @@ class Graph$1 extends EventEmitter {
 
   updateGraphingZone() {
     setAttributeTo(this.graphingZone, {
-      'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+      'transform': `translate(${this.options.paddingLeft}, ${this.options.paddingTop})`
     });
     this._sizeChanged = true;
   } // We have to proxy the methods in case they are called anonymously
@@ -5597,7 +5597,7 @@ class Graph$1 extends EventEmitter {
             serie: serie
           }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : output => {
             for (var i in output) {
-              return output[i].serie.serie.getName() + ': ' + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
+              return `${output[i].serie.serie.getName()}: ${output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue)}`;
             }
           }, index.trueX);
 
@@ -6214,7 +6214,7 @@ class Graph$1 extends EventEmitter {
 
   static registerConstructor(constructorName, constructor) {
     if (_constructors.has(constructorName)) {
-      return throwError('Constructor ' + constructor + ' already exists.');
+      return throwError(`Constructor ${constructor} already exists.`);
     }
 
     _constructors.set(constructorName, constructor);
@@ -6236,7 +6236,7 @@ class Graph$1 extends EventEmitter {
         return false;
       }
 
-      return throwError('Constructor "' + constructorName + "\" doesn't exist");
+      return throwError(`Constructor "${constructorName}" doesn't exist`);
     }
 
     return _constructors.get(constructorName);
@@ -6259,7 +6259,7 @@ function makeSerie(graph, name, options, type) {
   var constructor = graph.getConstructor(type, true);
 
   if (!constructor && typeof type == 'string') {
-    constructor = graph.getConstructor('graph.serie.' + type, true);
+    constructor = graph.getConstructor(`graph.serie.${type}`, true);
   }
 
   if (constructor) {
@@ -6633,14 +6633,14 @@ function doDom() {
   this._makeClosingLines();
 
   this.clip = document.createElementNS(Graph$1.ns, 'clipPath');
-  this.clip.setAttribute('id', '_clipplot' + this._creation);
+  this.clip.setAttribute('id', `_clipplot${this._creation}`);
   this.defs.appendChild(this.clip);
   this.clipRect = document.createElementNS(Graph$1.ns, 'rect');
   this.clip.appendChild(this.clipRect);
   this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
   this.markerArrow = document.createElementNS(this.ns, 'marker');
   this.markerArrow.setAttribute('viewBox', '0 0 10 10');
-  this.markerArrow.setAttribute('id', 'arrow' + this._creation);
+  this.markerArrow.setAttribute('id', `arrow${this._creation}`);
   this.markerArrow.setAttribute('refX', '6');
   this.markerArrow.setAttribute('refY', '5');
   this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
@@ -6657,7 +6657,7 @@ function doDom() {
 
   this.markerHorizontalSplit = document.createElementNS(Graph$1.ns, 'marker');
   this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
-  this.markerHorizontalSplit.setAttribute('id', 'horionzalsplit_' + this.getId());
+  this.markerHorizontalSplit.setAttribute('id', `horionzalsplit_${this.getId()}`);
   this.markerHorizontalSplit.setAttribute('refX', '3');
   this.markerHorizontalSplit.setAttribute('refY', '4');
   this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
@@ -6674,7 +6674,7 @@ function doDom() {
 
   this.markerVerticalSplit = document.createElementNS(Graph$1.ns, 'marker');
   this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
-  this.markerVerticalSplit.setAttribute('id', 'verticalsplit_' + this.getId());
+  this.markerVerticalSplit.setAttribute('id', `verticalsplit_${this.getId()}`);
   this.markerVerticalSplit.setAttribute('refX', '4');
   this.markerVerticalSplit.setAttribute('refY', '3');
   this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
@@ -6690,7 +6690,7 @@ function doDom() {
   this.defs.appendChild(this.markerVerticalSplit);
   this.vertLineArrow = document.createElementNS(Graph$1.ns, 'marker');
   this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
-  this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
+  this.vertLineArrow.setAttribute('id', `verticalline${this._creation}`);
   this.vertLineArrow.setAttribute('refX', '0');
   this.vertLineArrow.setAttribute('refY', '5');
   this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
@@ -6986,8 +6986,8 @@ var _trackingLegendSerie = function (graph, serie, x, y, legend, textMethod, xVa
         serieShape = {
           shape: 'ellipse',
           properties: {
-            rx: [serie.serie.getLineWidth() * 3 + 'px'],
-            ry: [serie.serie.getLineWidth() * 3 + 'px']
+            rx: [`${serie.serie.getLineWidth() * 3}px`],
+            ry: [`${serie.serie.getLineWidth() * 3}px`]
           }
         };
       }
@@ -7056,8 +7056,8 @@ var forceTrackingLegendMode = function (graph, legend, toX, toY, skip) {
   toY = toY - toY % 10 + h / 2;
 
   if (skip) {
-    legend.style.marginLeft = toX + 'px';
-    legend.style.marginTop = toY + 'px';
+    legend.style.marginLeft = `${toX}px`;
+    legend.style.marginTop = `${toY}px`;
     return;
   }
 
@@ -7068,8 +7068,8 @@ var forceTrackingLegendMode = function (graph, legend, toX, toY, skip) {
       progress = 1;
     }
 
-    legend.style.marginLeft = (toX - startX) * progress + startX + 'px';
-    legend.style.marginTop = (toY - startY) * progress + startY + 'px';
+    legend.style.marginLeft = `${(toX - startX) * progress + startX}px`;
+    legend.style.marginTop = `${(toY - startY) * progress + startY}px`;
 
     if (progress < 1) {
       window.requestAnimationFrame(next);
@@ -7344,7 +7344,7 @@ class Legend {
     this.setEvents();
     this.eyeId = guid();
     this.eyeCrossedId = guid();
-    var eyeClosed = SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeCrossedId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" fill="transparent" x="-256" y="0" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1214.339)"><path d="m 555,201 78,141 q -87,63 -136,159 -49,96 -49,203 0,121 61,225 Q 280,812 128,576 295,318 555,201 z m 389,759 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 363,191 q 0,-7 -1,-9 Q 1201,954 991,576 781,198 675,9 l -49,-89 q -10,-16 -28,-16 -12,0 -134,70 -16,10 -16,28 0,12 44,87 Q 349,154 228.5,262 108,370 20,507 0,538 0,576 q 0,38 20,69 153,235 380,371 227,136 496,136 89,0 180,-17 l 54,97 q 10,16 28,16 5,0 18,-6 13,-6 31,-15.5 18,-9.5 33,-18.5 15,-9 31.5,-18.5 16.5,-9.5 19.5,-11.5 16,-10 16,-27 z m 37,-447 Q 1344,565 1265,450.5 1186,336 1056,286 l 280,502 q 8,-45 8,-84 z m 448,-128 q 0,-35 -20,-69 Q 1733,443 1663,362 1513,190 1315.5,95 1118,0 896,0 l 74,132 q 212,18 392.5,137 180.5,119 301.5,307 -115,179 -282,294 l 63,112 q 95,-64 182.5,-153 87.5,-89 144.5,-184 20,-34 20,-69 z" fill="#c0c0c0"></path></g></symbol></svg>'); //  var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 0 100 100"><rect fill="black" x="0" y="0" width="100" height="100" /></symbol></svg>');
+    var eyeClosed = SVGParser(`<svg xmlns="http://www.w3.org/2000/svg"><symbol id="${this.eyeCrossedId}" viewBox="0 -256 1850 1850"><rect pointer-events="fill" fill="transparent" x="-256" y="0" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1214.339)"><path d="m 555,201 78,141 q -87,63 -136,159 -49,96 -49,203 0,121 61,225 Q 280,812 128,576 295,318 555,201 z m 389,759 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 363,191 q 0,-7 -1,-9 Q 1201,954 991,576 781,198 675,9 l -49,-89 q -10,-16 -28,-16 -12,0 -134,70 -16,10 -16,28 0,12 44,87 Q 349,154 228.5,262 108,370 20,507 0,538 0,576 q 0,38 20,69 153,235 380,371 227,136 496,136 89,0 180,-17 l 54,97 q 10,16 28,16 5,0 18,-6 13,-6 31,-15.5 18,-9.5 33,-18.5 15,-9 31.5,-18.5 16.5,-9.5 19.5,-11.5 16,-10 16,-27 z m 37,-447 Q 1344,565 1265,450.5 1186,336 1056,286 l 280,502 q 8,-45 8,-84 z m 448,-128 q 0,-35 -20,-69 Q 1733,443 1663,362 1513,190 1315.5,95 1118,0 896,0 l 74,132 q 212,18 392.5,137 180.5,119 301.5,307 -115,179 -282,294 l 63,112 q 95,-64 182.5,-153 87.5,-89 144.5,-184 20,-34 20,-69 z" fill="#c0c0c0"></path></g></symbol></svg>`); //  var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 0 100 100"><rect fill="black" x="0" y="0" width="100" height="100" /></symbol></svg>');
 
     /* var eyeClosed = document.createElementNS( this.graph.ns, "symbol");
       eyeClosed.setAttribute('id', this.eyeId );
@@ -7358,7 +7358,7 @@ class Legend {
       eyeClosed.appendChild( rect );
     */
 
-    var eye = SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>');
+    var eye = SVGParser(`<svg xmlns="http://www.w3.org/2000/svg"><symbol id="${this.eyeId}" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>`);
     this.svg.appendChild(document.adoptNode(eye.documentElement.firstChild));
     this.svg.appendChild(document.adoptNode(eyeClosed.documentElement.firstChild));
     this.svg.appendChild(this.subG);
@@ -7426,7 +7426,7 @@ class Legend {
         }
       }
 
-      this.groups[i].setAttribute('transform', 'translate( ' + posX + ', ' + posY + ')');
+      this.groups[i].setAttribute('transform', `translate( ${posX}, ${posY})`);
 
       if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
         posX += bbox.width + 10;
@@ -7462,29 +7462,29 @@ class Legend {
 
     switch (this.autoPosition) {
       case 'bottom':
-        this.position.y = this.graph.getHeight() + 'px'; // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
+        this.position.y = `${this.graph.getHeight()}px`; // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
 
-        this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + 'px';
+        this.position.x = `${(this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX}px`;
         this.alignToY = 'bottom';
         this.alignToX = false;
         break;
 
       case 'left':
         this.position.x = '6px';
-        this.position.y = (this.graph.getHeight() - this.height) / 2 + 'px';
+        this.position.y = `${(this.graph.getHeight() - this.height) / 2}px`;
         this.alignToX = 'left';
         this.alignToY = false;
         break;
 
       case 'right':
-        this.position.x = this.graph.getWidth() + 'px';
-        this.position.y = (this.graph.getHeight() - this.height) / 2 + 'px';
+        this.position.x = `${this.graph.getWidth()}px`;
+        this.position.y = `${(this.graph.getHeight() - this.height) / 2}px`;
         this.alignToX = 'right';
         this.alignToY = false;
         break;
 
       case 'top':
-        this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + 'px';
+        this.position.x = `${(this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX}px`;
         this.position.y = '10px';
         this.alignToY = 'top';
         this.alignToX = false;
@@ -7609,7 +7609,7 @@ class Legend {
         if (this.isHideable()) {
           dx += 20;
           var eyeUse = document.createElementNS(self.graph.ns, 'use');
-          eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + (series[i].isShown() ? this.eyeId : this.eyeCrossedId));
+          eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${series[i].isShown() ? this.eyeId : this.eyeCrossedId}`);
           eyeUse.setAttribute('width', 15);
           eyeUse.setAttribute('height', 15);
           eyeUse.setAttribute('x', 35);
@@ -7626,11 +7626,11 @@ class Legend {
               id = self.eyeId;
             }
 
-            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + id);
+            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${id}`);
           });
         }
 
-        text.setAttribute('transform', 'translate(' + dx + ', 3)');
+        text.setAttribute('transform', `translate(${dx}, 3)`);
         text.setAttribute('fill', this.options.color);
 
         if (line) {
@@ -7798,7 +7798,7 @@ class Legend {
     var pos = this.pos;
 
     if (!isNaN(pos.transformX) && !isNaN(pos.transformY) && pos.transformX !== false && pos.transformY !== false) {
-      this.svg.setAttribute('transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')');
+      this.svg.setAttribute('transform', `translate(${pos.transformX}, ${pos.transformY})`);
     }
   }
   /**
@@ -7809,7 +7809,7 @@ class Legend {
   applyStyle() {
     if (this.options.frame) {
       this.rectBottom.setAttribute('stroke', this.options.frameColor);
-      this.rectBottom.setAttribute('stroke-width', this.options.frameWidth + 'px');
+      this.rectBottom.setAttribute('stroke-width', `${this.options.frameWidth}px`);
       this.rectBottom.setAttribute('rx', this.options.frameRounding);
       this.rectBottom.setAttribute('ry', this.options.frameRounding);
     }
@@ -8048,8 +8048,8 @@ class Axis extends EventEmitter {
         this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
     */
 
-    this.gridPrimary.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
-    this.gridSecondary.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
+    this.gridPrimary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
+    this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
 
     this.graph._axisHasChanged(this);
   }
@@ -8984,13 +8984,13 @@ class Axis extends EventEmitter {
         this.preunitTspan.innerHTML = letter;
         this.preunitTspan.setAttribute('display', 'visible');
         this.unitTspan.setAttribute('dx', 0);
-        string += ' ' + letter + ' ' + this.options.unit;
+        string += ` ${letter} ${this.options.unit}`;
       } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent)) {
         if (this.options.engineeringScale) {
           this.scientificExponent = this.getEngineeringExponent(this.scientificExponent);
         }
 
-        string += ' \\cdot 10^' + this.scientificExponent + ' ' + this.options.unit;
+        string += ` \\cdot 10^${this.scientificExponent} ${this.options.unit}`;
       }
 
       this.katexElement = this.graph.renderWithKatex(string, this.katexElement);
@@ -9309,7 +9309,7 @@ class Axis extends EventEmitter {
       return;
     }
 
-    this.gridLinePath[primary ? 'primary' : 'secondary'] += 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2;
+    this.gridLinePath[primary ? 'primary' : 'secondary'] += `M ${x1} ${y1} L ${x2} ${y2}`;
   }
 
   setGridLineStyle(gridLine, primary) {
@@ -9575,7 +9575,7 @@ class Axis extends EventEmitter {
       }
 
       if (this.options.unitInTicks && this.options.unit) {
-        value += ' ' + this.options.unit;
+        value += ` ${this.options.unit}`;
       }
 
       return value;
@@ -9602,7 +9602,7 @@ class Axis extends EventEmitter {
       text += letter;
     } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent) && !noScaling) {
       text += 'x10';
-      text += '<sup>' + this.scientificExponent + '</sup>';
+      text += `<sup>${this.scientificExponent}</sup>`;
     }
 
     if (this.options.unit && !noUnits) {
@@ -9657,7 +9657,7 @@ class Axis extends EventEmitter {
         while (incr < 1 * units[umin + 1][0] && umin > -1) {
           value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
           valueRounded = Math.round(value);
-          text += ' ' + valueRounded + units[umin][1];
+          text += ` ${valueRounded}${units[umin][1]}`;
           umin--;
         }
 
@@ -9666,9 +9666,9 @@ class Axis extends EventEmitter {
       case 'time:min.sec':
         value = value / 60;
         var valueRounded = Math.floor(value);
-        var s = Math.round((value - valueRounded) * 60) + '';
-        s = s.length == 1 ? '0' + s : s;
-        text = valueRounded + '.' + s;
+        var s = `${Math.round((value - valueRounded) * 60)}`;
+        s = s.length == 1 ? `0${s}` : s;
+        text = `${valueRounded}.${s}`;
         break;
 
       default:
@@ -10271,7 +10271,7 @@ class Axis extends EventEmitter {
     } else {
       var log = Math.round(Math.log(val) / Math.log(10));
       var unit = Math.floor(val * Math.pow(10, -log));
-      dom.textContent = unit != 1 ? unit + 'x10' : '10';
+      dom.textContent = unit != 1 ? `${unit}x10` : '10';
       var tspan = document.createElementNS(this.graph.ns, 'tspan');
       tspan.textContent = log;
       tspan.setAttribute('font-size', '0.7em');
@@ -10529,7 +10529,7 @@ class AxisX extends Axis {
       return;
     }
 
-    this.group.setAttribute('transform', 'translate(0 ' + (this.floating ? this.getShift() : this.top ? this.shift : this.graph.getDrawingHeight() - this.shift) + ')');
+    this.group.setAttribute('transform', `translate(0 ${this.floating ? this.getShift() : this.top ? this.shift : this.graph.getDrawingHeight() - this.shift})`);
   }
   /**
    *  Caclulates the maximum tick height
@@ -10637,8 +10637,8 @@ class AxisX extends Axis {
     }
 
     var span = this.getSpan();
-    this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')');
-    this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : 'url(#horionzalsplit_' + this.graph.getId() + ')');
+    this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : `url(#horionzalsplit_${this.graph.getId()})`);
+    this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : `url(#horionzalsplit_${this.graph.getId()})`);
   }
   /**
    *  @private
@@ -10856,7 +10856,7 @@ class AxisY extends Axis {
   }
 
   placeLabel(y) {
-    this.label.setAttribute('transform', 'translate(' + y + ', ' + Math.abs(this.getMaxPx() + this.getMinPx()) / 2 + ') rotate(-90)');
+    this.label.setAttribute('transform', `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) / 2}) rotate(-90)`);
   }
   /**
    *  @private
@@ -10882,8 +10882,8 @@ class AxisY extends Axis {
     this.line.setAttribute('x2', 0);
     this.line.setAttribute('stroke', this.getAxisColor());
     var span = this.getSpan();
-    this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')');
-    this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : 'url(#verticalsplit_' + this.graph.getId() + ')');
+    this.line.setAttribute('marker-start', !this.options.splitMarks || span[0] == 0 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
+    this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? '' : `url(#verticalsplit_${this.graph.getId()})`);
   }
   /**
    *  @private
@@ -10899,7 +10899,7 @@ class AxisY extends Axis {
 
     let xshift = this.shift;
     xshift = this.floating ? xshift : this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift;
-    this.group.setAttribute('transform', 'translate( ' + xshift + ' 0 )');
+    this.group.setAttribute('transform', `translate( ${xshift} 0 )`);
     this.drawLabel();
   }
   /**
@@ -11578,13 +11578,13 @@ var dateFormat = function () {
     val = String(val);
     len = len || 2;
 
-    while (val.length < len) val = '0' + val;
+    while (val.length < len) val = `0${val}`;
 
     return val;
   },
       getWeek = function (d, f) {
-    var onejan = new Date(d[f + 'FullYear'](), 0, 1);
-    return Math.ceil(((d - onejan) / 86400000 + onejan[f + 'Day']() + 1) / 7);
+    var onejan = new Date(d[`${f}FullYear`](), 0, 1);
+    return Math.ceil(((d - onejan) / 86400000 + onejan[`${f}Day`]() + 1) / 7);
   }; // Regexes and supporting functions are cached through closure
 
 
@@ -11598,7 +11598,7 @@ var dateFormat = function () {
 
 
     date = date ? new Date(date) : new Date();
-    if (isNaN(date)) throw SyntaxError('invalid date:' + date);
+    if (isNaN(date)) throw SyntaxError(`invalid date:${date}`);
     mask = String(dF.masks[mask] || mask || dF.masks.default); // Allow setting the utc argument via the mask
 
     if (mask.slice(0, 4) == 'UTC:') {
@@ -11607,14 +11607,14 @@ var dateFormat = function () {
     }
 
     var _ = utc ? 'getUTC' : 'get',
-        d = date[_ + 'Date'](),
-        D = date[_ + 'Day'](),
-        m = date[_ + 'Month'](),
-        y = date[_ + 'FullYear'](),
-        H = date[_ + 'Hours'](),
-        M = date[_ + 'Minutes'](),
-        s = date[_ + 'Seconds'](),
-        L = date[_ + 'Milliseconds'](),
+        d = date[`${_}Date`](),
+        D = date[`${_}Day`](),
+        m = date[`${_}Month`](),
+        y = date[`${_}FullYear`](),
+        H = date[`${_}Hours`](),
+        M = date[`${_}Minutes`](),
+        s = date[`${_}Seconds`](),
+        L = date[`${_}Milliseconds`](),
         o = utc ? 0 : date.getTimezoneOffset(),
         flags = {
       d: d,
@@ -11879,7 +11879,7 @@ function renderGroup(level, group, text, minPx, maxPx, x1, x2) {
       group.text.setAttribute('x', (x1B + x2B) / 2);
 
       while (text.length * 8 > x2B - x1B) {
-        text = text.substr(0, text.length - 2) + '.';
+        text = `${text.substr(0, text.length - 2)}.`;
 
         if (text.length == 1) {
           text = '';
@@ -12009,7 +12009,7 @@ class GraphTimeAxis extends Axis {
 
   setShift(shift) {
     this.shift = shift;
-    this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : this.graph.getDrawingHeight() - this.shift) + ')');
+    this.group.setAttribute('transform', `translate(0 ${this.top ? this.shift : this.graph.getDrawingHeight() - this.shift})`);
   }
 
   getAxisPosition() {
@@ -12025,6 +12025,274 @@ class GraphTimeAxis extends Axis {
   }
 
 }
+
+var ErrorBarMixin = {
+  /*
+    doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
+       if ( !( error instanceof Array ) ) {
+        error = [ error ];
+      }
+       var functionName = orientation == 'y' ? 'getY' : 'getX';
+      var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+      var j;
+       if ( isNaN( xpx ) || isNaN( ypx ) ) {
+        return;
+      }
+       for ( var i = 0, l = error.length; i < l; i++ ) {
+         if ( error[ i ] instanceof Array ) { // TOP
+           j = bars[ 0 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
+           j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
+         } else {
+           j = bars[ 0 ];
+           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
+          j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx, j );
+        }
+      }
+    },
+  */
+
+  /*
+    makeError: function( orientation, type, coord, origin, quadOrientation ) {
+       var method;
+      switch ( this.errorstyles[ level ].type ) {
+        case 'bar':
+          method = "makeBar";
+          break;
+         case 'box':
+          method = "makeBox";
+          break;
+      }
+       return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
+     },*/
+  makeBarY: function (coordY, origin, style) {
+    if (!coordY || style === undefined) {
+      return;
+    }
+
+    var width = !isNumeric$1(style.width) ? 10 : style.width;
+    return ` V ${coordY} m -${width / 2} 0 h ${width} m -${width / 2} 0 V ${origin} `;
+  },
+  makeBoxY: function (coordY, origin, style) {
+    if (!coordY || style === undefined) {
+      return;
+    }
+
+    return ` m 5 0 V ${coordY} h -10 V ${origin} m 5 0 `;
+  },
+  makeBarX: function (coordX, origin, style) {
+    if (!coordX || style === undefined) {
+      return;
+    }
+
+    var height = !isNumeric$1(style.width) ? 10 : style.width;
+    return ` H ${coordX} m 0 -${height / 2} v ${height} m 0 -${height / 2} H ${origin} `;
+  },
+  makeBoxX: function (coordX, origin, style) {
+    if (!coordX || style === undefined) {
+      return;
+    }
+
+    return ` v 5 H ${coordX} v -10 H ${origin} v 5 `;
+  },
+
+  /*
+    check: function( index, valY, valX ) {
+       var dx, dy;
+       if ( ( this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER ) ) {
+         if ( !( dx = this.data[ index * 2 ] ) || !( dy = this.data[ index * 2 + 1 ] ) ) { //
+          return;
+        }
+      }
+       if ( dx === undefined ) {
+        return;
+      }
+       for ( var i = 0, l = valY.length; i < l; i++ ) {
+         if ( Array.isArray( valY[ i ] ) ) {
+           if ( !isNaN( valY[ i ][ 0 ] ) ) {
+            this._checkY( dy + valY[ i ][ 0 ] );
+          }
+           if ( !isNaN( valY[ i ][ 1 ] ) ) {
+            this._checkY( dy - valY[ i ][ 1 ] );
+          }
+         } else {
+           if ( !isNaN( valY[ i ] ) ) {
+            this._checkY( dy + valY[ i ] );
+            this._checkY( dy - valY[ i ] );
+          }
+        }
+      }
+       for ( var i = 0, l = valX.length; i < l; i++ ) {
+         if ( Array.isArray( valX[ i ] ) ) {
+           if ( !isNaN( valX[ i ][ 0 ] ) ) {
+            this._checkX( dx - valX[ i ][ 0 ] );
+          }
+           if ( !isNaN( valX[ i ][ 1 ] ) ) {
+            this._checkX( dx + valX[ i ][ 1 ] );
+          }
+         } else {
+           if ( !isNaN( valY[ i ] ) ) {
+            this._checkX( dx - valX[ i ] );
+            this._checkX( dx + valX[ i ] );
+          }
+        }
+      }
+     },
+  */
+
+  /**
+   *
+   *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
+   */
+  setErrorBarStyle: function (errorstyle) {
+    this.errorbarStyle = this._setErrorStyle(errorstyle);
+    return this;
+  },
+  setErrorBoxStyle: function (errorstyle) {
+    this.errorboxStyle = this._setErrorStyle(errorstyle);
+    return this;
+  },
+
+  _setErrorStyle(errorstyles = {}) {
+    var styles = [];
+    var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
+
+    var makePath = style => {
+      style.dom = document.createElementNS(this.graph.ns, 'path');
+      style.dom.setAttribute('fill', style.fillColor || 'none');
+      style.dom.setAttribute('stroke', style.strokeColor || 'black');
+      style.dom.setAttribute('stroke-opacity', style.strokeOpacity || 1);
+      style.dom.setAttribute('fill-opacity', style.fillOpacity || 1);
+      style.dom.setAttribute('stroke-width', style.strokeWidth || 1);
+      this.groupMain.appendChild(style.dom);
+    }; // i is bar or box
+
+
+    var styles = {};
+
+    if (typeof errorstyles == 'string') {
+      errorstyles = {};
+    }
+
+    for (var j = 0, l = pairs.length; j < l; j++) {
+      if (errorstyles.all) {
+        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles.all);
+        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles.all);
+      }
+
+      if (errorstyles[pairs[j][0]]) {
+        //.x, .y
+        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles[pairs[j][0]]);
+        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles[pairs[j][0]]);
+      }
+
+      for (var k = 1; k <= 2; k++) {
+        if (errorstyles[pairs[j][k]]) {
+          styles[pairs[j][k]] = errorstyles[pairs[j][k]];
+          makePath(styles[pairs[j][k]]);
+        }
+      }
+    }
+
+    return styles;
+  },
+
+  errorDrawInit: function () {
+    if (this.errorboxStyle) {
+      this.errorboxStyle.paths = {
+        top: '',
+        bottom: '',
+        left: '',
+        right: ''
+      };
+    }
+
+    if (this.errorbarStyle) {
+      this.errorbarStyle.paths = {
+        top: '',
+        bottom: '',
+        left: '',
+        right: ''
+      };
+    }
+  },
+  errorAddPoint: function (index, dataX, dataY, xpx, ypx) {
+    /* eslint-disable no-cond-assign */
+    let error;
+
+    if (error = this.waveform.getErrorBarXBelow(index)) {
+      this.errorbarStyle.paths.left += ` M ${xpx} ${ypx}`;
+      this.errorbarStyle.paths.left += this.makeBarX(this.getX(dataX - error), xpx, this.errorbarStyle.left);
+    }
+
+    if (error = this.waveform.getErrorBarXAbove(index)) {
+      this.errorbarStyle.paths.right += ` M ${xpx} ${ypx}`;
+      this.errorbarStyle.paths.right += this.makeBarX(this.getX(dataX + error), xpx, this.errorbarStyle.right);
+    }
+
+    if (error = this.waveform.getErrorBarYBelow(index)) {
+      this.errorbarStyle.paths.bottom += ` M ${xpx} ${ypx}`;
+      this.errorbarStyle.paths.bottom += this.makeBarY(this.getY(dataY - error), ypx, this.errorbarStyle.bottom);
+    }
+
+    if (error = this.waveform.getErrorBarYAbove(index)) {
+      this.errorbarStyle.paths.top += ` M ${xpx} ${ypx}`;
+      this.errorbarStyle.paths.top += this.makeBarY(this.getY(dataY + error), ypx, this.errorbarStyle.top);
+    }
+
+    if (error = this.waveform.getErrorBoxXBelow(index)) {
+      this.errorboxStyle.paths.left += ` M ${xpx} ${ypx}`;
+      this.errorboxStyle.paths.left += this.makeBoxX(this.getX(dataX - error), xpx, this.errorboxStyle.left);
+    }
+
+    if (error = this.waveform.getErrorBoxXAbove(index)) {
+      this.errorboxStyle.paths.right += ` M ${xpx} ${ypx}`;
+      this.errorboxStyle.paths.right += this.makeBoxX(this.getX(dataX + error), xpx, this.errorboxStyle.right);
+    }
+
+    if (error = this.waveform.getErrorBoxYBelow(index)) {
+      this.errorboxStyle.paths.bottom += ` M ${xpx} ${ypx}`;
+      this.errorboxStyle.paths.bottom += this.makeBoxY(this.getY(dataY - error), ypx, this.errorboxStyle.bottom);
+    }
+
+    if (error = this.waveform.getErrorBoxYAbove(index)) {
+      this.errorboxStyle.paths.top += ` M ${xpx} ${ypx}`;
+      this.errorboxStyle.paths.top += this.makeBoxY(this.getY(dataY + error), ypx, this.errorboxStyle.top);
+    }
+    /* eslint-enable */
+
+  },
+  errorAddPointBarChart: function (j, posY, xpx, ypx) {
+    var error;
+
+    if (this.error && (error = this.error[j])) {
+      this.doErrorDraw('y', error, posY, ypx, xpx, ypx);
+    }
+  },
+  errorDraw: function () {
+    if (this.errorbarStyle) {
+      for (var j in this.errorbarStyle.paths) {
+        if (this.errorbarStyle[j] && this.errorbarStyle[j].dom) {
+          this.errorbarStyle[j].dom.setAttribute('d', this.errorbarStyle.paths[j]);
+        }
+      }
+    }
+
+    if (this.errorboxStyle) {
+      for (var j in this.errorboxStyle.paths) {
+        if (this.errorboxStyle[j] && this.errorboxStyle[j].dom) {
+          this.errorboxStyle[j].dom.setAttribute('d', this.errorboxStyle.paths[j]);
+        }
+      }
+    }
+  }
+};
 
 /**
  * Serie class to be extended
@@ -12855,274 +13123,6 @@ class Serie extends EventEmitter {
 
 }
 
-var ErrorBarMixin = {
-  /*
-    doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
-       if ( !( error instanceof Array ) ) {
-        error = [ error ];
-      }
-       var functionName = orientation == 'y' ? 'getY' : 'getX';
-      var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
-      var j;
-       if ( isNaN( xpx ) || isNaN( ypx ) ) {
-        return;
-      }
-       for ( var i = 0, l = error.length; i < l; i++ ) {
-         if ( error[ i ] instanceof Array ) { // TOP
-           j = bars[ 0 ];
-          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
-           j = bars[ 1 ];
-          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
-         } else {
-           j = bars[ 0 ];
-           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
-          j = bars[ 1 ];
-          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx, j );
-        }
-      }
-    },
-  */
-
-  /*
-    makeError: function( orientation, type, coord, origin, quadOrientation ) {
-       var method;
-      switch ( this.errorstyles[ level ].type ) {
-        case 'bar':
-          method = "makeBar";
-          break;
-         case 'box':
-          method = "makeBox";
-          break;
-      }
-       return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
-     },*/
-  makeBarY: function (coordY, origin, style) {
-    if (!coordY || style === undefined) {
-      return;
-    }
-
-    var width = !isNumeric$1(style.width) ? 10 : style.width;
-    return ' V ' + coordY + ' m -' + width / 2 + ' 0 h ' + width + ' m -' + width / 2 + ' 0 V ' + origin + ' ';
-  },
-  makeBoxY: function (coordY, origin, style) {
-    if (!coordY || style === undefined) {
-      return;
-    }
-
-    return ' m 5 0 V ' + coordY + ' h -10 V ' + origin + ' m 5 0 ';
-  },
-  makeBarX: function (coordX, origin, style) {
-    if (!coordX || style === undefined) {
-      return;
-    }
-
-    var height = !isNumeric$1(style.width) ? 10 : style.width;
-    return ' H ' + coordX + ' m 0 -' + height / 2 + ' v ' + height + ' m 0 -' + height / 2 + ' H ' + origin + ' ';
-  },
-  makeBoxX: function (coordX, origin, style) {
-    if (!coordX || style === undefined) {
-      return;
-    }
-
-    return ' v 5 H ' + coordX + ' v -10 H ' + origin + ' v 5 ';
-  },
-
-  /*
-    check: function( index, valY, valX ) {
-       var dx, dy;
-       if ( ( this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER ) ) {
-         if ( !( dx = this.data[ index * 2 ] ) || !( dy = this.data[ index * 2 + 1 ] ) ) { //
-          return;
-        }
-      }
-       if ( dx === undefined ) {
-        return;
-      }
-       for ( var i = 0, l = valY.length; i < l; i++ ) {
-         if ( Array.isArray( valY[ i ] ) ) {
-           if ( !isNaN( valY[ i ][ 0 ] ) ) {
-            this._checkY( dy + valY[ i ][ 0 ] );
-          }
-           if ( !isNaN( valY[ i ][ 1 ] ) ) {
-            this._checkY( dy - valY[ i ][ 1 ] );
-          }
-         } else {
-           if ( !isNaN( valY[ i ] ) ) {
-            this._checkY( dy + valY[ i ] );
-            this._checkY( dy - valY[ i ] );
-          }
-        }
-      }
-       for ( var i = 0, l = valX.length; i < l; i++ ) {
-         if ( Array.isArray( valX[ i ] ) ) {
-           if ( !isNaN( valX[ i ][ 0 ] ) ) {
-            this._checkX( dx - valX[ i ][ 0 ] );
-          }
-           if ( !isNaN( valX[ i ][ 1 ] ) ) {
-            this._checkX( dx + valX[ i ][ 1 ] );
-          }
-         } else {
-           if ( !isNaN( valY[ i ] ) ) {
-            this._checkX( dx - valX[ i ] );
-            this._checkX( dx + valX[ i ] );
-          }
-        }
-      }
-     },
-  */
-
-  /**
-   *
-   *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
-   */
-  setErrorBarStyle: function (errorstyle) {
-    this.errorbarStyle = this._setErrorStyle(errorstyle);
-    return this;
-  },
-  setErrorBoxStyle: function (errorstyle) {
-    this.errorboxStyle = this._setErrorStyle(errorstyle);
-    return this;
-  },
-
-  _setErrorStyle(errorstyles = {}) {
-    var styles = [];
-    var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
-
-    var makePath = style => {
-      style.dom = document.createElementNS(this.graph.ns, 'path');
-      style.dom.setAttribute('fill', style.fillColor || 'none');
-      style.dom.setAttribute('stroke', style.strokeColor || 'black');
-      style.dom.setAttribute('stroke-opacity', style.strokeOpacity || 1);
-      style.dom.setAttribute('fill-opacity', style.fillOpacity || 1);
-      style.dom.setAttribute('stroke-width', style.strokeWidth || 1);
-      this.groupMain.appendChild(style.dom);
-    }; // i is bar or box
-
-
-    var styles = {};
-
-    if (typeof errorstyles == 'string') {
-      errorstyles = {};
-    }
-
-    for (var j = 0, l = pairs.length; j < l; j++) {
-      if (errorstyles.all) {
-        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles.all);
-        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles.all);
-      }
-
-      if (errorstyles[pairs[j][0]]) {
-        //.x, .y
-        errorstyles[pairs[j][1]] = extend(true, {}, errorstyles[pairs[j][0]]);
-        errorstyles[pairs[j][2]] = extend(true, {}, errorstyles[pairs[j][0]]);
-      }
-
-      for (var k = 1; k <= 2; k++) {
-        if (errorstyles[pairs[j][k]]) {
-          styles[pairs[j][k]] = errorstyles[pairs[j][k]];
-          makePath(styles[pairs[j][k]]);
-        }
-      }
-    }
-
-    return styles;
-  },
-
-  errorDrawInit: function () {
-    if (this.errorboxStyle) {
-      this.errorboxStyle.paths = {
-        top: '',
-        bottom: '',
-        left: '',
-        right: ''
-      };
-    }
-
-    if (this.errorbarStyle) {
-      this.errorbarStyle.paths = {
-        top: '',
-        bottom: '',
-        left: '',
-        right: ''
-      };
-    }
-  },
-  errorAddPoint: function (index, dataX, dataY, xpx, ypx) {
-    /* eslint-disable no-cond-assign */
-    let error;
-
-    if (error = this.waveform.getErrorBarXBelow(index)) {
-      this.errorbarStyle.paths.left += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.left += this.makeBarX(this.getX(dataX - error), xpx, this.errorbarStyle.left);
-    }
-
-    if (error = this.waveform.getErrorBarXAbove(index)) {
-      this.errorbarStyle.paths.right += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.right += this.makeBarX(this.getX(dataX + error), xpx, this.errorbarStyle.right);
-    }
-
-    if (error = this.waveform.getErrorBarYBelow(index)) {
-      this.errorbarStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.bottom += this.makeBarY(this.getY(dataY - error), ypx, this.errorbarStyle.bottom);
-    }
-
-    if (error = this.waveform.getErrorBarYAbove(index)) {
-      this.errorbarStyle.paths.top += ' M ' + xpx + ' ' + ypx;
-      this.errorbarStyle.paths.top += this.makeBarY(this.getY(dataY + error), ypx, this.errorbarStyle.top);
-    }
-
-    if (error = this.waveform.getErrorBoxXBelow(index)) {
-      this.errorboxStyle.paths.left += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.left += this.makeBoxX(this.getX(dataX - error), xpx, this.errorboxStyle.left);
-    }
-
-    if (error = this.waveform.getErrorBoxXAbove(index)) {
-      this.errorboxStyle.paths.right += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.right += this.makeBoxX(this.getX(dataX + error), xpx, this.errorboxStyle.right);
-    }
-
-    if (error = this.waveform.getErrorBoxYBelow(index)) {
-      this.errorboxStyle.paths.bottom += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.bottom += this.makeBoxY(this.getY(dataY - error), ypx, this.errorboxStyle.bottom);
-    }
-
-    if (error = this.waveform.getErrorBoxYAbove(index)) {
-      this.errorboxStyle.paths.top += ' M ' + xpx + ' ' + ypx;
-      this.errorboxStyle.paths.top += this.makeBoxY(this.getY(dataY + error), ypx, this.errorboxStyle.top);
-    }
-    /* eslint-enable */
-
-  },
-  errorAddPointBarChart: function (j, posY, xpx, ypx) {
-    var error;
-
-    if (this.error && (error = this.error[j])) {
-      this.doErrorDraw('y', error, posY, ypx, xpx, ypx);
-    }
-  },
-  errorDraw: function () {
-    if (this.errorbarStyle) {
-      for (var j in this.errorbarStyle.paths) {
-        if (this.errorbarStyle[j] && this.errorbarStyle[j].dom) {
-          this.errorbarStyle[j].dom.setAttribute('d', this.errorbarStyle.paths[j]);
-        }
-      }
-    }
-
-    if (this.errorboxStyle) {
-      for (var j in this.errorboxStyle.paths) {
-        if (this.errorboxStyle[j] && this.errorboxStyle[j].dom) {
-          this.errorboxStyle[j].dom.setAttribute('d', this.errorboxStyle.paths[j]);
-        }
-      }
-    }
-  }
-};
-
 /**
  * Serie line
  * @example graph.newSerie( name, options, "line" );
@@ -13303,13 +13303,13 @@ class SerieLine extends Serie {
       _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
     }
 
-    var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
+    var el = this[`domMarker${hover ? 'Hover' : 'Select'}`];
 
     if (_on || force === true) {
       if (!el[index]) {
         var dom = document.createElementNS(this.graph.ns, 'path');
         this.setMarkerStyleTo(dom, this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)]);
-        this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
+        this[`domMarker${hover ? 'Hover' : 'Select'}`][index] = dom;
         this.groupMarkerSelected.appendChild(dom);
       } else {
         dom = el[index];
@@ -13317,7 +13317,7 @@ class SerieLine extends Serie {
 
       let x = this.getX(this.waveform.getX(i)),
           y = this.getY(this.waveform.getY(i));
-      dom.setAttribute('d', 'M ' + x + ' ' + y + ' ' + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
+      dom.setAttribute('d', `M ${x} ${y} ${this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1)}`);
 
       if (hover) {
         this.markerHovered++;
@@ -14717,7 +14717,7 @@ class SerieLine extends Serie {
     if (!this.markerForLegend) {
       var marker = document.createElementNS(this.graph.ns, 'path');
       this.setMarkerStyleTo(marker, this.markerFamilies[this.selectionType][0]);
-      marker.setAttribute('d', 'M 14 0 ' + this.getMarkerPath(this.markerFamilies[this.selectionType][0]));
+      marker.setAttribute('d', `M 14 0 ${this.getMarkerPath(this.markerFamilies[this.selectionType][0])}`);
       this.markerForLegend = marker;
     }
 
@@ -14775,14 +14775,14 @@ function drawMarkerXY(graph, family, x, y, markerDom) {
 
   if (graph.options.markersIndependant) {
     var dom = graph.getMarkerDomIndependent(graph.counter2, family);
-    var p = 'M ' + x + ' ' + y + ' ';
-    p += family.markerPath + ' ';
+    var p = `M ${x} ${y} `;
+    p += `${family.markerPath} `;
     dom.setAttribute('d', p);
   }
 
   markerDom.path = markerDom.path || '';
-  markerDom.path += 'M ' + x + ' ' + y + ' ';
-  markerDom.path += family.markerPath + ' ';
+  markerDom.path += `M ${x} ${y} `;
+  markerDom.path += `${family.markerPath} `;
 }
 
 mix(SerieLine, ErrorBarMixin);
@@ -15058,7 +15058,7 @@ class SerieBar extends SerieLine {
         continue;
       }
 
-      path += 'M ' + this.getXAxis().getPos(this.categoryIndices[i]) + ' ' + this.getYAxis().getPos(0) + ' V ' + this.getYAxis().getPos(this.data[i]) + ' h ' + this.getXAxis().getDeltaPx(1 / this.nbCategories) + ' V ' + this.getYAxis().getPos(0);
+      path += `M ${this.getXAxis().getPos(this.categoryIndices[i])} ${this.getYAxis().getPos(0)} V ${this.getYAxis().getPos(this.data[i])} h ${this.getXAxis().getDeltaPx(1 / this.nbCategories)} V ${this.getYAxis().getPos(0)}`;
 
       if (this.error) {
         this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
@@ -16019,7 +16019,7 @@ class SerieLineColor extends SerieLine {
     }
 
     if (color._rgb) {
-      color = 'rgba(' + color._rgb[0] + ',' + color._rgb[1] + ',' + color._rgb[2] + ',' + (color._rgb[3] || 1) + ')';
+      color = `rgba(${color._rgb[0]},${color._rgb[1]},${color._rgb[2]},${color._rgb[3] || 1})`;
     }
 
     var line = this.lines[color];
@@ -16036,7 +16036,7 @@ class SerieLineColor extends SerieLine {
       this.groupLines.appendChild(line.object);
     }
 
-    line.path += 'M ' + xpxbefore + ' ' + ypxbefore + ' L ' + xpx + ' ' + ypx;
+    line.path += `M ${xpxbefore} ${ypxbefore} L ${xpx} ${ypx}`;
 
     if (this.hasErrors()) {
       this.errorAddPoint(j, x, y, xpx, ypx);
@@ -16338,7 +16338,7 @@ class SerieScatter extends Serie {
   _addPoint(xpx, ypx, k) {
     let shape;
     let g = document.createElementNS(this.graph.ns, 'g');
-    g.setAttribute('transform', 'translate(' + xpx + ', ' + ypx + ')');
+    g.setAttribute('transform', `translate(${xpx}, ${ypx})`);
     g.setAttribute('data-shapeid', k);
 
     if (this.extraStyle && this.extraStyle[k]) {
@@ -16424,7 +16424,7 @@ class SerieScatter extends Serie {
       }
 
       if (!noSetPosition) {
-        shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
+        shape.parentNode.setAttribute('transform', `translate(${this.shapesDetails[index][0]}, ${this.shapesDetails[index][1]})`);
       }
     }
 
@@ -16644,7 +16644,7 @@ class SerieZone extends Serie {
               continue;
             }
 
-            line += 'L ' + xpx + ', ' + this.getY(waveform.getMinY());
+            line += `L ${xpx}, ${this.getY(waveform.getMinY())}`;
             move = true;
             continue;
           }
@@ -16658,7 +16658,7 @@ class SerieZone extends Serie {
           }
 
           if (move) {
-            line += ' M ' + xpx + ', ' + this.getY(waveform.getMinY()) + ' ';
+            line += ` M ${xpx}, ${this.getY(waveform.getMinY())} `;
             move = false;
           }
 
@@ -16667,16 +16667,16 @@ class SerieZone extends Serie {
           }
 
           if (buffer) {
-            line += buffer[2] + ',' + buffer[3] + ' ';
+            line += `${buffer[2]},${buffer[3]} `;
             buffer = false;
           } else {
-            line += xpx + ',' + ypx + ' ';
+            line += `${xpx},${ypx} `;
           }
         }
       }
 
       if (line !== '') {
-        this.lineZone.setAttribute('d', 'M ' + line + ' z');
+        this.lineZone.setAttribute('d', `M ${line} z`);
       } else {
         this.lineZone.setAttribute('d', '');
       }
@@ -17323,7 +17323,7 @@ class SerieDensityMap extends Serie {
         color[j] = (colorStops[first + 1][j] - colorStops[first][j]) * ratio + colorStops[first][j];
       }
 
-      colorMap[k] = 'hsl(' + color.h + ', ' + Math.round(color.s * 100) + '%, ' + Math.round(color.l * 100) + '%)'; //this.HSVtoRGB( color.h, color.s, color.v );
+      colorMap[k] = `hsl(${color.h}, ${Math.round(color.s * 100)}%, ${Math.round(color.l * 100)}%)`; //this.HSVtoRGB( color.h, color.s, color.v );
 
       opacities[k] = color.a;
       k++;
@@ -17440,7 +17440,7 @@ class SerieDensityMap extends Serie {
           this.paths[colorIndex] = '';
         }
 
-        this.paths[colorIndex] += ' M ' + this.getXAxis().getPx(i * this.deltaX + this.fromX) + ' ' + this.getYAxis().getPx(j * this.deltaY + this.fromY) + ' h ' + deltaXPx + ' v ' + deltaYPx + ' h -' + deltaXPx + ' z';
+        this.paths[colorIndex] += ` M ${this.getXAxis().getPx(i * this.deltaX + this.fromX)} ${this.getYAxis().getPx(j * this.deltaY + this.fromY)} h ${deltaXPx} v ${deltaYPx} h -${deltaXPx} z`;
       }
     }
     /*
@@ -17505,7 +17505,7 @@ class SerieContour extends SerieLine {
     this.positiveDelta = 0;
     this.negativeThreshold = 0;
     this.positiveThreshold = 0;
-    this.groupMain.setAttribute('clip-path', 'url(#_clipplot' + graph._creation + ')');
+    this.groupMain.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
   }
   /**
    * Sets the contour lines
@@ -17802,7 +17802,7 @@ class SerieContour extends SerieLine {
 
     hsl.h /= 360;
     var rgb = hslToRgb(hsl.h, hsl.s, hsl.l);
-    line.setAttribute('stroke', 'rgb(' + rgb.join() + ')');
+    line.setAttribute('stroke', `rgb(${rgb.join()})`);
   }
 
   getSymbolForLegend() {
@@ -17865,7 +17865,7 @@ class Shape extends EventEmitter {
     this.handles = [];
     this.options = this.options || {};
     this.group = document.createElementNS(this.graph.ns, 'g');
-    this.group.setAttribute('clip-path', 'url(#_clipplot' + graph._creation + ')');
+    this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
     this._selected = false;
     this.createDom();
 
@@ -18869,7 +18869,7 @@ class Shape extends EventEmitter {
     }
 
     for (var i = 0; i < transforms.length; i++) {
-      transformString += transforms[i].type + '(';
+      transformString += `${transforms[i].type}(`;
 
       switch (transforms[i].type) {
         case 'translate':
@@ -18885,7 +18885,7 @@ class Shape extends EventEmitter {
 
           if (transforms[i].arguments.length == 1) {
             var p = this.computePosition(0);
-            transformString += p.x + ', ' + p.y;
+            transformString += `${p.x}, ${p.y}`;
           } else {
             transformString += Position.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
             transformString += ', ';
@@ -19030,7 +19030,7 @@ class Shape extends EventEmitter {
       var x = this._labels[labelIndex].getAttribute('x'),
           y = this._labels[labelIndex].getAttribute('y');
 
-      this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')'); //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+      this._labels[labelIndex].setAttribute('transform', `rotate(${currAngle} ${x} ${y})`); //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
 
     }
 
@@ -19055,7 +19055,7 @@ class Shape extends EventEmitter {
     /** Sets the size */
 
 
-    this._labels[labelIndex].setAttribute('font-size', this.getProp('labelSize', labelIndex) + 'px' || '12px');
+    this._labels[labelIndex].setAttribute('font-size', `${this.getProp('labelSize', labelIndex)}px` || '12px');
     /** Sets the anchor */
 
 
@@ -19067,7 +19067,7 @@ class Shape extends EventEmitter {
     /** Sets the stroke */
 
 
-    this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) || 0 + 'px');
+    this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) || `${0}px`);
 
     this._labels[labelIndex].setAttribute('stroke-location', 'outside');
 
@@ -19785,7 +19785,7 @@ class Shape extends EventEmitter {
     const maskingId = maskingShape.getMaskingID();
 
     if (maskingId) {
-      this._dom.setAttribute('mask', 'url(#' + maskingId + ')');
+      this._dom.setAttribute('mask', `url(#${maskingId})`);
     } else {
       this._dom.removeAttribute('mask');
     }
@@ -19849,8 +19849,8 @@ class Shape extends EventEmitter {
     shapeLabel.select();
     setCSS(shapeLabel, {
       position: 'absolute',
-      marginTop: parseInt(e.target.getAttribute('y').replace('px', '')) + this.graph.getPaddingTop() - 10 + 'px',
-      marginLeft: parseInt(e.target.getAttribute('x').replace('px', '')) + this.graph.getPaddingLeft() - 50 + 'px',
+      marginTop: `${parseInt(e.target.getAttribute('y').replace('px', '')) + this.graph.getPaddingTop() - 10}px`,
+      marginLeft: `${parseInt(e.target.getAttribute('x').replace('px', '')) + this.graph.getPaddingLeft() - 50}px`,
       textAlign: 'center',
       width: '100px'
     });
@@ -20056,9 +20056,9 @@ class ShapeSurfaceUnderCurve extends Shape {
         }
 
         if (k > 0) {
-          this.currentLine += ' L ' + x + ' ' + y + ' ';
+          this.currentLine += ` L ${x} ${y} `;
         } else {
-          this.currentLine += ' M ' + x + ' ' + y + ' ';
+          this.currentLine += ` M ${x} ${y} `;
         } //this.serie._addPoint( x, y, false, this.currentLine );
 
 
@@ -20072,7 +20072,7 @@ class ShapeSurfaceUnderCurve extends Shape {
         return;
       }
 
-      this.currentLine += ' V ' + this.getYAxis().getPx(0) + ' H ' + this.firstX + ' z';
+      this.currentLine += ` V ${this.getYAxis().getPx(0)} H ${this.firstX} z`;
       this.setDom('d', this.currentLine);
     }
 
@@ -20324,7 +20324,7 @@ class ShapeArrow extends ShapeLine {
   createDom() {
     this._dom = document.createElementNS(this.graph.ns, 'line');
 
-    this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
+    this._dom.setAttribute('marker-end', `url(#arrow${this.graph._creation})`);
 
     this.createHandles(this.nbHandles, 'rect', {
       transform: 'translate(-3 -3)',
@@ -20462,7 +20462,7 @@ class ShapePolyline extends Shape {
     let pos = this.computePosition(0);
 
     if (pxPoints = this.getProp('pxPoints')) {
-      pxPoints = ' M ' + pos.x + ' ' + pos.y + ' ' + pxPoints;
+      pxPoints = ` M ${pos.x} ${pos.y} ${pxPoints}`;
       this.setDom('d', pxPoints);
     } else if (this.points) {
       var xAxis, yAxis;
@@ -20475,9 +20475,9 @@ class ShapePolyline extends Shape {
         yAxis = this.yAxis;
       }
 
-      this.setDom('d', 'M ' + this.points.map(function (p) {
-        return xAxis.getPx(p[0]) + ', ' + yAxis.getPx(p[1]);
-      }).join(' L '));
+      this.setDom('d', `M ${this.points.map(function (p) {
+        return `${xAxis.getPx(p[0])}, ${yAxis.getPx(p[1])}`;
+      }).join(' L ')}`);
     }
 
     this.changed();
@@ -20680,13 +20680,13 @@ class ShapeNMRIntegral extends Shape {
       if (i > 0 && (points[i - 1][2] > sum / 2 && points[i][2] <= sum / 2 || points[i - 1][2] < sum / 2 && points[i][2] >= sum / 2)) {
         let pos = baseLine - (points[i - 1][2] + points[i][2]) / 2 * ratio;
         this.setPosition({
-          x: points[i][0] + 'px',
-          y: pos + 'px'
+          x: `${points[i][0]}px`,
+          y: `${pos}px`
         }, 3);
         this.setLabelPosition(this.getPosition(3), 0);
       }
 
-      currentLine += ' L ' + points[i][0] + ', ' + py + ' ';
+      currentLine += ` L ${points[i][0]}, ${py} `;
       this.lastPointX = points[i][0];
       this.lastPointY = py;
     }
@@ -20695,9 +20695,9 @@ class ShapeNMRIntegral extends Shape {
     this._sum = sum;
 
     if (this.serie.isFlipped()) {
-      currentLine = ' M ' + baseLine + ', ' + firstX + ' ' + currentLine;
+      currentLine = ` M ${baseLine}, ${firstX} ${currentLine}`;
     } else {
-      currentLine = ' M ' + firstX + ', ' + baseLine + ' ' + currentLine;
+      currentLine = ` M ${firstX}, ${baseLine} ${currentLine}`;
     }
 
     this.firstPointX = firstX;
@@ -20940,7 +20940,7 @@ class ShapeRectangle extends Shape {
 
         for (var i in handles.sides) {
           if (handles.sides[i]) {
-            this.handles[i] = this['handle' + j];
+            this.handles[i] = this[`handle${j}`];
             this.sides[j] = i;
             j++;
           }
@@ -21144,13 +21144,13 @@ class ShapeRectangle extends Shape {
     switch (handles.type) {
       case 'seamlessX':
         if (this.handles[1]) {
-          this.handles[1].setAttribute('transform', 'translate(-10) translate(' + pos.x + ')');
+          this.handles[1].setAttribute('transform', `translate(-10) translate(${pos.x})`);
           this.handles[1].setAttribute('height', Math.abs(pos2.y - pos.y));
           this.handles[1].setAttribute('y', Math.min(pos2.y, pos.y));
         }
 
         if (this.handles[2]) {
-          this.handles[2].setAttribute('transform', 'translate(-10)  translate(' + pos2.x + ')');
+          this.handles[2].setAttribute('transform', `translate(-10)  translate(${pos2.x})`);
           this.handles[2].setAttribute('height', Math.abs(pos2.y - pos.y));
           this.handles[2].setAttribute('y', Math.min(pos2.y, pos.y));
         }
@@ -21159,19 +21159,19 @@ class ShapeRectangle extends Shape {
 
       case 'sides':
         if (this.handles.left) {
-          this.handles.left.setAttribute('transform', 'translate(' + this.currentX + ' ' + (this.currentY + this.currentH / 2) + ')');
+          this.handles.left.setAttribute('transform', `translate(${this.currentX} ${this.currentY + this.currentH / 2})`);
         }
 
         if (this.handles.right) {
-          this.handles.right.setAttribute('transform', 'translate( ' + (this.currentX + this.currentW) + ' ' + (this.currentY + this.currentH / 2) + ')');
+          this.handles.right.setAttribute('transform', `translate( ${this.currentX + this.currentW} ${this.currentY + this.currentH / 2})`);
         }
 
         if (this.handles.top) {
-          this.handles.top.setAttribute('transform', 'translate( ' + (this.currentX + this.currentW / 2) + ' ' + this.currentY + ')');
+          this.handles.top.setAttribute('transform', `translate( ${this.currentX + this.currentW / 2} ${this.currentY})`);
         }
 
         if (this.handles.bottom) {
-          this.handles.bottom.setAttribute('transform', 'translate( ' + (this.currentX + this.currentW / 2) + ' ' + (this.currentY + this.currentH) + ')');
+          this.handles.bottom.setAttribute('transform', `translate( ${this.currentX + this.currentW / 2} ${this.currentY + this.currentH})`);
         }
 
         break;
@@ -21246,7 +21246,7 @@ class ShapeCross extends Shape {
   createDom() {
     this._dom = document.createElementNS(this.graph.ns, 'path');
 
-    this._dom.setAttribute('d', 'M -' + this.width / 2 + ' 0 h ' + this.width + ' m -' + this.width / 2 + ' -' + this.width / 2 + ' v ' + this.width + '');
+    this._dom.setAttribute('d', `M -${this.width / 2} 0 h ${this.width} m -${this.width / 2} -${this.width / 2} v ${this.width}`);
   }
 
   createHandles() {
@@ -21267,7 +21267,7 @@ class ShapeCross extends Shape {
       return;
     }
 
-    this.setDom('transform', 'translate( ' + position.x + ', ' + position.y + ')');
+    this.setDom('transform', `translate( ${position.x}, ${position.y})`);
     this.currentPos1x = position.x;
     this.currentPos1y = position.y;
     return true;
@@ -21389,7 +21389,7 @@ class ShapePeakBoundaries extends ShapeLine {
 
     if (posLeft.x && posRight.x && posCenter.x && this.posYPx) {
       var height = this.lineHeight;
-      this.rectBoundary.setAttribute('d', 'M ' + posLeft.x + ' ' + (this.posYPx - height) + ' v ' + 2 * height + ' H ' + posRight.x + ' v ' + -2 * height + 'z');
+      this.rectBoundary.setAttribute('d', `M ${posLeft.x} ${this.posYPx - height} v ${2 * height} H ${posRight.x} v ${-2 * height}z`);
       this.line1.setAttribute('x1', posLeft.x);
       this.line1.setAttribute('x2', posLeft.x);
       this.line2.setAttribute('x1', posRight.x);
@@ -21608,8 +21608,8 @@ class ShapeHTML extends Shape {
       return;
     }
 
-    this._dom.style.left = position.x + 'px';
-    this._dom.style.top = position.y + 'px';
+    this._dom.style.left = `${position.x}px`;
+    this._dom.style.top = `${position.y}px`;
     this.currentPosX = position.x;
     this.currentPosY = position.y;
     return true;
@@ -22040,7 +22040,7 @@ class PluginSelectScatter extends Plugin {
       return;
     }
 
-    this.path = 'M ' + x + ' ' + y + ' ';
+    this.path = `M ${x} ${y} `;
     this.currentX = x;
     this.currentY = y;
     this.xs = [this.serie.getXAxis().getVal(x - graph.getPaddingLeft())];
@@ -22057,13 +22057,13 @@ class PluginSelectScatter extends Plugin {
 
   onMouseMove(graph, x, y, e, mute) {
     if (Math.pow(x - this.currentX, 2) + Math.pow(y - this.currentY, 2) > 25) {
-      this.path += ' L ' + x + ' ' + y + ' ';
+      this.path += ` L ${x} ${y} `;
       this.currentX = x;
       this.currentY = y;
       this.xs.push(this.serie.getXAxis().getVal(x - graph.getPaddingLeft()));
       this.ys.push(this.serie.getYAxis().getVal(y - graph.getPaddingTop()));
 
-      this._path.setAttribute('d', this.path + ' z');
+      this._path.setAttribute('d', `${this.path} z`);
 
       this.findPoints();
     }
@@ -22796,7 +22796,7 @@ class PluginTimeSerieManager extends Plugin {
     s.setInfo('timeSerieManagerDBElements', dbElements);
 
     if (!noZoneSerie) {
-      s._zoneSerie = this.graph.newSerie(serieName + '_zone', {}, Graph$1.SERIE_ZONE);
+      s._zoneSerie = this.graph.newSerie(`${serieName}_zone`, {}, Graph$1.SERIE_ZONE);
     }
 
     this.series.push(s);
@@ -22972,7 +22972,7 @@ class PluginTimeSerieManager extends Plugin {
     var dbElements = requestElements[6] || {};
 
     for (var i in dbElements) {
-      url = url.replace('<' + i + '>', dbElements[i]);
+      url = url.replace(`<${i}>`, dbElements[i]);
     }
 
     return url;
@@ -22998,10 +22998,10 @@ class PluginTimeSerieManager extends Plugin {
     var info = serie.getInfo('timeSerieManagerDBElements');
 
     for (var i in info) {
-      extra += ';' + i + ':' + info[i];
+      extra += `;${i}:${info[i]}`;
     }
 
-    return serie.getName() + ';' + slotId + ';' + interval + extra;
+    return `${serie.getName()};${slotId};${interval}${extra}`;
   }
 
   computeSlotID(time, interval) {
@@ -23427,7 +23427,7 @@ class PluginSerieLineDifference extends Plugin {
           d += 'M ';
         }
 
-        d += ' ' + Math.round(self.serie1.getXAxis().getPx(path[0][i])) + ', ' + Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]));
+        d += ` ${Math.round(self.serie1.getXAxis().getPx(path[0][i]))}, ${Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]))}`;
 
         if (i < path[0].length - 2) {
           d += ' L ';
@@ -23435,7 +23435,7 @@ class PluginSerieLineDifference extends Plugin {
       }
 
       for (var i = path[1].length - 2; i >= 0; i -= 2) {
-        d += ' L ' + Math.round(self.serie2.getXAxis().getPx(path[1][i])) + ', ' + Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]));
+        d += ` L ${Math.round(self.serie2.getXAxis().getPx(path[1][i]))}, ${Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]))}`;
 
         if (i == 0) {
           d += ' z ';
@@ -23724,7 +23724,7 @@ class PluginAxisSplitting extends Plugin {
       }
 
       while (serie.subSeries.length < splits) {
-        const name = serie.getName() + '_' + serie.subSeries.length;
+        const name = `${serie.getName()}_${serie.subSeries.length}`;
         const s = this.graph.newSerie(name, {}, serie.getType() || Graph$1.SERIE_LINE);
         s.excludedFromLegend = true;
         s.styles = serie.styles;
@@ -23740,7 +23740,7 @@ class PluginAxisSplitting extends Plugin {
       }
 
       while (serie.subSeries.length > splits) {
-        let subserie = this.graph.getSerie(serie.getName() + '_' + (serie.subSeries.length - 1));
+        let subserie = this.graph.getSerie(`${serie.getName()}_${serie.subSeries.length - 1}`);
 
         if (subserie && subserie.kill) {
           subserie.kill();
@@ -23802,7 +23802,7 @@ class PluginAxisSplitting extends Plugin {
         break;
     }
 
-    throw 'Cannot create a split serie of type ' + type;
+    throw `Cannot create a split serie of type ${type}`;
   }
   /**
    *  Creates a new line serie
@@ -24115,7 +24115,7 @@ var SplitAxis = function (mixin) {
 
     getSubAxis(index) {
       if (this.axes.length <= index) {
-        throw 'Impossible to reach axis. Index ' + index + ' is out of range';
+        throw `Impossible to reach axis. Index ${index} is out of range`;
       }
 
       return this.axes[index];
@@ -24280,7 +24280,7 @@ class PluginMakeTracesDifferent extends Plugin {
   }
 
   buildHSLString(hsl) {
-    return 'hsl( ' + Math.round(hsl.h) + ', ' + Math.round(hsl.s * 100) + '%, ' + Math.round(hsl.l * 100) + '%)';
+    return `hsl( ${Math.round(hsl.h)}, ${Math.round(hsl.s * 100)}%, ${Math.round(hsl.l * 100)}%)`;
   }
 
   colorizeAll(options, callback = false) {
@@ -24361,7 +24361,7 @@ class PluginMakeTracesDifferent extends Plugin {
 
     return series.map((serie, index) => {
       if (!serie.setLineColor) {
-        throw 'The serie ' + serie.getName() + ' does not implement the method `startingColor`';
+        throw `The serie ${serie.getName()} does not implement the method \`startingColor\``;
       }
 
       let colorString;

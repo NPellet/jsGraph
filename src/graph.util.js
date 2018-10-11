@@ -256,11 +256,11 @@ export function ajaxGet( options ) {
         if ( options.json ) response = JSON.parse( response );
         resolve( response );
       } else {
-        reject( new Error( 'Request error: ' + request.status ) );
+        reject( new Error( `Request error: ${ request.status}` ) );
       }
     };
     request.onerror = function() {
-      reject( new Error( 'Network error: ' + request.status ) );
+      reject( new Error( `Network error: ${ request.status}` ) );
     };
     request.send();
   } );
