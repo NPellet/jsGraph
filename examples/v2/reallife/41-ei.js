@@ -75,6 +75,10 @@ define( function( require, exports, module ) {
 
     let wave = Graph.newWaveform().setData( data.y, data.x );
 
+    let data2 = JSON.parse( JSON.stringify( data ) );
+    data2.y[5] = 10000;
+    let wave2 = Graph.newWaveform().setData( data2.y, data2.x );
+
     var graph = new Graph( domGraph, {
       plugins: {
         peakPicking: {}
@@ -83,12 +87,21 @@ define( function( require, exports, module ) {
 
     graph.resize( 400, 400 );
 
-    graph
-      .newSerie()
+    const eiSerie = graph
+      .newSerie( 'ei', { lineToZero: true } )
       .autoAxis()
       .setWaveform( wave );
 
+    graph.getPlugin( 'peakPicking' ).setSerie( eiSerie );
+
     graph.draw();
+
+    function update() {
+      eiSerie.setWaveform( wave2 );
+      graph.draw();
+    }
+
+    setTimeout( update, 2000 );
 
     return graph;
   };
