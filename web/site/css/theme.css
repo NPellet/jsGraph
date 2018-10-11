@@ -7097,10 +7097,7 @@ footer {
 footer a {
   color: #074b29;
 }
-.ace_editor {
-  height: 200px;
-}
 #example-code-editable {
-  height: 300px;
+  height: 800px;
 }
 /*# sourceMappingURL=site/css/theme.css.map */
