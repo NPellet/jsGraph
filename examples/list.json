@@ -22,6 +22,11 @@
       {
         "name": "52-gradient2.js",
         "title": "Density map usage"
+      },
+
+      {
+        "name": "41-ei.js",
+        "title": "Experimental electron impact mass spectrum of 2-methoxyethanol"
       }
     ]
   },

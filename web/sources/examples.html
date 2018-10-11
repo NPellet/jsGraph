@@ -7,6 +7,7 @@ permalink: /examples
 
 <div class="example" data-example="{{ example.id }}">
 
+	<h3 id="example-explain">Click on an example in the menu to load it</h3>
 	<div class="row">
 		<h4 id="example-title">
 
@@ -17,13 +18,10 @@ permalink: /examples
 	</div>
 	<div class="row">
 
-		<p class="larger">
-			{{ example.description }}
+		<p class="larger" id="example-description">
+
 		</p>
 	</div>
-
-	<pre class="language-javascript">
-		<code id="example-code-fixed"></code>
-	</pre>
-
+	<pre class="language-javascript hidden"><code id="example-code-fixed"></code></pre>
+	<div id="example-code-editable"></div>
 </div>

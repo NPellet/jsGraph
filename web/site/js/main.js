@@ -59,16 +59,6 @@ if (menu.length > 0) {
 $('body').scrollspy({ target: '#jsgraph-sidebar' });
 $('#jsgraph-sidebar').affix({ offset: { top: 50 } });
 
-$('.showExampleCode').on('click', function() {
-  var code = $(this)
-    .parent()
-    .parent()
-    .parent()
-    .find('.code');
-  code.toggleClass('hidden');
-  $(this).text(code.hasClass('hidden') ? 'Show code' : 'Hide code');
-});
-
 const loadExamples = () => {
   if ($('#jsgraph-examplesmenu').length == 0) {
     return;
@@ -95,14 +85,31 @@ const loadExamples = () => {
 
       $('#jsgraph-examplesmenu').html(html);
 
+      var editor = ace.edit('example-code-editable');
+      editor.setTheme('ace/theme/monokai');
+      editor.session.setMode('ace/mode/json');
+
       $('#jsgraph-examplesmenu').on('click', 'a', function() {
+        $('#example-explain').hide();
+
         const folder = $(this).data('folder');
         const file = $(this).data('example');
 
         if (graph) {
           graph.kill();
         }
-        $('#example-title').html($(this).html());
+        editor.session.on('change', function(delta) {
+          const value = editor.getValue();
+          try {
+            const json = JSON.parse(value);
+
+            if (graph) {
+              graph.kill();
+              graph = Graph.fromJSON(json, 'graph-example');
+              graph.draw();
+            }
+          } catch (e) {}
+        });
 
         if (file.match(/\.json$/)) {
           fetch(`./js/examples/${folder}/${file}`)
@@ -110,6 +117,18 @@ const loadExamples = () => {
             .then(json => {
               graph = Graph.fromJSON(json, 'graph-example');
               graph.draw();
+
+              const stringified = JSON.stringify(json, undefined, '\t');
+
+              $('#example-code-fixed')
+                .parent()
+                .addClass('hidden');
+
+              $('#example-code-editable').removeClass('hidden');
+
+              editor.session.setValue(stringified); // set value and reset undo history
+
+              editor.resize();
             });
         } else {
           requirejs([`./js/examples/${folder}/${file}`], constructor => {
@@ -117,6 +136,11 @@ const loadExamples = () => {
 
             graph = constructor('graph-example');
           });
+
+          $('#example-code-fixed')
+            .parent()
+            .removeClass('hidden');
+          $('#example-code-fixed').html(selectedExample.highlighted);
         }
 
         let selectedExample;
@@ -133,7 +157,8 @@ const loadExamples = () => {
           }
         }
 
-        $('#example-code-fixed').html(selectedExample.highlighted);
+        $('#example-title').html(selectedExample.title);
+        $('#example-description').html(selectedExample.description);
       });
     });
 };

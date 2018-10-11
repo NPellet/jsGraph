@@ -7089,11 +7089,6 @@ h2 {
 #jsgraph-highlights p.larger {
   font-size: 1.3em;
 }
-.example {
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #032e18;
-}
 footer {
   border-top: 1px solid #0b733f;
   height: 40px;
@@ -7101,5 +7096,11 @@ footer {
 }
 footer a {
   color: #074b29;
+}
+.ace_editor {
+  height: 200px;
+}
+#example-code-editable {
+  height: 300px;
 }
 /*# sourceMappingURL=site/css/theme.css.map */

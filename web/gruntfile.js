@@ -91,6 +91,13 @@ module.exports = function(grunt) {
 
           {
             cwd: './node_modules',
+            src: 'ace-builds/**/*',
+            dest: './site/js/',
+            expand: true
+          },
+
+          {
+            cwd: './node_modules',
             src: 'node-jsgraph/dist/jsgraph.min.js',
             dest: './site/js/',
             expand: true

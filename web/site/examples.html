@@ -10,7 +10,7 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-
+    <script src="/web/site/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="/web/site/js/node-jsgraph/dist/jsgraph.js"></script>
     <script src="/web/site/js/jquery/dist/jquery.min.js"></script>
     <script src="/web/site/js/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -85,6 +85,7 @@
     <div class="col-sm-9" id="main">
         <div class="example" data-example="">
 
+	<h3 id="example-explain">Click on an example in the menu to load it</h3>
 	<div class="row">
 		<h4 id="example-title">
 
@@ -95,15 +96,12 @@
 	</div>
 	<div class="row">
 
-		<p class="larger">
-			
+		<p class="larger" id="example-description">
+
 		</p>
 	</div>
-
-	<pre class="language-javascript">
-		<code id="example-code-fixed"></code>
-	</pre>
-
+	<pre class="language-javascript hidden"><code id="example-code-fixed"></code></pre>
+	<div id="example-code-editable"></div>
 </div>
     </div>
 </div>
