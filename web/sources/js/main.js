@@ -99,32 +99,41 @@ const loadExamples = () => {
         const folder = $(this).data('folder');
         const file = $(this).data('example');
 
-        if( graph ) {
+        if (graph) {
           graph.kill();
         }
         $('#example-title').html($(this).html());
 
-        requirejs([`./js/examples/${folder}/${file}`], constructor => {
-          let selectedExample;
-
-          for (var i = 0; i < json.length; i++) {
-            if (json[i].name !== folder) continue;
-
-            for (var j = 0; j < json[i].children.length; j++) {
-              if (json[i].children[j].name !== file) {
-                continue;
-              } else {
-                selectedExample = json[i].children[j];
-                console.log(selectedExample);
-              }
-            }
+        if (file.match(/\.json$/)) {
+          fetch(`./js/examples/${folder}/${file}`)
+            .then(file => file.json())
+            .then(json => {
+              graph = Graph.fromJSON(json, 'graph-example');
+              graph.draw();
+            });
+        } else {
+          requirejs([`./js/examples/${folder}/${file}`], constructor => {
             html += '</ul></li>';
+
+            graph = constructor('graph-example');
+          });
+        }
+
+        let selectedExample;
+
+        for (var i = 0; i < json.length; i++) {
+          if (json[i].name !== folder) continue;
+
+          for (var j = 0; j < json[i].children.length; j++) {
+            if (json[i].children[j].name !== file) {
+              continue;
+            } else {
+              selectedExample = json[i].children[j];
+            }
           }
+        }
 
-          $('#example-code-fixed').html(selectedExample.highlighted);
-
-          graph = constructor('graph-example');
-        });
+        $('#example-code-fixed').html(selectedExample.highlighted);
       });
     });
 };

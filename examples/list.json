@@ -24,5 +24,23 @@
         "title": "Density map usage"
       }
     ]
+  },
+  {
+    "title": "JSON create files",
+    "name": "json",
+    "children": [
+      {
+        "name": "axis.json",
+        "title": "Creating multiple axes"
+      },
+      {
+        "name": "simple.json",
+        "title": "Simple scatter plot"
+      },
+      {
+        "name": "style.json",
+        "title": "Styling scatter plot"
+      }
+    ]
   }
 ]
