@@ -32,7 +32,7 @@
   },
   {
     "title": "JSON create files",
-    "name": "json",
+    "name": "jsonScatter",
     "children": [
       {
         "name": "axis.json",

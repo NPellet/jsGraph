@@ -111,6 +111,19 @@ const loadExamples = () => {
           } catch (e) {}
         });
 
+        let selectedExample;
+
+        for (var i = 0; i < json.length; i++) {
+          if (json[i].name !== folder) continue;
+
+          for (var j = 0; j < json[i].children.length; j++) {
+            if (json[i].children[j].name !== file) {
+              continue;
+            } else {
+              selectedExample = json[i].children[j];
+            }
+          }
+        }
         if (file.match(/\.json$/)) {
           fetch(`./js/examples/${folder}/${file}`)
             .then(file => file.json())
@@ -141,20 +154,6 @@ const loadExamples = () => {
             .parent()
             .removeClass('hidden');
           $('#example-code-fixed').html(selectedExample.highlighted);
-        }
-
-        let selectedExample;
-
-        for (var i = 0; i < json.length; i++) {
-          if (json[i].name !== folder) continue;
-
-          for (var j = 0; j < json[i].children.length; j++) {
-            if (json[i].children[j].name !== file) {
-              continue;
-            } else {
-              selectedExample = json[i].children[j];
-            }
-          }
         }
 
         $('#example-title').html(selectedExample.title);

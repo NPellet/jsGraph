@@ -1,0 +1,13 @@
+{
+  "series": [
+    {
+      "type": "line",
+      "xAxis": "wavelength",
+      "yAxis": "transmission",
+      "data": {
+        "x": [1, 2, 3, 4, 5],
+        "y": [1, 2, 3, 2, 1]
+      }
+    }
+  ]
+}

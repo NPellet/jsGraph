@@ -1,0 +1,44 @@
+{
+  "series": [
+    {
+      "type": "scatter",
+      "data": {
+        "x": [1, 2, 3, 4, 5],
+        "y": [1, 2, 3, 2, 1]
+      },
+      "annotations": [
+        {
+          "type": "rectangle",
+          "properties": {
+            "strokeColor": "#F00",
+            "fillColor": "#FF0",
+            "fillOpacity": 0.5,
+            "strokeWidth": 2,
+            "strokeDasharray": [3, 2, 1, 1],
+            "position": [{ "x": 1, "y": 1 }, { "x": 1.5, "y": 1.5 }]
+          }
+        },
+        {
+          "type": "ellipse",
+          "properties": {
+            "strokeColor": "#F00",
+            "fillColor": "#FF0",
+            "fillOpacity": 0.5,
+            "strokeWidth": 2,
+            "strokeDasharray": [3, 2, 1, 1],
+            "rx": 0.1,
+            "ry": 0.2,
+            "position": { "x": 2, "y": 2 }
+          }
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "data": {
+        "x": [1, 2, 3, 4, 5],
+        "y": [2, 3, 4, 3, 2]
+      }
+    }
+  ]
+}

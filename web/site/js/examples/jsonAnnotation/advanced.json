@@ -1,0 +1,53 @@
+{
+  "axes": {
+    "left": [
+      {
+        "forcedMin": 0,
+        "forcedMax": 10,
+        "name": "axisY"
+      }
+    ],
+    "bottom": {
+      "forcedMin": 0,
+      "forcedMax": 10,
+      "name": "axisX"
+    }
+  },
+
+  "annotations": [
+    {
+      "type": "rectangle",
+      "xAxis": "axisX",
+      "yAxis": "axisY",
+      "layer": 0,
+      "properties": {
+        "strokeColor": "#F00",
+        "fillColor": "#FF0",
+        "fillOpacity": 0.5,
+        "strokeWidth": 2,
+        "strokeDasharray": [3, 2, 1, 1],
+        "transforms": [
+          {
+            "type": "rotate",
+            "center": { "x": 2, "y": 2 },
+            "angle": 45
+          },
+          {
+            "type": "translate",
+            "value": { "dx": "-10px", "dy": "-100px" }
+          }
+        ],
+        "position": [{ "x": 1, "y": 1 }, { "x": 3, "y": 3 }],
+        "labelText": "Boum",
+        "labelAngle": 30,
+        "labelBaseline": "hanging",
+        "labelSize": 14,
+        "labelColor": "green",
+        "labelAnchor": "middle",
+        "labelBackgroundColor": "green",
+        "labelBackgroundOpacity": 0.7,
+        "labelPosition": { "x": 1, "y": 1, "dy": "-10px" }
+      }
+    }
+  ]
+}
