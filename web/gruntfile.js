@@ -118,6 +118,13 @@ module.exports = function(grunt) {
           },
 
           {
+            cwd: './node_modules/prismjs',
+            src: 'prism.js',
+            dest: './site/js',
+            expand: true
+          },
+
+          {
             cwd: './node_modules',
             src: 'requirejs/require.js',
             dest: './site/js/',

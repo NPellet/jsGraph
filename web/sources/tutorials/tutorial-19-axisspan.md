@@ -3,48 +3,55 @@ layout: page-sidemenu
 subtitle: 'Axes spanning'
 ---
 ## Axes spanning
-
 jsGraph allows you to have in a single graph more than one axis at the same position (top, left, right, bottom). Axes don't actually have to take up the 100% of the space, horizontally or vertically.
 
 For example, let us imagine that you want to display different kind of data in the y direction (for example, speed, angle and height), versus one single x axis (let's say time), it might make sense to display all three series in different regions of the graph, because the axes would have nothing to do with each other...
 
-You can do that using the method ```axis.setSpan( spanFrom, spanTo )```, where ```spanFrom``` and ```spanTo``` must range between ```0``` and ```1``` and represents the position in percentage where the axis will start and end.
+You can do that using the method `axis.setSpan( spanFrom, spanTo )`, where `spanFrom` and `spanTo` must range between `0` and `1` and represents the position in percentage where the axis will start and end.
 
-For the x axis, 0 is always at the left, and 1 is at the right. For the y axis, 0 is the *bottom*, and 1 is the *top* (inverse of the traditional SVG coordinates).
+For the x axis, 0 is always at the left, and 1 is at the right. For the y axis, 0 is the _bottom_, and 1 is the _top_ (inverse of the traditional SVG coordinates).
 
-### <a id="example"></a>  Basic example
+### <a id="example"></a> Basic example
 
-To illustrate the ```setSpan``` method, let us make a nice graph with two y axes spanning from 0 to 45% and from 55% to 100%:
+To illustrate the `setSpan` method, let us make a nice graph with two y axes spanning from 0 to 45% and from 55% to 100%:
 
-{% highlight javascript %}
+```javascript
+var graph = new Graph('example-1');
+graph.resize(700, 300);
+graph
+  .getLeftAxis(0)
+  .setSpan(0.0, 0.45)
+  .turnGridsOff()
+  .setLabel('Colorado');
+graph
+  .getLeftAxis(1)
+  .setSpan(0.55, 1)
+  .turnGridsOff()
+  .setLabel('California');
 
-  var graph = new Graph( "example-1" );
-  graph.resize( 700, 300 );
-  graph.getLeftAxis(0).setSpan( 0.0, 0.45 ).turnGridsOff().setLabel("Colorado");
-  graph.getLeftAxis(1).setSpan( 0.55, 1 ).turnGridsOff().setLabel("California");
-  
-  graph.getBottomAxis().setPrimaryGridColor("rgba( 100, 100, 0, 0.5 )").setLabel("Year");
+graph
+  .getBottomAxis()
+  .setPrimaryGridColor('rgba( 100, 100, 0, 0.5 )')
+  .setLabel('Year');
 
-  graph
-    .newSerie( "colorado" )
-    .setWaveform( dataColorado )
-    .autoAxis()
-    .setYAxis( graph.getLeftAxis( 0 ) )
-    .setLineColor("#CF4E4E")
-    .setLineWidth( 2 );
+graph
+  .newSerie('colorado')
+  .setWaveform(dataColorado)
+  .autoAxis()
+  .setYAxis(graph.getLeftAxis(0))
+  .setLineColor('#CF4E4E')
+  .setLineWidth(2);
 
-  graph
-    .newSerie( "california" )
-    .setWaveform( dataCalifornia )
-    .autoAxis()
-    .setYAxis( graph.getLeftAxis( 1 ) )
-    .setLineColor("#3EA63E")
-    .setLineWidth( 2 );
+graph
+  .newSerie('california')
+  .setWaveform(dataCalifornia)
+  .autoAxis()
+  .setYAxis(graph.getLeftAxis(1))
+  .setLineColor('#3EA63E')
+  .setLineWidth(2);
 
-  graph.draw();
-
-{% endhighlight %}
-
+graph.draw();
+```
 
 <div id="example-1" class="jsgraph-example"></div>
 
@@ -87,37 +94,43 @@ dataKentucky = Graph.newWaveform().setData( dataKentucky.map( e => e[ 1 ] ), dat
 
 Of course, this also works with the X axis:
 
+```javascript
+var graph = new Graph('example-2');
 
+graph
+  .getBottomAxis(0)
+  .setSpan(0.0, 0.45)
+  .turnGridsOff()
+  .setLabel('Years');
+graph
+  .getBottomAxis(1)
+  .setSpan(0.55, 1)
+  .turnGridsOff()
+  .setLabel('Years');
 
-{% highlight javascript %}
+graph
+  .getLeftAxis()
+  .setPrimaryGridColor('rgba( 100, 100, 0, 0.5 )')
+  .setLabel('Coal consumption');
 
-  var graph = new Graph( "example-2" );
-  
-  graph.getBottomAxis(0).setSpan( 0.0, 0.45 ).turnGridsOff().setLabel("Years");
-  graph.getBottomAxis(1).setSpan( 0.55, 1 ).turnGridsOff().setLabel("Years");
-  
-  graph.getLeftAxis().setPrimaryGridColor("rgba( 100, 100, 0, 0.5 )").setLabel("Coal consumption");
+graph
+  .newSerie('colorado')
+  .setWaveform(dataColorado)
+  .autoAxis()
+  .setXAxis(graph.getBottomAxis(0))
+  .setLineColor('#CF4E4E')
+  .setLineWidth(2);
 
-  graph
-    .newSerie( "colorado" )
-    .setWaveform( dataColorado )
-    .autoAxis()
-    .setXAxis( graph.getBottomAxis( 0 ) )
-    .setLineColor("#CF4E4E")
-    .setLineWidth( 2 );
+graph
+  .newSerie('california')
+  .setWaveform(dataCalifornia)
+  .autoAxis()
+  .setXAxis(graph.getBottomAxis(1))
+  .setLineColor('#3EA63E')
+  .setLineWidth(2);
 
-  graph
-    .newSerie( "california" )
-    .setWaveform( dataCalifornia )
-    .autoAxis()
-    .setXAxis( graph.getBottomAxis( 1 ) )
-    .setLineColor("#3EA63E")
-    .setLineWidth( 2 );
-
-  graph.draw();
-
-{% endhighlight %}
-
+graph.draw();
+```
 
   <div id="example-2" class="jsgraph-example"></div>
 
@@ -151,55 +164,62 @@ Of course, this also works with the X axis:
 
 </script>
 
+### <a id="overlap"></a> Overlapping axes
 
-###  <a id="overlap"></a>  Overlapping axes
-
-One might wonder how jsgraph handles cases where axis spans overlap. For example ```axisA.setSpan( 0, 55 )``` would clash with ```axisB.setSpan( 50, 100 )```. In such cases, jsGraph determines automatically such clashes and offsets one of the axis (the one with the largest index in the stack) by a sufficient amount so that visual perception is not deteriorated. In general, jsGraph will try to place as many axis in the first level, and perform iteratively for the following levels. For example, if you have ```axisA.setSpan( 0, 55 )```, ```axisB.setSpan( 50, 100 )``` and ```axisC.setSpan( 60, 80 )```, then axisC will be placed together with axisA because they don't overlap. It will not take a third level.
+One might wonder how jsgraph handles cases where axis spans overlap. For example `axisA.setSpan( 0, 55 )` would clash with `axisB.setSpan( 50, 100 )`. In such cases, jsGraph determines automatically such clashes and offsets one of the axis (the one with the largest index in the stack) by a sufficient amount so that visual perception is not deteriorated. In general, jsGraph will try to place as many axis in the first level, and perform iteratively for the following levels. For example, if you have `axisA.setSpan( 0, 55 )`, `axisB.setSpan( 50, 100 )` and `axisC.setSpan( 60, 80 )`, then axisC will be placed together with axisA because they don't overlap. It will not take a third level.
 
 To make it clear, here is how this example would turn out:
 
+```javascript
+var graph = new Graph('example-3');
 
+graph
+  .getLeftAxis(0)
+  .setSpan(0.0, 0.55)
+  .turnGridsOff()
+  .setLabel('Colorado');
+graph
+  .getLeftAxis(1)
+  .setSpan(0.5, 1)
+  .turnGridsOff()
+  .setLabel('California');
+graph
+  .getLeftAxis(2)
+  .setSpan(0.6, 8)
+  .turnGridsOff()
+  .setLabel('Kentucky');
 
+graph
+  .getBottomAxis()
+  .setPrimaryGridColor('rgba( 100, 100, 0, 0.5 )')
+  .setLabel('Year');
 
-{% highlight javascript %}
+graph
+  .newSerie('colorado')
+  .setWaveform(dataColorado)
+  .autoAxis()
+  .setYAxis(graph.getLeftAxis(0))
+  .setLineColor('#CF4E4E')
+  .setLineWidth(2);
 
-  var graph = new Graph( "example-3" );
+graph
+  .newSerie('california')
+  .setWaveform(dataCalifornia)
+  .autoAxis()
+  .setYAxis(graph.getLeftAxis(1))
+  .setLineColor('#3EA63E')
+  .setLineWidth(2);
 
-  graph.getLeftAxis(0).setSpan( 0.0, 0.55 ).turnGridsOff().setLabel("Colorado");
-  graph.getLeftAxis(1).setSpan( 0.5, 1 ).turnGridsOff().setLabel("California");
-  graph.getLeftAxis(2).setSpan( 0.6, 8 ).turnGridsOff().setLabel("Kentucky");
-  
-  graph.getBottomAxis().setPrimaryGridColor("rgba( 100, 100, 0, 0.5 )").setLabel("Year");
+graph
+  .newSerie('kentucky')
+  .setWaveform(dataKentucky)
+  .autoAxis()
+  .setYAxis(graph.getLeftAxis(2))
+  .setLineColor('#2F7C7C')
+  .setLineWidth(2);
 
-  graph
-    .newSerie( "colorado" )
-    .setWaveform( dataColorado )
-    .autoAxis()
-    .setYAxis( graph.getLeftAxis( 0 ) )
-    .setLineColor("#CF4E4E")
-    .setLineWidth( 2 );
-
-  graph
-    .newSerie( "california" )
-    .setWaveform( dataCalifornia )
-    .autoAxis()
-    .setYAxis( graph.getLeftAxis( 1 ) )
-    .setLineColor("#3EA63E")
-    .setLineWidth( 2 );
-
-
-  graph
-    .newSerie( "kentucky" )
-    .setWaveform( dataKentucky )
-    .autoAxis()
-    .setYAxis( graph.getLeftAxis( 2 ) )
-    .setLineColor("#2F7C7C")
-    .setLineWidth( 2 );
-
-  graph.draw();
-
-{% endhighlight %}
-
+graph.draw();
+```
 
 <div id="example-3" class="jsgraph-example"></div>
 

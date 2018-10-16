@@ -10,10 +10,10 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/web/site/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/web/site/js/node-jsgraph/dist/jsgraph.js"></script>
-    <script src="/web/site/js/jquery/dist/jquery.min.js"></script>
-    <script src="/web/site/js/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
+    <script src="/js/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- jQuery 
     
 
@@ -23,13 +23,13 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-        var baseUrl = "/web/site/";
+        var baseUrl = "/";
     </script>
 
-    <link rel="stylesheet" href="/web/site/css/main.css">
-    <link rel="stylesheet" href="/web/site/css/theme.css">
-    <link rel="stylesheet" href="/web/site/css/prism-okaidia.css">
-    <link rel="canonical" href="http://localhost:8000//web/site//tutorials/tutorial-20-axesadvanced.html">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/prism-okaidia.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-20-axesadvanced.html">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </head>
 
@@ -58,10 +58,10 @@
         <ul class="nav navbar-nav">
 
 
-          <li><a href="/web/site/getting-started.html">Getting started</a></li>
-          <li><a href="/web/site/tutorials.html">Tutorials</a></li>
-          <li><a href="/web/site/docs/Graph.html">Documentation</a></li>
-          <li><a href="/web/site/examples.html">Examples</a></li>
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
         </ul>
       </div>
     </div>
@@ -84,7 +84,6 @@
 
 	<div class="col-sm-9" id="main">
 		<h2 id="axes-unit-and-scientific-scaling">Axes unit and scientific scaling</h2>
-
 <script>
 	var serie1 = Graph.newWaveform().setData( [ 10000000, 11000000 ], [ 0, 1 ] );
 </script>
@@ -95,7 +94,7 @@
 
 <p>Let’s take this simple serie to demonstrate the possibilities of jsGraph:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>var serie1 = Graph.newWaveform().setData( [ 10000000, 11000000 ], [ 0, 1 ] );
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">serie1</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">([</span><span class="mi">10000000</span><span class="p">,</span> <span class="mi">11000000</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]);</span>
 </code></pre>
 </div>
 
@@ -103,12 +102,12 @@
 
 <p>For this to happens, you need to use the <a href="Axis.html#setUnit">Axis#setUnit</a> and the <a href="Axis.html#setUnitDecade">Axis#setUnitDecade</a> method (which are accessible via options):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>g.getLeftAxis().setLabel("Distance");
-g.getLeftAxis().setUnit("m");
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'Distance'</span><span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">().</span><span class="nx">setUnit</span><span class="p">(</span><span class="s1">'m'</span><span class="p">);</span>
 
-g.getLeftAxis().setScientific( true ); // Turn into scientific mode
-g.getLeftAxis().setUnitDecade( true ); // Ask for unit scaling
-g.draw();
+<span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">().</span><span class="nx">setScientific</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> <span class="c1">// Turn into scientific mode</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">().</span><span class="nx">setUnitDecade</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> <span class="c1">// Ask for unit scaling</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
 </code></pre>
 </div>
 
@@ -120,8 +119,8 @@ var g = new Graph("example-1") // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
- .autoAxis() // Assigns automatic axes to the serie
- .setWaveform( serie1 ); // Assigns the data to the serie
+.autoAxis() // Assigns automatic axes to the serie
+.setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -138,7 +137,7 @@ g.draw();
 <div class="highlighter-rouge"><pre class="highlight"><code>g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
 
-g.getLeftAxis().setScientific( true ); // Just turn the scientific mode on, but do 
+g.getLeftAxis().setScientific( true ); // Just turn the scientific mode on, but do
 g.draw();
 </code></pre>
 </div>
@@ -152,8 +151,8 @@ var g = new Graph("example-2") // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
- .autoAxis() // Assigns automatic axes to the serie
- .setWaveform( serie1 ); // Assigns the data to the serie
+.autoAxis() // Assigns automatic axes to the serie
+.setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -185,8 +184,8 @@ var g = new Graph("example-3") // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
- .autoAxis() // Assigns automatic axes to the serie
- .setWaveform( serie1 ); // Assigns the data to the serie
+.autoAxis() // Assigns automatic axes to the serie
+.setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -213,14 +212,13 @@ g.draw();
 <div id="example-3-2" class="jsgraph-example"></div>
 <script>
 
-
 var g = new Graph("example-3-2") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
- .autoAxis() // Assigns automatic axes to the serie
- .setWaveform( serie1 ); // Assigns the data to the serie
+.autoAxis() // Assigns automatic axes to the serie
+.setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -258,14 +256,13 @@ g.draw();
 <div id="example-4" class="jsgraph-example"></div>
 <script>
 
-
 var g = new Graph("example-4") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
- .autoAxis() // Assigns automatic axes to the serie
- .setWaveform( serie1 ); // Assigns the data to the serie
+.autoAxis() // Assigns automatic axes to the serie
+.setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -290,14 +287,13 @@ g.draw();
 <div id="example-5" class="jsgraph-example"></div>
 <script>
 
-
 var g = new Graph("example-5") // Creates a new graph
 
 g.resize( 400, 300 ); // Resizes the graph
 
 g.newSerie() // Creates a new seire
- .autoAxis() // Assigns automatic axes to the serie
- .setWaveform( serie1 ); // Assigns the data to the serie
+.autoAxis() // Assigns automatic axes to the serie
+.setWaveform( serie1 ); // Assigns the data to the serie
 
 g.getLeftAxis().setLabel("Distance");
 g.getLeftAxis().setUnit("m");
@@ -312,29 +308,31 @@ g.draw();
   	</div>
     <footer class="site-footer">
 
-  <script src="/web/site/js/requirejs/require.js" data-main="/web/site/js/main.js"></script>
+	<script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/prism.js"></script>
 
 	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-	  ga('create', 'UA-54296694-1', 'auto');
-	  ga('send', 'pageview');
+		ga('create', 'UA-54296694-1', 'auto');
+		ga('send', 'pageview');
 
 	</script>
 
-  <div class="col-sm-3">
-  	<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
-  	<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
-  </div>
-  <div class="col-sm-9 text-right">
-  	jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
-  </div>
+	<div class="col-sm-3">
+		<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
+		<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
+	</div>
+	<div class="col-sm-9 text-right">
+		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
+	</div>
 
 </footer>
-
 
   </body>
 

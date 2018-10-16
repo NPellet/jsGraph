@@ -6817,6 +6817,9 @@ button.close {
   src: url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot');
   src: url('../node_modules/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
+.prism {
+  @import 'node_modules/prismjs/themes/prism-okaidia.css';
+}
 * {
   margin: 0;
 }

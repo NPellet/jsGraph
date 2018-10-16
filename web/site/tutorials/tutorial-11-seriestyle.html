@@ -10,10 +10,10 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/web/site/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/web/site/js/node-jsgraph/dist/jsgraph.js"></script>
-    <script src="/web/site/js/jquery/dist/jquery.min.js"></script>
-    <script src="/web/site/js/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
+    <script src="/js/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- jQuery 
     
 
@@ -23,13 +23,13 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-        var baseUrl = "/web/site/";
+        var baseUrl = "/";
     </script>
 
-    <link rel="stylesheet" href="/web/site/css/main.css">
-    <link rel="stylesheet" href="/web/site/css/theme.css">
-    <link rel="stylesheet" href="/web/site/css/prism-okaidia.css">
-    <link rel="canonical" href="http://localhost:8000//web/site//tutorials/tutorial-11-seriestyle.html">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/prism-okaidia.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-11-seriestyle.html">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </head>
 
@@ -58,10 +58,10 @@
         <ul class="nav navbar-nav">
 
 
-          <li><a href="/web/site/getting-started.html">Getting started</a></li>
-          <li><a href="/web/site/tutorials.html">Tutorials</a></li>
-          <li><a href="/web/site/docs/Graph.html">Documentation</a></li>
-          <li><a href="/web/site/examples.html">Examples</a></li>
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
         </ul>
       </div>
     </div>
@@ -84,7 +84,6 @@
 
 	<div class="col-sm-9" id="main">
 		<h2 id="serie-styles">Serie styles</h2>
-
 <p>Serie classes apply to line series and scatter. They allow the user to pre-program the style of the series and activate them in a single instruction. There are two default classes which are :</p>
 
 <ul>
@@ -101,7 +100,7 @@
   <li>
     <p><code class="highlighter-rouge">setLineWidth( Number strokeWidth [, String selectionName = "undefined" ] [, bool applyToSelected ] )</code></p>
   </li>
-  <li><code class="highlighter-rouge">setLineStyle( Number serieStyle [, String selectionName = "undefined" ] [, bool applyToSelected  ] )</code></li>
+  <li><code class="highlighter-rouge">setLineStyle( Number serieStyle [, String selectionName = "undefined" ] [, bool applyToSelected ] )</code></li>
   <li><code class="highlighter-rouge">setMarkers( Object markerFamilies [, String selectionName = "undefined" ] [, bool applyToSelected ] )</code></li>
   <li><code class="highlighter-rouge">showMarkers( [, String selectionName = "undefined" ] )</code></li>
   <li><code class="highlighter-rouge">hideMarkers( [, String selectionName = "undefined" ] )</code></li>
@@ -111,11 +110,13 @@
 
 <p>Each of these methods take the parameter <code class="highlighter-rouge">selectionName</code> (which defaults with “undefined”, the standard style) that you can specify. In addition to that, some parameters take the boolean <code class="highlighter-rouge">applyToSelected</code> which applies the command not only to the style you are working on, but also to the “selected” style. This is quite useful because it shrinks the number of API calls:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">serie</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'selected'</span><span class="p">);</span>
 
-<span class="c1">// Has similar effect as </span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span></code></pre></figure>
+<span class="c1">// Has similar effect as</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</code></pre>
+</div>
 
 <p>It should be noted that when styles are used in the constructor, they will apply to the “unselected” <em>and</em> to the “selected” styles.</p>
 
@@ -123,7 +124,9 @@
 
 <p>You can also extend one style by another one, like this:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">extendStyle</span><span class="p">(</span> <span class="nb">String</span> <span class="nx">styleTarget</span><span class="p">,</span> <span class="nb">String</span> <span class="nx">styleOrigin</span> <span class="p">);</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">serie</span><span class="p">.</span><span class="nx">extendStyle</span><span class="p">(</span> <span class="nb">String</span> <span class="nx">styleTarget</span><span class="p">,</span> <span class="nb">String</span> <span class="nx">styleOrigin</span> <span class="p">);</span>
+</code></pre>
+</div>
 
 <p>which will extend styleTarget with styleOrigin, provided that the parameter in styleTarget is not defined. In other words, styleTarget parameters have the priority. For the jQuery people, this would correspond to: <code class="highlighter-rouge">styleTarget = $.extend( {}, true, styleTarget, styleOrigin );</code></p>
 
@@ -131,11 +134,15 @@
 
 <p>Although you could call directly</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="p">[</span> <span class="nb">String</span> <span class="nx">selectName</span> <span class="o">=</span> <span class="s2">"selected"</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">serie</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="p">[</span> <span class="nb">String</span> <span class="nx">selectName</span> <span class="o">=</span> <span class="s2">"selected"</span> <span class="p">]</span> <span class="p">);</span>
+</code></pre>
+</div>
 
 <p>where the parameter <code class="highlighter-rouge">selectName</code> is optional and takes “selected” by default, jsGraph also manages serie selection from its core. Therefore, we advise to call</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">selectSerie</span><span class="p">(</span> <span class="p">{</span><span class="nb">Number</span><span class="o">|</span><span class="nb">String</span><span class="p">}</span> <span class="nx">serieName</span> <span class="p">[,</span> <span class="nb">String</span> <span class="nx">selectName</span> <span class="o">=</span> <span class="s2">"selected"</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">graph</span><span class="p">.</span><span class="nx">selectSerie</span><span class="p">(</span> <span class="p">{</span><span class="nb">Number</span><span class="o">|</span><span class="nb">String</span><span class="p">}</span> <span class="nx">serieName</span> <span class="p">[,</span> <span class="nb">String</span> <span class="nx">selectName</span> <span class="o">=</span> <span class="s2">"selected"</span> <span class="p">]</span> <span class="p">);</span>
+</code></pre>
+</div>
 
 <h4 id="a-idextend-markersa-extending-some-marker-properties"><a id="extend-markers"></a> Extending some marker properties</h4>
 
@@ -156,21 +163,25 @@
 
 <p>Consider the following example:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#0710ad"</span> <span class="p">);</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">3</span> <span class="p">);</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span>
-	<span class="na">type</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-	<span class="na">zoom</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-	<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'white'</span><span class="p">,</span>
-	<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#0710ad'</span><span class="p">,</span>
-<span class="p">}</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">s</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#0710ad'</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkers</span><span class="p">([</span>
+  <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">zoom</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'white'</span><span class="p">,</span>
+    <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#0710ad'</span>
+  <span class="p">}</span>
+<span class="p">]);</span>
+</code></pre>
+</div>
 
 <div id="doc-example-1"></div>
 <script>
 
-const data = [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482,  1959, 2644,  1964, 3046, 1969, 3098,  1974, 3273,  1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ];
+const data = [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482, 1959, 2644, 1964, 3046, 1969, 3098, 1974, 3273, 1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ];
 const wave = Graph.newWaveform().setData( data.filter( ( el, index ) => index % 2 == 1 ), data.filter( ( el, index ) => index % 2 == 0 ) );
 
 var graph = new Graph("doc-example-1").resize(400, 250);
@@ -180,12 +191,11 @@ s.setLineColor( "#0710ad" );
 s.setLineStyle( 2 );
 s.setLineWidth( 2 );
 s.setMarkers( {
-	shape: 'circle',
-	strokeWidth: 2,
-	stroke: '#0710ad',
-	fill: '#676cc6'
+shape: 'circle',
+strokeWidth: 2,
+stroke: '#0710ad',
+fill: '#676cc6'
 } ); // Will apply to "selected"
-
 
 graph.draw();
 
@@ -193,45 +203,53 @@ graph.draw();
 
 <p>Like we said before, by default, all those methods apply to the “unselected” style. We could decide to create a few more styles, and to extend others from the “unselected” one in several ways.</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Sets the "unselected" line color</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#0710ad"</span> <span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// Sets the "unselected" line color</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#0710ad'</span><span class="p">);</span>
 
 <span class="c1">// Sets the line style to "unselected" and "selected"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span> 
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
 
 <span class="c1">// Sets the line width to "unselected" and "selected"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span> 
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
 
 <span class="c1">// Sets the markers to "unselected" and "selected"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span>
-	<span class="na">type</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-	<span class="na">zoom</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-	<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'white'</span><span class="p">,</span>
-	<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#0710ad'</span><span class="p">,</span>
-<span class="p">}</span> <span class="p">],</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">zoom</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'white'</span><span class="p">,</span>
+      <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#0710ad'</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="kc">false</span><span class="p">,</span>
+  <span class="kc">true</span>
+<span class="p">);</span>
 
 <span class="c1">// Sets the color for "selected"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#2e7c14"</span><span class="p">,</span> <span class="s2">"selected"</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#2e7c14'</span><span class="p">,</span> <span class="s1">'selected'</span><span class="p">);</span>
 
 <span class="c1">// Overwrites the previously set line style of "selected" (see the 2nd command line)</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"selected"</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'selected'</span><span class="p">);</span>
 
 <span class="c1">// Creates a new style "extended" and extends it from "unselected"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">extendStyle</span><span class="p">(</span> <span class="s2">"extended"</span><span class="p">,</span> <span class="s2">"unselected"</span> <span class="p">);</span>	
+<span class="nx">s</span><span class="p">.</span><span class="nx">extendStyle</span><span class="p">(</span><span class="s1">'extended'</span><span class="p">,</span> <span class="s1">'unselected'</span><span class="p">);</span>
 
 <span class="c1">// Overwrites the line width</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"extended"</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'extended'</span><span class="p">);</span>
 
 <span class="c1">// Copy "custom1" into the new style "custom2"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">extendStyle</span><span class="p">(</span> <span class="s2">"custom2"</span><span class="p">,</span> <span class="s2">"custom1"</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">extendStyle</span><span class="p">(</span><span class="s1">'custom2'</span><span class="p">,</span> <span class="s1">'custom1'</span><span class="p">);</span>
 
 <span class="c1">// Overwrite some of the marker properties in "custom2"</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkersStrokeColor</span><span class="p">(</span> <span class="s2">"#247c4e"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"custom2"</span> <span class="p">);</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkersFillColor</span><span class="p">(</span> <span class="s2">"#6fb590"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"custom2"</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkersStrokeColor</span><span class="p">(</span><span class="s1">'#247c4e'</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'custom2'</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setMarkersFillColor</span><span class="p">(</span><span class="s1">'#6fb590'</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'custom2'</span><span class="p">);</span>
 
 <span class="c1">// You have to draw the series at the end</span>
-<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span> </code></pre></figure>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</code></pre>
+</div>
 
 <div id="doc-example-2"></div>
 
@@ -307,29 +325,31 @@ graph.draw();
   	</div>
     <footer class="site-footer">
 
-  <script src="/web/site/js/requirejs/require.js" data-main="/web/site/js/main.js"></script>
+	<script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/prism.js"></script>
 
 	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-	  ga('create', 'UA-54296694-1', 'auto');
-	  ga('send', 'pageview');
+		ga('create', 'UA-54296694-1', 'auto');
+		ga('send', 'pageview');
 
 	</script>
 
-  <div class="col-sm-3">
-  	<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
-  	<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
-  </div>
-  <div class="col-sm-9 text-right">
-  	jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
-  </div>
+	<div class="col-sm-3">
+		<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
+		<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
+	</div>
+	<div class="col-sm-9 text-right">
+		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
+	</div>
 
 </footer>
-
 
   </body>
 

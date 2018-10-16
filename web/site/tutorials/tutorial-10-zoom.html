@@ -10,10 +10,10 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/web/site/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/web/site/js/node-jsgraph/dist/jsgraph.js"></script>
-    <script src="/web/site/js/jquery/dist/jquery.min.js"></script>
-    <script src="/web/site/js/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
+    <script src="/js/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- jQuery 
     
 
@@ -23,13 +23,13 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <script>
-        var baseUrl = "/web/site/";
+        var baseUrl = "/";
     </script>
 
-    <link rel="stylesheet" href="/web/site/css/main.css">
-    <link rel="stylesheet" href="/web/site/css/theme.css">
-    <link rel="stylesheet" href="/web/site/css/prism-okaidia.css">
-    <link rel="canonical" href="http://localhost:8000//web/site//tutorials/tutorial-10-zoom.html">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/prism-okaidia.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-10-zoom.html">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </head>
 
@@ -58,10 +58,10 @@
         <ul class="nav navbar-nav">
 
 
-          <li><a href="/web/site/getting-started.html">Getting started</a></li>
-          <li><a href="/web/site/tutorials.html">Tutorials</a></li>
-          <li><a href="/web/site/docs/Graph.html">Documentation</a></li>
-          <li><a href="/web/site/examples.html">Examples</a></li>
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
         </ul>
       </div>
     </div>
@@ -134,15 +134,18 @@ return { Graph: graph }
 <p>The Zoom plugin allows the use to zoom on the graph using the mouse. When the use clicks on the graph, holds the mouse down and moves it around, a red rectangle is formed, which defined the new zooming boundaries that the graph will take when the mouse is released.</p>
 
 <h3 id="a-idenablingaenabling-the-zoom-plugin"><a id="enabling"></a>Enabling the zoom plugin</h3>
+
 <p>The zoom plugin, like any other plugin, needs to be enabled upon graph creation:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domID"</span><span class="p">,</span> <span class="p">{</span>  
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s1">'domID'</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
-     <span class="s1">'zoom'</span><span class="p">:</span> <span class="p">{</span>
-        <span class="c1">// ... zoom options</span>
-      <span class="p">}</span>
+    <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
+      <span class="c1">// ... zoom options</span>
+    <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">});</span></code></pre></figure>
+<span class="p">});</span>
+</code></pre>
+</div>
 
 <h3 id="a-idfeaturesafeatures"><a id="features"></a>Features</h3>
 
@@ -161,18 +164,18 @@ return { Graph: graph }
 
 <p>We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option <code class="highlighter-rouge">mouseActions</code> of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let’s take the following code as it is:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domID"</span><span class="p">,</span> <span class="p">{</span>  
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s1">'domID'</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
-     <span class="s1">'zoom'</span><span class="p">:</span> <span class="p">{</span>
-        <span class="c1">// ... zoom options</span>
-        <span class="na">zoomMode</span><span class="p">:</span> <span class="s1">'xy'</span>
-      <span class="p">}</span>
+    <span class="na">zoom</span><span class="p">:</span> <span class="p">{</span>
+      <span class="c1">// ... zoom options</span>
+      <span class="na">zoomMode</span><span class="p">:</span> <span class="s1">'xy'</span>
+    <span class="p">}</span>
   <span class="p">},</span>
 
-  <span class="na">mouseActions</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span> <span class="na">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="na">shift</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="na">ctrl</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">});</span></code></pre></figure>
+  <span class="na">mouseActions</span><span class="p">:</span> <span class="p">[{</span> <span class="na">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="na">shift</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="na">ctrl</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}]</span>
+<span class="p">});</span>
+</code></pre>
+</div>
 
 <p>The following code enables the zoom plugin only when the <code class="highlighter-rouge">Shift</code> and <code class="highlighter-rouge">Ctrl</code> key are not pressed. If one of these were <code class="highlighter-rouge">true</code>, the use would need to have the key pressed to enable zooming.</p>
 
@@ -180,22 +183,24 @@ return { Graph: graph }
 
 <p>Using the previous code, we create the zoom plugin and enable it using the mouse action. The buttons below the graph trigger the following code.</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Enabling button</span>
-<span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">[</span> <span class="mi">0</span> <span class="p">].</span><span class="nx">shift</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// Enabling button</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">shift</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
 
 <span class="c1">// Disabling button</span>
-<span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">[</span> <span class="mi">0</span> <span class="p">].</span><span class="nx">shift</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></code></pre></figure>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">shift</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</code></pre>
+</div>
 
 <div id="example-1" class="jsgraph-example"></div>
 
 <script>
 ( () => {
-  var graphResponse = makeGraph( "example-1", { zoomMode: 'xy' }, [ { plugin: 'zoom' } ] ); 
+  var graphResponse = makeGraph( "example-1", { zoomMode: 'xy' }, [ { plugin: 'zoom' } ] );
 
   $( document ).ready( function() {
 
     $( '#example-1-shift' ).on( 'click', function() {
-      
+
       graphResponse.Graph.options.mouseActions[ 0 ].shift = true;
 
       $( this ).siblings( ).removeClass( 'active' );
@@ -203,7 +208,7 @@ return { Graph: graph }
     });
 
     $( '#example-1-shift2' ).on('click', function() {
-      
+
       graphResponse.Graph.options.mouseActions[ 0 ].shift = false;
 
       $( this ).siblings( ).removeClass( 'active' );
@@ -232,8 +237,10 @@ return { Graph: graph }
 
 <p>So far, the only way to unzoom on a graph is to active the double click. The double click behavior is also defined through mouse actions, in the following way:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Enabling button</span>
-<span class="p">{</span> <span class="nl">type</span><span class="p">:</span> <span class="s1">'dblclick'</span><span class="p">,</span> <span class="nx">plugin</span><span class="err">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="nx">shift</span><span class="err">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">options</span><span class="err">:</span> <span class="p">{</span> <span class="nl">mode</span><span class="p">:</span> <span class="s1">'total'</span> <span class="p">}</span> <span class="p">}</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// Enabling button</span>
+<span class="p">{</span> <span class="nl">type</span><span class="p">:</span> <span class="s1">'dblclick'</span><span class="p">,</span> <span class="nx">plugin</span><span class="err">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="nx">shift</span><span class="err">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">options</span><span class="err">:</span> <span class="p">{</span> <span class="nl">mode</span><span class="p">:</span> <span class="s1">'total'</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre>
+</div>
 
 <p>Where the <code class="highlighter-rouge">type</code> defines the mouse action (dblclick in this case), upon which the plugin <code class="highlighter-rouge">zoom</code> is called with the options <code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">mode:</span><span class="w"> </span><span class="err">'total'</span><span class="w"> </span><span class="p">}</span></code>.</p>
 
@@ -242,7 +249,7 @@ return { Graph: graph }
 <script>
 
 var graphResponse = makeGraph( "example-2", { zoomMode: 'xy' }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
- ] ); 
+ ] );
 
 </script>
 
@@ -264,12 +271,12 @@ var graphResponse = makeGraph( "example-2", { zoomMode: 'xy' }, [ { plugin: 'zoo
 ( function() {
 
 var graphResponse = makeGraph( "example-3", { zoomMode: 'xy' }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
- ] ); 
+ ] );
 
 $( document ).ready( function() {
 
   $( 'button.example-3' ).on( 'click', function() {
-    
+
     switch( $( this ).attr( 'id' ).replace('example-3-', '' ) ) {
 
       case 'total':
@@ -291,8 +298,8 @@ $( document ).ready( function() {
         graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'gradualY';
       break;
 
-    }  
-    
+    }
+
     $( this ).siblings( ).removeClass( 'active' );
     $( this ).addClass( 'active' );
   });
@@ -313,6 +320,7 @@ $( document ).ready( function() {
 </div>
 
 <h3 id="a-idoneaxisa-zooming-on-one-axis-only"><a id="oneaxis"></a> Zooming on one axis only</h3>
+
 <p>The default behaviour of jsGraph is to unzoom all present axes on the graph. The mouse coordinates are transformed into respective axes coordinates and used accordingly. However jsGraph also allows you to select which axis should be zoomed.</p>
 
 <p>Changing the zooming axis(es) can be done through the <code class="highlighter-rouge">axes</code> options of the zoom plugin and can take the following values:</p>
@@ -332,12 +340,12 @@ $( document ).ready( function() {
 ( function() {
 
 var graphResponse = makeGraph( "example-4", { zoomMode: 'xy' }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
- ], true ); 
+ ], true );
 
 $( document ).ready( function() {
 
   $( 'button.example-4' ).on( 'click', function() {
-    
+
     graphResponse.Graph.options.mouseActions[ 0 ].options = graphResponse.Graph.options.mouseActions[ 0 ].options || {};
 
     switch( $( this ).attr( 'id' ).replace('example-4-', '' ) ) {
@@ -353,8 +361,8 @@ $( document ).ready( function() {
       case 'bottom':
         graphResponse.Graph.getPlugin('zoom').options.axes = [ graphResponse.Graph.getBottomAxis() ];
       break;
-    }  
-    
+    }
+
     $( this ).siblings( ).removeClass( 'active' );
     $( this ).addClass( 'active' );
   });
@@ -366,6 +374,7 @@ $( document ).ready( function() {
 </script>
 
 <p>Note: In this example, the x axis is shared between the two series. Hence the serie that is not selected will also be scaled in the x direction when the option <code class="highlighter-rouge">serieSelected</code> is set</p>
+
 <div class="btn-group">
   <button class="btn btn-default example-4 active" id="example-4-all">all</button>
   <button class="btn btn-default example-4" id="example-4-serieSelected">serieSelected</button>
@@ -376,7 +385,9 @@ $( document ).ready( function() {
 
 <p>Smooth zooming and unzooming using animations is possible with jsGraph, by setting the <code class="highlighter-rouge">smooth</code> flag to true in the plugin constructor or after its creation</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'zoom'</span><span class="p">).</span><span class="nx">options</span><span class="p">.</span><span class="nx">smooth</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">// Enables smoothing</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'zoom'</span><span class="p">).</span><span class="nx">options</span><span class="p">.</span><span class="nx">smooth</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">// Enables smoothing</span>
+</code></pre>
+</div>
 
 <p>This option will apply to zooming and unzooming indepedently</p>
 
@@ -387,7 +398,7 @@ $( document ).ready( function() {
 ( function() {
 
 var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
- ], false ); 
+ ], false );
 
 }) ();
 </script>
@@ -401,36 +412,44 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
   <li><code class="highlighter-rouge">direction</code> (<code class="highlighter-rouge">y</code> or <code class="highlighter-rouge">x</code>) sets the direction of the zooming</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span> <span class="nl">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="nx">shift</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">type</span><span class="err">:</span> <span class="s1">'mousewheel'</span><span class="p">,</span> <span class="nx">options</span><span class="err">:</span> <span class="p">{</span> <span class="nl">baseline</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">direction</span><span class="err">:</span> <span class="s1">'y'</span> <span class="p">}</span> <span class="p">},</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="p">{</span> <span class="nl">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="nx">shift</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">type</span><span class="err">:</span> <span class="s1">'mousewheel'</span><span class="p">,</span> <span class="nx">options</span><span class="err">:</span> <span class="p">{</span> <span class="nl">baseline</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">direction</span><span class="err">:</span> <span class="s1">'y'</span> <span class="p">}</span> <span class="p">},</span>
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>
+</code></pre>
+</div>
 
 	</div>
 </div>
   	</div>
     <footer class="site-footer">
 
-  <script src="/web/site/js/requirejs/require.js" data-main="/web/site/js/main.js"></script>
+	<script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/prism.js"></script>
 
 	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-	  ga('create', 'UA-54296694-1', 'auto');
-	  ga('send', 'pageview');
+		ga('create', 'UA-54296694-1', 'auto');
+		ga('send', 'pageview');
 
 	</script>
 
-  <div class="col-sm-3">
-  	<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
-  	<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
-  </div>
-  <div class="col-sm-9 text-right">
-  	jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
-  </div>
+	<div class="col-sm-3">
+		<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
+		<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
+	</div>
+	<div class="col-sm-9 text-right">
+		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
+	</div>
 
 </footer>
-
 
   </body>
 
