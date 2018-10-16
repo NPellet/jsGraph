@@ -1206,7 +1206,7 @@ class SerieLine extends Serie {
         return {};
       }
 
-      if ( !indexX ) {
+      if ( isNaN( indexX ) ) {
         return false;
       }
 
