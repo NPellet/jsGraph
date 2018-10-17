@@ -11378,7 +11378,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.5'
+        'data-jsgraph-version': 'v2.1.6'
       });
     } catch (e) {
       // ignore
@@ -12715,12 +12715,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'getMinValue',
       value: function getMinValue() {
-        return this.options.forcedMin !== false ? this.options.forcedMin : this.options.lowestMin !== false ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin;
+        return this.options.forcedMin !== false ? this.options.forcedMin : !isNaN(this.options.lowestMin) ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin;
       }
     }, {
       key: 'getMaxValue',
       value: function getMaxValue() {
-        return this.options.forcedMax !== false ? this.options.forcedMax : this.options.highestMax !== false ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax;
+        return this.options.forcedMax !== false ? this.options.forcedMax : !isNaN(this.options.highestMax) ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax;
       }
     }, {
       key: 'setMinValueData',
@@ -13028,19 +13028,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (this.options.logScale) {
 
-          this.currentAxisMin = Math.max(1e-50, this.getMinValue() * 0.9);
-          this.currentAxisMax = Math.max(1e-50, this.getMaxValue() * 1.1);
+          this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
+          this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1));
+          //this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
+          //this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
         } else {
 
-          this.currentAxisMin = this.getMinValue();
-          this.currentAxisMax = this.getMaxValue();
+          this.setCurrentMin(this.getMinValue());
+          this.setCurrentMax(this.getMaxValue());
+          //this.currentAxisMin = this.getMinValue();
+          //this.currentAxisMax = this.getMaxValue();
 
           if (this.getForcedMin() === false) {
-            this.currentAxisMin -= this.options.axisDataSpacing.min * interval;
+
+            this.setCurrentMin(this.getCurrentMin() - this.options.axisDataSpacing.min * interval);
           }
 
           if (this.getForcedMax() === false) {
-            this.currentAxisMax += this.options.axisDataSpacing.max * interval;
+
+            this.setCurrentMax(this.getCurrentMax() + this.options.axisDataSpacing.max * interval);
           }
         }
 

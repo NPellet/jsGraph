@@ -8928,7 +8928,7 @@ class Axis extends EventEmitter {
    * @return {Number} The minimum possible value of the axis
    */
   getMinValue() {
-    return this.options.forcedMin !== false ? this.options.forcedMin : this.options.lowestMin !== false ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin;
+    return this.options.forcedMin !== false ? this.options.forcedMin : !isNaN(this.options.lowestMin) ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin;
   }
 
   /**
@@ -8937,7 +8937,7 @@ class Axis extends EventEmitter {
    * @return {Number} The maximum possible value of the axis
    */
   getMaxValue() {
-    return this.options.forcedMax !== false ? this.options.forcedMax : this.options.highestMax !== false ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax;
+    return this.options.forcedMax !== false ? this.options.forcedMax : !isNaN(this.options.highestMax) ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax;
   }
 
   setMinValueData(min) {
@@ -9293,19 +9293,25 @@ class Axis extends EventEmitter {
 
     if (this.options.logScale) {
 
-      this.currentAxisMin = Math.max(1e-50, this.getMinValue() * 0.9);
-      this.currentAxisMax = Math.max(1e-50, this.getMaxValue() * 1.1);
+      this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
+      this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1));
+      //this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
+      //this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
     } else {
 
-      this.currentAxisMin = this.getMinValue();
-      this.currentAxisMax = this.getMaxValue();
+      this.setCurrentMin(this.getMinValue());
+      this.setCurrentMax(this.getMaxValue());
+      //this.currentAxisMin = this.getMinValue();
+      //this.currentAxisMax = this.getMaxValue();
 
       if (this.getForcedMin() === false) {
-        this.currentAxisMin -= this.options.axisDataSpacing.min * interval;
+
+        this.setCurrentMin(this.getCurrentMin() - this.options.axisDataSpacing.min * interval);
       }
 
       if (this.getForcedMax() === false) {
-        this.currentAxisMax += this.options.axisDataSpacing.max * interval;
+
+        this.setCurrentMax(this.getCurrentMax() + this.options.axisDataSpacing.max * interval);
       }
     }
 
