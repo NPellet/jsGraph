@@ -15,11 +15,8 @@ const defaultOptions = {
 class Serie extends EventEmitter {
 
   constructor( graph, name, options, defaultInherited ) {
-
     super( ...arguments );
-    console.log( defaultInherited, options );
     this.options = util.extend( true, {}, defaultOptions, defaultInherited, options );
-    console.log( this.options );
     this.graph = graph;
     this.name = name;
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
@@ -806,12 +803,12 @@ class Serie extends EventEmitter {
     return this._type;
   }
 
-  set excludedFromLegend( bln ) {
-    this._excludedFromLegend = bln;
+  excludeFromLegend() {
+    this._excludedFromLegend = true;
   }
 
-  get excludedFromLegend() {
-    return !!this._excludedFromLegend;
+  includeInLegend() {
+    this._excludedFromLegend = false;
   }
 
   setDataIndices( categories, nb ) {

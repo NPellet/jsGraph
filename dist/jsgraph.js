@@ -4611,7 +4611,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             return {};
           }
 
-          if (!indexX) {
+          if (isNaN(indexX) || indexX === false) {
             return false;
           }
 
@@ -11378,7 +11378,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.7'
+        'data-jsgraph-version': 'v2.1.8'
       });
     } catch (e) {
       // ignore
@@ -12353,8 +12353,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     useKatexForLabel: false,
 
-    highestMax: false,
-    lowestMin: false,
+    highestMax: undefined,
+    lowestMin: undefined,
 
     labelValue: ''
   };
@@ -13036,6 +13036,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           this.setCurrentMin(this.getMinValue());
           this.setCurrentMax(this.getMaxValue());
+
           //this.currentAxisMin = this.getMinValue();
           //this.currentAxisMax = this.getMaxValue();
 
@@ -14928,9 +14929,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var _this = _possibleConstructorReturn(this, (Serie.__proto__ || Object.getPrototypeOf(Serie)).apply(this, arguments));
 
-      console.log(defaultInherited, options);
       _this.options = util.extend(true, {}, defaultOptions, defaultInherited, options);
-      console.log(_this.options);
       _this.graph = graph;
       _this.name = name;
       _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
@@ -15502,6 +15501,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return this._type;
       }
     }, {
+      key: 'excludeFromLegend',
+      value: function excludeFromLegend() {
+        this._excludedFromLegend = true;
+      }
+    }, {
+      key: 'includeInLegend',
+      value: function includeInLegend() {
+        this._excludedFromLegend = false;
+      }
+    }, {
       key: 'setDataIndices',
       value: function setDataIndices(categories, nb) {
         this.categoryIndices = categories;
@@ -15520,14 +15529,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'type',
       get: function get() {
         return this._type;
-      }
-    }, {
-      key: 'excludedFromLegend',
-      set: function set(bln) {
-        this._excludedFromLegend = bln;
-      },
-      get: function get() {
-        return !!this._excludedFromLegend;
       }
     }]);
 

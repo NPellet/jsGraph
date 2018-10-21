@@ -168,10 +168,49 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('css', ['less:production']);
 
+  grunt.registerTask('generateExamples', () => {
+    // The code snippet you want to highlight, as a string
+    const list = grunt.file.readJSON('../examples/list.json');
+
+    const findFolder = folder => {
+      for (let f of list) {
+        if (f.name == folder) {
+          return f;
+        }
+      }
+      list.push({ name: folder, children: [] });
+      return findFolder(folder);
+    };
+
+    const findFile = (file, folder) => {
+      for (let child of folder.children) {
+        if (child.name == file) {
+          return child;
+        }
+      }
+      folder.children.push({ name: file, title: file });
+
+      return findFile(file, folder);
+    };
+
+    grunt.file.recurse(
+      '../examples/v2/',
+      (abspath, rootdir, subdir, filename) => {
+        const folder = findFolder(subdir);
+        const file = findFile(filename, folder);
+      }
+    );
+
+    grunt.file.write(
+      '../examples/list.json',
+      JSON.stringify(list, undefined, '\t')
+    );
+  });
+
   grunt.registerTask('parseExamples', () => {
     // The code snippet you want to highlight, as a string
 
-    const list = grunt.file.readJSON('./site/js/examples/list.json');
+    const list = grunt.file.readJSON('../examples/list.json');
 
     for (var i = 0; i < list.length; i++) {
       for (var j = 0; j < list[i].children.length; j++) {
@@ -184,7 +223,6 @@ module.exports = function(grunt) {
         );
 
         code = code.replace(ignore, '');
-        console.log(code);
         const highlighted = Prism.highlight(
           code,
           Prism.languages.javascript,

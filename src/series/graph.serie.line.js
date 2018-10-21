@@ -967,7 +967,7 @@ class SerieLine extends SerieScatter {
         return {};
       }
 
-      if ( !indexX ) {
+      if ( isNaN( indexX ) || indexX === false ) {
         return false;
       }
 

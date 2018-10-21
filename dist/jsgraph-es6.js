@@ -3572,7 +3572,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return {};
         }
 
-        if (!indexX) {
+        if (isNaN(indexX) || indexX === false) {
           return false;
         }
 
@@ -9781,7 +9781,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.7'
+        'data-jsgraph-version': 'v2.1.8'
       });
     } catch (e) {
       // ignore
@@ -10708,8 +10708,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     useKatexForLabel: false,
 
-    highestMax: false,
-    lowestMin: false,
+    highestMax: undefined,
+    lowestMin: undefined,
 
     labelValue: ''
   };
@@ -11509,6 +11509,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         this.setCurrentMin(this.getMinValue());
         this.setCurrentMax(this.getMaxValue());
+
         //this.currentAxisMin = this.getMinValue();
         //this.currentAxisMax = this.getMaxValue();
 
@@ -13652,11 +13653,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   class Serie extends _EventEmitter2.default {
 
     constructor(graph, name, options, defaultInherited) {
-
       super(...arguments);
-      console.log(defaultInherited, options);
       this.options = util.extend(true, {}, defaultOptions, defaultInherited, options);
-      console.log(this.options);
       this.graph = graph;
       this.name = name;
       this.groupMain = document.createElementNS(this.graph.ns, 'g');
@@ -14434,12 +14432,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return this._type;
     }
 
-    set excludedFromLegend(bln) {
-      this._excludedFromLegend = bln;
+    excludeFromLegend() {
+      this._excludedFromLegend = true;
     }
 
-    get excludedFromLegend() {
-      return !!this._excludedFromLegend;
+    includeInLegend() {
+      this._excludedFromLegend = false;
     }
 
     setDataIndices(categories, nb) {

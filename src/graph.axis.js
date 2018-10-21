@@ -74,8 +74,8 @@ const defaults = {
 
   useKatexForLabel: false,
 
-  highestMax: false,
-  lowestMin: false,
+  highestMax: undefined,
+  lowestMin: undefined,
 
   labelValue: ''
 };
@@ -885,6 +885,7 @@ class Axis extends EventEmitter {
 
       this.setCurrentMin( this.getMinValue() );
       this.setCurrentMax( this.getMaxValue() );
+
       //this.currentAxisMin = this.getMinValue();
       //this.currentAxisMax = this.getMaxValue();
 
