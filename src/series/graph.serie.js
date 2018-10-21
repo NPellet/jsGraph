@@ -805,10 +805,12 @@ class Serie extends EventEmitter {
 
   excludeFromLegend() {
     this._excludedFromLegend = true;
+    return this;
   }
 
   includeInLegend() {
     this._excludedFromLegend = false;
+    return this;
   }
 
   setDataIndices( categories, nb ) {

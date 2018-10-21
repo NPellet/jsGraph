@@ -9781,7 +9781,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.8'
+        'data-jsgraph-version': 'v2.1.9'
       });
     } catch (e) {
       // ignore
@@ -14434,10 +14434,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     excludeFromLegend() {
       this._excludedFromLegend = true;
+      return this;
     }
 
     includeInLegend() {
       this._excludedFromLegend = false;
+      return this;
     }
 
     setDataIndices(categories, nb) {
