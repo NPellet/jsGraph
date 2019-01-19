@@ -2930,7 +2930,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.lineForLegend = line;
         container.appendChild(this.lineForLegend);
       } else {
-        this.applyLineStyle(line);
+        this.applyLineStyle(this.lineForLegend);
       }
 
       super.getSymbolForLegend();
@@ -9833,7 +9833,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.10'
+        'data-jsgraph-version': 'v2.1.11'
       });
     } catch (e) {
       // ignore

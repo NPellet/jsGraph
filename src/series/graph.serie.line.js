@@ -231,7 +231,7 @@ class SerieLine extends SerieScatter {
       this.lineForLegend = line;
       container.appendChild( this.lineForLegend );
     } else {
-      this.applyLineStyle( line );
+      this.applyLineStyle( this.lineForLegend );
     }
 
     super.getSymbolForLegend();
