@@ -1797,102 +1797,6 @@ If func is a function, the function will be called with the axis, its type and p
 
     
 
-    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
     <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
 
 
@@ -1956,6 +1860,102 @@ Does not repaint the canvas
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -7282,10 +7282,6 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
-<div class="description">
-    Removes all series from the graph
-</div>
-
 
 <div class="doc-details">
 
@@ -7333,6 +7329,10 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+
+<div class="description">
+    Removes all series from the graph
+</div>
 
 
 <div class="doc-details">
@@ -10169,6 +10169,113 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="sortSeries"><span class="type-signature"></span><span></span><span class="doc-name">sortSeries</span><span class="doc-signature">( <span class="doc-type">function</span> method )</span></h4>
+
+
+
+
+<div class="description">
+    Sorts the series
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>method</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Sorting method (arguments: serieA, serieB)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    {% highlight JavaScript %}graph.sortSeries( ( sA, sB ) => sA.label > sB.label ? 1 : -1 );{% endhighlight %}
 
     
 

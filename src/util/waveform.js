@@ -1648,6 +1648,38 @@ class Waveform {
     this.setData( this.data );
   }
 
+  filterNaN() {
+
+    const l = this.data.length - 1;
+    for ( var i = l; i >= 0; i-- ) {
+
+      if ( isNaN( this.data[ i ] ) ) {
+        this.data = this.data.splice( i, 1 );
+
+        if ( this.xdata ) {
+          this.xdata.data.splice( i, 1 );
+        }
+      }
+    }
+
+  }
+
+  filterInfinity() {
+
+    const l = this.data.length - 1;
+    for ( var i = l; i >= 0; i-- ) {
+
+      if ( !isFinite( this.data[ i ] ) ) {
+        this.data = this.data.splice( i, 1 );
+
+        if ( this.xdata ) {
+          this.xdata.data.splice( i, 1 );
+        }
+      }
+    }
+
+  }
+
   ////////////////////////////////////////////////////////////
   ///// HANDLING ERRORS   ////////////////////////////////////
   ////////////////////////////////////////////////////////////

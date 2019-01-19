@@ -3993,6 +3993,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           this.lineForLegend = line;
           container.appendChild(this.lineForLegend);
+        } else {
+          this.applyLineStyle(line);
         }
 
         _get(SerieLine.prototype.__proto__ || Object.getPrototypeOf(SerieLine.prototype), 'getSymbolForLegend', this).call(this);
@@ -7663,6 +7665,38 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.setData(this.data);
       }
     }, {
+      key: 'filterNaN',
+      value: function filterNaN() {
+
+        var l = this.data.length - 1;
+        for (var i = l; i >= 0; i--) {
+
+          if (isNaN(this.data[i])) {
+            this.data = this.data.splice(i, 1);
+
+            if (this.xdata) {
+              this.xdata.data.splice(i, 1);
+            }
+          }
+        }
+      }
+    }, {
+      key: 'filterInfinity',
+      value: function filterInfinity() {
+
+        var l = this.data.length - 1;
+        for (var i = l; i >= 0; i--) {
+
+          if (!isFinite(this.data[i])) {
+            this.data = this.data.splice(i, 1);
+
+            if (this.xdata) {
+              this.xdata.data.splice(i, 1);
+            }
+          }
+        }
+      }
+    }, {
       key: 'setErrorBarX',
       value: function setErrorBarX(waveform) {
         if (!(waveform instanceof Waveform)) {
@@ -9675,6 +9709,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         });
       }
     }, {
+      key: 'sortSeries',
+      value: function sortSeries(method) {
+
+        if (typeof method !== 'function') {
+          return this;
+        }
+
+        this.series.sort(method);
+        return this;
+      }
+    }, {
       key: 'drawSerie',
       value: function drawSerie(serie, force) {
 
@@ -11075,8 +11120,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
 
     graph._painted = true;
-    // Apply to top and bottom
 
+    // Apply to top and bottom
     graph._applyToAxes(function (axis, position) {
 
       if (!axis.isShown()) {
@@ -11136,7 +11181,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       axis.setMinPx(shiftTop);
       axis.setMaxPx(graph.getDrawingHeight(true) - shiftBottom);
-      console.log(axis);
+
       if (axis.floating) {
         return;
       }
@@ -11153,10 +11198,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       // Get axis position gives the extra shift that is common
       var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
       axis.setLevel(level);
-      shift[position][level] = Math.max(drawn, shift[position][level] || 0);
 
-      if (level < shift[position].length - 1) {
-        shift[position][level] += 10;
+      if (axis.options.forcedWidth) {
+        shift[position][level] = axis.options.forcedWidth;
+      } else {
+        shift[position][level] = Math.max(drawn, shift[position][level] || 0);
+
+        if (level < shift[position].length - 1) {
+          shift[position][level] += 10;
+        }
       }
     }, false, false, true);
 
@@ -11378,7 +11428,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': 'v2.1.9'
+        'data-jsgraph-version': 'v2.1.10'
       });
     } catch (e) {
       // ignore
@@ -16570,7 +16620,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _createClass(AxisX, [{
       key: 'getAxisPosition',
       value: function getAxisPosition() {
-
         if (!this.options.display) {
           return 0;
         }
@@ -16603,9 +16652,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return false;
       }
     }, {
+      key: 'forceHeight',
+      value: function forceHeight(height) {
+        this.options.forcedHeight = height;
+        return this;
+      }
+    }, {
       key: 'setShift',
       value: function setShift(shift) {
-
         this.shift = shift;
         if (this.getShift() === undefined || !this.graph.getDrawingHeight()) {
           return;
@@ -16633,7 +16687,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         var tick = this.nextTick(level, function (tick) {
-
           tick.setAttribute('y1', (self.top ? 1 : -1) * self.tickPx1 * self.tickScaling[level]);
           tick.setAttribute('y2', (self.top ? 1 : -1) * self.tickPx2 * self.tickScaling[level]);
 
@@ -16652,9 +16705,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         //  this.groupTicks.appendChild( tick );
         if (level == 1) {
-
           var tickLabel = this.nextTickLabel(function (tickLabel) {
-
             tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + _this2.options.tickLabelOffset);
             tickLabel.setAttribute('text-anchor', 'middle');
             if (self.getTicksLabelColor() !== 'black') {
@@ -16700,7 +16751,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'drawSpecifics',
       value: function drawSpecifics() {
-
         // Adjusts group shift
         //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
@@ -16714,7 +16764,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.line.setAttribute('stroke', this.getAxisColor());
 
         if (!this.top) {
-
           this.labelTspan.style.dominantBaseline = 'hanging';
           this.expTspan.style.dominantBaseline = 'hanging';
           this.expTspanExp.style.dominantBaseline = 'hanging';
@@ -16730,7 +16779,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: '_drawLine',
       value: function _drawLine(pos, line) {
-
         var px = this.getPx(pos);
 
         if (!line) {
@@ -16768,7 +16816,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setMinMaxFlipped',
       value: function setMinMaxFlipped() {
-
         var interval = this.maxPx - this.minPx;
 
         if (isNaN(interval)) {
@@ -19368,16 +19415,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       _this.leftright = leftright;
       _this.left = leftright == 'left';
-
       return _this;
     }
 
-    /**
-     *  @private
-     */
-
-
     _createClass(AxisY, [{
+      key: 'forceWidth',
+      value: function forceWidth(width) {
+        this.options.forcedWidth = width;
+        return this;
+      }
+    }, {
       key: 'setAxisPosition',
       value: function setAxisPosition(shift) {
         this.shiftPosition = shift;
@@ -19424,7 +19471,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'draw',
       value: function draw() {
-
         this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 2 - this.tickPx1 * this.tickScaling[1];
         var tickWidth = _get(AxisY.prototype.__proto__ || Object.getPrototypeOf(AxisY.prototype), 'draw', this).apply(this, arguments);
         tickWidth += this.getAdditionalWidth();
@@ -19437,7 +19483,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'equalizePosition',
       value: function equalizePosition(width) {
-
         this.placeLabel(this.left ? -width : width);
 
         if (this.getLabel()) {
@@ -19462,7 +19507,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         tick = this.nextTick(level, function (tick) {
-
           tick.setAttribute('x1', (_this2.left ? 1 : -1) * _this2.tickPx1 * _this2.tickScaling[level]);
           tick.setAttribute('x2', (_this2.left ? 1 : -1) * _this2.tickPx2 * _this2.tickScaling[level]);
 
@@ -19481,7 +19525,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         //  this.groupTicks.appendChild( tick );
         if (level == 1) {
           tickLabel = this.nextTickLabel(function (tickLabel) {
-
             tickLabel.setAttribute('x', _this2.tickMargin + _this2.options.tickLabelOffset);
             if (_this2.getTicksLabelColor() !== 'black') {
               tickLabel.setAttribute('fill', _this2.getTicksLabelColor());
@@ -19507,7 +19550,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'drawLabel',
       value: function drawLabel() {
-
         if (this.getLabelColor() !== 'black') {
           this.label.setAttribute('fill', this.getLabelColor());
         }
@@ -19548,7 +19590,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setShift',
       value: function setShift(shift) {
-
         this.shift = shift;
 
         if (!this.shift || !this.graph.getWidth()) {
@@ -19578,7 +19619,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: '_drawLine',
       value: function _drawLine(pos, line) {
-
         var px = this.getPx(pos);
 
         if (!line) {
@@ -19648,7 +19688,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             j = 0;
 
         for (var i = 0, l = this.graph.series.length; i < l; i++) {
-
           if (!this.graph.series[i].isShown()) {
             continue;
           }
@@ -19668,10 +19707,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         if (j == 0) {
-
           this.setMinMaxToFitSeries(); // No point was found
         } else {
-
           // If we wanted originally to resize min and max. Otherwise we use the current value
           minV = min ? minV : this.getCurrentMin();
           maxV = max ? maxV : this.getCurrentMax();
@@ -19689,7 +19726,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setMinMaxFlipped',
       value: function setMinMaxFlipped() {
-
         var interval = this.maxPx - this.minPx;
 
         if (isNaN(interval)) {
@@ -27069,7 +27105,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
    * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
    */
   var legendDefaults = {
-
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     frame: true,
     frameWidth: 1,
@@ -27086,7 +27121,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     shapesToggleable: true,
     isSerieHideable: true,
     isSerieSelectable: true
-
   };
 
   /**
@@ -27180,7 +27214,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _createClass(Legend, [{
       key: 'setPosition',
       value: function setPosition(position, alignToX, alignToY) {
-
         if (!position) {
           return;
         }
@@ -27197,7 +27230,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setAutoPosition',
       value: function setAutoPosition(position) {
-
         if (['bottom', 'left', 'top', 'right'].indexOf(position = position.toLowerCase()) > -1) {
           this.autoPosition = position;
           return this;
@@ -27214,7 +27246,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'buildLegendBox',
       value: function buildLegendBox() {
-
         var series = this.series || this.graph.getSeries(),
             posX = 0,
             posY = this.options.paddingTop;
@@ -27226,13 +27257,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         for (var i = 0, l = series.length; i < l; i++) {
-
           if (series[i].excludedFromLegend && !this.series) {
             continue;
           }
 
           if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
-
             var bbox = getBBox(this.groups[i]);
 
             if (posX + bbox.width > this.graph.getDrawingWidth() - this.options.paddingRight) {
@@ -27244,11 +27273,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.groups[i].setAttribute('transform', 'translate( ' + posX + ', ' + posY + ')');
 
           if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
-
             posX += bbox.width + 10;
             posY += 0;
           } else {
-
             posX = 0;
             posY += 16;
           }
@@ -27281,7 +27308,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.position = this.position || {};
 
         switch (this.autoPosition) {
-
           case 'bottom':
             this.position.y = this.graph.getHeight() + 'px';
             // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
@@ -27314,7 +27340,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (this.autoPosition) {
           switch (this.autoPosition) {
-
             case 'bottom':
               this.graph.options.paddingBottom = this.height + 10;
               break;
@@ -27343,7 +27368,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'calculatePosition',
       value: function calculatePosition() {
-
         var pos = _graphPosition2.default.check(this.position);
         var poscoords = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
 
@@ -27351,28 +27375,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return;
         }
 
+        // I don't think this is correct... y=max already is axis-relative.
         if (pos.y == 'max') {
-          poscoords.y += this.graph.getPaddingTop();
+          //    poscoords.y += this.graph.getPaddingTop();
         }
 
-        if (pos.x == 'max') {
-          poscoords.x -= this.graph.getPaddingRight();
-        }
+        if (pos.x == 'max') {}
+        poscoords.y += this.graph.getPaddingTop();
+        poscoords.x += this.graph.getPaddingLeft();
 
         if (this.alignToX == 'right') {
           poscoords.x -= this.width;
-          poscoords.x -= this.bbox.x;
-        } else {
           //poscoords.x -= this.bbox.x;
-        }
+        } else {
+            //poscoords.x -= this.bbox.x;
+          }
 
         if (this.alignToY == 'bottom') {
           poscoords.y -= this.height;
-          poscoords.y -= this.bbox.y;
+          //    poscoords.y -= this.bbox.y;
         } else {
-
-          poscoords.y -= this.bbox.y;
-        }
+            //     poscoords.y -= this.bbox.y;
+          }
 
         this.pos.transformX = poscoords.x;
         this.pos.transformY = poscoords.y;
@@ -27382,7 +27406,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'update',
       value: function update(onlyIfRequired) {
-
         if (this.graph.isDelayedUpdate() || !this._requiredUpdate && onlyIfRequired) {
           return;
         }
@@ -27417,115 +27440,108 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var posX, posY;
 
         for (var i = 0, l = series.length; i < l; i++) {
-
           if (series[i].excludedFromLegend && !this.series) {
             continue;
           }
 
-          (function (j) {
+          var g,
+              line,
+              text,
+              xPadding = 0;
 
-            var g,
-                line,
-                text,
-                xPadding = 0;
+          if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
+            var fullWidth = this.graph.getDrawingWidth();
+          }
 
-            if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
-              var fullWidth = this.graph.getDrawingWidth();
-            }
+          g = document.createElementNS(self.graph.ns, 'g');
+          var rect = document.createElementNS(self.graph.ns, 'rect');
 
-            g = document.createElementNS(self.graph.ns, 'g');
-            var rect = document.createElementNS(self.graph.ns, 'rect');
+          self.subG.appendChild(g);
 
-            self.subG.appendChild(g);
+          g.appendChild(rect);
 
-            g.appendChild(rect);
+          series[i].getSymbolForLegend();
 
-            series[i].getSymbolForLegend();
+          var line = series[i]._getSymbolForLegendContainer();
+          var marker = series[i].getMarkerForLegend();
+          var text = series[i].getTextForLegend();
 
-            var line = series[i]._getSymbolForLegendContainer();
-            var marker = series[j].getMarkerForLegend();
-            var text = series[j].getTextForLegend();
+          var dx = 35;
 
-            var dx = 35;
+          if (this.isHideable()) {
+            dx += 20;
 
-            if (this.isHideable()) {
-              dx += 20;
+            var eyeUse = document.createElementNS(self.graph.ns, 'use');
+            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + (series[i].isShown() ? this.eyeId : this.eyeCrossedId));
+            eyeUse.setAttribute('width', 15);
+            eyeUse.setAttribute('height', 15);
+            eyeUse.setAttribute('x', 35);
+            eyeUse.setAttribute('y', -8);
 
-              var eyeUse = document.createElementNS(self.graph.ns, 'use');
-              eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + (series[i].isShown() ? this.eyeId : this.eyeCrossedId));
-              eyeUse.setAttribute('width', 15);
-              eyeUse.setAttribute('height', 15);
-              eyeUse.setAttribute('x', 35);
-              eyeUse.setAttribute('y', -8);
-
-              eyeUse.addEventListener('click', function (e) {
-                e.stopPropagation();
-
-                var id;
-                if (series[j].isShown()) {
-                  series[j].hide(self.options.hideShapesOnHideSerie);
-                  id = self.eyeCrossedId;
-                } else {
-                  series[j].show(self.options.hideShapesOnHideSerie);
-                  id = self.eyeId;
-                }
-
-                eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + id);
-              });
-            }
-
-            text.setAttribute('transform', 'translate(' + dx + ', 3)');
-            text.setAttribute('fill', this.options.color);
-
-            if (line) {
-              g.appendChild(line);
-            }
-
-            if (series[j].getType() == 'scatter') {
-              line.setAttribute('transform', 'translate( 20, 0 )');
-            }
-
-            if (marker) {
-              g.appendChild(marker);
-            }
-
-            if (eyeUse) {
-              g.appendChild(eyeUse);
-            }
-
-            g.appendChild(text);
-
-            var bbox = getBBox(g);
-
-            rect.setAttribute('x', bbox.x);
-            rect.setAttribute('y', bbox.y);
-            rect.setAttribute('width', bbox.width);
-            rect.setAttribute('height', bbox.height);
-            rect.setAttribute('fill', 'none');
-            rect.setAttribute('pointer-events', 'fill');
-
-            self.groups[j] = g;
-
-            g.addEventListener('click', function (e) {
-
-              var serie = series[j];
-
-              if (!serie.isShown()) {
-                return;
-              }
-
-              if (self.isSelectable() && !serie.isSelected()) {
-
-                self.graph.selectSerie(serie);
-              } else {
-
-                self.graph.unselectSerie(serie);
-              }
-
-              e.preventDefault();
+            eyeUse.addEventListener('click', function (e) {
               e.stopPropagation();
+
+              var id;
+              if (series[i].isShown()) {
+                series[i].hide(self.options.hideShapesOnHideSerie);
+                id = self.eyeCrossedId;
+              } else {
+                series[i].show(self.options.hideShapesOnHideSerie);
+                id = self.eyeId;
+              }
+
+              eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#' + id);
             });
-          }).call(this, i);
+          }
+
+          text.setAttribute('transform', 'translate(' + dx + ', 3)');
+          text.setAttribute('fill', this.options.color);
+
+          if (line) {
+            g.appendChild(line);
+          }
+
+          if (series[i].getType() == 'scatter') {
+            line.setAttribute('transform', 'translate( 20, 0 )');
+          }
+
+          if (marker) {
+            g.appendChild(marker);
+          }
+
+          if (eyeUse) {
+            g.appendChild(eyeUse);
+          }
+
+          g.appendChild(text);
+
+          var bbox = getBBox(g);
+
+          rect.setAttribute('x', bbox.x);
+          rect.setAttribute('y', bbox.y);
+          rect.setAttribute('width', bbox.width);
+          rect.setAttribute('height', bbox.height);
+          rect.setAttribute('fill', 'none');
+          rect.setAttribute('pointer-events', 'fill');
+
+          self.groups[i] = g;
+
+          g.addEventListener('click', function (e) {
+            var serie = series[j];
+
+            if (!serie.isShown()) {
+              return;
+            }
+
+            if (self.isSelectable() && !serie.isSelected()) {
+              self.graph.selectSerie(serie);
+            } else {
+              self.graph.unselectSerie(serie);
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+          });
         }
 
         this.svg.appendChild(this.rect);
@@ -27567,12 +27583,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'setEvents',
       value: function setEvents() {
-
         var self = this;
         var pos = this.pos;
 
         var mousedown = function mousedown(e) {
-
           e.stopPropagation();
           console.log('down');
           if (self.options.movable) {
@@ -27604,7 +27618,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'handleMouseUp',
       value: function handleMouseUp(e) {
-
         e.stopPropagation();
         e.preventDefault();
         this.mousedown = false;
@@ -27614,7 +27627,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'handleMouseMove',
       value: function handleMouseMove(e) {
-
         if (!this.mousedown) {
           return;
         }
@@ -27638,7 +27650,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: '_setPosition',
       value: function _setPosition() {
-
         var pos = this.pos;
         if (!isNaN(pos.transformX) && !isNaN(pos.transformY) && pos.transformX !== false && pos.transformY !== false) {
           this.svg.setAttribute('transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')');
@@ -27647,7 +27658,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: 'applyStyle',
       value: function applyStyle() {
-
         if (this.options.frame) {
           this.rectBottom.setAttribute('stroke', this.options.frameColor);
           this.rectBottom.setAttribute('stroke-width', this.options.frameWidth + 'px');

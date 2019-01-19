@@ -1229,6 +1229,21 @@ class Graph extends EventEmitter {
   }
 
   /**
+   * Sorts the series
+   * @param {function} method - Sorting method (arguments: serieA, serieB)
+   * @example graph.sortSeries( ( sA, sB ) => sA.label > sB.label ? 1 : -1 );
+   */
+  sortSeries( method ) {
+
+    if ( typeof method !== 'function' ) {
+      return this;
+    }
+
+    this.series.sort( method );
+    return this;
+  }
+
+  /**
    * Draws a specific serie
    * @param {Serie} serie - The serie to redraw
    * @param {Boolean} force - Forces redraw even if no data has changed
@@ -2649,8 +2664,8 @@ function refreshDrawingZone( graph ) {
   };
 
   graph._painted = true;
-  // Apply to top and bottom
 
+  // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
 
     if ( !axis.isShown() ) {
@@ -2712,7 +2727,7 @@ function refreshDrawingZone( graph ) {
 
     axis.setMinPx( shiftTop );
     axis.setMaxPx( graph.getDrawingHeight( true ) - shiftBottom );
-    console.log( axis );
+
     if ( axis.floating ) {
       return;
     }
@@ -2729,10 +2744,15 @@ function refreshDrawingZone( graph ) {
     // Get axis position gives the extra shift that is common
     var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
     axis.setLevel( level );
-    shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
 
-    if ( level < shift[ position ].length - 1 ) {
-      shift[ position ][ level ] += 10;
+    if ( axis.options.forcedWidth ) {
+      shift[ position ][ level ] = axis.options.forcedWidth;
+    } else {
+      shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
+
+      if ( level < shift[ position ].length - 1 ) {
+        shift[ position ][ level ] += 10;
+      }
     }
 
   }, false, false, true );
