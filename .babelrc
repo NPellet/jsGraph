@@ -1,9 +1,11 @@
-
 {
   "plugins": [
-    ["inline-replace-variables", {
-      "__VERSION__": "v<%= pkg.version %>"
-    }],
-    "transform-es2015-modules-commonjs"
+    [
+      "inline-replace-variables",
+      {
+        "__VERSION__": "v<%= pkg.version %>"
+      }
+    ],
+    "@babel/transform-modules-commonjs"
   ]
 }

@@ -110,7 +110,7 @@ module.exports = function(grunt) {
             babel({
               babelrc: false,
               plugins: [
-                'transform-exponentiation-operator',
+                '@babel/transform-exponentiation-operator',
                 [
                   'inline-replace-variables',
                   {
@@ -129,7 +129,7 @@ module.exports = function(grunt) {
 
     webpack: {
       dist: {
-        entry: ['babel-polyfill', './src/graph.js'],
+        entry: ['@babel/polyfill', './src/graph.js'],
         output: {
           path: distPath,
           filename: 'jsgraph.js',
@@ -145,15 +145,13 @@ module.exports = function(grunt) {
               loader: 'babel-loader',
               query: {
                 presets: [
-                  'babel-preset-env',
-                  'babel-preset-stage-1',
-                  'babel-polyfill'
+                  '@babel/preset-env'
                 ].map(require.resolve),
 
                 plugins: [
                   'add-module-exports',
-                  'transform-es2015-modules-umd',
-                  'transform-exponentiation-operator',
+                  '@babel/transform-modules-umd',
+                  '@babel/transform-exponentiation-operator',
                   [
                     'inline-replace-variables',
                     {
@@ -188,8 +186,8 @@ module.exports = function(grunt) {
               query: {
                 plugins: [
                   'add-module-exports',
-                  'transform-es2015-modules-umd',
-                  'transform-exponentiation-operator',
+                  '@babel/transform-modules-umd',
+                  '@babel/transform-exponentiation-operator',
                   [
                     'inline-replace-variables',
                     {

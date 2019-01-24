@@ -308,7 +308,9 @@ class Legend {
       //    poscoords.y += this.graph.getPaddingTop();
     }
 
-    if ( pos.x == 'max' ) {}
+    if ( pos.x == 'max' ) {
+      // todo
+    }
     poscoords.y += this.graph.getPaddingTop();
     poscoords.x += this.graph.getPaddingLeft();
 
@@ -372,7 +374,7 @@ class Legend {
 
     var posX, posY;
 
-    for ( var i = 0, l = series.length; i < l; i++ ) {
+    for ( let i = 0, l = series.length; i < l; i++ ) {
       if ( series[ i ].excludedFromLegend && !this.series ) {
         continue;
       }
@@ -468,7 +470,7 @@ class Legend {
       self.groups[ i ] = g;
 
       g.addEventListener( 'click', function( e ) {
-        var serie = series[ j ];
+        var serie = series[ i ];
 
         if ( !serie.isShown() ) {
           return;
@@ -545,7 +547,6 @@ class Legend {
 
     var mousedown = function( e ) {
       e.stopPropagation();
-      console.log( 'down' );
       if ( self.options.movable ) {
         pos.x = e.clientX;
         pos.y = e.clientY;

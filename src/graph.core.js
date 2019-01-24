@@ -1061,8 +1061,6 @@ class Graph extends EventEmitter {
           //          continue;
         }
 
-        //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-
         let min = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues );
         let max = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues );
 
@@ -1809,7 +1807,6 @@ class Graph extends EventEmitter {
   }
 
   isActionAllowed( e, action ) {
-    console.log( action.type, e.type, action.shift, e.shiftKey, action );
     if ( action.type !== e.type && ( action.type !== undefined || e.type !== 'mousedown' ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
     }
@@ -1920,7 +1917,6 @@ class Graph extends EventEmitter {
     for ( var i in this.options.plugins ) {
 
       pluginName = i;
-      console.log( pluginName );
       pluginOptions = this.options.plugins[ i ];
 
       constructor = this.getConstructor( `graph.plugin.${ pluginName}` );
@@ -2883,7 +2879,6 @@ function refreshDrawingZone( graph ) {
 function _handleKey( graph, event, type ) {
 
   var self = graph;
-  console.log( event, type );
   if ( graph.forcedPlugin ) {
 
     graph.activePlugin = graph.forcedPlugin;

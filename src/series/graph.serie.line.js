@@ -787,7 +787,6 @@ class SerieLine extends SerieScatter {
     }
 
     if ( this.hasErrors() ) {
-      console.log( j, x, y, xpx, ypx );
       this.errorAddPoint( j, x, y, xpx, ypx );
     }
 
@@ -934,7 +933,6 @@ class SerieLine extends SerieScatter {
       p_y = this.waveform.getY( k );
 
       dist = Math.pow( this.getX( p_x ) - x, 2 ) + Math.pow( this.getY( p_y ) - y, 2 );
-      //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
 
       if ( !oldDist || dist < oldDist ) {
         oldDist = dist;
@@ -1059,8 +1057,6 @@ class SerieLine extends SerieScatter {
       max = -Infinity,
       initJ,
       maxJ;
-
-    //      console.log( start2, end2, v1, v2 );
 
     if ( !v1 ) {
       start2 = this.minX;

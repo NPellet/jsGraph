@@ -218,7 +218,6 @@ var ErrorBarMixin = {
         }
       }
     }
-    console.log( styles );
     return styles;
   },
 

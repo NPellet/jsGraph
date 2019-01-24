@@ -1282,8 +1282,6 @@ class Waveform {
       return false;
     }
     /*
-    console.log( direction, this._dataAggregationDirection );
-
         if( direction !== this._dataAggregationDirection ) {
           throw "The data is not aggregated in that direction";
         }
@@ -2049,7 +2047,6 @@ function binarySearch(
       return seedInt;
     }
 
-    //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
     if ( haystack[ seedInt ] < target ) {
       if ( reverse ) {
         seedB = seedInt;

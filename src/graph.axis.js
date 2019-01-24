@@ -990,7 +990,7 @@ class Axis extends EventEmitter {
    */
   setCurrentMin( val ) {
 
-    if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() || val < this.options.lowestMin ||  val === undefined ) ) ) {
+    if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() || val < this.options.lowestMin || val === undefined ) ) ) {
       val = this.getMinValue();
     }
     this.currentAxisMin = val;

@@ -89,7 +89,6 @@ window.onload = function(){
                 else
                 {
                     //TODO: nested peaks
-                    console.log(possible);
                 }
         }
     }

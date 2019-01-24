@@ -182,7 +182,7 @@ class SerieScatter extends Serie {
    */
   draw( force ) { // Serie redrawing
 
-    if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) ||  !this.options.markers ) {
+    if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) || !this.options.markers ) {
       return;
     }
 
@@ -274,7 +274,7 @@ class SerieScatter extends Serie {
     }
 
     // This will automatically create the shapes
-    this.applyMarkerStyle( this.selectionType ||  'unselected', keys );
+    this.applyMarkerStyle( this.selectionType || 'unselected', keys );
     this.keys = keys;
     this.groupMain.appendChild( this.groupMarkers );
   }
@@ -454,13 +454,13 @@ class SerieScatter extends Serie {
 
   select( selectionType ) {
     this.selectionType = selectionType;
-    this.applyMarkerStyle( this.selectionType ||  'selected', this.keys );
+    this.applyMarkerStyle( this.selectionType || 'selected', this.keys );
     super.select( selectionType );
   }
 
   unselect() {
     this.selectionType = 'unselected';
-    this.applyMarkerStyle( this.selectionType ||  'unselected', this.keys );
+    this.applyMarkerStyle( this.selectionType || 'unselected', this.keys );
 
     super.unselect();
   }

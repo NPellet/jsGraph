@@ -208,7 +208,6 @@ class SerieBox extends Serie {
   }
 
   setStyle( style, selectionType = 'unselected' ) {
-    //console.log( style, selectionType );
     this.styles[ selectionType ] = extend( {}, this.default().defaultStyle, this.styles.unselected, style );
     this.styleHasChanged( selectionType );
   }
@@ -547,12 +546,9 @@ class SerieBox extends Serie {
     } else {
       // Get all the spacing and determine the smallest one
       boxOtherDimension = this.options.maxBoxWidth;
-      console.log( boxOtherDimension );
       for ( var i = 0, l = this.data.length; i < l - 1; i++ ) {
 
-        //     console.log( Math.abs( axis.getPx( this.data[ i + 1 ].pos ) - axis.getPx( this.data[ i ].pos ) ), axis.getPx( this.data[ i + 1 ].pos ), axis.getPx( this.data[ i ].pos ) );
         boxOtherDimension = Math.max( 5, Math.min( boxOtherDimension, Math.abs( axis2.getPx( this.data[ i + 1 ].x ) - axis2.getPx( this.data[ i ].x ) ) ) );
-        console.log( boxOtherDimension, this.data, this.data[ i + 1 ].x, axis2.getPx( this.data[ i + 1 ].x ), axis2 );
       }
 
     }
