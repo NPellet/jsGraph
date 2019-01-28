@@ -2167,7 +2167,7 @@ class WaveformHash extends Waveform {
   _setData() {
     this.minY = Math.min( ...this.data );
     this.maxY = Math.max( ...this.data );
-    console.log( this.errors );
+  //  console.log( this.errors );
     this.checkMinMaxErrorBars();
   }
 }
