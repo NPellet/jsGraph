@@ -2,11 +2,15 @@
   "axes": {
     "x": {
       "label": "Wavelength",
-      "unit": "nm"
+      "unit": "nm",
+      "unitWrapperBefore": "[",
+      "unitWrapperAfter": "]"
     }, 
     "y": {
       "label": "Transmission",
-      "unit": "%"
+      "unit": "%",
+      "unitWrapperBefore": "[",
+      "unitWrapperAfter": "]"
     }
   },
   "series": [

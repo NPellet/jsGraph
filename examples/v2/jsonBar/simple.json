@@ -4,7 +4,8 @@
       {
         "label": "Produced mass",
         "unit": "g",
-        "unitWrapper": ["(", ")"],
+        "unitWrapperBefore": "[",
+        "unitWrapperAfter": "]",
         "unitDecade": true
       }
     ],
