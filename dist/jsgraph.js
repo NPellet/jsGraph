@@ -4608,11 +4608,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           try {
             indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
           } catch (e) {
-            console.log(e);
+            console.error(e);
             throw new Error('Error while finding the closest index');
-            return {};
           }
-
           if (isNaN(indexX) || indexX === false) {
             return false;
           }
@@ -4646,12 +4644,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: 'handleMouseMove',
       value: function handleMouseMove(xValue, doMarker, yValue) {
         var valX = xValue || this.getXAxis().getMouseVal(),
-            valY = yValue || this.getYAxis().getMouseVal(),
-            xMinIndex,
-            xMin,
-            yMin,
-            xMax,
-            yMax;
+            valY = yValue || this.getYAxis().getMouseVal();
 
         var value = this.searchClosestValue(valX, valY);
 
@@ -6474,6 +6467,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           if (this.hasXWaveform()) {
             // The x value HAS to be rescaled
+
             position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
           } else {
             position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
@@ -8049,6 +8043,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   function binarySearch(target, haystack) {
     var reverse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : haystack[haystack.length - 1] < haystack[0];
+    var fineCheck = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
 
     var seedA = 0,
         length = haystack.length,
@@ -8068,29 +8064,45 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (haystack[seedB] == target) {
       return seedB;
     }
-
+    console.log('start');
     while (true) {
       i++;
-      if (i > 100) {
+      if (i > 1000) {
         throw new Error('Error loop');
       }
 
       seedInt = Math.floor((seedA + seedB) / 2);
-
+      console.log(seedInt, seedA, seedB);
       //  seedInt -= seedInt % 2; // Always looks for an x.
 
       while (isNaN(haystack[seedInt])) {
         if (seedInt >= haystack.length - 1) {
+          console.log("_");
           return haystack.length - 1;
         } else if (seedInt <= 0) {
+          console.log("_");
           return 0;
         }
 
         seedInt += nanDirection;
       }
-
-      if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
+      console.log(seedInt, target);
+      if (haystack[seedInt] == target) {
         return seedInt;
+      }
+      console.log("No lucky match");
+      if (seedInt == seedA || seedInt == seedB) {
+        console.log("Boundary match");
+        if (!fineCheck) {
+          return seedInt;
+        }
+
+        if (Math.abs(haystack[seedInt] - haystack[seedA]) < Math.abs(haystack[seedInt] - haystack[seedB])) {
+          console.log('a');
+          return seedA;
+        }
+        console.log('b');
+        return seedB;
       }
 
       //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
@@ -10787,12 +10799,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
               serie._trackingLegend = _trackingLegendSerie(_this10, {
                 serie: serie
-              }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : function (output) {
-
-                for (var i in output) {
-                  return output[i].serie.serie.getName() + ': ' + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
-                }
-              }, index.trueX);
+              }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX);
 
               if (serie._trackingLegend) {
                 serie._trackingLegend.style.display = 'block';
@@ -11331,7 +11338,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function _handleKey(graph, event, type) {
 
     var self = graph;
-    console.log(event, type);
+
     if (graph.forcedPlugin) {
 
       graph.activePlugin = graph.forcedPlugin;
@@ -11743,7 +11750,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           var snapToSerie = graph.options.trackingLine.snapToSerie;
           index = snapToSerie.handleMouseMove(false, true);
 
-          if (this.trackingObject) {
+          if (graph.trackingObject) {
 
             if (!index) {
 
@@ -11774,7 +11781,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             });
           }
 
-          graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest);
+          if (!index) {
+            return;
+          }
+          graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, index.xClosest);
         }
       }
     }
@@ -11895,8 +11905,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         output[serie.serie.getName()] = {
 
-          yValue: index.xClosest,
-          xValue: index.yClosest,
+          yValue: index.yClosest,
+          xValue: index.xClosest,
           serie: serie,
           index: index
 
@@ -12035,6 +12045,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     return group;
   }
+
+  var trackingLineDefaultTextMethod = function trackingLineDefaultTextMethod(output) {
+
+    var txt = '';
+    for (var i in output) {
+      txt += output[i].serie.serie.getName() + ': ' + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
+    }
+    return txt;
+  };
 
   function _handleDblClick(graph, x, y, e) {
     // var _x = x - graph.options.paddingLeft;

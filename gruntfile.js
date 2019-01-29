@@ -386,6 +386,7 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('visualizer', ['webpack:dist_es6', 'copy:visualizer']);
   grunt.registerTask('candlelight', ['webpack:dist_es6', 'copy:candlelight']);
+  grunt.registerTask('web', ['webpack:dist_es6', 'copy:web']);
 
   function WebpackBeautifier(options) {
     this._options = options;

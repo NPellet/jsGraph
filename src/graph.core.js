@@ -1809,7 +1809,6 @@ class Graph extends EventEmitter {
   }
 
   isActionAllowed( e, action ) {
-    console.log( action.type, e.type, action.shift, e.shiftKey, action );
     if ( action.type !== e.type && ( action.type !== undefined || e.type !== 'mousedown' ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
     }
@@ -1920,7 +1919,6 @@ class Graph extends EventEmitter {
     for ( var i in this.options.plugins ) {
 
       pluginName = i;
-      console.log( pluginName );
       pluginOptions = this.options.plugins[ i ];
 
       constructor = this.getConstructor( `graph.plugin.${ pluginName}` );
@@ -2255,29 +2253,31 @@ class Graph extends EventEmitter {
       options.series.forEach( ( serie ) => {
         serie.serie.disableTracking();
       } );
+
+      if ( options.noLine ) {
+        return;
+      }
+
+      if ( !this.trackingObject ) { // Avoid multiple creation of tracking lines
+
+        // Creates a new shape called trackingLine, in the first layer (below everything)
+        this.trackingObject = this.newShape( 'line', util.extend( true, {
+          position: [ {
+            y: 'min'
+          }, {
+            y: 'max'
+          } ],
+          stroke: 'black',
+          layer: -1
+        }, options.trackingLineShapeOptions ) );
+      }
+
+      this.trackingObject.draw();
+
+      return this.trackingObject;
     }
 
-    if ( options.noLine ) {
-      return;
-    }
-
-    if ( !this.trackingObject ) { // Avoid multiple creation of tracking lines
-
-      // Creates a new shape called trackingLine, in the first layer (below everything)
-      this.trackingObject = this.newShape( 'line', util.extend( true, {
-        position: [ {
-          y: 'min'
-        }, {
-          y: 'max'
-        } ],
-        stroke: 'black',
-        layer: -1
-      }, options.trackingLineShapeOptions ) );
-    }
-
-    this.trackingObject.draw();
-
-    return this.trackingObject;
+    //return this.trackingObject;
   }
 
   addSerieToTrackingLine( serie, options ) {
@@ -2288,17 +2288,20 @@ class Graph extends EventEmitter {
         mode: 'individual'
       } );
     }
-
+    // This was to avoid adding several series, but it causes a problem here...
+    let noAdd = false;
     this.options.trackingLine.series.forEach( ( serieO, index ) => {
       if ( serieO.serie == serie ) {
-        this.options.trackingLine.series.splice( index, 1 );
+        noAdd = true;
+        //this.options.trackingLine.series.splice( index, 1 );
       }
     } );
 
-    this.options.trackingLine.series.push( Object.assign( {
-      serie: serie
-    }, options ) );
-
+    if ( !noAdd ) {
+      this.options.trackingLine.series.push( Object.assign( {
+        serie: serie
+      }, options ) );
+    }
     serie.enableTracking( ( serie, index, x, y ) => {
 
       if ( this.options.trackingLine.enable ) {
@@ -2315,13 +2318,7 @@ class Graph extends EventEmitter {
 
           serie._trackingLegend = _trackingLegendSerie( this, {
             serie: serie
-          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : ( output ) => {
-
-            for ( var i in output ) {
-              return `${output[ i ].serie.serie.getName() }: ${ output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )}`;
-            }
-
-          }, index.trueX );
+          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX );
 
           if ( serie._trackingLegend ) {
             serie._trackingLegend.style.display = 'block';
@@ -2343,9 +2340,7 @@ class Graph extends EventEmitter {
       }
 
       serie._trackingLegend = _trackingLegendSerie( this, {
-
         serie: serie
-
       }, false, false, serie._trackingLegend, false, false );
 
     } );
@@ -2883,7 +2878,7 @@ function refreshDrawingZone( graph ) {
 function _handleKey( graph, event, type ) {
 
   var self = graph;
-  console.log( event, type );
+
   if ( graph.forcedPlugin ) {
 
     graph.activePlugin = graph.forcedPlugin;
@@ -3289,6 +3284,9 @@ function _handleMouseMove( graph, x, y, e ) {
     return;
   }
 
+  let xRef;
+  let xOverwritePx = x;
+
   //			return;
 
   graph._applyToAxes( 'handleMouseMove', [ x - graph.options.paddingLeft, e ], true, false );
@@ -3305,7 +3303,7 @@ function _handleMouseMove( graph, x, y, e ) {
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove( false, true );
 
-        if ( this.trackingObject ) {
+        if ( graph.trackingObject ) {
 
           if ( !index ) {
 
@@ -3319,7 +3317,8 @@ function _handleMouseMove( graph, x, y, e ) {
             graph.trackingObject.getPosition( 1 ).x = index.xClosest;
             graph.trackingObject.redraw();
 
-            var x = snapToSerie.getXAxis().getPx( index.xClosest ) + graph.options.paddingLeft;
+            xRef = index.xClosest; //
+            xOverwritePx = snapToSerie.getXAxis().getPx( index.xClosest ) + graph.options.paddingLeft;
           }
         }
 
@@ -3337,7 +3336,11 @@ function _handleMouseMove( graph, x, y, e ) {
           } );
         }
 
-        graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest );
+        if ( !index ) {
+          return;
+        }
+        graph._trackingLegend = _trackingLegendSerie( graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef );
+
       }
     }
   }
@@ -3448,7 +3451,6 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       return legend;
     }
-
     // Should we display the dot ?
     if (
       ( serie.withinPx > 0 && Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( index.xClosest ) ) - serie.withinPx > 1e-14 ) ||
@@ -3463,8 +3465,8 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       output[ serie.serie.getName() ] = {
 
-        yValue: index.xClosest,
-        xValue: index.yClosest,
+        yValue: index.yClosest,
+        xValue: index.xClosest,
         serie: serie,
         index: index
 
@@ -3614,6 +3616,15 @@ function _makeTrackingLegend( graph ) {
 
   return group;
 }
+
+const trackingLineDefaultTextMethod = ( output ) => {
+
+  let txt = '';
+  for ( var i in output ) {
+    txt += `${output[ i ].serie.serie.getName() }: ${ output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )}`;
+  }
+  return txt;
+};
 
 function _handleDblClick( graph, x, y, e ) {
   // var _x = x - graph.options.paddingLeft;

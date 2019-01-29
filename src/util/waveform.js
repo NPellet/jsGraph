@@ -509,6 +509,7 @@ class Waveform {
 
       if ( this.hasXWaveform() ) {
         // The x value HAS to be rescaled
+
         position = this.xdata.getIndexFromData(
           xval,
           xdata,
@@ -2001,8 +2002,10 @@ function euclidianSearch(
 function binarySearch(
   target,
   haystack,
-  reverse = haystack[ haystack.length - 1 ] < haystack[ 0 ]
+  reverse = haystack[ haystack.length - 1 ] < haystack[ 0 ],
+  fineCheck = true
 ) {
+
   let seedA = 0,
     length = haystack.length,
     seedB = length - 1,
@@ -2027,7 +2030,7 @@ function binarySearch(
 
   while ( true ) {
     i++;
-    if ( i > 100 ) {
+    if ( i > 1000 ) {
       throw new Error( 'Error loop' );
     }
 
@@ -2037,16 +2040,32 @@ function binarySearch(
 
     while ( isNaN( haystack[ seedInt ] ) ) {
       if ( seedInt >= haystack.length - 1 ) {
+
         return haystack.length - 1;
       } else if ( seedInt <= 0 ) {
+
         return 0;
       }
 
       seedInt += nanDirection;
     }
 
-    if ( seedInt == seedA || haystack[ seedInt ] == target || seedInt == seedB ) {
+    if ( haystack[ seedInt ] == target ) {
       return seedInt;
+    }
+
+    if ( seedInt == seedA || seedInt == seedB ) {
+
+      if ( !fineCheck ) {
+        return seedInt;
+      }
+
+      if ( Math.abs( target - haystack[ seedA ] ) < Math.abs( target - haystack[ seedB ] ) ) {
+
+        return seedA;
+      }
+
+      return seedB;
     }
 
     //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
@@ -2068,6 +2087,7 @@ function binarySearch(
 
     nanDirection *= -1;
   }
+
 }
 
 // Stores key: value
@@ -2170,7 +2190,6 @@ class WaveformHash extends Waveform {
   _setData() {
     this.minY = Math.min( ...this.data );
     this.maxY = Math.max( ...this.data );
-    console.log( this.errors );
     this.checkMinMaxErrorBars();
   }
 }

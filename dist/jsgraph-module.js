@@ -2522,6 +2522,7 @@ class Waveform {
 
       if (this.hasXWaveform()) {
         // The x value HAS to be rescaled
+
         position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
       } else {
         position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
@@ -3916,7 +3917,8 @@ function euclidianSearch(targetX, targetY, haystackX, haystackY, scaleX = 1, sca
   return index;
 }
 
-function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] < haystack[0]) {
+function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] < haystack[0], fineCheck = true) {
+
   let seedA = 0,
       length = haystack.length,
       seedB = length - 1,
@@ -3935,7 +3937,7 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
   if (haystack[seedB] == target) {
     return seedB;
   }
-
+  console.log('start');
   while (true) {
     i++;
     if (i > 100) {
@@ -3943,7 +3945,7 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
     }
 
     seedInt = Math.floor((seedA + seedB) / 2);
-
+    console.log(seedInt, seedA, seedB);
     //  seedInt -= seedInt % 2; // Always looks for an x.
 
     while (isNaN(haystack[seedInt])) {
@@ -3955,9 +3957,23 @@ function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] 
 
       seedInt += nanDirection;
     }
-
-    if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
+    console.log(seedInt);
+    if (haystack[seedInt] == target) {
       return seedInt;
+    }
+    console.log("No lucky match");
+    if (seedInt == seedA || seedInt == seedB) {
+      console.log("Boundary match");
+      if (!fineCheck) {
+        return seedInt;
+      }
+
+      if (Math.abs(haystack[seedInt] - haystack[seedA]) < Math.abs(haystack[seedInt] - haystack[seedB])) {
+        console.log('a');
+        return seedA;
+      }
+      console.log('b');
+      return seedB;
     }
 
     //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
@@ -6377,12 +6393,7 @@ class Graph$1 extends EventEmitter {
 
           serie._trackingLegend = _trackingLegendSerie(this, {
             serie: serie
-          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : output => {
-
-            for (var i in output) {
-              return `${output[i].serie.serie.getName()}: ${output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue)}`;
-            }
-          }, index.trueX);
+          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX);
 
           if (serie._trackingLegend) {
             serie._trackingLegend.style.display = 'block';
@@ -6930,7 +6941,6 @@ function refreshDrawingZone(graph) {
 
 function _handleKey(graph, event, type) {
 
-  console.log(event, type);
   if (graph.forcedPlugin) {
 
     graph.activePlugin = graph.forcedPlugin;
@@ -7338,7 +7348,7 @@ function _handleMouseMove(graph, x, y, e) {
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove(false, true);
 
-        if (this.trackingObject) {
+        if (graph.trackingObject) {
 
           if (!index) {
 
@@ -7369,7 +7379,10 @@ function _handleMouseMove(graph, x, y, e) {
           });
         }
 
-        graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest);
+        if (!index) {
+          return;
+        }
+        graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, index.xClosest);
       }
     }
   }
@@ -7490,8 +7503,8 @@ var _trackingLegendSerie = function (graph, serie, x, y, legend, textMethod, xVa
 
       output[serie.serie.getName()] = {
 
-        yValue: index.xClosest,
-        xValue: index.yClosest,
+        yValue: index.yClosest,
+        xValue: index.xClosest,
         serie: serie,
         index: index
 
@@ -7630,6 +7643,15 @@ function _makeTrackingLegend(graph) {
 
   return group;
 }
+
+const trackingLineDefaultTextMethod = output => {
+
+  let txt = '';
+  for (var i in output) {
+    txt += `${output[i].serie.serie.getName()}: ${output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue)}`;
+  }
+  return txt;
+};
 
 function _handleDblClick(graph, x, y, e) {
   // var _x = x - graph.options.paddingLeft;
@@ -15212,11 +15234,9 @@ class SerieLine extends SerieScatter {
       try {
         indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
       } catch (e) {
-        console.log(e);
+        console.error(e);
         throw new Error('Error while finding the closest index');
-        return {};
       }
-
       if (isNaN(indexX) || indexX === false) {
         return false;
       }

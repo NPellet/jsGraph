@@ -401,8 +401,7 @@ class SerieLine extends SerieScatter {
   }
 
   _draw() {
-    let self = this,
-      waveform = this.waveform,
+    let waveform = this.waveform,
       data,
       x,
       y,
@@ -717,7 +716,7 @@ class SerieLine extends SerieScatter {
     }
 
     this._createLine();
-
+    console.log( this._tracker, "a" );
     if ( this._tracker ) {
       if ( this._trackerDom ) {
         this._trackerDom.remove();
@@ -733,11 +732,11 @@ class SerieLine extends SerieScatter {
       }
 
       this._trackerDom = cloned;
-
+      console.log( 'ssdfsdf', this.groupMain );
       this.groupMain.addEventListener( 'mousemove', ( e ) => {
         var coords = this.graph._getXY( e ),
           ret = this.handleMouseMove( false, false );
-
+        console.log( coords, coords.x );
         this._trackingCallback( this, ret, coords.x, coords.y );
       } );
 
@@ -787,7 +786,6 @@ class SerieLine extends SerieScatter {
     }
 
     if ( this.hasErrors() ) {
-      console.log( j, x, y, xpx, ypx );
       this.errorAddPoint( j, x, y, xpx, ypx );
     }
 
@@ -954,6 +952,7 @@ class SerieLine extends SerieScatter {
   searchClosestValue( valX, valY ) {
     if ( this.waveform ) {
       let indexX;
+
       try {
         indexX = this.waveform.getIndexFromXY(
           valX,
@@ -964,11 +963,9 @@ class SerieLine extends SerieScatter {
           this.getYAxis().getRelPx( 1 )
         );
       } catch ( e ) {
-        console.log( e );
+        console.error( e );
         throw new Error( 'Error while finding the closest index' );
-        return {};
       }
-
       if ( isNaN( indexX ) || indexX === false ) {
         return false;
       }
@@ -1000,13 +997,9 @@ class SerieLine extends SerieScatter {
   }
 
   handleMouseMove( xValue, doMarker, yValue ) {
+
     var valX = xValue || this.getXAxis().getMouseVal(),
-      valY = yValue || this.getYAxis().getMouseVal(),
-      xMinIndex,
-      xMin,
-      yMin,
-      xMax,
-      yMax;
+      valY = yValue || this.getYAxis().getMouseVal();
 
     var value = this.searchClosestValue( valX, valY );
 

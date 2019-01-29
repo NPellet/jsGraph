@@ -19,9 +19,6 @@
 
     should load first -->
 
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-
     <script>
         var baseUrl = "/";
     </script>
@@ -30,7 +27,8 @@
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/css/prism-okaidia.css">
     <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-17-trackingline.html">
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+
+
 </head>
 
   <body>
@@ -101,15 +99,23 @@
 	  graph.getYAxis().setPrimaryGridColor("#f0f0f0");
 	  graph.getXAxis().setSecondaryGridColor("#f0f0f0");
 
-	  var colorado = [["2014",17944.255],["2013",18881.823],["2012",19263.158],["2011",18744.067],["2010",18978.981],["2009",17351.28],["2008",18961.826],["2007",19532.855],["2006",19707.00899],["2005",19013.11703],["2004",19251.20903],["2003",19595.836],["2002",19446.04],["2001",19764.973]];
-	  var california = [["2014",878.434],["2013",915.246],["2012",1183.112],["2011",1539.699],["2010",1542.78],["2009",1521.939],["2008",1723.062],["2007",1752.384],["2006",1710.887],["2005",1676.522],["2004",1731.218],["2003",1727.233],["2002",1821.618],["2001",1739.07]];
+    const xy1 = [["2014",17944.255],["2013",18881.823],["2012",19263.158],["2011",18744.067],["2010",18978.981],["2009",17351.28],["2008",18961.826],["2007",19532.855],["2006",19707.00899],["2005",19013.11703],["2004",19251.20903],["2003",19595.836],["2002",19446.04],["2001",19764.973]];
+    const x1 = xy1.map( el => el[ 0 ] );
+    const y1 = xy1.map( el => el[ 1 ] );
 
+  const xy2 = [["2014",878.434],["2013",915.246],["2012",1183.112],["2011",1539.699],["2010",1542.78],["2009",1521.939],["2008",1723.062],["2007",1752.384],["2006",1710.887],["2005",1676.522],["2004",1731.218],["2003",1727.233],["2002",1821.618],["2001",1739.07]];
+  const x2 = xy2.map( el => el[ 0 ] );
+    const y2 = xy2.map( el => el[ 1 ] );
+
+
+	  var colorado = Graph.newWaveform().setData( y1, x1 );
+	  var california = Graph.newWaveform().setData( y2, x2 );
 	  var serie = graph.newSerie('CA').setLineColor("#2B65EC").setLineWidth( 2 );
-	  serie.setData( california );
+	  serie.setWaveform( california );
 	  serie.autoAxis();
 
 	  var serie = graph.newSerie('CO').setLineColor("#E42217").setLineWidth( 2 )
-	  serie.setData( colorado );
+	  serie.setWaveform( colorado );
 	  serie.autoAxis();
 
 	  graph.draw();
@@ -124,7 +130,10 @@
 	var g = makeGraph("example-1");
 </script>
 
-<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s1">'example-1'</span><span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// Create waveforms</span>
+<span class="c1">// const colorado = Graph.newWaveform().setData( yArr, xArr );</span>
+
+<span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s1">'example-1'</span><span class="p">);</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">300</span><span class="p">);</span> <span class="c1">// Resizes the graph</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
@@ -132,51 +141,18 @@
 <span class="nx">graph</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">setPrimaryGridColor</span><span class="p">(</span><span class="s1">'#f0f0f0'</span><span class="p">);</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">setSecondaryGridColor</span><span class="p">(</span><span class="s1">'#f0f0f0'</span><span class="p">);</span>
 
-<span class="kd">var</span> <span class="nx">colorado</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="p">[</span><span class="s1">'2014'</span><span class="p">,</span> <span class="mf">17944.255</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2013'</span><span class="p">,</span> <span class="mf">18881.823</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2012'</span><span class="p">,</span> <span class="mf">19263.158</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2011'</span><span class="p">,</span> <span class="mf">18744.067</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2010'</span><span class="p">,</span> <span class="mf">18978.981</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2009'</span><span class="p">,</span> <span class="mf">17351.28</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2008'</span><span class="p">,</span> <span class="mf">18961.826</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2007'</span><span class="p">,</span> <span class="mf">19532.855</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2006'</span><span class="p">,</span> <span class="mf">19707.00899</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2005'</span><span class="p">,</span> <span class="mf">19013.11703</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2004'</span><span class="p">,</span> <span class="mf">19251.20903</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2003'</span><span class="p">,</span> <span class="mf">19595.836</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2002'</span><span class="p">,</span> <span class="mf">19446.04</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2001'</span><span class="p">,</span> <span class="mf">19764.973</span><span class="p">]</span>
-<span class="p">];</span>
-<span class="kd">var</span> <span class="nx">california</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="p">[</span><span class="s1">'2014'</span><span class="p">,</span> <span class="mf">878.434</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2013'</span><span class="p">,</span> <span class="mf">915.246</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2012'</span><span class="p">,</span> <span class="mf">1183.112</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2011'</span><span class="p">,</span> <span class="mf">1539.699</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2010'</span><span class="p">,</span> <span class="mf">1542.78</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2009'</span><span class="p">,</span> <span class="mf">1521.939</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2008'</span><span class="p">,</span> <span class="mf">1723.062</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2007'</span><span class="p">,</span> <span class="mf">1752.384</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2006'</span><span class="p">,</span> <span class="mf">1710.887</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2005'</span><span class="p">,</span> <span class="mf">1676.522</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2004'</span><span class="p">,</span> <span class="mf">1731.218</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2003'</span><span class="p">,</span> <span class="mf">1727.233</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2002'</span><span class="p">,</span> <span class="mf">1821.618</span><span class="p">],</span>
-  <span class="p">[</span><span class="s1">'2001'</span><span class="p">,</span> <span class="mf">1739.07</span><span class="p">]</span>
-<span class="p">];</span>
-
 <span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'CA'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#2B65EC'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">california</span><span class="p">);</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">california</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
 
 <span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'CO'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#E42217'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">colorado</span><span class="p">);</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">colorado</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
 </code></pre>
 </div>
@@ -196,7 +172,7 @@
 	      
 	    mode: "common", // Defines the mode, individual or common
 	    snapToSerie: graph.getSerie("CA"), // In the common mode, choses the serie onto which the tracking line will snap
-
+      legend: true,
 	    textMethod: function( output ) { // Method that should return the content of the text box
 	      var txt = "";
 	      if( output[ "CA" ] ) {
@@ -288,30 +264,43 @@ graph.getXAxis().secondaryGridOff();
 graph.getYAxis().setPrimaryGridColor("#f0f0f0");
 graph.getXAxis().setSecondaryGridColor("#f0f0f0");
 
-var s1 = [ 1, 1, 2, 2, 3, 1, 4, 2, 5, 1, 6, 2, 7, 1, 8, 2, 9, 1, 10, 2, 11, 1, 12, 2, 13, 1 ];
-var s2 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 0.5; return value; });
-var s3 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 1; return value; });
-var s4 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 1.5; return value; });
+var s1 = [ [1,2.2,3.4,4.6,5.8,7,8.2,9.4,10.6,11.8,13], [1,2,1,2,1,2,1,2,1,2,1] ]; // 0
+var s2 = [ [1,2.2,3.4,4.6,5.8,7,8.2,9.4,10.6,11.8,13], [1,2,1,2,1,2,1,2,1,2,1] ]; // -0.5
+var s3 = [ [1,2.2,3.4,4.6,5.8,7,8.2,9.4,10.6,11.8,13], [1,2,1,2,1,2,1,2,1,2,1] ]; // -1
+var s4 = [ [1,2.2,3.4,4.6,5.8,7,8.2,9.4,10.6,11.8,13], [1,2,1,2,1,2,1,2,1,2,1] ]; // -1.5
+
+s2[0] = s2[0].map(el => el - 0.5);
+s3[0] = s3[0].map(el => el - 1);
+s4[0] = s4[0].map(el => el - 1.5);
+
+s2[1] = s2[1].map(el => el - 0.5);
+s3[1] = s3[1].map(el => el - 1);
+s4[1] = s4[1].map(el => el - 1.5);
+
+const w1 = Graph.newWaveform().setData(s1[1], s1[0]);
+const w2 = Graph.newWaveform().setData(s2[1], s2[0]);
+const w3 = Graph.newWaveform().setData(s3[1], s3[0]);
+const w4 = Graph.newWaveform().setData(s4[1], s4[0]);
 
 var serie = graph.newSerie('s1').setLineColor("#2B65EC").setLineWidth( 2 );
-serie.setData( s1 );
+serie.setWaveform( w1 );
 serie.autoAxis();
 
 var serie = graph.newSerie('s2').setLineColor("#E42217").setLineWidth( 2 )
-serie.setData( s2 );
+serie.setWaveform( w2 );
 serie.autoAxis();
 
 var serie = graph.newSerie('s3').setLineColor("#369173").setLineWidth( 2 )
-serie.setData( s3 );
+serie.setWaveform( w3 );
 serie.autoAxis();
 
 var serie = graph.newSerie('s4').setLineColor("#DB810B").setLineWidth( 2 )
-serie.setData( s4 );
+serie.setWaveform( w4 );
 serie.autoAxis();
 
 graph.trackingLine( {
-  
- mode: "common", // Defines the mode, individual or common
+
+mode: "common", // Defines the mode, individual or common
 snapToSerie: graph.getSerie("s1"), // In the common mode, choses the serie onto which the tracking line will snap
 
     textMethod: function( output, x, xpx ) { // Method that should return the content of the text box
@@ -351,20 +340,20 @@ snapToSerie: graph.getSerie("s1"), // In the common mode, choses the serie onto 
 
     series: [ // A list of series that can be tracked
 
-      {
-        serie: graph.getSerie("s2"),
-        withinPx: 10 // Allows to be within a 10px range
-      },
+        {
+      serie: graph.getSerie('s2'),
+      withinPx: 15 // Allows to be within a 30px range
+    },
 
-      {
-        serie: graph.getSerie("s3"),
-        withinPx: 30 // Allows to be within a 10px range
-      },
+    {
+      serie: graph.getSerie('s3'),
+      withinPx: 30 // Allows to be within a 50px range
+    },
 
-      {
-        serie: graph.getSerie("s4"),
-        withinVal: 0.2 // Allows to be within a 10px range
-      }
+    {
+      serie: graph.getSerie('s4'),
+      withinVal: 0.5 // Allows to be within a 0.8 value in the x direction
+    }
     ]
 
 });
@@ -382,141 +371,61 @@ graph.draw();
 <span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">setSecondaryGridColor</span><span class="p">(</span><span class="s1">'#f0f0f0'</span><span class="p">);</span>
 
 <span class="kd">var</span> <span class="nx">s1</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">3</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">4</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">5</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">6</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">7</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">8</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">9</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">10</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">11</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">12</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">13</span><span class="p">,</span>
-  <span class="mi">1</span>
-<span class="p">];</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">5.8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">,</span> <span class="mf">9.4</span><span class="p">,</span> <span class="mf">10.6</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">];</span> <span class="c1">// 0</span>
 <span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">2.2</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">3.4</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">4.6</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">5.8</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">7</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">8.2</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">9.4</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">10.6</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">11.8</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">13</span><span class="p">,</span>
-  <span class="mi">1</span>
-<span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">value</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">;</span>
-  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
-<span class="p">});</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">5.8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">,</span> <span class="mf">9.4</span><span class="p">,</span> <span class="mf">10.6</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">];</span> <span class="c1">// -0.5</span>
 <span class="kd">var</span> <span class="nx">s3</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">2.2</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">3.4</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">4.6</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">5.8</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">7</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">8.2</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">9.4</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">10.6</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">11.8</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">13</span><span class="p">,</span>
-  <span class="mi">1</span>
-<span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">value</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
-<span class="p">});</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">5.8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">,</span> <span class="mf">9.4</span><span class="p">,</span> <span class="mf">10.6</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">];</span> <span class="c1">// -1</span>
 <span class="kd">var</span> <span class="nx">s4</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">2.2</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">3.4</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">4.6</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">5.8</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mi">7</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">8.2</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">9.4</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mf">10.6</span><span class="p">,</span>
-  <span class="mi">1</span><span class="p">,</span>
-  <span class="mf">11.8</span><span class="p">,</span>
-  <span class="mi">2</span><span class="p">,</span>
-  <span class="mi">13</span><span class="p">,</span>
-  <span class="mi">1</span>
-<span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">value</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">;</span>
-  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
-<span class="p">});</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">5.8</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">,</span> <span class="mf">9.4</span><span class="p">,</span> <span class="mf">10.6</span><span class="p">,</span> <span class="mf">11.8</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="p">];</span> <span class="c1">// -1.5</span>
+
+<span class="nx">s2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">s2</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">el</span> <span class="o">=&gt;</span> <span class="nx">el</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">);</span>
+<span class="nx">s3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">s3</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">el</span> <span class="o">=&gt;</span> <span class="nx">el</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">s4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">s4</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">el</span> <span class="o">=&gt;</span> <span class="nx">el</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">);</span>
+
+<span class="nx">s2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">s2</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">el</span> <span class="o">=&gt;</span> <span class="nx">el</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">);</span>
+<span class="nx">s3</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">s3</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">el</span> <span class="o">=&gt;</span> <span class="nx">el</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">s4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">s4</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">el</span> <span class="o">=&gt;</span> <span class="nx">el</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">w1</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">s1</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="kr">const</span> <span class="nx">w2</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">s2</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="kr">const</span> <span class="nx">w3</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s3</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">s3</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="kr">const</span> <span class="nx">w4</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s4</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">s4</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
 
 <span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'s1'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#2B65EC'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s1</span><span class="p">);</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">w1</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
 
 <span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'s2'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#E42217'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s2</span><span class="p">);</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">w2</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
 
 <span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#369173'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s3</span><span class="p">);</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">w3</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
 
 <span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'s4'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#DB810B'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">s4</span><span class="p">);</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">w4</span><span class="p">);</span>
 <span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
 
 <span class="nx">graph</span><span class="p">.</span><span class="nx">trackingLine</span><span class="p">({</span>
@@ -539,17 +448,17 @@ graph.draw();
 
     <span class="p">{</span>
       <span class="na">serie</span><span class="p">:</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span><span class="s1">'s2'</span><span class="p">),</span>
-      <span class="na">withinPx</span><span class="p">:</span> <span class="mi">10</span> <span class="c1">// Allows to be within a 10px range</span>
+      <span class="na">withinPx</span><span class="p">:</span> <span class="mi">15</span> <span class="c1">// Allows to be within a 30px range</span>
     <span class="p">},</span>
 
     <span class="p">{</span>
       <span class="na">serie</span><span class="p">:</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">),</span>
-      <span class="na">withinPx</span><span class="p">:</span> <span class="mi">20</span> <span class="c1">// Allows to be within a 10px range</span>
+      <span class="na">withinPx</span><span class="p">:</span> <span class="mi">30</span> <span class="c1">// Allows to be within a 50px range</span>
     <span class="p">},</span>
 
     <span class="p">{</span>
       <span class="na">serie</span><span class="p">:</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span><span class="s1">'s4'</span><span class="p">),</span>
-      <span class="na">withinVal</span><span class="p">:</span> <span class="mf">0.2</span> <span class="c1">// Allows to be within a 10px range</span>
+      <span class="na">withinVal</span><span class="p">:</span> <span class="mf">0.5</span> <span class="c1">// Allows to be within a 0.8 value in the x direction</span>
     <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">});</span>
@@ -561,6 +470,55 @@ graph.draw();
 <p>In this example, the second serie (red) will only highlight if the snapped point on the blue serie is less than 10px than the closest point on the red serie. With this particular graph width, it happens when the x value of the red point is either exactly on the blue one or shifted by one. The third serie (green) will highlight a point only if it is within 20px of the snapped point on the blue serie. Therefore, more points compared to the red serie are selected. In the fourth serie (orange), only points not further than 0.2 (included) will be tracked. If no point is within 0.2 (in x axis value), then no tracking is done and the dot is not showed. The only tracked points are the first two (0, +0.2), the three in the middle (-0.2, 0, +0.2) and the last two (-0.2, 0).</p>
 
 <p>You may also note that the serie 1 is used for snapping but is not in the tracked series list. It therefore doesn’t show up in the list !</p>
+
+<h3 id="a-idcommonmodea-individual-mode"><a id="commonmode"></a> Individual mode</h3>
+
+<p>In the individual mode, every serie is tracked independently and leads to a multiple legend instances:</p>
+
+<div id="example-4" class="jsgraph-example"></div>
+
+<script>
+	var graph = makeGraph("example-4");
+
+	graph.trackingLine( {
+	      
+	    mode: "individual", // Defines the mode, individual or common
+      legend: true,
+
+	    series: [ // A list of series that can be tracked
+	      {
+	        serie: graph.getSerie("CA")
+	      },
+
+	      {
+	        serie: graph.getSerie("CO")
+	      } 
+	    ]
+  	}
+  );
+
+  graph.draw( true );
+
+
+</script>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">graph</span><span class="p">.</span><span class="nx">trackingLine</span><span class="p">({</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="s1">'individual'</span><span class="p">,</span> <span class="c1">// Defines the mode, individual or common</span>
+  <span class="na">legend</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+
+  <span class="na">series</span><span class="p">:</span> <span class="p">[</span>
+    <span class="c1">// A list of series that can be tracked</span>
+    <span class="p">{</span>
+      <span class="na">serie</span><span class="p">:</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span><span class="s1">'CA'</span><span class="p">)</span>
+    <span class="p">},</span>
+
+    <span class="p">{</span>
+      <span class="na">serie</span><span class="p">:</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span><span class="s1">'CO'</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre>
+</div>
 
 	</div>
 </div>
@@ -591,6 +549,10 @@ graph.draw();
 		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
 	</div>
 
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </footer>
 
   </body>

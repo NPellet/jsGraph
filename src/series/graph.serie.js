@@ -754,6 +754,7 @@ class Serie extends EventEmitter {
    * @private
    */
   enableTracking( hoverCallback, outCallback ) {
+    console.log( 'sdfsdf' );
     this._tracker = true;
     this._trackingCallback = hoverCallback;
     this._trackingOutCallback = outCallback;

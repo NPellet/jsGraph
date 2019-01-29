@@ -3097,8 +3097,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     _draw() {
-      let self = this,
-          waveform = this.waveform,
+      let waveform = this.waveform,
           data,
           x,
           y,
@@ -3329,7 +3328,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       this._createLine();
-
+      console.log(this._tracker, "a");
       if (this._tracker) {
         if (this._trackerDom) {
           this._trackerDom.remove();
@@ -3345,11 +3344,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this._trackerDom = cloned;
-
+        console.log('ssdfsdf', this.groupMain);
         this.groupMain.addEventListener('mousemove', e => {
           var coords = this.graph._getXY(e),
               ret = this.handleMouseMove(false, false);
-
+          console.log(coords, coords.x);
           this._trackingCallback(this, ret, coords.x, coords.y);
         });
 
@@ -3399,7 +3398,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.hasErrors()) {
-        console.log(j, x, y, xpx, ypx);
         this.errorAddPoint(j, x, y, xpx, ypx);
       }
 
@@ -3566,14 +3564,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     searchClosestValue(valX, valY) {
       if (this.waveform) {
         let indexX;
+
         try {
           indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
         } catch (e) {
-          console.log(e);
+          console.error(e);
           throw new Error('Error while finding the closest index');
-          return {};
         }
-
         if (isNaN(indexX) || indexX === false) {
           return false;
         }
@@ -3605,13 +3602,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     handleMouseMove(xValue, doMarker, yValue) {
+
       var valX = xValue || this.getXAxis().getMouseVal(),
-          valY = yValue || this.getYAxis().getMouseVal(),
-          xMinIndex,
-          xMin,
-          yMin,
-          xMax,
-          yMax;
+          valY = yValue || this.getYAxis().getMouseVal();
 
       var value = this.searchClosestValue(valX, valY);
 
@@ -5261,6 +5254,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (this.hasXWaveform()) {
           // The x value HAS to be rescaled
+
           position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
         } else {
           position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
@@ -6660,7 +6654,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return index;
   }
 
-  function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] < haystack[0]) {
+  function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] < haystack[0], fineCheck = true) {
+
     let seedA = 0,
         length = haystack.length,
         seedB = length - 1,
@@ -6682,7 +6677,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     while (true) {
       i++;
-      if (i > 100) {
+      if (i > 1000) {
         throw new Error('Error loop');
       }
 
@@ -6692,16 +6687,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       while (isNaN(haystack[seedInt])) {
         if (seedInt >= haystack.length - 1) {
+
           return haystack.length - 1;
         } else if (seedInt <= 0) {
+
           return 0;
         }
 
         seedInt += nanDirection;
       }
 
-      if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
+      if (haystack[seedInt] == target) {
         return seedInt;
+      }
+
+      if (seedInt == seedA || seedInt == seedB) {
+
+        if (!fineCheck) {
+          return seedInt;
+        }
+
+        if (Math.abs(target - haystack[seedA]) < Math.abs(target - haystack[seedB])) {
+
+          return seedA;
+        }
+
+        return seedB;
       }
 
       //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
@@ -6825,7 +6836,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _setData() {
       this.minY = Math.min(...this.data);
       this.maxY = Math.max(...this.data);
-      console.log(this.errors);
       this.checkMinMaxErrorBars();
     }
   }
@@ -8682,7 +8692,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     isActionAllowed(e, action) {
-      console.log(action.type, e.type, action.shift, e.shiftKey, action);
       if (action.type !== e.type && (action.type !== undefined || e.type !== 'mousedown') && !((e.type === 'wheel' || e.type === 'mousewheel') && action.type == 'mousewheel')) {
         return;
       }
@@ -8791,7 +8800,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       for (var i in this.options.plugins) {
 
         pluginName = i;
-        console.log(pluginName);
         pluginOptions = this.options.plugins[i];
 
         constructor = this.getConstructor(`graph.plugin.${pluginName}`);
@@ -9121,30 +9129,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         options.series.forEach(serie => {
           serie.serie.disableTracking();
         });
+
+        if (options.noLine) {
+          return;
+        }
+
+        if (!this.trackingObject) {
+          // Avoid multiple creation of tracking lines
+
+          // Creates a new shape called trackingLine, in the first layer (below everything)
+          this.trackingObject = this.newShape('line', util.extend(true, {
+            position: [{
+              y: 'min'
+            }, {
+              y: 'max'
+            }],
+            stroke: 'black',
+            layer: -1
+          }, options.trackingLineShapeOptions));
+        }
+
+        this.trackingObject.draw();
+
+        return this.trackingObject;
       }
 
-      if (options.noLine) {
-        return;
-      }
-
-      if (!this.trackingObject) {
-        // Avoid multiple creation of tracking lines
-
-        // Creates a new shape called trackingLine, in the first layer (below everything)
-        this.trackingObject = this.newShape('line', util.extend(true, {
-          position: [{
-            y: 'min'
-          }, {
-            y: 'max'
-          }],
-          stroke: 'black',
-          layer: -1
-        }, options.trackingLineShapeOptions));
-      }
-
-      this.trackingObject.draw();
-
-      return this.trackingObject;
+      //return this.trackingObject;
     }
 
     addSerieToTrackingLine(serie, options) {
@@ -9155,17 +9165,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           mode: 'individual'
         });
       }
-
+      // This was to avoid adding several series, but it causes a problem here...
+      let noAdd = false;
       this.options.trackingLine.series.forEach((serieO, index) => {
         if (serieO.serie == serie) {
-          this.options.trackingLine.series.splice(index, 1);
+          noAdd = true;
+          //this.options.trackingLine.series.splice( index, 1 );
         }
       });
 
-      this.options.trackingLine.series.push(Object.assign({
-        serie: serie
-      }, options));
-
+      if (!noAdd) {
+        this.options.trackingLine.series.push(Object.assign({
+          serie: serie
+        }, options));
+      }
       serie.enableTracking((serie, index, x, y) => {
 
         if (this.options.trackingLine.enable) {
@@ -9182,12 +9195,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             serie._trackingLegend = _trackingLegendSerie(this, {
               serie: serie
-            }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : output => {
-
-              for (var i in output) {
-                return `${output[i].serie.serie.getName()}: ${output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue)}`;
-              }
-            }, index.trueX);
+            }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX);
 
             if (serie._trackingLegend) {
               serie._trackingLegend.style.display = 'block';
@@ -9209,9 +9217,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         serie._trackingLegend = _trackingLegendSerie(this, {
-
           serie: serie
-
         }, false, false, serie._trackingLegend, false, false);
       });
     }
@@ -9736,7 +9742,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function _handleKey(graph, event, type) {
 
     var self = graph;
-    console.log(event, type);
+
     if (graph.forcedPlugin) {
 
       graph.activePlugin = graph.forcedPlugin;
@@ -10132,6 +10138,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return;
     }
 
+    let xRef;
+    let xOverwritePx = x;
+
     //			return;
 
     graph._applyToAxes('handleMouseMove', [x - graph.options.paddingLeft, e], true, false);
@@ -10148,7 +10157,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           var snapToSerie = graph.options.trackingLine.snapToSerie;
           index = snapToSerie.handleMouseMove(false, true);
 
-          if (this.trackingObject) {
+          if (graph.trackingObject) {
 
             if (!index) {
 
@@ -10161,7 +10170,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               graph.trackingObject.getPosition(1).x = index.xClosest;
               graph.trackingObject.redraw();
 
-              var x = snapToSerie.getXAxis().getPx(index.xClosest) + graph.options.paddingLeft;
+              xRef = index.xClosest; //
+              xOverwritePx = snapToSerie.getXAxis().getPx(index.xClosest) + graph.options.paddingLeft;
             }
           }
 
@@ -10179,7 +10189,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             });
           }
 
-          graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest);
+          if (!index) {
+            return;
+          }
+          graph._trackingLegend = _trackingLegendSerie(graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef);
         }
       }
     }
@@ -10289,7 +10302,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         return legend;
       }
-
       // Should we display the dot ?
       if (serie.withinPx > 0 && Math.abs(x - graph.options.paddingLeft - serie.serie.getXAxis().getPx(index.xClosest)) - serie.withinPx > 1e-14 || serie.withinVal > 0 && Math.abs(serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) - index.xClosest) - serie.withinVal > serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) / 100000) {
 
@@ -10300,8 +10312,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         output[serie.serie.getName()] = {
 
-          yValue: index.xClosest,
-          xValue: index.yClosest,
+          yValue: index.yClosest,
+          xValue: index.xClosest,
           serie: serie,
           index: index
 
@@ -10440,6 +10452,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     return group;
   }
+
+  const trackingLineDefaultTextMethod = output => {
+
+    let txt = '';
+    for (var i in output) {
+      txt += `${output[i].serie.serie.getName()}: ${output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue)}`;
+    }
+    return txt;
+  };
 
   function _handleDblClick(graph, x, y, e) {
     // var _x = x - graph.options.paddingLeft;
@@ -14435,6 +14456,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @private
      */
     enableTracking(hoverCallback, outCallback) {
+      console.log('sdfsdf');
       this._tracker = true;
       this._trackingCallback = hoverCallback;
       this._trackingOutCallback = outCallback;

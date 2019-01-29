@@ -19,9 +19,6 @@
 
     should load first -->
 
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-
     <script>
         var baseUrl = "/";
     </script>
@@ -30,7 +27,8 @@
     <link rel="stylesheet" href="/css/theme.css">
     <link rel="stylesheet" href="/css/prism-okaidia.css">
     <link rel="canonical" href="http://localhost:8000///docs/Graph.html">
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+
+
 </head>
 
   <body>
@@ -1938,102 +1936,6 @@ If func is a function, the function will be called with the axis, its type and p
 
     
 
-    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
     <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
 
 
@@ -2097,6 +1999,102 @@ Does not repaint the canvas
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -7423,10 +7421,6 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
-<div class="description">
-    Removes all series from the graph
-</div>
-
 
 <div class="doc-details">
 
@@ -7474,6 +7468,10 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+
+<div class="description">
+    Removes all series from the graph
+</div>
 
 
 <div class="doc-details">
@@ -10324,6 +10322,113 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
     
 
+    <h4 class="doc-code" id="sortSeries"><span class="type-signature"></span><span></span><span class="doc-name">sortSeries</span><span class="doc-signature">( <span class="doc-type">function</span> method )</span></h4>
+
+
+
+
+<div class="description">
+    Sorts the series
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>method</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Sorting method (arguments: serieA, serieB)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">sortSeries</span><span class="p">(</span> <span class="p">(</span> <span class="nx">sA</span><span class="p">,</span> <span class="nx">sB</span> <span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">sA</span><span class="p">.</span><span class="nx">label</span> <span class="o">&gt;</span> <span class="nx">sB</span><span class="p">.</span><span class="nx">label</span> <span class="p">?</span> <span class="mi">1</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="trackingLine"><span class="type-signature"></span><span></span><span class="doc-name">trackingLine</span><span class="doc-signature">( <span class="doc-type">Object, Boolean</span> options )</span></h4>
 
 
@@ -11167,6 +11272,10 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
 	</div>
 
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </footer>
 
   </body>
