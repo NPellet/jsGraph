@@ -34,17 +34,17 @@ const defaultOptions = {
  * @extends Serie
  */
 class SerieLine extends SerieScatter {
-  constructor(graph, name, options, defaultInherited) {
+  constructor( graph, name, options, defaultInherited ) {
     super(
       graph,
       name,
       options,
-      util.extend(true, {}, defaultOptions, defaultInherited)
+      util.extend( true, {}, defaultOptions, defaultInherited )
     );
 
     this.selectionType = "unselected";
     this._type = type;
-    util.mapEventEmission(this.options, this); // Register events
+    util.mapEventEmission( this.options, this ); // Register events
 
     // Creates an empty style variable
     this.styles = {};
@@ -77,10 +77,10 @@ class SerieLine extends SerieScatter {
     // Optimize is no markerPoints => save loops
     //      this.markerPoints = {};
 
-    this.groupLines = document.createElementNS(this.graph.ns, "g");
-    this.domMarker = document.createElementNS(this.graph.ns, "path");
+    this.groupLines = document.createElementNS( this.graph.ns, "g" );
+    this.domMarker = document.createElementNS( this.graph.ns, "path" );
 
-    if (!this.domMarker.style) {
+    if ( !this.domMarker.style ) {
       this.domMarker.style = {
         cursor: "pointer"
       };
@@ -90,18 +90,18 @@ class SerieLine extends SerieScatter {
 
     this.additionalData = {};
 
-    this.marker = document.createElementNS(this.graph.ns, "circle");
-    this.marker.setAttribute("fill", "black");
-    this.marker.setAttribute("r", 3);
-    this.marker.setAttribute("display", "none");
+    this.marker = document.createElementNS( this.graph.ns, "circle" );
+    this.marker.setAttribute( "fill", "black" );
+    this.marker.setAttribute( "r", 3 );
+    this.marker.setAttribute( "display", "none" );
 
-    this.markerLabel = document.createElementNS(this.graph.ns, "text");
-    this.markerLabelSquare = document.createElementNS(this.graph.ns, "rect");
-    this.markerLabelSquare.setAttribute("fill", "white");
+    this.markerLabel = document.createElementNS( this.graph.ns, "text" );
+    this.markerLabelSquare = document.createElementNS( this.graph.ns, "rect" );
+    this.markerLabelSquare.setAttribute( "fill", "white" );
     this.domMarkerHover = {};
     this.domMarkerSelect = {};
     this.markerHovered = 0;
-    this.groupMarkerSelected = document.createElementNS(this.graph.ns, "g");
+    this.groupMarkerSelected = document.createElementNS( this.graph.ns, "g" );
 
     this.markerPoints = {};
 
@@ -109,29 +109,29 @@ class SerieLine extends SerieScatter {
     //this.shift = 0;
     this.lines = [];
 
-    this.groupMain.appendChild(this.groupLines);
+    this.groupMain.appendChild( this.groupLines );
 
-    this.groupMain.appendChild(this.marker);
+    this.groupMain.appendChild( this.marker );
 
-    this.groupMain.appendChild(this.groupMarkerSelected);
-    this.groupMain.appendChild(this.markerLabelSquare);
-    this.groupMain.appendChild(this.markerLabel);
+    this.groupMain.appendChild( this.groupMarkerSelected );
+    this.groupMain.appendChild( this.markerLabelSquare );
+    this.groupMain.appendChild( this.markerLabel );
 
     this.independantMarkers = [];
 
-    if (this.initExtended1) {
+    if ( this.initExtended1 ) {
       this.initExtended1();
     }
 
-    this.groupLines.addEventListener("click", e => {
-      if (this.options.selectableOnClick) {
-        if (this.isSelected()) {
-          this.graph.unselectSerie(this);
+    this.groupLines.addEventListener( "click", e => {
+      if ( this.options.selectableOnClick ) {
+        if ( this.isSelected() ) {
+          this.graph.unselectSerie( this );
         } else {
-          this.graph.selectSerie(this);
+          this.graph.selectSerie( this );
         }
       }
-    });
+    } );
   }
 
   postInit() {
@@ -145,7 +145,7 @@ class SerieLine extends SerieScatter {
    * @return {SerieLine} The current serie
    * @memberof SerieLine
    */
-  setOptions(options) {
+  setOptions( options ) {
     //this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
     // Unselected style
     /*this.styles.unselected = {
@@ -165,8 +165,8 @@ class SerieLine extends SerieScatter {
    * @memberof SerieLine
    */
   empty() {
-    for (var i = 0, l = this.lines.length; i < l; i++) {
-      this.groupLines.removeChild(this.lines[i]);
+    for ( var i = 0, l = this.lines.length; i < l; i++ ) {
+      this.groupLines.removeChild( this.lines[ i ] );
     }
     this.lines = [];
 
@@ -180,15 +180,15 @@ class SerieLine extends SerieScatter {
    * @see SerieLine#unselect
    * @memberof SerieLine
    */
-  select(selectionType) {
+  select( selectionType ) {
     selectionType = selectionType || "selected";
 
     this.selected = selectionType !== "unselected";
     this.selectionType = selectionType;
     this.applyLineStyles();
-    this.applyLineStyle(this.getSymbolForLegend());
+    this.applyLineStyle( this.getSymbolForLegend() );
 
-    super.select(selectionType);
+    super.select( selectionType );
 
     return this;
   }
@@ -202,7 +202,7 @@ class SerieLine extends SerieScatter {
   unselect() {
     this.selected = false;
     super.unselect();
-    return this.select("unselected");
+    return this.select( "unselected" );
   }
 
   /**
@@ -213,21 +213,21 @@ class SerieLine extends SerieScatter {
   getSymbolForLegend() {
     const container = this._getSymbolForLegendContainer();
 
-    if (!this.lineForLegend) {
-      var line = document.createElementNS(this.graph.ns, "line");
-      this.applyLineStyle(line);
+    if ( !this.lineForLegend ) {
+      var line = document.createElementNS( this.graph.ns, "line" );
+      this.applyLineStyle( line );
 
-      line.setAttribute("x1", 5);
-      line.setAttribute("x2", 25);
-      line.setAttribute("y1", 0);
-      line.setAttribute("y2", 0);
+      line.setAttribute( "x1", 5 );
+      line.setAttribute( "x2", 25 );
+      line.setAttribute( "y1", 0 );
+      line.setAttribute( "y2", 0 );
 
-      line.setAttribute("cursor", "pointer");
+      line.setAttribute( "cursor", "pointer" );
 
       this.lineForLegend = line;
-      container.appendChild(this.lineForLegend);
+      container.appendChild( this.lineForLegend );
     } else {
-      this.applyLineStyle(this.lineForLegend);
+      this.applyLineStyle( this.lineForLegend );
     }
 
     super.getSymbolForLegend();
@@ -244,18 +244,18 @@ class SerieLine extends SerieScatter {
    * @example serie.degrade( 0.5 ); // Will display 2 points per pixels
    * @memberof SerieLine
    */
-  degrade(pxPerP) {
+  degrade( pxPerP ) {
     this.degradationPx = pxPerP;
     return this;
   }
 
-  drawInit(force) {
+  drawInit( force ) {
     var data, xData;
 
     try {
       this.axisCheck();
-    } catch (e) {
-      console.warn(e);
+    } catch ( e ) {
+      console.warn( e );
       return false;
     }
 
@@ -266,31 +266,31 @@ class SerieLine extends SerieScatter {
 
     // Degradation
 
-    if (this.waveform) {
-      if (this.degradationPx) {
-        this.waveform.resampleForDisplay({
+    if ( this.waveform ) {
+      if ( this.degradationPx ) {
+        this.waveform.resampleForDisplay( {
           resampleToPx: this.degradationPx,
-          xPosition: this.getXAxis().getPx.bind(this.getXAxis()),
+          xPosition: this.getXAxis().getPx.bind( this.getXAxis() ),
           minX: this.getXAxis().getCurrentMin(),
           maxX: this.getXAxis().getCurrentMax()
-        });
+        } );
 
-        this._dataToUse = [this.waveform.getDataToUseFlat()];
-      } else if (this.waveform.hasAggregation()) {
+        this._dataToUse = [ this.waveform.getDataToUseFlat() ];
+      } else if ( this.waveform.hasAggregation() ) {
         let xaxis = this.getXAxis(),
           numberOfPointsInTotal =
-            (this.graph.getDrawingWidth() *
-              (xaxis.getDataMax() - xaxis.getDataMin())) /
-            (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
-          promise = this.waveform.selectAggregatedData(numberOfPointsInTotal);
+          ( this.graph.getDrawingWidth() *
+            ( xaxis.getDataMax() - xaxis.getDataMin() ) ) /
+          ( xaxis.getCurrentMax() - xaxis.getCurrentMin() ),
+          promise = this.waveform.selectAggregatedData( numberOfPointsInTotal );
 
-        if (promise instanceof Promise) {
-          promise.then(() => {
-            this.draw(force);
-          });
+        if ( promise instanceof Promise ) {
+          promise.then( () => {
+            this.draw( force );
+          } );
 
           return false;
-        } else if (promise === false) {
+        } else if ( promise === false ) {
           return false;
         } else {
           this._dataToUse = this.waveform.getDataToUseFlat();
@@ -308,15 +308,15 @@ class SerieLine extends SerieScatter {
 
   removeLinesGroup() {
     this._afterLinesGroup = this.groupLines.nextSibling;
-    this.groupMain.removeChild(this.groupLines);
+    this.groupMain.removeChild( this.groupLines );
   }
 
   insertLinesGroup() {
-    if (!this._afterLinesGroup) {
+    if ( !this._afterLinesGroup ) {
       throw "Could not find group after lines to insertion.";
     }
 
-    this.groupMain.insertBefore(this.groupLines, this._afterLinesGroup);
+    this.groupMain.insertBefore( this.groupLines, this._afterLinesGroup );
     this._afterLinesGroup = false;
   }
 
@@ -324,11 +324,11 @@ class SerieLine extends SerieScatter {
     var i = this.currentLineId,
       l = this.lines.length;
 
-    for (; i < l; i++) {
-      this.groupLines.removeChild(this.lines[i]);
+    for ( ; i < l; i++ ) {
+      this.groupLines.removeChild( this.lines[ i ] );
     }
 
-    this.lines.splice(this.currentLineId, l - this.currentLineId);
+    this.lines.splice( this.currentLineId, l - this.currentLineId );
     this.currentLineId = 0;
   }
 
@@ -336,17 +336,17 @@ class SerieLine extends SerieScatter {
    * Draws the serie
    * @memberof SerieLine
    */
-  draw(force) {
+  draw( force ) {
     // Serie redrawing
 
-    if (!this.getXAxis() || !this.getYAxis()) {
+    if ( !this.getXAxis() || !this.getYAxis() ) {
       throw "No axes were defined for this serie";
     }
 
-    if (force || this.hasDataChanged()) {
+    if ( force || this.hasDataChanged() ) {
       super.draw();
 
-      if (!this.drawInit(force)) {
+      if ( !this.drawInit( force ) ) {
         return;
       }
 
@@ -359,15 +359,15 @@ class SerieLine extends SerieScatter {
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
-      this.pos0 = this.getYAxis().getPos(0);
+      this.pos0 = this.getYAxis().getPos( 0 );
 
-      if (this.hasErrors()) {
+      if ( this.hasErrors() ) {
         this.errorDrawInit();
       }
 
       this._draw();
 
-      if (this.hasErrors()) {
+      if ( this.hasErrors() ) {
         this.errorDraw();
       }
 
@@ -377,22 +377,22 @@ class SerieLine extends SerieScatter {
     }
 
     // Unhovers everything
-    for (var i in this.domMarkerHover) {
-      this.toggleMarker(i.split(","), false, true);
+    for ( var i in this.domMarkerHover ) {
+      this.toggleMarker( i.split( "," ), false, true );
     }
 
     // Deselects everything
-    for (var i in this.domMarkerSelect) {
-      this.toggleMarker(i.split(","), false, false);
+    for ( var i in this.domMarkerSelect ) {
+      this.toggleMarker( i.split( "," ), false, false );
     }
 
-    this.applyLineStyle(this.getSymbolForLegend());
+    this.applyLineStyle( this.getSymbolForLegend() );
 
-    if (this.hasStyleChanged(this.selectionType)) {
+    if ( this.hasStyleChanged( this.selectionType ) ) {
       this.updateStyle();
     }
 
-    this.dataHasChanged(false);
+    this.dataHasChanged( false );
     super.afterDraw();
   }
 
@@ -414,11 +414,11 @@ class SerieLine extends SerieScatter {
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
 
-    if (!waveform) {
+    if ( !waveform ) {
       return;
     }
 
-    data = waveform.getData(true);
+    data = waveform.getData( true );
 
     // Y crossing
     let yLeftCrossingRatio,
@@ -445,45 +445,45 @@ class SerieLine extends SerieScatter {
 
     this.currentLine = "";
 
-    if (waveform.isXMonotoneous()) {
-      if (waveform.isXMonotoneousAscending()) {
+    if ( waveform.isXMonotoneous() ) {
+      if ( waveform.isXMonotoneousAscending() ) {
         try {
-          i = waveform.getIndexFromX(xMin, true) || 0;
-          l = waveform.getIndexFromX(xMax, true);
-        } catch (e) {
+          i = waveform.getIndexFromX( xMin, true ) || 0;
+          l = waveform.getIndexFromX( xMax, true );
+        } catch ( e ) {
           l = waveform.getLength();
         }
       } else {
         try {
-          i = waveform.getIndexFromX(xMax, true) || 0;
-          l = waveform.getIndexFromX(xMin, true);
-        } catch (e) {
+          i = waveform.getIndexFromX( xMax, true ) || 0;
+          l = waveform.getIndexFromX( xMin, true );
+        } catch ( e ) {
           l = waveform.getLength();
         }
       }
 
       l += 2;
-      if (l > data.length) {
+      if ( l > data.length ) {
         l = data.length;
       }
     }
 
-    for (; i < l; i += 1) {
-      x = waveform.getX(i, true);
-      y = data[i] * yscale + yshift;
+    for ( ; i < l; i += 1 ) {
+      x = waveform.getX( i, true );
+      y = data[ i ] * yscale + yshift;
 
-      if (x != x || y != y) {
+      if ( x != x || y != y ) {
         // NaN checks
         this._createLine();
         continue;
       }
 
       if (
-        (!this.options.overflowX && x < xMin && lastX < xMin) ||
-        (!this.options.overflowX && x > xMax && lastX > xMax) ||
-        (((!this.options.overflowY && y < yMin && lastY < yMin) ||
-          (!this.options.overflowY && y > yMax && lastY > yMax)) &&
-          !this.options.lineToZero)
+        ( !this.options.overflowX && x < xMin && lastX < xMin ) ||
+        ( !this.options.overflowX && x > xMax && lastX > xMax ) ||
+        ( ( ( !this.options.overflowY && y < yMin && lastY < yMin ) ||
+            ( !this.options.overflowY && y > yMax && lastY > yMax ) ) &&
+          !this.options.lineToZero )
       ) {
         lastX = x;
         lastY = y;
@@ -493,40 +493,40 @@ class SerieLine extends SerieScatter {
 
       this.counter2 = i;
 
-      xpx2 = this.getX(x);
-      ypx2 = this.getY(y);
+      xpx2 = this.getX( x );
+      ypx2 = this.getY( y );
       //xpx2 = 0;
       //ypx2 = 0;
 
-      if (xpx2 == xpx && ypx2 == ypx) {
+      if ( xpx2 == xpx && ypx2 == ypx ) {
         continue;
       }
 
-      if (xpx2 != xpx2 || ypx2 != ypx2) {
+      if ( xpx2 != xpx2 || ypx2 != ypx2 ) {
         // NaN checks
-        if (this.counter > 0) {
+        if ( this.counter > 0 ) {
           this._createLine();
         }
         continue;
       }
 
-      if (!_monotoneous) {
+      if ( !_monotoneous ) {
         pointOutside =
-          (!this.options.overflowX && (x < xMin || x > xMax)) ||
-          (!this.options.overflowY && (y < yMin || y > yMax));
+          ( !this.options.overflowX && ( x < xMin || x > xMax ) ) ||
+          ( !this.options.overflowY && ( y < yMin || y > yMax ) );
       } else {
-        pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
+        pointOutside = !this.options.overflowY && ( y < yMin || y > yMax );
       }
 
-      if (this.options.lineToZero) {
+      if ( this.options.lineToZero ) {
         pointOutside = x < xMin || x > xMax;
 
-        if (pointOutside) {
+        if ( pointOutside ) {
           continue;
         }
       } else {
-        if (pointOutside || lastPointOutside) {
-          if ((lastX === false || lastY === false) && !lastPointOutside) {
+        if ( pointOutside || lastPointOutside ) {
+          if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
             xpx = xpx2;
             ypx = ypx2;
             lastX = x;
@@ -534,16 +534,16 @@ class SerieLine extends SerieScatter {
           } else {
             pointOnAxis = [];
             // Y crossing
-            yLeftCrossingRatio = (x - xMin) / (x - lastX);
-            yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
-            yRightCrossingRatio = (x - xMax) / (x - lastX);
-            yRightCrossing = y - yRightCrossingRatio * (y - lastY);
+            yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+            yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
+            yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+            yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
 
             // X crossing
-            xTopCrossingRatio = (y - yMin) / (y - lastY);
-            xTopCrossing = x - xTopCrossingRatio * (x - lastX);
-            xBottomCrossingRatio = (y - yMax) / (y - lastY);
-            xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
+            xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+            xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
+            xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+            xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
 
             if (
               yLeftCrossingRatio < 1 &&
@@ -552,7 +552,7 @@ class SerieLine extends SerieScatter {
               yLeftCrossing < yMax &&
               yLeftCrossing > yMin
             ) {
-              pointOnAxis.push([xMin, yLeftCrossing]);
+              pointOnAxis.push( [ xMin, yLeftCrossing ] );
             }
 
             if (
@@ -562,7 +562,7 @@ class SerieLine extends SerieScatter {
               yRightCrossing < yMax &&
               yRightCrossing > yMin
             ) {
-              pointOnAxis.push([xMax, yRightCrossing]);
+              pointOnAxis.push( [ xMax, yRightCrossing ] );
             }
 
             if (
@@ -572,7 +572,7 @@ class SerieLine extends SerieScatter {
               xTopCrossing < xMax &&
               xTopCrossing > xMin
             ) {
-              pointOnAxis.push([xTopCrossing, yMin]);
+              pointOnAxis.push( [ xTopCrossing, yMin ] );
             }
 
             if (
@@ -582,15 +582,15 @@ class SerieLine extends SerieScatter {
               xBottomCrossing < xMax &&
               xBottomCrossing > xMin
             ) {
-              pointOnAxis.push([xBottomCrossing, yMax]);
+              pointOnAxis.push( [ xBottomCrossing, yMax ] );
             }
 
-            if (pointOnAxis.length > 0) {
-              if (!pointOutside) {
+            if ( pointOnAxis.length > 0 ) {
+              if ( !pointOutside ) {
                 // We were outside and now go inside
 
-                if (pointOnAxis.length > 1) {
-                  console.error("Programmation error. Please e-mail me.");
+                if ( pointOnAxis.length > 1 ) {
+                  console.error( "Programmation error. Please e-mail me." );
                   console.log(
                     pointOnAxis,
                     xBottomCrossing,
@@ -606,20 +606,20 @@ class SerieLine extends SerieScatter {
 
                 this._createLine();
                 this._addPoint(
-                  this.getX(pointOnAxis[0][0]),
-                  this.getY(pointOnAxis[0][1]),
-                  pointOnAxis[0][0],
-                  pointOnAxis[0][1],
+                  this.getX( pointOnAxis[ 0 ][ 0 ] ),
+                  this.getY( pointOnAxis[ 0 ][ 1 ] ),
+                  pointOnAxis[ 0 ][ 0 ],
+                  pointOnAxis[ 0 ][ 1 ],
                   false,
                   false,
                   false
                 );
-                this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
-              } else if (!lastPointOutside) {
+                this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
+              } else if ( !lastPointOutside ) {
                 // We were inside and now go outside
 
-                if (pointOnAxis.length > 1) {
-                  console.error("Programmation error. Please e-mail me.");
+                if ( pointOnAxis.length > 1 ) {
+                  console.error( "Programmation error. Please e-mail me." );
                   console.log(
                     pointOnAxis,
                     xBottomCrossing,
@@ -634,41 +634,41 @@ class SerieLine extends SerieScatter {
                 }
 
                 this._addPoint(
-                  this.getX(pointOnAxis[0][0]),
-                  this.getY(pointOnAxis[0][1]),
-                  pointOnAxis[0][0],
-                  pointOnAxis[0][1],
+                  this.getX( pointOnAxis[ 0 ][ 0 ] ),
+                  this.getY( pointOnAxis[ 0 ][ 1 ] ),
+                  pointOnAxis[ 0 ][ 0 ],
+                  pointOnAxis[ 0 ][ 1 ],
                   false,
                   false,
                   false
                 );
               } else {
                 // No crossing: do nothing
-                if (pointOnAxis.length == 2) {
+                if ( pointOnAxis.length == 2 ) {
                   this._createLine();
 
                   this._addPoint(
-                    this.getX(pointOnAxis[0][0]),
-                    this.getY(pointOnAxis[0][1]),
-                    pointOnAxis[0][0],
-                    pointOnAxis[0][1],
+                    this.getX( pointOnAxis[ 0 ][ 0 ] ),
+                    this.getY( pointOnAxis[ 0 ][ 1 ] ),
+                    pointOnAxis[ 0 ][ 0 ],
+                    pointOnAxis[ 0 ][ 1 ],
                     false,
                     false,
                     false
                   );
                   this._addPoint(
-                    this.getX(pointOnAxis[1][0]),
-                    this.getY(pointOnAxis[1][1]),
-                    pointOnAxis[0][0],
-                    pointOnAxis[0][1],
+                    this.getX( pointOnAxis[ 1 ][ 0 ] ),
+                    this.getY( pointOnAxis[ 1 ][ 1 ] ),
+                    pointOnAxis[ 0 ][ 0 ],
+                    pointOnAxis[ 0 ][ 1 ],
                     false,
                     false,
                     false
                   );
                 }
               }
-            } else if (!pointOutside) {
-              this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
+            } else if ( !pointOutside ) {
+              this._addPoint( xpx2, ypx2, lastX, lastY, i, false, false );
             } // else {
             // Norman:
             // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
@@ -700,7 +700,7 @@ class SerieLine extends SerieScatter {
         }
       }
 
-      this._addPoint(xpx2, ypx2, x, y, i, false, true);
+      this._addPoint( xpx2, ypx2, x, y, i, false, true );
 
       //this.detectPeaks( x, y );
 
@@ -713,32 +713,32 @@ class SerieLine extends SerieScatter {
 
     this._createLine();
 
-    if (this._tracker) {
-      if (this._trackerDom) {
+    if ( this._tracker ) {
+      if ( this._trackerDom ) {
         this._trackerDom.remove();
       }
 
-      var cloned = this.groupLines.cloneNode(true);
-      this.groupMain.appendChild(cloned);
+      var cloned = this.groupLines.cloneNode( true );
+      this.groupMain.appendChild( cloned );
 
-      for (i = 0, l = cloned.children.length; i < l; i++) {
-        cloned.children[i].setAttribute("stroke", "transparent");
-        cloned.children[i].setAttribute("stroke-width", "25px");
-        cloned.children[i].setAttribute("pointer-events", "stroke");
+      for ( i = 0, l = cloned.children.length; i < l; i++ ) {
+        cloned.children[ i ].setAttribute( "stroke", "transparent" );
+        cloned.children[ i ].setAttribute( "stroke-width", "25px" );
+        cloned.children[ i ].setAttribute( "pointer-events", "stroke" );
       }
 
       this._trackerDom = cloned;
 
-      this.groupMain.addEventListener("mousemove", e => {
-        var coords = this.graph._getXY(e),
-          ret = this.handleMouseMove(false, false);
+      this.groupMain.addEventListener( "mousemove", e => {
+        var coords = this.graph._getXY( e ),
+          ret = this.handleMouseMove( false, false );
 
-        this._trackingCallback(this, ret, coords.x, coords.y);
-      });
+        this._trackingCallback( this, ret, coords.x, coords.y );
+      } );
 
-      this.groupMain.addEventListener("mouseleave", e => {
-        this._trackingOutCallback(this);
-      });
+      this.groupMain.addEventListener( "mouseleave", e => {
+        this._trackingOutCallback( this );
+      } );
     }
 
     return this;
@@ -748,20 +748,20 @@ class SerieLine extends SerieScatter {
     super.kill();
   }
 
-  _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
+  _addPoint( xpx, ypx, x, y, j, move, allowMarker ) {
     /*if( ! this.currentLineId ) {
         throw "No current line"
       }* @memberof SerieLine
 */
 
-    if (xpx !== xpx || ypx !== ypx) {
+    if ( xpx !== xpx || ypx !== ypx ) {
       return;
     }
 
-    if (this.counter == 0) {
+    if ( this.counter == 0 ) {
       this.currentLine = "M ";
     } else {
-      if (this.options.lineToZero || move) {
+      if ( this.options.lineToZero || move ) {
         this.currentLine += "M ";
       } else {
         this.currentLine += "L ";
@@ -773,7 +773,7 @@ class SerieLine extends SerieScatter {
     this.currentLine += ypx;
     this.currentLine += " ";
 
-    if (this.options.lineToZero && this.pos0 !== undefined) {
+    if ( this.options.lineToZero && this.pos0 !== undefined ) {
       this.currentLine += "L ";
       this.currentLine += xpx;
       this.currentLine += " ";
@@ -781,8 +781,8 @@ class SerieLine extends SerieScatter {
       this.currentLine += " ";
     }
 
-    if (this.hasErrors()) {
-      this.errorAddPoint(j, x, y, xpx, ypx);
+    if ( this.hasErrors() ) {
+      this.errorAddPoint( j, x, y, xpx, ypx );
     }
 
     this.counter++;
@@ -794,19 +794,19 @@ class SerieLine extends SerieScatter {
       line;
 
     // Creates a line if needed
-    if (this.lines[i]) {
-      line = this.lines[i];
+    if ( this.lines[ i ] ) {
+      line = this.lines[ i ];
     } else {
-      line = document.createElementNS(this.graph.ns, "path");
-      this.applyLineStyle(line);
-      this.groupLines.appendChild(line);
-      this.lines[i] = line;
+      line = document.createElementNS( this.graph.ns, "path" );
+      this.applyLineStyle( line );
+      this.groupLines.appendChild( line );
+      this.lines[ i ] = line;
     }
 
-    if (this.counter == 0) {
-      line.setAttribute("d", "");
+    if ( this.counter == 0 ) {
+      line.setAttribute( "d", "" );
     } else {
-      line.setAttribute("d", this.currentLine);
+      line.setAttribute( "d", this.currentLine );
     }
 
     this.currentLine = "M ";
@@ -820,8 +820,8 @@ class SerieLine extends SerieScatter {
    * @memberof SerieLine
    */
   applyLineStyles() {
-    for (var i = 0; i < this.lines.length; i++) {
-      this.applyLineStyle(this.lines[i]);
+    for ( var i = 0; i < this.lines.length; i++ ) {
+      this.applyLineStyle( this.lines[ i ] );
     }
   }
 
@@ -829,19 +829,19 @@ class SerieLine extends SerieScatter {
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieLine
    */
-  applyLineStyle(line) {
-    line.setAttribute("stroke", this.getLineColor());
-    line.setAttribute("stroke-width", this.getLineWidth());
-    if (this.getLineDashArray()) {
-      line.setAttribute("stroke-dasharray", this.getLineDashArray());
+  applyLineStyle( line ) {
+    line.setAttribute( "stroke", this.getLineColor() );
+    line.setAttribute( "stroke-width", this.getLineWidth() );
+    if ( this.getLineDashArray() ) {
+      line.setAttribute( "stroke-dasharray", this.getLineDashArray() );
     } else {
-      line.removeAttribute("stroke-dasharray");
+      line.removeAttribute( "stroke-dasharray" );
     }
 
-    if (this.getFillColor()) {
-      line.setAttribute("fill", this.getFillColor());
+    if ( this.getFillColor() ) {
+      line.setAttribute( "fill", this.getFillColor() );
     } else {
-      line.setAttribute("fill", "none");
+      line.setAttribute( "fill", "none" );
     }
 
     //	line.setAttribute('shape-rendering', 'optimizeSpeed');
@@ -860,51 +860,51 @@ class SerieLine extends SerieScatter {
     this.applyLineStyles();
     this.setLegendSymbolStyle();
 
-    this.styleHasChanged(false);
+    this.styleHasChanged( false );
   }
 
   // Revised August 2014. Ok
-  getMarkerPath(family, add) {
+  getMarkerPath( family, add ) {
     var z = family.zoom || 1,
       add = add || 0,
       el = [];
 
-    switch (family.type) {
+    switch ( family.type ) {
       case 2:
-        el = ["m", -2, -2, "l", 4, 4, "m", -4, 0, "l", 4, -4];
+        el = [ "m", -2, -2, "l", 4, 4, "m", -4, 0, "l", 4, -4 ];
         break;
 
       case 3:
-        el = ["m", -2, 0, "l", 4, 0, "m", -2, -2, "l", 0, 4];
+        el = [ "m", -2, 0, "l", 4, 0, "m", -2, -2, "l", 0, 4 ];
         break;
 
       case 4:
-        el = ["m", -1, -1, "l", 2, 0, "l", -1, 2, "z"];
+        el = [ "m", -1, -1, "l", 2, 0, "l", -1, 2, "z" ];
         break;
 
       default:
       case 1:
-        el = ["m", -2, -2, "l", 4, 0, "l", 0, 4, "l", -4, 0, "z"];
+        el = [ "m", -2, -2, "l", 4, 0, "l", 0, 4, "l", -4, 0, "z" ];
         break;
     }
 
-    if ((z == 1 || !z) && !add) {
-      return el.join(" ");
+    if ( ( z == 1 || !z ) && !add ) {
+      return el.join( " " );
     }
 
     var num = "number";
 
-    if (!el) {
+    if ( !el ) {
       return;
     }
 
-    for (var i = 0, l = el.length; i < l; i++) {
-      if (typeof el[i] == num) {
-        el[i] *= z + add;
+    for ( var i = 0, l = el.length; i < l; i++ ) {
+      if ( typeof el[ i ] == num ) {
+        el[ i ] *= z + add;
       }
     }
 
-    return el.join(" ");
+    return el.join( " " );
   }
 
   /**
@@ -914,7 +914,7 @@ class SerieLine extends SerieScatter {
    * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
-  searchIndexByPxXY(x, y) {
+  searchIndexByPxXY( x, y ) {
     var oldDist = false,
       xyindex = false,
       dist;
@@ -923,13 +923,13 @@ class SerieLine extends SerieScatter {
       p_x,
       p_y;
 
-    for (var k = 0, m = this.waveform.getLength(); k < m; k += 1) {
-      p_x = this.waveform.getX(k);
-      p_y = this.waveform.getY(k);
+    for ( var k = 0, m = this.waveform.getLength(); k < m; k += 1 ) {
+      p_x = this.waveform.getX( k );
+      p_y = this.waveform.getY( k );
 
-      dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
+      dist = Math.pow( this.getX( p_x ) - x, 2 ) + Math.pow( this.getY( p_y ) - y, 2 );
 
-      if (!oldDist || dist < oldDist) {
+      if ( !oldDist || dist < oldDist ) {
         oldDist = dist;
         xyindex = k;
       }
@@ -944,8 +944,8 @@ class SerieLine extends SerieScatter {
    * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
-  searchClosestValue(valX, valY) {
-    if (this.waveform) {
+  searchClosestValue( valX, valY ) {
+    if ( this.waveform ) {
       let indexX;
 
       try {
@@ -954,16 +954,16 @@ class SerieLine extends SerieScatter {
           valY,
           undefined,
           undefined,
-          this.getXAxis().getRelPx(1),
-          this.getYAxis().getRelPx(1)
+          this.getXAxis().getRelPx( 1 ),
+          this.getYAxis().getRelPx( 1 )
         );
-      } catch (e) {
-        console.log(e);
-        throw new Error("Error while finding the closest index");
+      } catch ( e ) {
+        console.log( e );
+        throw new Error( "Error while finding the closest index" );
         return {};
       }
 
-      if (isNaN(indexX) || indexX === false) {
+      if ( isNaN( indexX ) || indexX === false ) {
         return false;
       }
 
@@ -971,24 +971,24 @@ class SerieLine extends SerieScatter {
 
       let direction;
       // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
-      if (valX > this.waveform.getX(indexX)) {
+      if ( valX > this.waveform.getX( indexX ) ) {
         direction = -1;
       } else {
         direction = 0;
       }
 
-      Object.assign(returnObj, {
+      Object.assign( returnObj, {
         indexMin: indexX + direction,
         indexMax: indexX + direction + 1,
         indexClosest: indexX,
-        xMin: this.waveform.getX(indexX + direction),
-        xMax: this.waveform.getX(indexX + direction + 1),
-        yMin: this.waveform.getY(indexX + direction),
-        yMax: this.waveform.getY(indexX + direction + 1),
-        xClosest: this.waveform.getX(indexX),
-        yClosest: this.waveform.getY(indexX),
+        xMin: this.waveform.getX( indexX + direction ),
+        xMax: this.waveform.getX( indexX + direction + 1 ),
+        yMin: this.waveform.getY( indexX + direction ),
+        yMax: this.waveform.getY( indexX + direction + 1 ),
+        xClosest: this.waveform.getX( indexX ),
+        yClosest: this.waveform.getY( indexX ),
         xExact: valX
-      });
+      } );
       return returnObj;
     }
   }
@@ -998,23 +998,23 @@ class SerieLine extends SerieScatter {
     var valX = xValue || this.getXAxis().getMouseVal(),
       valY = yValue || this.getYAxis().getMouseVal();
 
-    var value = this.searchClosestValue(valX, valY);
+    var value = this.searchClosestValue( valX, valY );
 
-    if (!value) {
+    if ( !value ) {
       return;
     }
 
     var ratio, intY;
 
-    if (value.xMax == value.xMin) {
+    if ( value.xMax == value.xMin ) {
       intY = value.yMin;
     } else {
       //ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
       //intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
     }
 
-    if (doMarker && this.options.trackMouse) {
-      if (value.xMin == undefined) {
+    if ( doMarker && this.options.trackMouse ) {
+      if ( value.xMin == undefined ) {
         return false;
       }
     }
@@ -1039,37 +1039,37 @@ class SerieLine extends SerieScatter {
    * @returns {Number} Maximal y value in between startX and endX
    * @memberof SerieLine
    */
-  getMax(start, end) {
-    var start2 = Math.min(start, end),
-      end2 = Math.max(start, end),
-      v1 = this.searchClosestValue(start2),
-      v2 = this.searchClosestValue(end2),
+  getMax( start, end ) {
+    var start2 = Math.min( start, end ),
+      end2 = Math.max( start, end ),
+      v1 = this.searchClosestValue( start2 ),
+      v2 = this.searchClosestValue( end2 ),
       i,
       j,
       max = -Infinity,
       initJ,
       maxJ;
 
-    if (!v1) {
+    if ( !v1 ) {
       start2 = this.minX;
-      v1 = this.searchClosestValue(start2);
+      v1 = this.searchClosestValue( start2 );
     }
 
-    if (!v2) {
+    if ( !v2 ) {
       end2 = this.maxX;
-      v2 = this.searchClosestValue(end2);
+      v2 = this.searchClosestValue( end2 );
     }
 
-    if (!v1 || !v2) {
+    if ( !v1 || !v2 ) {
       return -Infinity;
     }
 
-    for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
+    for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
       initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
 
-      for (j = initJ; j <= maxJ; j += 2) {
-        max = Math.max(max, this.data[i][j + 1]);
+      for ( j = initJ; j <= maxJ; j += 2 ) {
+        max = Math.max( max, this.data[ i ][ j + 1 ] );
       }
     }
 
@@ -1083,37 +1083,37 @@ class SerieLine extends SerieScatter {
    * @returns {Number} Maximal y value in between startX and endX
    * @memberof SerieLine
    */
-  getMin(start, end) {
-    var start2 = Math.min(start, end),
-      end2 = Math.max(start, end),
-      v1 = this.searchClosestValue(start2),
-      v2 = this.searchClosestValue(end2),
+  getMin( start, end ) {
+    var start2 = Math.min( start, end ),
+      end2 = Math.max( start, end ),
+      v1 = this.searchClosestValue( start2 ),
+      v2 = this.searchClosestValue( end2 ),
       i,
       j,
       min = Infinity,
       initJ,
       maxJ;
 
-    if (!v1) {
+    if ( !v1 ) {
       start2 = this.minX;
-      v1 = this.searchClosestValue(start2);
+      v1 = this.searchClosestValue( start2 );
     }
 
-    if (!v2) {
+    if ( !v2 ) {
       end2 = this.maxX;
-      v2 = this.searchClosestValue(end2);
+      v2 = this.searchClosestValue( end2 );
     }
 
-    if (!v1 || !v2) {
+    if ( !v1 || !v2 ) {
       return Infinity;
     }
 
-    for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
+    for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
       initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
 
-      for (j = initJ; j <= maxJ; j += 2) {
-        min = Math.min(min, this.data[i][j + 1]);
+      for ( j = initJ; j <= maxJ; j += 2 ) {
+        min = Math.min( min, this.data[ i ][ j + 1 ] );
       }
     }
 
@@ -1123,30 +1123,30 @@ class SerieLine extends SerieScatter {
   /* LINE STYLE * @memberof SerieLine
    */
 
-  setStyle(style, selectionType = "unselected") {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
+  setStyle( style, selectionType = "unselected" ) {
+    this.styles[ selectionType ] = style;
+    this.styleHasChanged( selectionType );
   }
 
-  setLineStyle(number, selectionType = "unselected", applyToSelected) {
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineStyle = number;
+  setLineStyle( number, selectionType = "unselected", applyToSelected ) {
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].lineStyle = number;
 
-    if (applyToSelected) {
-      this.setLineStyle(number, "selected");
+    if ( applyToSelected ) {
+      this.setLineStyle( number, "selected" );
     }
 
-    this.styleHasChanged(selectionType);
+    this.styleHasChanged( selectionType );
 
     return this;
   }
 
-  getLineStyle(selectionType) {
-    return this.getStyle(selectionType).lineStyle;
+  getLineStyle( selectionType ) {
+    return this.getStyle( selectionType ).lineStyle;
   }
 
-  getLineDashArray(selectionType = this.selectionType || "unselected") {
-    switch (this.getStyle(selectionType).lineStyle) {
+  getLineDashArray( selectionType = this.selectionType || "unselected" ) {
+    switch ( this.getStyle( selectionType ).lineStyle ) {
       case 2:
         return "1, 1";
         break;
@@ -1189,118 +1189,117 @@ class SerieLine extends SerieScatter {
         break;
 
       default:
-        return this.styles[selectionType].lineStyle;
+        return this.styles[ selectionType ].lineStyle;
         break;
     }
 
-    this.styleHasChanged(selectionType);
+    this.styleHasChanged( selectionType );
   }
 
-  getStyle(selectionType = this.selectionType || "unselected") {
-    return this.styles[selectionType] || this.styles.unselected;
+  getStyle( selectionType = this.selectionType || "unselected" ) {
+    return this.styles[ selectionType ] || this.styles.unselected;
   }
 
   extendStyles() {
-    for (var i in this.styles) {
-      var s = this.styles[i];
-      if (s) {
-        this.styles[i] = util.extend(true, {}, this.styles.unselected, s);
+    for ( var i in this.styles ) {
+      var s = this.styles[ i ];
+      if ( s ) {
+        this.styles[ i ] = util.extend( true, {}, this.styles.unselected, s );
       }
     }
   }
 
-  extendStyle(styleTarget, styleOrigin) {
-    var s = this.styles[styleTarget];
-    this.styles[styleTarget] = util.extend(
-      true,
-      {},
-      this.styles[styleOrigin || "unselected"],
+  extendStyle( styleTarget, styleOrigin ) {
+    var s = this.styles[ styleTarget ];
+    this.styles[ styleTarget ] = util.extend(
+      true, {},
+      this.styles[ styleOrigin || "unselected" ],
       s || {}
     );
-    this.styleHasChanged(styleTarget);
+    this.styleHasChanged( styleTarget );
   }
 
   /** @memberof SerieLine
    */
 
-  setLineWidth(width, selectionType, applyToSelected) {
+  setLineWidth( width, selectionType, applyToSelected ) {
     selectionType = selectionType || "unselected";
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineWidth = width;
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].lineWidth = width;
 
-    if (applyToSelected) {
-      this.setLineWidth(width, "selected");
+    if ( applyToSelected ) {
+      this.setLineWidth( width, "selected" );
     }
 
-    this.styleHasChanged(selectionType);
+    this.styleHasChanged( selectionType );
 
     return this;
   }
 
-  getLineWidth(selectionType) {
-    return this.getStyle(selectionType).lineWidth || 1;
+  getLineWidth( selectionType ) {
+    return this.getStyle( selectionType ).lineWidth || 1;
   }
 
   /* LINE COLOR * @memberof SerieLine
    */
-  setLineColor(color, selectionType, applyToSelected) {
+  setLineColor( color, selectionType, applyToSelected ) {
     selectionType = selectionType || "unselected";
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineColor = color;
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].lineColor = color;
 
-    if (applyToSelected) {
-      this.setLineColor(color, "selected");
+    if ( applyToSelected ) {
+      this.setLineColor( color, "selected" );
     }
 
-    this.styleHasChanged(selectionType);
+    this.styleHasChanged( selectionType );
 
     return this;
   }
 
   /* FILL COLOR * @memberof SerieLine
    */
-  setFillColor(color, selectionType, applyToSelected) {
+  setFillColor( color, selectionType, applyToSelected ) {
     selectionType = selectionType || "unselected";
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].fillColor = color;
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].fillColor = color;
 
-    if (applyToSelected) {
-      this.setFillColor(color, "selected");
+    if ( applyToSelected ) {
+      this.setFillColor( color, "selected" );
     }
 
-    this.styleHasChanged(selectionType);
+    this.styleHasChanged( selectionType );
 
     return this;
   }
 
-  getLineColor(selectionType) {
-    return this.getStyle(selectionType).lineColor || "black";
+  getLineColor( selectionType ) {
+    return this.getStyle( selectionType ).lineColor || "black";
   }
 
-  getFillColor(selectionType) {
-    return this.getStyle(selectionType).fillColor || undefined;
+  getFillColor( selectionType ) {
+    return this.getStyle( selectionType ).fillColor || undefined;
   }
 
   /** @memberof SerieLine
    */
 
   isMonotoneous() {
-    if (this.waveform) {
+    if ( this.waveform ) {
       return this.waveform.isMonotoneous();
     }
 
     return !!this.xmonotoneous;
   }
 
-  findLocalMinMax(xRef, xWithin, type) {
-    if (!this.waveform) {
+  findLocalMinMax( xRef, xWithin, type ) {
+    if ( !this.waveform ) {
       return false;
     }
 
-    return this.waveform.findLocalMinMax(xRef, xWithin, type);
+    return this.waveform.findLocalMinMax( xRef, xWithin, type );
   }
 }
 
-util.mix(SerieLine, ErrorBarMixin);
+util.mix( SerieLine, ErrorBarMixin );
 
 export default SerieLine;

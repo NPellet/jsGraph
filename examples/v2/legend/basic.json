@@ -19,28 +19,31 @@
     }
   },
   "legend": {
-      "position": "bottom",
-      "seriesHideable": true,
-      "seriesSelectable": true
+    "position": "bottom",
+    "seriesHideable": true,
+    "seriesSelectable": true
   },
-  "series": [ {
-    "type": "line",
-    "data": {
-      "x": [1, 2, 3, 4, 5],
-      "y": [1, 2, 3, 2, 1]
-    },
-    "style": {
+  "series": [
+    {
+      "type": "line",
+      "data": {
+        "x": [1, 2, 3, 4, 5],
+        "y": [1, 2, 3, 2, 1]
+      },
+      "style": {
         "lineColor": "red"
-    }
-  },{
-    "type": "line",
-    "data": {
-      "x": [1, 2, 3, 4, 5],
-      "y": [3, 2, 1, 2, 3]
+      }
     },
-    "style": {
+    {
+      "type": "line",
+      "data": {
+        "x": [1, 2, 3, 4, 5],
+        "y": [3, 2, 1, 2, 3]
+      },
+      "style": {
         "lineColor": "blue"
-    },
-    "excludeFromLegend": true
-  } ]
+      },
+      "excludeFromLegend": true
+    }
+  ]
 }

@@ -262,30 +262,39 @@ class Legend {
         this.alignToX = false;
         break;
     }
-
     if ( this.autoPosition ) {
+      let redrawGraph;
       switch ( this.autoPosition ) {
         case 'bottom':
           this.graph.options.paddingBottom = this.height + 10;
-          break;
 
-        case 'left':
-          this.graph.options.paddingLeft = this.width + 5;
-          break;
-
-        case 'right':
-          this.graph.options.paddingRight = this.width + 10;
+          redrawGraph = this.height !== this.previousHeight;
           break;
 
         case 'top':
           this.graph.options.paddingTop = this.height + 14;
+
+          redrawGraph = this.height !== this.previousHeight;
+          break;
+
+        case 'left':
+          this.graph.options.paddingLeft = this.width + 5;
+
+          redrawGraph = this.width !== this.previousWidth;
+          break;
+
+        case 'right':
+          this.graph.options.paddingRight = this.width + 10;
+
+          redrawGraph = this.width !== this.previousWidth;
           break;
       }
 
-      this.graph.updateGraphingZone();
-      this.graph.getDrawingHeight();
-      this.graph.getDrawingWidth();
-      // this.graph.redraw( false );
+      if ( redrawGraph ) {
+        this.graph.draw( true );
+        this.previousHeight = this.height;
+        this.previousWidth = this.width;
+      }
     }
 
     this.bbox = bbox;
@@ -311,8 +320,10 @@ class Legend {
     if ( pos.x == 'max' ) {
       // todo
     }
-    poscoords.y += this.graph.getPaddingTop();
-    poscoords.x += this.graph.getPaddingLeft();
+
+    // This was making the autoPosition fail. But I can totally see how this will cause problems in other case scenarios...
+    // poscoords.y += this.graph.getPaddingTop();
+    // poscoords.x += this.graph.getPaddingLeft();
 
     if ( this.alignToX == 'right' ) {
       poscoords.x -= this.width;
@@ -606,7 +617,8 @@ class Legend {
 
   _setPosition() {
     var pos = this.pos;
-    if ( !isNaN( pos.transformX ) &&
+    if (
+      !isNaN( pos.transformX ) &&
       !isNaN( pos.transformY ) &&
       pos.transformX !== false &&
       pos.transformY !== false

@@ -303,7 +303,9 @@ module.exports = function(grunt) {
         const graph = Graph.fromJSON( ${fs.readFileSync(el.path)}, "graph" );
         console.log('a');
         graph.draw();
-    </script>
+        graph.updateLegend();
+        
+        </script>
 </html>`;
       };
       const processTree = tree => {
