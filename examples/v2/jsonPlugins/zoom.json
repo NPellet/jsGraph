@@ -1,0 +1,14 @@
+{
+  "options": {
+    "plugins": {
+      "zoom": {
+        "zoomMode": "xy"
+      }
+    },
+    "mouseActions": [{ "plugin": "zoom", "shift": false, "ctrl": false }]
+  },
+  "series": {
+    "type": "scatter",
+    "data": { "x": [1, 2, 3, 4, 5], "y": [1, 2, 3, 2, 1] }
+  }
+}

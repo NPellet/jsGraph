@@ -10,6 +10,7 @@
   "dependencies": {
     "ace-builds": "^1.4.1",
     "bootstrap": "^3.3.7",
+    "grunt": "^1.0.3",
     "jquery": "^3.3.1",
     "node-jsgraph": "^2.1.4",
     "prism": "^4.1.2",
