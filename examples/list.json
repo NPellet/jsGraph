@@ -62,6 +62,7 @@
 		]
 	},
 	{
+		"title": "Annotations",
 		"name": "jsonAnnotation",
 		"children": [
 			{
@@ -83,6 +84,7 @@
 		]
 	},
 	{
+		"title": "Bar chart",
 		"name": "jsonBar",
 		"children": [
 			{
@@ -100,6 +102,7 @@
 		]
 	},
 	{
+		"title": "Line chart",
 		"name": "jsonLine",
 		"children": [
 			{
@@ -121,6 +124,15 @@
 			{
 				"name": "styleAdvanced.json",
 				"title": "styleAdvanced.json"
+			}
+		]
+	},
+	{
+		"name": "legend",
+		"children": [
+			{
+				"name": "basic.json",
+				"title": "basic.json"
 			}
 		]
 	}

@@ -4,7 +4,8 @@
       {
         "label": "Produced mass",
         "unit": "g",
-        "unitWrapper": ["(", ")"],
+        "unitWrapperBefore": "(",
+        "unitWrapperAfter": ")",
         "unitDecade": true
       }
     ],
@@ -13,9 +14,18 @@
       "label": "Fruit type",
       "name": "cat_btm",
       "categories": [
-        { "name": "peach", "title": "Peaches" },
-        { "name": "apple", "title": "Apples" },
-        { "name": "orange", "title": "Oranges" }
+        {
+          "name": "peach",
+          "title": "Peaches"
+        },
+        {
+          "name": "apple",
+          "title": "Apples"
+        },
+        {
+          "name": "orange",
+          "title": "Oranges"
+        }
       ]
     }
   },

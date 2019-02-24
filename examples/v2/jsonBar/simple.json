@@ -4,7 +4,8 @@
       {
         "label": "Produced mass",
         "unit": "g",
-        "unitWrapper": ["(", ")"],
+        "unitWrapperBefore": "[",
+        "unitWrapperAfter": "]",
         "unitDecade": true
       }
     ],
@@ -18,7 +19,6 @@
         { "name": "orange", "title": "Oranges" }
       ]
     }
-    // x:, y:
   },
   "series": [
     {

@@ -125,7 +125,7 @@ class PluginSerieLineDifference extends Plugin {
         wave2: []
       };
       chunks.push( currentChunk );
-    }
+    };
 
     newChunk( true );
 
@@ -153,7 +153,7 @@ class PluginSerieLineDifference extends Plugin {
 
           const crossing = this.computeCrossing( wFinal.getX( i - 1 ), wFinal.getY( i - 1 ), wFinal.getX( i ), wFinal.getY( i ), wFinal2.getX( i - 1 ), wFinal2.getY( i - 1 ), wFinal2.getX( i ), wFinal2.getY( i ) );
           currentChunk.wave1.push( [ crossing.x, crossing.y ] );
-          newChunk()
+          newChunk();
           currentChunk.wave1.push( [ crossing.x, crossing.y ] );
           currentChunk.above = false;
 
@@ -172,7 +172,7 @@ class PluginSerieLineDifference extends Plugin {
 
     this.series = chunks.forEach( ( chunk, index ) => {
 
-      const serie = this.graph.newSerie( "__graph_serielinedifference_" + this.serie1.getName() + "_" + this.serie2.getName() + "_" + index );
+      const serie = this.graph.newSerie( '__graph_serielinedifference_' + this.serie1.getName() + '_' + this.serie2.getName() + '_' + index );
       const wave = new Waveform();
 
       wave.setData(
@@ -193,7 +193,6 @@ class PluginSerieLineDifference extends Plugin {
       } else {
         serie.setFillColor( this.options.negativeStyle.fillColor );
       }
-      console.log( this.options );
     } );
 
   }

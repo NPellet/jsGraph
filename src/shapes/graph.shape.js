@@ -1024,9 +1024,6 @@ class Shape extends EventEmitter {
               var p = this.computePosition( 0 );
               transformString += `, ${p.x}, ${p.y}`;
             } else {
-              console.log( GraphPosition.check(
-                transforms[ i ].center
-              ) );
               const posCenter = GraphPosition.check(
                 transforms[ i ].center
               ).compute(
@@ -1682,7 +1679,6 @@ class Shape extends EventEmitter {
    * @private
    */
   handleMouseMove( e ) {
-    //console.log( this.resizinh, this.moving, this.isSelected(), this._mouseCoords );
     if ( ( this.resizing || this.moving ) && !this.isSelected() ) {
       this.graph.selectShape( this );
     }

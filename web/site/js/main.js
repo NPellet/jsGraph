@@ -116,6 +116,12 @@ const loadExamples = () => {
 
               graph = Graph.fromJSON(json, 'graph-example');
               graph.draw();
+
+              if( graph.legend ) {
+                graph.updateLegend();
+              }
+
+              graph.draw();
             } else {
               let constructor = eval(value);
               constructor('graph-example');

@@ -1209,9 +1209,10 @@ class Waveform {
         xSet.add( xData2[ i ] );
       }
 
-      const xs = Array.from( xSet.values() ).sort();
+      const xs = Array.from( xSet.values() );
+      xs.sort( ( a, b ) => a - b );
 
-      const ys = xs.map( ( x ) => {
+      const ys = xs.map( x => {
         if ( operation == MULTIPLY ) {
           return this.interpolate( x ) * wave.interpolate( x );
         } else if ( operation == DIVIDE ) {
@@ -1224,7 +1225,9 @@ class Waveform {
       } );
 
       this._setData( ys );
+
       this.xdata._setData( xs );
+
     } else {
       if ( operation == MULTIPLY ) {
         for ( ; i < l; i++ ) {
@@ -1283,8 +1286,6 @@ class Waveform {
       return false;
     }
     /*
-    console.log( direction, this._dataAggregationDirection );
-
         if( direction !== this._dataAggregationDirection ) {
           throw "The data is not aggregated in that direction";
         }
@@ -1307,7 +1308,7 @@ class Waveform {
     };
   }
 
-  duplicate( alsoDuplicateXWave ) {
+  duplicate( alsoDuplicateXWave = true ) {
     var newWaveform = new Waveform();
     newWaveform._setData( this.getDataY().slice() );
     newWaveform.rescaleX( this.xOffset, this.xShift );
@@ -2190,6 +2191,7 @@ class WaveformHash extends Waveform {
   _setData() {
     this.minY = Math.min( ...this.data );
     this.maxY = Math.max( ...this.data );
+
     this.checkMinMaxErrorBars();
   }
 }

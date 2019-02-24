@@ -12,6 +12,47 @@ const makeGraph = ( Graph, json, wrapper ) => {
     makeAxes( Graph, graph, json.axes );
   }
 
+  if ( json.legend ) {
+
+    const opts = {};
+
+    if ( json.legend.seriesHideable ) {
+      opts.isSerieHideable = true;
+    }
+
+    if ( json.legend.seriesSelectable ) {
+      opts.isSerieSelectable = true;
+    }
+
+    const legend = graph.makeLegend( opts );
+
+    if ( json.legend.position ) {
+
+      switch ( json.legend.position ) {
+
+        case 'bottom':
+          legend.setAutoposition( 'bottom' );
+          break;
+
+        case 'top':
+          legend.setAutoposition( 'top' );
+          break;
+
+        case 'left':
+          legend.setAutoposition( 'left' );
+          break;
+
+        case 'right':
+          legend.setAutoposition( 'right' );
+          break;
+
+        default:
+          legend.setPosition( json.legend.position );
+          break;
+      }
+    }
+  }
+
   if ( json.series ) {
     if ( !Array.isArray( json.series ) ) {
       json.series = [ json.series ];
@@ -105,6 +146,10 @@ const makeGraph = ( Graph, json, wrapper ) => {
         type
       );
       serie.autoAxis();
+
+      if ( jsonSerie.excludeFromLegend ) {
+        serie.excludeFromLegend( true );
+      }
 
       if ( data.xAxis && axes[ data.xAxis ] ) {
         serie.setXAxis( axes[ data.xAxis ] );

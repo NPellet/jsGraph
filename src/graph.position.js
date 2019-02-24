@@ -269,6 +269,14 @@ class Position {
       return axis.getMinValue();
     }
 
+    if ( rel == 'max' ) {
+      return axis.getMaxValue();
+    }
+
+    if ( rel == 'min' ) {
+      return axis.getMinValue();
+    }
+
     return rel;
   }
 

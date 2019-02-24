@@ -85,7 +85,6 @@ class AxisXBar extends AxisX {
         series.push( serie );
       }
     }
-    console.log( series );
     this.setSeries( ...series );
     return this;
   }
@@ -130,7 +129,6 @@ class AxisXBar extends AxisX {
         total++;
       }
     } );
-    console.log( categories );
     let accumulator = 0;
     for ( let i in categories ) {
       let temp = categories[ i ];

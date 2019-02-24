@@ -402,7 +402,7 @@ In the individual mode, every serie is tracked independently and leads to a mult
 	graph.trackingLine( {
 	      
 	    mode: "individual", // Defines the mode, individual or common
-      legend: true
+      legend: true,
 
 	    series: [ // A list of series that can be tracked
 	      {

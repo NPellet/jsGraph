@@ -17,7 +17,6 @@ const setMarkerStyle = ( serie, style ) => {
 };
 
 const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
-  console.log( 'sdfdsf' );
   let styles = jsonSerie.style;
 
   if ( !Array.isArray( styles ) ) {
@@ -31,7 +30,6 @@ const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
     name,
     style
   }, index ) => {
-    console.log( style );
     if ( style.line && ( type == Graph.SERIE_LINE || type == Graph.SERIE_BAR ) ) {
       if ( style.line.color ) {
         serie.setLineColor( style.line.color, name );
@@ -53,7 +51,6 @@ const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
         serie.setFillOpacity( style.line.fillOpacity, name );
       }
     }
-    console.log( style );
     if ( style.errorBar ) {
       serie.setErrorBarStyle( style.errorBar );
     }

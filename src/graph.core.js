@@ -1061,8 +1061,6 @@ class Graph extends EventEmitter {
           //          continue;
         }
 
-        //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-
         let min = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues );
         let max = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues );
 
@@ -2878,7 +2876,6 @@ function refreshDrawingZone( graph ) {
 function _handleKey( graph, event, type ) {
 
   var self = graph;
-
   if ( graph.forcedPlugin ) {
 
     graph.activePlugin = graph.forcedPlugin;

@@ -218,7 +218,6 @@ class PluginPeakPicking extends Plugin {
         return;
       }
 
-      //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
       //    this.picks[ m ].show();
 
       if ( this.serie.getYAxis().getPx( ys[ i ][ 1 ] ) - 20 < 0 ) {

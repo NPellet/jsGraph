@@ -99,7 +99,6 @@ Object.getOwnPropertyNames( SerieLine.prototype ).map( function( i ) {
   SerieLineExtended.prototype[ i ] = ( function( j ) {
 
     return function() {
-      console.log( j );
       var args = arguments;
       return this.subSeries[ 0 ][ j ]( ...args );
     };
@@ -542,7 +541,6 @@ var SplitAxis = function( mixin ) {
       let splits = [],
         total = 0,
         currentSplit = 0;
-      //console.log( this._splitVal );
       for ( let split of this._splitVal ) {
         total += split[ 1 ] - split[ 0 ];
       }
