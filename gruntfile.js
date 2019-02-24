@@ -311,8 +311,9 @@ module.exports = function(grunt) {
           if (child.type == 'directory') {
             processTree(child);
           } else {
+            console.log(child.path);
             const path = child.path
-              .replace('/examples', '/output')
+              .replace('v2', 'output')
               .replace('.json', '.html')
               .replace('.js', '.html');
 
@@ -323,7 +324,7 @@ module.exports = function(grunt) {
         });
       };
 
-      const tree = dirTree('./examples/renderer/', { extensions: /\.js(on)?/ });
+      const tree = dirTree('./examples/v2/', { extensions: /\.js(on)?/ });
       processTree(tree);
       console.log(tree);
     }
