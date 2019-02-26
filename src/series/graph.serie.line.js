@@ -342,9 +342,8 @@ class SerieLine extends SerieScatter {
     if ( !this.getXAxis() || !this.getYAxis() ) {
       throw 'No axes were defined for this serie';
     }
-
     if ( force || this.hasDataChanged() ) {
-      super.draw();
+      super.draw( force );
 
       if ( !this.drawInit( force ) ) {
         return;
