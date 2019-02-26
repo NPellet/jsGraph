@@ -5,7 +5,7 @@
       "unit": "nm",
       "unitWrapperBefore": "[",
       "unitWrapperAfter": "]"
-    }, 
+    },
     "y": {
       "label": "Transmission",
       "unit": "%",
