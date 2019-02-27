@@ -2786,7 +2786,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-  const type = "line";
+  const type = 'line';
   const defaultOptions = {
     /**
      * @name SerieLineDefaultOptions
@@ -2796,7 +2796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
     // Extends scatterSerie
     markers: false,
-    lineColor: "black",
+    lineColor: 'black',
     lineStyle: 1,
     lineWidth: 1,
     trackMouse: false,
@@ -2815,7 +2815,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   class SerieLine extends _graphSerieScatter.default {
     constructor(graph, name, options, defaultInherited) {
       super(graph, name, options, util.extend(true, {}, defaultOptions, defaultInherited));
-      this.selectionType = "unselected";
+      this.selectionType = 'unselected';
       this._type = type;
       util.mapEventEmission(this.options, this); // Register events
       // Creates an empty style variable
@@ -2844,29 +2844,29 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }; // Optimize is no markerPoints => save loops
       //      this.markerPoints = {};
 
-      this.groupLines = document.createElementNS(this.graph.ns, "g");
-      this.domMarker = document.createElementNS(this.graph.ns, "path");
+      this.groupLines = document.createElementNS(this.graph.ns, 'g');
+      this.domMarker = document.createElementNS(this.graph.ns, 'path');
 
       if (!this.domMarker.style) {
         this.domMarker.style = {
-          cursor: "pointer"
+          cursor: 'pointer'
         };
       } else {
-        this.domMarker.style.cursor = "pointer";
+        this.domMarker.style.cursor = 'pointer';
       }
 
       this.additionalData = {};
-      this.marker = document.createElementNS(this.graph.ns, "circle");
-      this.marker.setAttribute("fill", "black");
-      this.marker.setAttribute("r", 3);
-      this.marker.setAttribute("display", "none");
-      this.markerLabel = document.createElementNS(this.graph.ns, "text");
-      this.markerLabelSquare = document.createElementNS(this.graph.ns, "rect");
-      this.markerLabelSquare.setAttribute("fill", "white");
+      this.marker = document.createElementNS(this.graph.ns, 'circle');
+      this.marker.setAttribute('fill', 'black');
+      this.marker.setAttribute('r', 3);
+      this.marker.setAttribute('display', 'none');
+      this.markerLabel = document.createElementNS(this.graph.ns, 'text');
+      this.markerLabelSquare = document.createElementNS(this.graph.ns, 'rect');
+      this.markerLabelSquare.setAttribute('fill', 'white');
       this.domMarkerHover = {};
       this.domMarkerSelect = {};
       this.markerHovered = 0;
-      this.groupMarkerSelected = document.createElementNS(this.graph.ns, "g");
+      this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
       this.markerPoints = {}; //this.scale = 1;
       //this.shift = 0;
 
@@ -2882,7 +2882,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.initExtended1();
       }
 
-      this.groupLines.addEventListener("click", e => {
+      this.groupLines.addEventListener('click', e => {
         if (this.options.selectableOnClick) {
           if (this.isSelected()) {
             this.graph.unselectSerie(this);
@@ -2943,9 +2943,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
 
-    select(selectionType) {
-      selectionType = selectionType || "selected";
-      this.selected = selectionType !== "unselected";
+    select(selectionType = 'selected') {
+      this.selected = selectionType !== 'unselected';
       this.selectionType = selectionType;
       this.applyLineStyles();
       this.applyLineStyle(this.getSymbolForLegend());
@@ -2963,7 +2962,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     unselect() {
       this.selected = false;
       super.unselect();
-      return this.select("unselected");
+      return this.select('unselected');
     }
     /**
      * Computes and returns a line SVG element with the same line style as the serie, or width 20px
@@ -2976,13 +2975,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       const container = this._getSymbolForLegendContainer();
 
       if (!this.lineForLegend) {
-        var line = document.createElementNS(this.graph.ns, "line");
+        var line = document.createElementNS(this.graph.ns, 'line');
         this.applyLineStyle(line);
-        line.setAttribute("x1", 5);
-        line.setAttribute("x2", 25);
-        line.setAttribute("y1", 0);
-        line.setAttribute("y2", 0);
-        line.setAttribute("cursor", "pointer");
+        line.setAttribute('x1', 5);
+        line.setAttribute('x2', 25);
+        line.setAttribute('y1', 0);
+        line.setAttribute('y2', 0);
+        line.setAttribute('cursor', 'pointer');
         this.lineForLegend = line;
         container.appendChild(this.lineForLegend);
       } else {
@@ -3021,7 +3020,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.currentLineId = 0;
       this.counter = 0;
       this._drawn = true;
-      this.currentLine = ""; // Degradation
+      this.currentLine = ''; // Degradation
 
       if (this.waveform) {
         if (this.degradationPx) {
@@ -3064,7 +3063,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     insertLinesGroup() {
       if (!this._afterLinesGroup) {
-        throw "Could not find group after lines to insertion.";
+        throw 'Could not find group after lines to insertion.';
       }
 
       this.groupMain.insertBefore(this.groupLines, this._afterLinesGroup);
@@ -3091,11 +3090,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     draw(force) {
       // Serie redrawing
       if (!this.getXAxis() || !this.getYAxis()) {
-        throw "No axes were defined for this serie";
+        throw 'No axes were defined for this serie';
       }
 
       if (force || this.hasDataChanged()) {
-        super.draw();
+        super.draw(force);
 
         if (!this.drawInit(force)) {
           return;
@@ -3107,7 +3106,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.removeLinesGroup();
         this.lookForMaxima = true;
         this.lookForMinima = false;
-        this.pos0 = this.getYAxis().getPos(0);
+        this.pos0 = this.getYAxis().getPos(Math.max(0, this.getYAxis().getCurrentMin()));
 
         if (this.hasErrors()) {
           this.errorDrawInit();
@@ -3125,12 +3124,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
       for (var i in this.domMarkerHover) {
-        this.toggleMarker(i.split(","), false, true);
+        this.toggleMarker(i.split(','), false, true);
       } // Deselects everything
 
 
       for (var i in this.domMarkerSelect) {
-        this.toggleMarker(i.split(","), false, false);
+        this.toggleMarker(i.split(','), false, false);
       }
 
       this.applyLineStyle(this.getSymbolForLegend());
@@ -3188,7 +3187,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       let i = 0,
           l = waveform.getLength();
-      this.currentLine = "";
+      this.currentLine = '';
 
       if (waveform.isXMonotoneous()) {
         if (waveform.isXMonotoneousAscending()) {
@@ -3233,6 +3232,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this.counter2 = i;
+
+        if (this.options.lineToZero) {
+          if (y > yMax) {
+            y = yMax;
+          }
+
+          if (y < yMin) {
+            y = yMin;
+          }
+        }
+
         xpx2 = this.getX(x);
         ypx2 = this.getY(y); //xpx2 = 0;
         //ypx2 = 0;
@@ -3302,7 +3312,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 if (!pointOutside) {
                   // We were outside and now go inside
                   if (pointOnAxis.length > 1) {
-                    console.error("Programmation error. Please e-mail me.");
+                    console.error('Programmation error. Please e-mail me.');
                     console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
                   }
 
@@ -3314,7 +3324,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 } else if (!lastPointOutside) {
                   // We were inside and now go outside
                   if (pointOnAxis.length > 1) {
-                    console.error("Programmation error. Please e-mail me.");
+                    console.error('Programmation error. Please e-mail me.');
                     console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
                   }
 
@@ -3380,19 +3390,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.groupMain.appendChild(cloned);
 
         for (i = 0, l = cloned.children.length; i < l; i++) {
-          cloned.children[i].setAttribute("stroke", "transparent");
-          cloned.children[i].setAttribute("stroke-width", "25px");
-          cloned.children[i].setAttribute("pointer-events", "stroke");
+          cloned.children[i].setAttribute('stroke', 'transparent');
+          cloned.children[i].setAttribute('stroke-width', '25px');
+          cloned.children[i].setAttribute('pointer-events', 'stroke');
         }
 
         this._trackerDom = cloned;
-        this.groupMain.addEventListener("mousemove", e => {
+        this.groupMain.addEventListener('mousemove', e => {
           var coords = this.graph._getXY(e),
               ret = this.handleMouseMove(false, false);
 
           this._trackingCallback(this, ret, coords.x, coords.y);
         });
-        this.groupMain.addEventListener("mouseleave", e => {
+        this.groupMain.addEventListener('mouseleave', e => {
           this._trackingOutCallback(this);
         });
       }
@@ -3414,26 +3424,26 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (this.counter == 0) {
-        this.currentLine = "M ";
+        this.currentLine = 'M ';
       } else {
         if (this.options.lineToZero || move) {
-          this.currentLine += "M ";
+          this.currentLine += 'M ';
         } else {
-          this.currentLine += "L ";
+          this.currentLine += 'L ';
         }
       }
 
       this.currentLine += xpx;
-      this.currentLine += " ";
+      this.currentLine += ' ';
       this.currentLine += ypx;
-      this.currentLine += " ";
+      this.currentLine += ' ';
 
       if (this.options.lineToZero && this.pos0 !== undefined) {
-        this.currentLine += "L ";
+        this.currentLine += 'L ';
         this.currentLine += xpx;
-        this.currentLine += " ";
+        this.currentLine += ' ';
         this.currentLine += this.pos0;
-        this.currentLine += " ";
+        this.currentLine += ' ';
       }
 
       if (this.hasErrors()) {
@@ -3451,19 +3461,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (this.lines[i]) {
         line = this.lines[i];
       } else {
-        line = document.createElementNS(this.graph.ns, "path");
+        line = document.createElementNS(this.graph.ns, 'path');
         this.applyLineStyle(line);
         this.groupLines.appendChild(line);
         this.lines[i] = line;
       }
 
       if (this.counter == 0) {
-        line.setAttribute("d", "");
+        line.setAttribute('d', '');
       } else {
-        line.setAttribute("d", this.currentLine);
+        line.setAttribute('d', this.currentLine);
       }
 
-      this.currentLine = "M ";
+      this.currentLine = 'M ';
       this.counter = 0;
       return line;
     }
@@ -3485,19 +3495,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     applyLineStyle(line) {
-      line.setAttribute("stroke", this.getLineColor());
-      line.setAttribute("stroke-width", this.getLineWidth());
+      line.setAttribute('stroke', this.getLineColor());
+      line.setAttribute('stroke-width', this.getLineWidth());
 
       if (this.getLineDashArray()) {
-        line.setAttribute("stroke-dasharray", this.getLineDashArray());
+        line.setAttribute('stroke-dasharray', this.getLineDashArray());
       } else {
-        line.removeAttribute("stroke-dasharray");
+        line.removeAttribute('stroke-dasharray');
       }
 
       if (this.getFillColor()) {
-        line.setAttribute("fill", this.getFillColor());
+        line.setAttribute('fill', this.getFillColor());
       } else {
-        line.setAttribute("fill", "none");
+        line.setAttribute('fill', 'none');
       } //	line.setAttribute('shape-rendering', 'optimizeSpeed');
 
     }
@@ -3526,28 +3536,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       switch (family.type) {
         case 2:
-          el = ["m", -2, -2, "l", 4, 4, "m", -4, 0, "l", 4, -4];
+          el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4];
           break;
 
         case 3:
-          el = ["m", -2, 0, "l", 4, 0, "m", -2, -2, "l", 0, 4];
+          el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4];
           break;
 
         case 4:
-          el = ["m", -1, -1, "l", 2, 0, "l", -1, 2, "z"];
+          el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z'];
           break;
 
         default:
         case 1:
-          el = ["m", -2, -2, "l", 4, 0, "l", 0, 4, "l", -4, 0, "z"];
+          el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
           break;
       }
 
       if ((z == 1 || !z) && !add) {
-        return el.join(" ");
+        return el.join(' ');
       }
 
-      var num = "number";
+      var num = 'number';
 
       if (!el) {
         return;
@@ -3559,7 +3569,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
       }
 
-      return el.join(" ");
+      return el.join(' ');
     }
     /**
      * Searches the closest point pair (x,y) to the a pair of pixel position
@@ -3607,7 +3617,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
         } catch (e) {
           console.log(e);
-          throw new Error("Error while finding the closest index");
+          throw new Error('Error while finding the closest index');
           return {};
         }
 
@@ -3769,17 +3779,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
 
-    setStyle(style, selectionType = "unselected") {
+    setStyle(style, selectionType = 'unselected') {
       this.styles[selectionType] = style;
       this.styleHasChanged(selectionType);
     }
 
-    setLineStyle(number, selectionType = "unselected", applyToSelected) {
+    setLineStyle(number, selectionType = 'unselected', applyToSelected) {
       this.styles[selectionType] = this.styles[selectionType] || {};
       this.styles[selectionType].lineStyle = number;
 
       if (applyToSelected) {
-        this.setLineStyle(number, "selected");
+        this.setLineStyle(number, 'selected');
       }
 
       this.styleHasChanged(selectionType);
@@ -3790,50 +3800,50 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return this.getStyle(selectionType).lineStyle;
     }
 
-    getLineDashArray(selectionType = this.selectionType || "unselected") {
+    getLineDashArray(selectionType = this.selectionType || 'unselected') {
       switch (this.getStyle(selectionType).lineStyle) {
         case 2:
-          return "1, 1";
+          return '1, 1';
           break;
 
         case 3:
-          return "2, 2";
+          return '2, 2';
           break;
 
         case 4:
-          return "3, 3";
+          return '3, 3';
           break;
 
         case 5:
-          return "4, 4";
+          return '4, 4';
           break;
 
         case 6:
-          return "5, 5";
+          return '5, 5';
           break;
 
         case 7:
-          return "5 2";
+          return '5 2';
           break;
 
         case 8:
-          return "2 5";
+          return '2 5';
           break;
 
         case 9:
-          return "4 2 4 4";
+          return '4 2 4 4';
           break;
 
         case 10:
-          return "1,3,1";
+          return '1,3,1';
           break;
 
         case 11:
-          return "9 2";
+          return '9 2';
           break;
 
         case 12:
-          return "2 9";
+          return '2 9';
           break;
 
         case 1:
@@ -3849,7 +3859,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.styleHasChanged(selectionType);
     }
 
-    getStyle(selectionType = this.selectionType || "unselected") {
+    getStyle(selectionType = this.selectionType || 'unselected') {
       return this.styles[selectionType] || this.styles.unselected;
     }
 
@@ -3865,7 +3875,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     extendStyle(styleTarget, styleOrigin) {
       var s = this.styles[styleTarget];
-      this.styles[styleTarget] = util.extend(true, {}, this.styles[styleOrigin || "unselected"], s || {});
+      this.styles[styleTarget] = util.extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
       this.styleHasChanged(styleTarget);
     }
     /** @memberof SerieLine
@@ -3873,12 +3883,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setLineWidth(width, selectionType, applyToSelected) {
-      selectionType = selectionType || "unselected";
+      selectionType = selectionType || 'unselected';
       this.styles[selectionType] = this.styles[selectionType] || {};
       this.styles[selectionType].lineWidth = width;
 
       if (applyToSelected) {
-        this.setLineWidth(width, "selected");
+        this.setLineWidth(width, 'selected');
       }
 
       this.styleHasChanged(selectionType);
@@ -3893,12 +3903,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setLineColor(color, selectionType, applyToSelected) {
-      selectionType = selectionType || "unselected";
+      selectionType = selectionType || 'unselected';
       this.styles[selectionType] = this.styles[selectionType] || {};
       this.styles[selectionType].lineColor = color;
 
       if (applyToSelected) {
-        this.setLineColor(color, "selected");
+        this.setLineColor(color, 'selected');
       }
 
       this.styleHasChanged(selectionType);
@@ -3909,12 +3919,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setFillColor(color, selectionType, applyToSelected) {
-      selectionType = selectionType || "unselected";
+      selectionType = selectionType || 'unselected';
       this.styles[selectionType] = this.styles[selectionType] || {};
       this.styles[selectionType].fillColor = color;
 
       if (applyToSelected) {
-        this.setFillColor(color, "selected");
+        this.setFillColor(color, 'selected');
       }
 
       this.styleHasChanged(selectionType);
@@ -3922,7 +3932,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     getLineColor(selectionType) {
-      return this.getStyle(selectionType).lineColor || "black";
+      return this.getStyle(selectionType).lineColor || 'black';
     }
 
     getFillColor(selectionType) {
@@ -9744,7 +9754,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.1.13"
+        'data-jsgraph-version': "v2.1.14"
       });
     } catch (e) {// ignore
     }
@@ -14168,7 +14178,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
 
-    select() {
+    select(selectName) {
+      if (selectName == 'unselected') {
+        return this;
+      }
+
       this.selected = true;
       return this;
     }
@@ -14627,10 +14641,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       this.shapesDetails = [];
       this.shapes = [];
+      this.keys = [];
       this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
-      this.groupMain.appendChild(this.groupMarkers);
-      this.selectedStyleGeneral = {};
-      this.selectedStyleModifiers = {};
+      this.groupMain.appendChild(this.groupMarkers); //    this.selectedStyleGeneral = {};
+      //    this.selectedStyleModifiers = {};
+
       this.groupMarkers.addEventListener('mouseenter', e => {
         var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
 
@@ -17254,6 +17269,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   const makeGraph = (Graph, json, wrapper) => {
     const options = json.options || {};
+
+    if (json.title) {
+      options.title = json.title;
+    }
+
     const graph = new Graph(wrapper, options);
     let axes = [];
     graph.resize(json.width || 400, json.height || 300);

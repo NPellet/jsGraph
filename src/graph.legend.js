@@ -175,12 +175,12 @@ class Legend {
     }
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
-      if ( series[i].excludedFromLegend && !this.series ) {
+      if ( series[ i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
       if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
-        var bbox = getBBox( this.groups[i] );
+        var bbox = getBBox( this.groups[ i ] );
 
         if (
           posX + bbox.width >
@@ -191,7 +191,7 @@ class Legend {
         }
       }
 
-      this.groups[i].setAttribute( 'transform', `translate( ${posX}, ${posY})` );
+      this.groups[ i ].setAttribute( 'transform', `translate( ${posX}, ${posY})` );
 
       if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
         posX += bbox.width + 10;
@@ -386,7 +386,7 @@ class Legend {
     var posX, posY;
 
     for ( let i = 0, l = series.length; i < l; i++ ) {
-      if ( series[i].excludedFromLegend && !this.series ) {
+      if ( series[ i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
@@ -406,11 +406,11 @@ class Legend {
 
       g.appendChild( rect );
 
-      series[i].getSymbolForLegend();
+      series[ i ].getSymbolForLegend();
 
-      var line = series[i]._getSymbolForLegendContainer();
-      var marker = series[i].getMarkerForLegend();
-      var text = series[i].getTextForLegend();
+      var line = series[ i ]._getSymbolForLegendContainer();
+      var marker = series[ i ].getMarkerForLegend();
+      var text = series[ i ].getTextForLegend();
 
       var dx = 35;
 
@@ -432,11 +432,11 @@ class Legend {
           e.stopPropagation();
 
           var id;
-          if ( series[i].isShown() ) {
-            series[i].hide( self.options.hideShapesOnHideSerie );
+          if ( series[ i ].isShown() ) {
+            series[ i ].hide( self.options.hideShapesOnHideSerie );
             id = self.eyeCrossedId;
           } else {
-            series[i].show( self.options.hideShapesOnHideSerie );
+            series[ i ].show( self.options.hideShapesOnHideSerie );
             id = self.eyeId;
           }
 
@@ -455,7 +455,7 @@ class Legend {
         g.appendChild( line );
       }
 
-      if ( series[i].getType() == 'scatter' ) {
+      if ( series[ i ].getType() == 'scatter' ) {
         line.setAttribute( 'transform', 'translate( 20, 0 )' );
       }
 
@@ -478,10 +478,10 @@ class Legend {
       rect.setAttribute( 'fill', 'none' );
       rect.setAttribute( 'pointer-events', 'fill' );
 
-      self.groups[i] = g;
+      self.groups[ i ] = g;
 
       g.addEventListener( 'click', function( e ) {
-        var serie = series[i];
+        var serie = series[ i ];
 
         if ( !serie.isShown() ) {
           return;
@@ -653,17 +653,17 @@ class Legend {
   fixSeries() {
     var series = [];
 
-    if ( arguments[0] === false ) {
+    if ( arguments[ 0 ] === false ) {
       this.series = false;
       this.update();
       return;
     }
 
     for ( var i = 0, l = arguments.length; i < l; i++ ) {
-      if ( Array.isArray( arguments[i] ) ) {
-        series = series.concat( arguments[i] );
+      if ( Array.isArray( arguments[ i ] ) ) {
+        series = series.concat( arguments[ i ] );
       } else {
-        series.push( arguments[i] );
+        series.push( arguments[ i ] );
       }
     }
 

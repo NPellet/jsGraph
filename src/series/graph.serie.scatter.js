@@ -145,11 +145,11 @@ class SerieScatter extends Serie {
     }
 
     var style = this.getMarkerStyle( 'unselected', -1, true );
-    for ( var i in style[-1] ) {
+    for ( var i in style[ -1 ] ) {
       if ( i == 'shape' ) {
         continue;
       }
-      this.shapeLegend.setAttribute( i, style[-1][i] );
+      this.shapeLegend.setAttribute( i, style[ -1 ][ i ] );
     }
 
     return container;
@@ -177,9 +177,9 @@ class SerieScatter extends Serie {
       modifiers = false;
     }
 
-    this.options.markerStyles[mode] = this.options.markerStyles[mode] || {};
-    this.options.markerStyles[mode].all = all;
-    this.options.markerStyles[mode].modifiers = modifiers;
+    this.options.markerStyles[ mode ] = this.options.markerStyles[ mode ] || {};
+    this.options.markerStyles[ mode ].all = all;
+    this.options.markerStyles[ mode ].modifiers = modifiers;
 
     this.styleHasChanged( mode );
 
@@ -223,7 +223,7 @@ class SerieScatter extends Serie {
       let k = 0;
 
       for ( ; j < this.data.length; j++ ) {
-        if ( !this.categoryIndices.hasOwnProperty( this.data[j].x ) ) {
+        if ( !this.categoryIndices.hasOwnProperty( this.data[ j ].x ) ) {
           continue;
         }
 
@@ -231,20 +231,20 @@ class SerieScatter extends Serie {
           //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
         }
 
-        for ( var n = 0, l = this.data[j].y.getLength(); n < l; n++ ) {
+        for ( var n = 0, l = this.data[ j ].y.getLength(); n < l; n++ ) {
           //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
 
-          ypx = this.getY( this.data[j].y.getY( n ) );
+          ypx = this.getY( this.data[ j ].y.getY( n ) );
           xpx = this.getX(
             ( n / ( l - 1 ) ) * ( 0.8 / this.nbCategories ) +
-              this.categoryIndices[this.data[j].x] +
-              0.1 / this.nbCategories
+            this.categoryIndices[ this.data[ j ].x ] +
+            0.1 / this.nbCategories
           );
           n++;
 
-          this.shapesDetails[k] = this.shapesDetails[k] || [];
-          this.shapesDetails[k][0] = xpx;
-          this.shapesDetails[k][1] = ypx;
+          this.shapesDetails[ k ] = this.shapesDetails[ k ] || [];
+          this.shapesDetails[ k ][ 0 ] = xpx;
+          this.shapesDetails[ k ][ 1 ] = ypx;
           keys.push( k );
           k++;
         }
@@ -257,14 +257,14 @@ class SerieScatter extends Serie {
           this.waveform.getY( j ) < this.getYAxis().getCurrentMin() ||
           this.waveform.getY( j ) > this.getYAxis().getCurrentMax()
         ) {
-          if ( this.shapes[j] ) {
-            this.shapes[j].setAttribute( 'display', 'none' );
-            this.shapes[j]._hidden = true;
+          if ( this.shapes[ j ] ) {
+            this.shapes[ j ].setAttribute( 'display', 'none' );
+            this.shapes[ j ]._hidden = true;
           }
           continue;
-        } else if ( this.shapes[j] && this.shapes[j]._hidden ) {
-          this.shapes[j].setAttribute( 'display', 'initial' );
-          this.shapes[j]._hidden = false;
+        } else if ( this.shapes[ j ] && this.shapes[ j ]._hidden ) {
+          this.shapes[ j ].setAttribute( 'display', 'initial' );
+          this.shapes[ j ]._hidden = false;
         }
 
         xpx = this.getX( this.waveform.getX( j ) );
@@ -280,9 +280,9 @@ class SerieScatter extends Serie {
           );
         }
 
-        this.shapesDetails[j] = this.shapesDetails[j] || [];
-        this.shapesDetails[j][0] = xpx;
-        this.shapesDetails[j][1] = ypx;
+        this.shapesDetails[ j ] = this.shapesDetails[ j ] || [];
+        this.shapesDetails[ j ][ 0 ] = xpx;
+        this.shapesDetails[ j ][ 1 ] = ypx;
         keys.push( j );
 
         //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
@@ -318,35 +318,35 @@ class SerieScatter extends Serie {
 
     var shape, index, modifier, style, j; // loop variables
 
-    if ( !this.options.markerStyles[selection] ) {
+    if ( !this.options.markerStyles[ selection ] ) {
       selection = 'unselected';
     }
 
-    var styleAll = this.options.markerStyles[selection].all;
+    var styleAll = this.options.markerStyles[ selection ].all;
 
     if ( !styleAll ) {
-      styleAll = this.options.markerStyles[selection].default;
+      styleAll = this.options.markerStyles[ selection ].default;
     }
 
     if ( typeof styleAll == 'function' ) {
       styleAll = styleAll();
     }
 
-    const defaultStyle = this.options.markerStyles[selection].default
-      ? this.options.markerStyles[selection].default
-      : this.options.markerStyles.unselected.default;
+    const defaultStyle = this.options.markerStyles[ selection ].default ?
+      this.options.markerStyles[ selection ].default :
+      this.options.markerStyles.unselected.default;
     styleAll = Object.assign( {}, defaultStyle, styleAll );
 
     var i = 0,
       l = indices.length;
 
     for ( ; i < l; i++ ) {
-      index = indices[i];
-      shape = this.shapes[index];
+      index = indices[ i ];
+      shape = this.shapes[ index ];
 
       if (
-        ( modifier = this.options.markerStyles[selection].modifiers ) &&
-        ( typeof modifier == 'function' || modifier[index] )
+        ( modifier = this.options.markerStyles[ selection ].modifiers ) &&
+        ( typeof modifier == 'function' || modifier[ index ] )
       ) {
         if ( typeof modifier == 'function' ) {
           style = modifier(
@@ -359,25 +359,25 @@ class SerieScatter extends Serie {
           if ( style === false ) {
             continue;
           }
-        } else if ( modifier[index] ) {
-          style = modifier[index];
+        } else if ( modifier[ index ] ) {
+          style = modifier[ index ];
         }
 
-        styles[index] = Object.assign( {}, styleAll, style );
+        styles[ index ] = Object.assign( {}, styleAll, style );
       } else if ( styleAll !== undefined ) {
-        styles[index] = styleAll;
+        styles[ index ] = styleAll;
       } else {
-        styles[index] = this.options.markerStyles[selection].default;
+        styles[ index ] = this.options.markerStyles[ selection ].default;
       }
 
-      if ( !styles[index] ) {
-        styles[index] = styleAll;
+      if ( !styles[ index ] ) {
+        styles[ index ] = styleAll;
       }
 
       if ( !shape ) {
         // Shape doesn't exist, let's create it
 
-        if ( !styles[index].shape ) {
+        if ( !styles[ index ].shape ) {
           console.error( style );
           throw `No shape was defined with the style "${style}".`;
         }
@@ -385,15 +385,15 @@ class SerieScatter extends Serie {
         var g = document.createElementNS( this.graph.ns, 'g' );
         g.setAttribute( 'data-shapeid', index );
 
-        this.shapes[index] = this._makeMarker( g, styles[index] );
+        this.shapes[ index ] = this._makeMarker( g, styles[ index ] );
         this.groupMarkers.appendChild( g );
-        shape = this.shapes[index];
+        shape = this.shapes[ index ];
       }
 
       if (
         !noSetPosition &&
-        this.shapesDetails[index][0] === this.shapesDetails[index][0] &&
-        this.shapesDetails[index][1] === this.shapesDetails[index][1]
+        this.shapesDetails[ index ][ 0 ] === this.shapesDetails[ index ][ 0 ] &&
+        this.shapesDetails[ index ][ 1 ] === this.shapesDetails[ index ][ 1 ]
       ) {
         shape.parentNode.setAttribute(
           'transform',
@@ -412,12 +412,12 @@ class SerieScatter extends Serie {
     var styles = this.getMarkerStyle( selection, index, noSetPosition );
 
     for ( i in styles ) {
-      for ( j in styles[i] ) {
-        if ( j !== 'shape' && this.shapes[i] ) {
-          if ( styles[i][j] ) {
-            this.shapes[i].setAttribute( j, styles[i][j] );
+      for ( j in styles[ i ] ) {
+        if ( j !== 'shape' && this.shapes[ i ] ) {
+          if ( styles[ i ][ j ] ) {
+            this.shapes[ i ].setAttribute( j, styles[ i ][ j ] );
           } else {
-            this.shapes[i].removeAttribute( j );
+            this.shapes[ i ].removeAttribute( j );
           }
         }
       }
@@ -430,8 +430,8 @@ class SerieScatter extends Serie {
 
   selectMarker( index, setOn, selectionType ) {
     if (
-      this.shapesDetails[index][2] &&
-      this.shapesDetails[index][2] == selectionType
+      this.shapesDetails[ index ][ 2 ] &&
+      this.shapesDetails[ index ][ 2 ] == selectionType
     ) {
       return;
     }
@@ -445,20 +445,20 @@ class SerieScatter extends Serie {
       return this.selectMarkers( index );
     }
 
-    if ( this.shapes[index] && this.shapesDetails[index] ) {
-      if ( ( this.shapesDetails[index][2] || setOn === false ) && setOn !== true ) {
-        var selectionStyle = this.shapesDetails[index][2];
-        this.shapesDetails[index][2] = false;
+    if ( this.shapes[ index ] && this.shapesDetails[ index ] ) {
+      if ( ( this.shapesDetails[ index ][ 2 ] || setOn === false ) && setOn !== true ) {
+        var selectionStyle = this.shapesDetails[ index ][ 2 ];
+        this.shapesDetails[ index ][ 2 ] = false;
         var allStyles = this.getMarkerStyle( selectionStyle, index, true );
 
-        for ( var i in allStyles[index] ) {
-          this.shapes[index].removeAttribute( i );
+        for ( var i in allStyles[ index ] ) {
+          this.shapes[ index ].removeAttribute( i );
         }
 
         this.applyMarkerStyle( 'unselected', index, true );
       } else {
         selectionType = selectionType || 'selected';
-        this.shapesDetails[index][2] = selectionType;
+        this.shapesDetails[ index ][ 2 ] = selectionType;
         this.applyMarkerStyle( selectionType, index, true );
       }
     }
@@ -513,7 +513,7 @@ class SerieScatter extends Serie {
   }
 
   getUsedCategories() {
-    if ( typeof this.data[0] == 'object' ) {
+    if ( typeof this.data[ 0 ] == 'object' ) {
       return this.data.map( ( d ) => d.x );
     }
 
