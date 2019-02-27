@@ -4,6 +4,11 @@ import makeAnnotation from './annotations.js';
 
 const makeGraph = ( Graph, json, wrapper ) => {
   const options = json.options || {};
+
+  if ( json.title ) {
+    options.title = json.title;
+  }
+
   const graph = new Graph( wrapper, options );
   let axes = [];
 
@@ -150,12 +155,12 @@ const makeGraph = ( Graph, json, wrapper ) => {
         serie.excludeFromLegend( true );
       }
 
-      if ( data.xAxis && axes[ data.xAxis ] ) {
-        serie.setXAxis( axes[ data.xAxis ] );
+      if ( data.xAxis && axes[data.xAxis] ) {
+        serie.setXAxis( axes[data.xAxis] );
       }
 
-      if ( data.yAxis && axes[ data.yAxis ] ) {
-        serie.setYAxis( axes[ data.yAxis ] );
+      if ( data.yAxis && axes[data.yAxis] ) {
+        serie.setYAxis( axes[data.yAxis] );
       }
 
       if ( data ) {

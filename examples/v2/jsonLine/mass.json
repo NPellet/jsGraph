@@ -1,5 +1,4 @@
 {
-  "title": "High resolution mass spectrum of petrol",
   "axes": {
     "x": {
       "label": "m/z"
@@ -13,6 +12,8 @@
     }
   },
   "options": {
+    "title": "High resolution mass spectrum of petrol",
+
     "plugins": {
       "zoom": {
         "zoomMode": "x"
