@@ -51,12 +51,13 @@ class SerieScatter extends Serie {
     this.shapes = []; // Stores all shapes
     this.shapesDetails = [];
     this.shapes = [];
+    this.keys = [];
 
     this.groupMarkers = document.createElementNS( this.graph.ns, 'g' );
     this.groupMain.appendChild( this.groupMarkers );
 
-    this.selectedStyleGeneral = {};
-    this.selectedStyleModifiers = {};
+    //    this.selectedStyleGeneral = {};
+    //    this.selectedStyleModifiers = {};
 
     this.groupMarkers.addEventListener(
       'mouseenter',
@@ -201,7 +202,6 @@ class SerieScatter extends Serie {
     ) {
       return;
     }
-    console.log( 'b' );
     let xpx, ypx, j, k, m;
     const isCategory = this.getXAxis().getType() == 'category';
     const keys = [];
@@ -310,7 +310,6 @@ class SerieScatter extends Serie {
     var indices;
 
     var styles = {};
-
     if ( typeof index == 'number' ) {
       indices = [ index ];
     } else if ( Array.isArray( index ) ) {

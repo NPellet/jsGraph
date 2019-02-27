@@ -180,11 +180,10 @@ class SerieLine extends SerieScatter {
    * @see SerieLine#unselect
    * @memberof SerieLine
    */
-  select( selectionType ) {
-    selectionType = selectionType || 'selected';
-
+  select( selectionType = 'selected' ) {
     this.selected = selectionType !== 'unselected';
     this.selectionType = selectionType;
+
     this.applyLineStyles();
     this.applyLineStyle( this.getSymbolForLegend() );
 

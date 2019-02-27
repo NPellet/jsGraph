@@ -1,8 +1,6 @@
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
 import * as util from '../graph.util.js';
-import {
-  Waveform
-} from '../util/waveform.js';
+import { Waveform } from '../util/waveform.js';
 
 const defaultOptions = {
   redrawShapesAfterDraw: false
@@ -13,10 +11,15 @@ const defaultOptions = {
  * @static
  */
 class Serie extends EventEmitter {
-
   constructor( graph, name, options, defaultInherited ) {
     super( ...arguments );
-    this.options = util.extend( true, {}, defaultOptions, defaultInherited, options );
+    this.options = util.extend(
+      true,
+      {},
+      defaultOptions,
+      defaultInherited,
+      options
+    );
     this.graph = graph;
     this.name = name;
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
@@ -31,7 +34,6 @@ class Serie extends EventEmitter {
   beforeDraw() {}
 
   afterDraw() {
-
     if ( this.options.redrawShapesAfterDraw ) {
       this.graph.getShapesOfSerie( this ).forEach( ( shape ) => {
         shape.redraw();
@@ -53,7 +55,6 @@ class Serie extends EventEmitter {
    * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
    */
   setData( data, oneDimensional, type ) {
-
     if ( data instanceof Waveform ) {
       return this.setWaveform( data );
     }
@@ -100,7 +101,7 @@ class Serie extends EventEmitter {
    * @example serie.setOption('selectableOnClick', true );
    */
   setOption( name, value ) {
-    this.options[ name ] = value;
+    this.options[name] = value;
   }
 
   /**
@@ -109,12 +110,10 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   kill( noLegendUpdate ) {
-
     this.graph.removeSerieFromDom( this );
     this.graph._removeSerie( this );
 
     if ( this.graph.legend && !noLegendUpdate ) {
-
       this.graph.legend.update();
     }
 
@@ -129,7 +128,6 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   hide( hideShapes, mute = false ) {
-
     this.hidden = true;
     this.groupMain.setAttribute( 'display', 'none' );
 
@@ -141,7 +139,7 @@ class Serie extends EventEmitter {
     if ( hideShapes ) {
       var shapes = this.graph.getShapesOfSerie( this );
       for ( var i = 0, l = shapes.length; i < l; i++ ) {
-        shapes[ i ].hide();
+        shapes[i].hide();
       }
     }
 
@@ -149,11 +147,17 @@ class Serie extends EventEmitter {
       this.emit( 'hide' );
     }
 
-    if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
+    if (
+      this.getXAxis().doesHideWhenNoSeriesShown() ||
+      this.getYAxis().doesHideWhenNoSeriesShown()
+    ) {
       this.graph.draw( true );
     }
 
-    if ( this.graph.hasPlugin( 'peakPicking' ) && this.graph.getPlugin( 'peakPicking' ).getSerie() == this ) {
+    if (
+      this.graph.hasPlugin( 'peakPicking' ) &&
+      this.graph.getPlugin( 'peakPicking' ).getSerie() == this
+    ) {
       this.graph.getPlugin( 'peakPicking' ).hidePeakPicking();
     }
 
@@ -167,7 +171,6 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   show( showShapes, mute = false ) {
-
     this.hidden = false;
     this.groupMain.setAttribute( 'display', 'block' );
 
@@ -181,7 +184,7 @@ class Serie extends EventEmitter {
     if ( showShapes ) {
       var shapes = this.graph.getShapesOfSerie( this );
       for ( var i = 0, l = shapes.length; i < l; i++ ) {
-        shapes[ i ].show();
+        shapes[i].show();
       }
     }
 
@@ -189,11 +192,17 @@ class Serie extends EventEmitter {
       this.emit( 'show' );
     }
 
-    if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
+    if (
+      this.getXAxis().doesHideWhenNoSeriesShown() ||
+      this.getYAxis().doesHideWhenNoSeriesShown()
+    ) {
       this.graph.draw( true );
     }
 
-    if ( this.graph.hasPlugin( 'peakPicking' ) && this.graph.getPlugin( 'peakPicking' ).getSerie() == this ) {
+    if (
+      this.graph.hasPlugin( 'peakPicking' ) &&
+      this.graph.getPlugin( 'peakPicking' ).getSerie() == this
+    ) {
       this.graph.getPlugin( 'peakPicking' ).showPeakPicking();
     }
 
@@ -210,7 +219,6 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   toggleDisplay() {
-
     if ( !this.isShown() ) {
       this.show();
     } else {
@@ -234,7 +242,6 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   axisCheck() {
-
     if ( !this.getXAxis() || !this.getYAxis() ) {
       throw 'No axis exist for this serie. Check that they were properly assigned';
     }
@@ -255,7 +262,7 @@ class Serie extends EventEmitter {
    * @returns {Number} The x position in px corresponding to the x value
    */
   getX( val ) {
-    return ( val = this.getXAxis().getPx( val ) ) - val % 0.2;
+    return ( val = this.getXAxis().getPx( val ) ) - ( val % 0.2 );
   }
 
   /**
@@ -265,7 +272,7 @@ class Serie extends EventEmitter {
    * @returns {Number} The y position in px corresponding to the y value
    */
   getY( val ) {
-    return ( val = this.getYAxis().getPx( val ) ) - val % 0.2;
+    return ( val = this.getYAxis().getPx( val ) ) - ( val % 0.2 );
   }
 
   /**
@@ -274,7 +281,7 @@ class Serie extends EventEmitter {
    * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
    */
   isSelected() {
-    return this.selected || ( this.selectionType !== 'unselected' );
+    return this.selected || this.selectionType !== 'unselected';
   }
 
   _checkX( val ) {
@@ -304,14 +311,10 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   autoAxis() {
-
     if ( this.isFlipped() ) {
-
       this.setXAxis( this.graph.getYAxis() );
       this.setYAxis( this.graph.getXAxis() );
-
     } else {
-
       this.setXAxis( this.graph.getXAxis() );
       this.setYAxis( this.graph.getYAxis() );
     }
@@ -333,9 +336,10 @@ class Serie extends EventEmitter {
    * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
    */
   setXAxis( axis ) {
-
     if ( typeof axis == 'number' ) {
-      this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
+      this.xaxis = this.isFlipped()
+        ? this.graph.getYAxis( axis )
+        : this.graph.getXAxis( axis );
     } else {
       this.xaxis = axis;
     }
@@ -354,7 +358,9 @@ class Serie extends EventEmitter {
    */
   setYAxis( axis ) {
     if ( typeof axis == 'number' ) {
-      this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
+      this.xaxis = this.isFlipped()
+        ? this.graph.getXAxis( axis )
+        : this.graph.getYAxis( axis );
     } else {
       this.yaxis = axis;
     }
@@ -372,11 +378,9 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   setAxes() {
-
     for ( var i = 0; i < 2; i++ ) {
-
-      if ( arguments[ i ] ) {
-        this[ ( arguments[ i ].isX() ? 'setXAxis' : 'setYAxis' ) ]( arguments[ i ] );
+      if ( arguments[i] ) {
+        this[arguments[i].isX() ? 'setXAxis' : 'setYAxis']( arguments[i] );
       }
     }
 
@@ -446,11 +450,12 @@ class Serie extends EventEmitter {
   }
 
   setWaveform( waveform ) {
-
     if ( !( waveform instanceof Waveform ) ) {
       console.trace();
       console.error( waveform );
-      throw new Error( 'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance' );
+      throw new Error(
+        'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance'
+      );
     }
 
     this.waveform = waveform;
@@ -472,9 +477,7 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   getSymbolForLegend() {
-
     if ( !this.lineForLegend ) {
-
       var line = document.createElementNS( this.graph.ns, 'line' );
       this.applyLineStyle( line );
 
@@ -489,7 +492,6 @@ class Serie extends EventEmitter {
     }
 
     return this.lineForLegend;
-
   }
 
   _getSymbolForLegendContainer() {
@@ -522,9 +524,7 @@ class Serie extends EventEmitter {
    * @see Serie#getLabel
    */
   getTextForLegend() {
-
     if ( !this.textForLegend ) {
-
       var text = document.createElementNS( this.graph.ns, 'text' );
       text.setAttribute( 'cursor', 'pointer' );
       text.textContent = this.getLabel();
@@ -624,9 +624,8 @@ class Serie extends EventEmitter {
   }
 
   setStyle( style, selectionType = 'unselected' ) {
-    this.styles[ selectionType ] = style;
+    this.styles[selectionType] = style;
     this.styleHasChanged( selectionType );
-
   }
 
   /**
@@ -640,11 +639,10 @@ class Serie extends EventEmitter {
 
     if ( selectionType === false ) {
       for ( var i in this._changedStyles ) {
-        this._changedStyles[ i ] = false;
+        this._changedStyles[i] = false;
       }
-
     } else {
-      this._changedStyles[ selectionType || 'unselected' ] = true;
+      this._changedStyles[selectionType || 'unselected'] = true;
     }
 
     this.graph.requireLegendUpdate();
@@ -660,7 +658,7 @@ class Serie extends EventEmitter {
    */
   hasStyleChanged( selectionType ) {
     this._changedStyles = this._changedStyles || {};
-    return this._changedStyles[ selectionType || 'unselected' ];
+    return this._changedStyles[selectionType || 'unselected'];
   }
 
   /**
@@ -693,7 +691,7 @@ class Serie extends EventEmitter {
    */
   setInfo( prop, value ) {
     this.infos = this.infos || {};
-    this.infos[ prop ] = value;
+    this.infos[prop] = value;
     return this;
   }
 
@@ -705,7 +703,7 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   getInfo( prop, value ) {
-    return ( this.infos || {} )[ prop ];
+    return ( this.infos || {} )[prop];
   }
 
   /**
@@ -730,7 +728,10 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  select() {
+  select( selectName ) {
+    if ( selectName == 'unselected' ) {
+      return this;
+    }
     this.selected = true;
     return this;
   }
@@ -769,7 +770,6 @@ class Serie extends EventEmitter {
    * @private
    */
   disableTracking() {
-
     if ( this._trackerDom ) {
       this._trackerDom.remove();
       this._trackerDom = null;
@@ -787,7 +787,6 @@ class Serie extends EventEmitter {
    *  @returns {Serie} The current serie
    */
   allowTrackingLine( options ) {
-
     options = options || {};
     this.graph.addSerieToTrackingLine( this, options );
   }
