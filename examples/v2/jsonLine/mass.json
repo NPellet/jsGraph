@@ -16,9 +16,15 @@
     "plugins": {
       "zoom": {
         "zoomMode": "x"
-      }
+      },
+      "drag": {}
     },
     "mouseActions": [
+      {
+        "plugin": "drag",
+        "shift": true,
+        "ctrl": false
+      },
       { "plugin": "zoom", "shift": false, "ctrl": false },
       {
         "plugin": "zoom",
@@ -26,6 +32,22 @@
         "shift": false,
         "ctrl": false,
         "options": { "direction": "y" }
+      },
+      {
+        "plugin": "zoom",
+        "type": "dblclick",
+        "shift": false,
+        "options": {
+          "mode": "total"
+        }
+      },
+      {
+        "plugin": "zoom",
+        "type": "dblclick",
+        "shift": true,
+        "options": {
+          "mode": "gradualX"
+        }
       }
     ]
   },
