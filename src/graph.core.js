@@ -1447,7 +1447,7 @@ class Graph extends EventEmitter {
       shape.setProperties( shapeData.properties );
     }
 
-    shape.init( this, shapeProperties, shapeProperties.simplified );
+    shape.init( this, shapeProperties, shapeProperties ? shapeProperties.simplified : false );
 
     if ( shapeData.props !== undefined ) {
       for ( var i in shapeData.props ) {

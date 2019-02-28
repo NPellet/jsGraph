@@ -20,12 +20,11 @@ class Shape extends EventEmitter {
    */
   init( graph, properties, simplified = false ) {
     var self = this;
-console.trace();
+
     this.graph = graph;
     this.properties = properties || {};
     this.handles = [];
     this.options = this.options || {};
-
     
     if( ! simplified ) {
       this.group = document.createElementNS( this.graph.ns, 'g' );
