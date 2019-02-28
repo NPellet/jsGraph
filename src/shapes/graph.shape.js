@@ -18,17 +18,22 @@ class Shape extends EventEmitter {
    * @param {Object} properties - The properties object (not copied)
    * @return {Shape} The current shape
    */
-  init( graph, properties ) {
+  init( graph, properties, simplified = false ) {
     var self = this;
-
+console.trace();
     this.graph = graph;
     this.properties = properties || {};
     this.handles = [];
     this.options = this.options || {};
 
-    this.group = document.createElementNS( this.graph.ns, 'g' );
+    
+    if( ! simplified ) {
+      this.group = document.createElementNS( this.graph.ns, 'g' );
+      this.group.setAttribute( 'clip-path', `url(#_clipplot${graph._creation})` );
+      this.group.jsGraphIsShape = this;
+    }
 
-    this.group.setAttribute( 'clip-path', `url(#_clipplot${graph._creation})` );
+    this.simplified = simplified;
 
     this._selected = false;
     this.createDom();
@@ -36,8 +41,6 @@ class Shape extends EventEmitter {
     if ( this._dom ) {
       this._dom.jsGraphIsShape = this;
     }
-
-    this.group.jsGraphIsShape = this;
 
     this.classes = [];
     this.transforms = [];
@@ -63,30 +66,39 @@ class Shape extends EventEmitter {
       if ( this._dom && !this.isHTML() ) {
         this.group.appendChild( this._dom );
       }
+    }
 
-      this.group.addEventListener( 'mouseover', function( e ) {
+    let dom;
+    if( simplified ) {
+      dom = this._dom;
+    } else {
+      dom = this.group;
+    }
+  
+
+      dom.addEventListener( 'mouseover', function( e ) {
         self.handleMouseOver( e );
       } );
 
-      this.group.addEventListener( 'mouseout', function( e ) {
+      dom.addEventListener( 'mouseout', function( e ) {
         self.handleMouseOut( e );
       } );
 
-      this.group.addEventListener( 'mousedown', function( e ) {
+      dom.addEventListener( 'mousedown', function( e ) {
         self.graph.focus();
 
         self.handleMouseDown( e );
       } );
 
-      this.group.addEventListener( 'click', this.handleClick.bind( this ) );
+      dom.addEventListener( 'click', this.handleClick.bind( this ) );
 
-      this.group.addEventListener( 'dblclick', function( e ) {
+      dom.addEventListener( 'dblclick', function( e ) {
         //e.preventDefault();
         // e.stopPropagation();
 
         self.handleDblClick( e );
       } );
-    }
+    
 
     //			this.group.appendChild(this.rectEvent);
 
@@ -145,7 +157,7 @@ class Shape extends EventEmitter {
     }
 
     this.hidden = true;
-    if ( !this.isHTML() ) {
+    if ( !this.isHTML() && ! this.simplified ) {
       this.group.style.display = 'none';
     } else {
       this._dom.style.display = 'none';
@@ -247,6 +259,11 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setEventReceptacle() {
+
+    if( this,simplified ) {
+      return;
+    }
+
     if ( !this.rectEvent ) {
       this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
       this.rectEvent.setAttribute( 'pointer-events', 'fill' );
@@ -539,7 +556,11 @@ class Shape extends EventEmitter {
    * Sets a DOM property to the shape group
    */
   setDomGroup( prop, val ) {
-    if ( this.group ) {
+
+    if( this.simplified ) {
+      this._dom.setAttribute( prop, val );
+    }
+    else if ( this.group ) {
       this.group.setAttribute( prop, val );
     }
   }
@@ -1078,6 +1099,11 @@ class Shape extends EventEmitter {
    * @returns {Shape} The current shape
    */
   makeLabels() {
+
+    if( this.simplified ) {
+      return;
+    }
+
     this._labels = this._labels || [];
     this._labelsBackground = this._labelsBackground || [];
 
@@ -1363,6 +1389,11 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   addHandles() {
+
+    if( this.simplified ) {
+      return;
+    }
+    
     if ( this.isLocked() ) {
       return;
     }
@@ -1399,6 +1430,11 @@ class Shape extends EventEmitter {
     if ( !this.handlesInDom ) {
       return this;
     }
+
+    if( this.simplified ) {
+      return;
+    }
+    
 
     for ( var i = 1; i < this.handles.length; i++ ) {
       this.group.removeChild( this.handles[ i ] );

@@ -96,16 +96,6 @@ class Graph extends EventEmitter {
     this._creation = util.guid();
     this._drawn = false;
 
-    if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) { // Wrapper is options
-      axis = options;
-      options = wrapper;
-      wrapper = null;
-    } else if ( typeof wrapper == 'string' ) {
-      wrapper = document.getElementById( wrapper );
-    } else if ( typeof wrapper.length == 'number' ) {
-      wrapper = wrapper[ 0 ];
-    }
-
     /**
      * @object
      * @memberof Graph
@@ -121,7 +111,10 @@ class Graph extends EventEmitter {
     // doDom is a private method. We bind it to this thanks to ES6 features
     ( doDom.bind( this ) )();
 
+
+
     if ( wrapper ) {
+      
       this.setWrapper( wrapper );
     }
 
@@ -190,6 +183,17 @@ class Graph extends EventEmitter {
   }
 
   setWrapper( wrapper ) {
+
+
+    if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) { // Wrapper is options
+      axis = options;
+      options = wrapper;
+      wrapper = null;
+    } else if ( typeof wrapper == 'string' ) {
+      wrapper = document.getElementById( wrapper );
+    } else if ( typeof wrapper.length == 'number' ) {
+      wrapper = wrapper[ 0 ];
+    }
 
     if ( !wrapper ) {
       throw new Error( 'The wrapper DOM element was not found.' );
@@ -1443,7 +1447,7 @@ class Graph extends EventEmitter {
       shape.setProperties( shapeData.properties );
     }
 
-    shape.init( this, shapeProperties );
+    shape.init( this, shapeProperties, shapeProperties.simplified );
 
     if ( shapeData.props !== undefined ) {
       for ( var i in shapeData.props ) {
@@ -1712,7 +1716,7 @@ class Graph extends EventEmitter {
       this.wrapper.insertBefore( shape._dom, this.dom );
     }
 
-    this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
+    this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.simplified ? shape._dom : shape.group );
   }
 
   removeShapeFromDom( shape ) {

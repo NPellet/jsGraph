@@ -4,13 +4,9 @@ import makeAnnotation from './annotations.js';
 
 const makeGraph = ( Graph, json, wrapper ) => {
   const options = json.options || {};
-
-  if ( json.title ) {
-    options.title = json.title;
-  }
-
-  const graph = new Graph( wrapper, options );
+  const graph = new Graph( undefined, options );
   let axes = [];
+  graph.setWrapper( wrapper );
 
   graph.resize( json.width || 400, json.height || 300 );
 
@@ -34,19 +30,19 @@ const makeGraph = ( Graph, json, wrapper ) => {
     if ( json.legend.position ) {
       switch ( json.legend.position ) {
         case 'bottom':
-          legend.setAutoPosition( 'bottom' );
+          legend.setAutoposition( 'bottom' );
           break;
 
         case 'top':
-          legend.setAutoPosition( 'top' );
+          legend.setAutoposition( 'top' );
           break;
 
         case 'left':
-          legend.setAutoPosition( 'left' );
+          legend.setAutoposition( 'left' );
           break;
 
         case 'right':
-          legend.setAutoPosition( 'right' );
+          legend.setAutoposition( 'right' );
           break;
 
         default:
@@ -155,12 +151,12 @@ const makeGraph = ( Graph, json, wrapper ) => {
         serie.excludeFromLegend( true );
       }
 
-      if ( data.xAxis && axes[ data.xAxis ] ) {
-        serie.setXAxis( axes[ data.xAxis ] );
+      if ( data.xAxis && axes[data.xAxis] ) {
+        serie.setXAxis( axes[data.xAxis] );
       }
 
-      if ( data.yAxis && axes[ data.yAxis ] ) {
-        serie.setYAxis( axes[ data.yAxis ] );
+      if ( data.yAxis && axes[data.yAxis] ) {
+        serie.setYAxis( axes[data.yAxis] );
       }
 
       if ( data ) {
@@ -178,13 +174,13 @@ const makeGraph = ( Graph, json, wrapper ) => {
       }
     } );
   }
-
+  console.time( 'a' );
   if ( json.annotations ) {
     json.annotations.forEach( ( annotation ) => {
       makeAnnotation( graph, annotation, undefined, axes );
     } );
   }
-
+  console.timeEnd( 'a' );
   return graph;
 };
 
