@@ -25,8 +25,8 @@ class Shape extends EventEmitter {
     this.properties = properties || {};
     this.handles = [];
     this.options = this.options || {};
-    
-    if( ! simplified ) {
+
+    if ( !simplified ) {
       this.group = document.createElementNS( this.graph.ns, 'g' );
       this.group.setAttribute( 'clip-path', `url(#_clipplot${graph._creation})` );
       this.group.jsGraphIsShape = this;
@@ -68,36 +68,34 @@ class Shape extends EventEmitter {
     }
 
     let dom;
-    if( simplified ) {
+    if ( simplified ) {
       dom = this._dom;
     } else {
       dom = this.group;
     }
-  
 
-      dom.addEventListener( 'mouseover', function( e ) {
-        self.handleMouseOver( e );
-      } );
+    dom.addEventListener( 'mouseover', function( e ) {
+      self.handleMouseOver( e );
+    } );
 
-      dom.addEventListener( 'mouseout', function( e ) {
-        self.handleMouseOut( e );
-      } );
+    dom.addEventListener( 'mouseout', function( e ) {
+      self.handleMouseOut( e );
+    } );
 
-      dom.addEventListener( 'mousedown', function( e ) {
-        self.graph.focus();
+    dom.addEventListener( 'mousedown', function( e ) {
+      self.graph.focus();
 
-        self.handleMouseDown( e );
-      } );
+      self.handleMouseDown( e );
+    } );
 
-      dom.addEventListener( 'click', this.handleClick.bind( this ) );
+    dom.addEventListener( 'click', this.handleClick.bind( this ) );
 
-      dom.addEventListener( 'dblclick', function( e ) {
-        //e.preventDefault();
-        // e.stopPropagation();
+    dom.addEventListener( 'dblclick', function( e ) {
+      //e.preventDefault();
+      // e.stopPropagation();
 
-        self.handleDblClick( e );
-      } );
-    
+      self.handleDblClick( e );
+    } );
 
     //			this.group.appendChild(this.rectEvent);
 
@@ -156,7 +154,7 @@ class Shape extends EventEmitter {
     }
 
     this.hidden = true;
-    if ( !this.isHTML() && ! this.simplified ) {
+    if ( !this.isHTML() && !this.simplified ) {
       this.group.style.display = 'none';
     } else {
       this._dom.style.display = 'none';
@@ -259,7 +257,7 @@ class Shape extends EventEmitter {
    */
   setEventReceptacle() {
 
-    if( this,simplified ) {
+    if ( this, simplified ) {
       return;
     }
 
@@ -556,10 +554,9 @@ class Shape extends EventEmitter {
    */
   setDomGroup( prop, val ) {
 
-    if( this.simplified ) {
+    if ( this.simplified ) {
       this._dom.setAttribute( prop, val );
-    }
-    else if ( this.group ) {
+    } else if ( this.group ) {
       this.group.setAttribute( prop, val );
     }
   }
@@ -1099,7 +1096,7 @@ class Shape extends EventEmitter {
    */
   makeLabels() {
 
-    if( this.simplified ) {
+    if ( this.simplified ) {
       return;
     }
 
@@ -1389,10 +1386,10 @@ class Shape extends EventEmitter {
    */
   addHandles() {
 
-    if( this.simplified ) {
+    if ( this.simplified ) {
       return;
     }
-    
+
     if ( this.isLocked() ) {
       return;
     }
@@ -1430,10 +1427,9 @@ class Shape extends EventEmitter {
       return this;
     }
 
-    if( this.simplified ) {
+    if ( this.simplified ) {
       return;
     }
-    
 
     for ( var i = 1; i < this.handles.length; i++ ) {
       this.group.removeChild( this.handles[ i ] );

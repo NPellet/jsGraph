@@ -111,10 +111,8 @@ class Graph extends EventEmitter {
     // doDom is a private method. We bind it to this thanks to ES6 features
     ( doDom.bind( this ) )();
 
-
-
     if ( wrapper ) {
-      
+
       this.setWrapper( wrapper );
     }
 
@@ -183,7 +181,6 @@ class Graph extends EventEmitter {
   }
 
   setWrapper( wrapper ) {
-
 
     if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) { // Wrapper is options
       axis = options;
