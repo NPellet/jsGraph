@@ -103,7 +103,7 @@ class AxisX extends Axis {
       return;
     }
 
-    var tick = this.nextTick( level, function( tick ) {
+    var tick = this.nextTick( level, ( tick ) => {
       tick.setAttribute(
         'y1',
         ( self.top ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ]

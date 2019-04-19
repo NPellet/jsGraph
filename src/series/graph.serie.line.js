@@ -1002,6 +1002,18 @@ class SerieLine extends SerieScatter {
     }
   }
 
+
+  getShortestDistanceToPoint( withiPxX, withinPxY ) {
+    
+    const valX = this.getXAxis().getMouseVal(),
+      valY = this.getYAxis().getMouseVal(),
+      distX = this.getXAxis().getRelVal( withinPxX ),
+      distY = this.getYAxis().getRelVal( withinPxY );
+
+    return this.waveform.getShortestDistanceToPoint( valX, valY, distX, distY );
+
+  }
+
   handleMouseMove( xValue, doMarker, yValue ) {
     var valX = xValue || this.getXAxis().getMouseVal(),
       valY = yValue || this.getYAxis().getMouseVal();

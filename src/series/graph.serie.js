@@ -1,8 +1,6 @@
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js';
 import * as util from '../graph.util.js';
-import {
-  Waveform
-} from '../util/waveform.js';
+import { Waveform } from '../util/waveform.js';
 
 const defaultOptions = {
   redrawShapesAfterDraw: false
@@ -16,7 +14,8 @@ class Serie extends EventEmitter {
   constructor( graph, name, options, defaultInherited ) {
     super( ...arguments );
     this.options = util.extend(
-      true, {},
+      true,
+      {},
       defaultOptions,
       defaultInherited,
       options
@@ -102,7 +101,7 @@ class Serie extends EventEmitter {
    * @example serie.setOption('selectableOnClick', true );
    */
   setOption( name, value ) {
-    this.options[ name ] = value;
+    this.options[name] = value;
   }
 
   /**
@@ -140,7 +139,7 @@ class Serie extends EventEmitter {
     if ( hideShapes ) {
       var shapes = this.graph.getShapesOfSerie( this );
       for ( var i = 0, l = shapes.length; i < l; i++ ) {
-        shapes[ i ].hide();
+        shapes[i].hide();
       }
     }
 
@@ -185,7 +184,7 @@ class Serie extends EventEmitter {
     if ( showShapes ) {
       var shapes = this.graph.getShapesOfSerie( this );
       for ( var i = 0, l = shapes.length; i < l; i++ ) {
-        shapes[ i ].show();
+        shapes[i].show();
       }
     }
 
@@ -338,9 +337,9 @@ class Serie extends EventEmitter {
    */
   setXAxis( axis ) {
     if ( typeof axis == 'number' ) {
-      this.xaxis = this.isFlipped() ?
-        this.graph.getYAxis( axis ) :
-        this.graph.getXAxis( axis );
+      this.xaxis = this.isFlipped()
+        ? this.graph.getYAxis( axis )
+        : this.graph.getXAxis( axis );
     } else {
       this.xaxis = axis;
     }
@@ -359,9 +358,9 @@ class Serie extends EventEmitter {
    */
   setYAxis( axis ) {
     if ( typeof axis == 'number' ) {
-      this.xaxis = this.isFlipped() ?
-        this.graph.getXAxis( axis ) :
-        this.graph.getYAxis( axis );
+      this.xaxis = this.isFlipped()
+        ? this.graph.getXAxis( axis )
+        : this.graph.getYAxis( axis );
     } else {
       this.yaxis = axis;
     }
@@ -380,8 +379,8 @@ class Serie extends EventEmitter {
    */
   setAxes() {
     for ( var i = 0; i < 2; i++ ) {
-      if ( arguments[ i ] ) {
-        this[ arguments[ i ].isX() ? 'setXAxis' : 'setYAxis' ]( arguments[ i ] );
+      if ( arguments[i] ) {
+        this[arguments[i].isX() ? 'setXAxis' : 'setYAxis']( arguments[i] );
       }
     }
 
@@ -625,7 +624,7 @@ class Serie extends EventEmitter {
   }
 
   setStyle( style, selectionType = 'unselected' ) {
-    this.styles[ selectionType ] = style;
+    this.styles[selectionType] = style;
     this.styleHasChanged( selectionType );
   }
 
@@ -640,10 +639,10 @@ class Serie extends EventEmitter {
 
     if ( selectionType === false ) {
       for ( var i in this._changedStyles ) {
-        this._changedStyles[ i ] = false;
+        this._changedStyles[i] = false;
       }
     } else {
-      this._changedStyles[ selectionType || 'unselected' ] = true;
+      this._changedStyles[selectionType || 'unselected'] = true;
     }
 
     this.graph.requireLegendUpdate();
@@ -659,7 +658,7 @@ class Serie extends EventEmitter {
    */
   hasStyleChanged( selectionType ) {
     this._changedStyles = this._changedStyles || {};
-    return this._changedStyles[ selectionType || 'unselected' ];
+    return this._changedStyles[selectionType || 'unselected'];
   }
 
   /**
@@ -692,7 +691,7 @@ class Serie extends EventEmitter {
    */
   setInfo( prop, value ) {
     this.infos = this.infos || {};
-    this.infos[ prop ] = value;
+    this.infos[prop] = value;
     return this;
   }
 
@@ -704,7 +703,7 @@ class Serie extends EventEmitter {
    * @memberof Serie
    */
   getInfo( prop, value ) {
-    return ( this.infos || {} )[ prop ];
+    return ( this.infos || {} )[prop];
   }
 
   /**
@@ -756,10 +755,7 @@ class Serie extends EventEmitter {
    * @private
    */
   enableTracking( hoverCallback, outCallback ) {
-    console.log( 'sdfsdf' );
     this._tracker = true;
-    this._trackingCallback = hoverCallback;
-    this._trackingOutCallback = outCallback;
 
     return this;
   }
@@ -777,7 +773,6 @@ class Serie extends EventEmitter {
     }
 
     this._tracker = false;
-    this._trackingCallback = null;
     return this;
   }
 

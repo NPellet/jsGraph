@@ -885,6 +885,17 @@ class Graph extends EventEmitter {
     return this;
   }
 
+  gridsOff() {
+    this._applyToAxes( ( axis ) => {
+      axis.gridsOff();
+    }, undefined, true, true );
+      }
+      gridsOn() {
+    this._applyToAxes( ( axis ) => {
+      axis.gridsOn();
+    }, undefined, true, true );
+      }
+
   /**
    * Sets the background color
    * @param {String} color - An SVG accepted color for the background
@@ -1094,7 +1105,7 @@ class Graph extends EventEmitter {
    * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
    * @param {Boolean} leftright=false - True to apply to function to left and right axes
    */
-  _applyToAxes( func, params, tb, lr ) {
+  _applyToAxes( func, params, tb = false, lr = false ) {
 
     var ax = [],
       i = 0,
@@ -2301,7 +2312,7 @@ class Graph extends EventEmitter {
         serie: serie
       }, options ) );
     }
-    serie.enableTracking( ( serie, index, x, y ) => {
+  /*  serie.enableTracking( ( serie, index, x, y ) => {
 
       if ( this.options.trackingLine.enable ) {
 
@@ -2343,7 +2354,7 @@ class Graph extends EventEmitter {
       }, false, false, serie._trackingLegend, false, false );
 
     } );
-
+*/
   }
 
   /**
@@ -3294,9 +3305,9 @@ function _handleMouseMove( graph, x, y, e ) {
     var index;
 
     // Takes care of the tracking line
-    if ( graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie ) {
+    if ( graph.options.trackingLine && graph.options.trackingLine.enable ) {
 
-      if ( graph.options.trackingLine.mode == 'common' ) {
+      if ( graph.options.trackingLine.mode == 'common' && graph.options.trackingLine.snapToSerie ) {
 
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove( false, true );
@@ -3338,6 +3349,19 @@ function _handleMouseMove( graph, x, y, e ) {
           return;
         }
         graph._trackingLegend = _trackingLegendSerie( graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef );
+
+      } else if( graph.options.trackingLine.mode == 'individual' ) {
+
+        graph.options.trackingLine.series.forEach( serie => {
+
+          const index = serie.serie.handleMouseMove( false, true );
+          console.log( serie, index );
+
+          const distance = serie.serie.getShortestDistanceToPoint( x, y, serie.withinPx, serie.withinPx );
+console.log( distance );
+
+
+        });
 
       }
     }

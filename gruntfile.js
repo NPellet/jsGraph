@@ -308,20 +308,41 @@ module.exports = function(grunt) {
         </script>
 </html>`;
       };
+
+      const makeExampleJS = el => {
+        return `
+<!doctype html>
+<html>
+    <body>
+        <div id="graph"></div>
+    </body>
+    <script type="module">
+    console.log('a');
+        import "../../../${el.path}";
+        </script>
+</html>`;
+      };
+
       const processTree = tree => {
         tree.children.forEach(child => {
           if (child.type == 'directory') {
             processTree(child);
           } else {
-            console.log(child.path);
+            console.log(child);
             const path = child.path
               .replace('v2', 'output')
               .replace('.json', '.html')
               .replace('.js', '.html');
 
             ensureDirectoryExistence(path);
+            let htmlFile;
 
-            fs.writeFileSync(path, makeExample(child));
+            if (child.extension == '.js') {
+              htmlFile = makeExampleJS(child);
+            } else {
+              htmlFile = makeExample(child);
+            }
+            fs.writeFileSync(path, htmlFile);
           }
         });
       };
