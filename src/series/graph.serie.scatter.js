@@ -519,6 +519,44 @@ class SerieScatter extends Serie {
 
     return [];
   }
+
+  getClosestPointToXY( valX, valY, withinPxX, withinPxY ) {
+    // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
+
+    //const xVal = this.getXAxis().getVal( x );
+    //const yVal = this.getYAxis().getVal( y );
+    const xValAllowed = this.getXAxis().getRelVal( withinPxX );
+    const yValAllowed = this.getYAxis().getRelVal( withinPxY );
+
+    // Index of the closest point
+    const closestPointIndex = this.waveform.findWithShortestDistance( {
+      x: valX,
+      y: valY,
+      xMax: xValAllowed,
+      yMax: yValAllowed,
+      interpolation: false
+    } );
+
+
+    return {
+
+      indexBefore: closestPointIndex,
+      indexAfter: closestPointIndex,
+
+      xBefore: this.waveform.getX( closestPointIndex ),
+      xAfter:  this.waveform.getX( closestPointIndex ),
+      yBefore:  this.waveform.getY( closestPointIndex ),
+      yAfter:  this.waveform.getX( closestPointIndex ),
+      
+      xExact:  valX,
+      
+      indexClosest: closestPointIndex,
+      interpolatedY:  this.waveform.getY( closestPointIndex ),
+
+      xClosest:  this.waveform.getX( closestPointIndex ),
+      yClosest:  this.waveform.getY( closestPointIndex )
+    };
+  }
 }
 
 util.mix( SerieScatter, ErrorBarMixin );

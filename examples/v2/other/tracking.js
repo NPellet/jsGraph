@@ -82,15 +82,13 @@ graph
 
 graph.gridsOff();
 
-graph.trackingLine( {
+graph.tracking( {
   mode: 'individual',
-  series: [
-    // A list of series that can be tracked
-    {
-      serie: graph.getSerie( 'a' ),
-      withinPx: 50
-    }
-  ]
+  series: [ 'a' ]
+} );
+
+graph.getSerie( 'a' ).on( 'track', ( trackData ) => {
+  console.log( trackData );
 } );
 /*graph.makeLegend().notHideable().setAutoPosition('bottom');
 graph.getLegend().update();*/

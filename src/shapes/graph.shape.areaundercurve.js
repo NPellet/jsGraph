@@ -36,7 +36,7 @@ class ShapeSurfaceUnderCurve extends Shape {
 
       this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
 
-      var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
+      var value = this.serie.getClosestPointToXY( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
       if ( !value ) {
         return;
@@ -85,8 +85,8 @@ class ShapeSurfaceUnderCurve extends Shape {
       return false;
     }
 
-    var v1 = this.serie.searchClosestValue( this.getPosition( 0 ).x ),
-      v2 = this.serie.searchClosestValue( this.getPosition( 1 ).x ),
+    var v1 = this.serie.getClosestPointToXY( this.getPosition( 0 ).x ),
+      v2 = this.serie.getClosestPointToXY( this.getPosition( 1 ).x ),
       v3,
       i,
       j,

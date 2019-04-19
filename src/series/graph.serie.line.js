@@ -923,6 +923,10 @@ class SerieLine extends SerieScatter {
    * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
+  /*
+
+  Let's deprecate this
+
   searchIndexByPxXY( x, y ) {
     var oldDist = false,
       xyindex = false,
@@ -946,26 +950,26 @@ class SerieLine extends SerieScatter {
 
     return xyindex;
   }
-
+*/
   /**
    * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
    * @param {Number} valX - The x value to search for
+   * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
    * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
-  searchClosestValue( valX, valY ) {
+  getClosestPointToXY( valX, valY, withinPxX, withinPxY ) {
     if ( this.waveform ) {
       let indexX;
 
       try {
-        indexX = this.waveform.getIndexFromXY(
-          valX,
-          valY,
-          undefined,
-          undefined,
-          this.getXAxis().getRelPx( 1 ),
-          this.getYAxis().getRelPx( 1 )
-        );
+        indexX = this.waveform.findWithShortestDistance( {
+          x: valX,
+          y: valY,
+          scaleX: this.getXAxis().getRelPx( 1 ),
+          scaleY: this.getYAxis().getRelPx( 1 )
+        } );
+
       } catch ( e ) {
         console.log( e );
         throw new Error( 'Error while finding the closest index' );
@@ -976,7 +980,10 @@ class SerieLine extends SerieScatter {
         return false;
       }
 
-      let returnObj = {};
+
+      if( ( Math.abs( valX - this.waveform.getX( indexX ) ) > this.getXAxis().getRelVal( withinPxX ) && withinPxX ) || ( Math.abs( valY - this.waveform.getY( indexX ) ) > this.getYAxis().getRelVal( withinPxY ) && withinPxY ) ) {
+        return false;
+      }
 
       let direction;
       // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
@@ -986,43 +993,31 @@ class SerieLine extends SerieScatter {
         direction = 0;
       }
 
-      Object.assign( returnObj, {
-        indexMin: indexX + direction,
-        indexMax: indexX + direction + 1,
+
+     return {
+        indexBefore: indexX + direction,
+        indexAfter: indexX + direction + 1,
         indexClosest: indexX,
-        xMin: this.waveform.getX( indexX + direction ),
-        xMax: this.waveform.getX( indexX + direction + 1 ),
-        yMin: this.waveform.getY( indexX + direction ),
-        yMax: this.waveform.getY( indexX + direction + 1 ),
+        xBefore: this.waveform.getX( indexX + direction ),
+        xAfter: this.waveform.getX( indexX + direction + 1 ),
+        yBefore: this.waveform.getY( indexX + direction ),
+        yAfter: this.waveform.getY( indexX + direction + 1 ),
         xClosest: this.waveform.getX( indexX ),
         yClosest: this.waveform.getY( indexX ),
         xExact: valX
-      } );
-      return returnObj;
-    }
-  }
-
-
-  getShortestDistanceToPoint( withiPxX, withinPxY ) {
-    
-    const valX = this.getXAxis().getMouseVal(),
-      valY = this.getYAxis().getMouseVal(),
-      distX = this.getXAxis().getRelVal( withinPxX ),
-      distY = this.getYAxis().getRelVal( withinPxY );
-
-    return this.waveform.getShortestDistanceToPoint( valX, valY, distX, distY );
-
+      } }
   }
 
   handleMouseMove( xValue, doMarker, yValue ) {
     var valX = xValue || this.getXAxis().getMouseVal(),
       valY = yValue || this.getYAxis().getMouseVal();
 
-    var value = this.searchClosestValue( valX, valY );
+    var value = this.getClosestPointToXY( valX, valY );
 
     if ( !value ) {
       return;
     }
+
 
     var ratio, intY;
 
@@ -1062,8 +1057,8 @@ class SerieLine extends SerieScatter {
   getMax( start, end ) {
     var start2 = Math.min( start, end ),
       end2 = Math.max( start, end ),
-      v1 = this.searchClosestValue( start2 ),
-      v2 = this.searchClosestValue( end2 ),
+      v1 = this.getClosestPointToXY( start2 ),
+      v2 = this.getClosestPointToXY( end2 ),
       i,
       j,
       max = -Infinity,
@@ -1072,12 +1067,12 @@ class SerieLine extends SerieScatter {
 
     if ( !v1 ) {
       start2 = this.minX;
-      v1 = this.searchClosestValue( start2 );
+      v1 = this.getClosestPointToXY( start2 );
     }
 
     if ( !v2 ) {
       end2 = this.maxX;
-      v2 = this.searchClosestValue( end2 );
+      v2 = this.getClosestPointToXY( end2 );
     }
 
     if ( !v1 || !v2 ) {
@@ -1106,8 +1101,8 @@ class SerieLine extends SerieScatter {
   getMin( start, end ) {
     var start2 = Math.min( start, end ),
       end2 = Math.max( start, end ),
-      v1 = this.searchClosestValue( start2 ),
-      v2 = this.searchClosestValue( end2 ),
+      v1 = this.getClosestPointToXY( start2 ),
+      v2 = this.getClosestPointToXY( end2 ),
       i,
       j,
       min = Infinity,
@@ -1116,12 +1111,12 @@ class SerieLine extends SerieScatter {
 
     if ( !v1 ) {
       start2 = this.minX;
-      v1 = this.searchClosestValue( start2 );
+      v1 = this.getClosestPointToXY( start2 );
     }
 
     if ( !v2 ) {
       end2 = this.maxX;
-      v2 = this.searchClosestValue( end2 );
+      v2 = this.getClosestPointToXY( end2 );
     }
 
     if ( !v1 || !v2 ) {

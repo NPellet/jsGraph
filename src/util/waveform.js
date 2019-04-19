@@ -480,6 +480,16 @@ class Waveform {
     return position;
   }
 
+  /**
+   * Finds the point in the data stack with the smalled distance based on an x and y value. 
+   * @param {number} xval 
+   * @param {number} yval 
+   * @param {boolean} useDataToUse 
+   * @param {function} roundingMethod 
+   * @param {number} scaleX 
+   * @param {number} scaleY 
+   * @returns {number} The index of the closest position
+   */
   getIndexFromXY(
     xval,
     yval,
@@ -546,6 +556,19 @@ class Waveform {
     return position;
   }
 
+  /**
+   * Finds the closest point in x and y direction.
+   * @see euclidianSearch
+   * @private
+   * @param {number} valX 
+   * @param {array<number>} dataX 
+   * @param {number} valY 
+   * @param {array<number>} dataY 
+   * @param {number} [ scaleX = 1 ]  
+   * @param {number} [ scaleY = 1 ] 
+   * 
+   * @returns {number} The index of the closest point
+   */
   getIndexFromDataXY( valX, dataX, valY, dataY, scaleX = 1, scaleY = 1 ) {
     let data, position;
 
@@ -571,6 +594,17 @@ class Waveform {
 
     return binarySearch( val, valCollection, !isAscending );
   }
+
+
+  findWithShortestDistance( options ) {
+
+    if( ! options.interpolation ) {
+
+      return this.getIndexFromXY( options.x, options.y, true, undefined, options.scaleX, options.scaleY );
+    }
+
+  }
+
 
   getShortestDistanceToPoint( valX, valY, maxDistanceX, maxDistanceY ) {
 
@@ -1993,7 +2027,6 @@ function pow2ceil( v ) {
 
 function pow2floor( v ) {
   var p = 1;
-
   while ( ( v >>= 1 ) ) {
     p <<= 1;
   }
@@ -2014,6 +2047,19 @@ function getIndexInterpolate(
   );
 }
 
+/**
+ * @private
+ * Performs a euclidian search (as opposed to a binary search where the data must be monotoneously increasing and where the search is only in x). This is useful to find the closest point to a position (for example the one of the mouse) for any kind of data.
+ * The scaleX and scaleY parameters could be used to skew the search. For example, let's say that you want to search the closest point in pixel, and not in value, you would need to reflect the different axes scaling into the scaleX and scaleY parameter
+ * 
+ * @param {number} targetX The x position we want to get close to
+ * @param {number} targetY The y position we want to get close to
+ * @param {array<number>} haystackX The source data (array of x's)
+ * @param {array<number>} haystackY The source data (array of y's) (paired by index to the x array)
+ * @param {number} [ scaleX = 1 ] X-scaler (the higher, the more importance given to the x distance)
+ * @param {number} [ scaleY = 1 ] Y-scaler (the higher, the more importance given to the y distance)
+ * @returns The index of the closest point
+ */
 function euclidianSearch(
   targetX,
   targetY,
