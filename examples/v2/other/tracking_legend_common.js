@@ -72,25 +72,39 @@ const wave2 = Graph.newWaveform().setData(
   data2.filter( ( el, index ) => index % 2 == 0 ).map( ( v ) => v + 0.5 )
 );
 
+const wave3 = wave2.duplicate().math( ( y, x ) => {
+  return 20 - y;
+} );
+
 graph
-  .newSerie( 'a' )
+  .newSerie( 'Serie 1' )
   .setLabel()
   .setLineStyle( 3 )
   .setLineColor( 'blue' )
   .setWaveform( wave2 )
   .autoAxis();
 
+graph
+  .newSerie( 'Serie 2' )
+  .setLabel()
+  .setLineStyle( 2 )
+  .setLineColor( 'red' )
+  .setWaveform( wave3 )
+  .autoAxis();
+
 graph.gridsOff();
 
 graph.tracking( {
   mode: 'individual',
-  series: [ 'a' ],
+  series: [ 'Serie 1', 'Serie 2' ],
+  legend: true,
+  legendType: 'common',
   serieOptions: {
-    withinPx: 50
+    withinPx: 20
   }
 } );
 
-graph.getSerie( 'a' ).on( 'track', ( trackData ) => {
+graph.getSerie( 'Serie 1' ).on( 'track', ( trackData ) => {
   console.log( trackData );
 } );
 /*graph.makeLegend().notHideable().setAutoPosition('bottom');

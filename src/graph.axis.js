@@ -1785,7 +1785,7 @@ class Axis extends EventEmitter {
     return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
   }
 
-  valueToText( value ) {
+  valueToText( value, forceDecimals = 2 ) {
 
     if ( this.scientificExponent ) {
 
@@ -1812,12 +1812,15 @@ class Axis extends EventEmitter {
         return '';
       }
 
-      if ( dec > 0 ) {
-        value = value.toFixed( dec );
+      if( forceDecimals > 0 ) {
+        value = value.toFixed( forceDecimals )
       } else {
-        value = value.toFixed( 0 );
+        if ( dec > 0 ) {
+          value = value.toFixed( dec );
+        } else {
+          value = value.toFixed( 0 );
+        }
       }
-
       if ( this.options.unitInTicks && this.options.unit ) {
         value += ` ${ this.options.unit}`;
       }
@@ -1832,14 +1835,15 @@ class Axis extends EventEmitter {
    *  @param {Number} value - The value to compute
    *  @param {Boolean} noScaling - Does not display scaling
    *  @param {Boolean} noUnits - Does not display units
+   * @param {Number} [forceDecimals=0] - Force the precision of the display
    *  @return {String} An HTML string containing the computed value
    *  @example graph.getXAxis().setUnit( "m" ).setUnitDecade( true ).setScientific( true );
    *  graph.getXAxis().valueToHtml( 3500 ); // Returns "3.5 km"
    *  @see Axis#valueToText
    */
-  valueToHtml( value, noScaling, noUnits ) {
+  valueToHtml( value, noScaling, noUnits, forceDecimals = 0 ) {
 
-    var text = this.valueToText( value );
+    var text = this.valueToText( value, forceDecimals );
     var letter;
 
     if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {

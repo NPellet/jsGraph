@@ -166,7 +166,7 @@ class SerieLine extends SerieScatter {
    */
   empty() {
     for ( var i = 0, l = this.lines.length; i < l; i++ ) {
-      this.groupLines.removeChild( this.lines[ i ] );
+      this.groupLines.removeChild( this.lines[i] );
     }
     this.lines = [];
 
@@ -278,9 +278,9 @@ class SerieLine extends SerieScatter {
       } else if ( this.waveform.hasAggregation() ) {
         let xaxis = this.getXAxis(),
           numberOfPointsInTotal =
-          ( this.graph.getDrawingWidth() *
-            ( xaxis.getDataMax() - xaxis.getDataMin() ) ) /
-          ( xaxis.getCurrentMax() - xaxis.getCurrentMin() ),
+            ( this.graph.getDrawingWidth() *
+              ( xaxis.getDataMax() - xaxis.getDataMin() ) ) /
+            ( xaxis.getCurrentMax() - xaxis.getCurrentMin() ),
           promise = this.waveform.selectAggregatedData( numberOfPointsInTotal );
 
         if ( promise instanceof Promise ) {
@@ -324,7 +324,7 @@ class SerieLine extends SerieScatter {
       l = this.lines.length;
 
     for ( ; i < l; i++ ) {
-      this.groupLines.removeChild( this.lines[ i ] );
+      this.groupLines.removeChild( this.lines[i] );
     }
 
     this.lines.splice( this.currentLineId, l - this.currentLineId );
@@ -470,7 +470,7 @@ class SerieLine extends SerieScatter {
 
     for ( ; i < l; i += 1 ) {
       x = waveform.getX( i, true );
-      y = data[ i ] * yscale + yshift;
+      y = data[i] * yscale + yshift;
 
       if ( x != x || y != y ) {
         // NaN checks
@@ -482,7 +482,7 @@ class SerieLine extends SerieScatter {
         ( !this.options.overflowX && x < xMin && lastX < xMin ) ||
         ( !this.options.overflowX && x > xMax && lastX > xMax ) ||
         ( ( ( !this.options.overflowY && y < yMin && lastY < yMin ) ||
-            ( !this.options.overflowY && y > yMax && lastY > yMax ) ) &&
+          ( !this.options.overflowY && y > yMax && lastY > yMax ) ) &&
           !this.options.lineToZero )
       ) {
         lastX = x;
@@ -615,10 +615,10 @@ class SerieLine extends SerieScatter {
 
                 this._createLine();
                 this._addPoint(
-                  this.getX( pointOnAxis[ 0 ][ 0 ] ),
-                  this.getY( pointOnAxis[ 0 ][ 1 ] ),
-                  pointOnAxis[ 0 ][ 0 ],
-                  pointOnAxis[ 0 ][ 1 ],
+                  this.getX( pointOnAxis[0][0] ),
+                  this.getY( pointOnAxis[0][1] ),
+                  pointOnAxis[0][0],
+                  pointOnAxis[0][1],
                   false,
                   false,
                   false
@@ -643,10 +643,10 @@ class SerieLine extends SerieScatter {
                 }
 
                 this._addPoint(
-                  this.getX( pointOnAxis[ 0 ][ 0 ] ),
-                  this.getY( pointOnAxis[ 0 ][ 1 ] ),
-                  pointOnAxis[ 0 ][ 0 ],
-                  pointOnAxis[ 0 ][ 1 ],
+                  this.getX( pointOnAxis[0][0] ),
+                  this.getY( pointOnAxis[0][1] ),
+                  pointOnAxis[0][0],
+                  pointOnAxis[0][1],
                   false,
                   false,
                   false
@@ -657,19 +657,19 @@ class SerieLine extends SerieScatter {
                   this._createLine();
 
                   this._addPoint(
-                    this.getX( pointOnAxis[ 0 ][ 0 ] ),
-                    this.getY( pointOnAxis[ 0 ][ 1 ] ),
-                    pointOnAxis[ 0 ][ 0 ],
-                    pointOnAxis[ 0 ][ 1 ],
+                    this.getX( pointOnAxis[0][0] ),
+                    this.getY( pointOnAxis[0][1] ),
+                    pointOnAxis[0][0],
+                    pointOnAxis[0][1],
                     false,
                     false,
                     false
                   );
                   this._addPoint(
-                    this.getX( pointOnAxis[ 1 ][ 0 ] ),
-                    this.getY( pointOnAxis[ 1 ][ 1 ] ),
-                    pointOnAxis[ 0 ][ 0 ],
-                    pointOnAxis[ 0 ][ 1 ],
+                    this.getX( pointOnAxis[1][0] ),
+                    this.getY( pointOnAxis[1][1] ),
+                    pointOnAxis[0][0],
+                    pointOnAxis[0][1],
                     false,
                     false,
                     false
@@ -731,9 +731,9 @@ class SerieLine extends SerieScatter {
       this.groupMain.appendChild( cloned );
 
       for ( i = 0, l = cloned.children.length; i < l; i++ ) {
-        cloned.children[ i ].setAttribute( 'stroke', 'transparent' );
-        cloned.children[ i ].setAttribute( 'stroke-width', '25px' );
-        cloned.children[ i ].setAttribute( 'pointer-events', 'stroke' );
+        cloned.children[i].setAttribute( 'stroke', 'transparent' );
+        cloned.children[i].setAttribute( 'stroke-width', '25px' );
+        cloned.children[i].setAttribute( 'pointer-events', 'stroke' );
       }
 
       this._trackerDom = cloned;
@@ -803,13 +803,13 @@ class SerieLine extends SerieScatter {
       line;
 
     // Creates a line if needed
-    if ( this.lines[ i ] ) {
-      line = this.lines[ i ];
+    if ( this.lines[i] ) {
+      line = this.lines[i];
     } else {
       line = document.createElementNS( this.graph.ns, 'path' );
       this.applyLineStyle( line );
       this.groupLines.appendChild( line );
-      this.lines[ i ] = line;
+      this.lines[i] = line;
     }
 
     if ( this.counter == 0 ) {
@@ -830,7 +830,7 @@ class SerieLine extends SerieScatter {
    */
   applyLineStyles() {
     for ( var i = 0; i < this.lines.length; i++ ) {
-      this.applyLineStyle( this.lines[ i ] );
+      this.applyLineStyle( this.lines[i] );
     }
   }
 
@@ -908,8 +908,8 @@ class SerieLine extends SerieScatter {
     }
 
     for ( var i = 0, l = el.length; i < l; i++ ) {
-      if ( typeof el[ i ] == num ) {
-        el[ i ] *= z + add;
+      if ( typeof el[i] == num ) {
+        el[i] *= z + add;
       }
     }
 
@@ -969,7 +969,6 @@ class SerieLine extends SerieScatter {
           scaleX: this.getXAxis().getRelPx( 1 ),
           scaleY: this.getYAxis().getRelPx( 1 )
         } );
-
       } catch ( e ) {
         console.log( e );
         throw new Error( 'Error while finding the closest index' );
@@ -979,9 +978,24 @@ class SerieLine extends SerieScatter {
       if ( isNaN( indexX ) || indexX === false ) {
         return false;
       }
-
-
-      if( ( Math.abs( valX - this.waveform.getX( indexX ) ) > this.getXAxis().getRelVal( withinPxX ) && withinPxX ) || ( Math.abs( valY - this.waveform.getY( indexX ) ) > this.getYAxis().getRelVal( withinPxY ) && withinPxY ) ) {
+/*
+      console.log(
+        valX,
+        this.waveform.getX( indexX ),
+        this.getXAxis().getRelVal( withinPxX ),
+        valY,
+        this.waveform.getY( indexX ),
+        this.getYAxis().getRelVal( withinPxY )
+      );
+ */
+      if (
+        ( Math.abs( valX - this.waveform.getX( indexX ) ) >
+          Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
+          withinPxX ) ||
+        ( Math.abs( valY - this.waveform.getY( indexX ) ) >
+          Math.abs( this.getYAxis().getRelVal( withinPxY ) ) &&
+          withinPxY )
+      ) {
         return false;
       }
 
@@ -993,8 +1007,7 @@ class SerieLine extends SerieScatter {
         direction = 0;
       }
 
-
-     return {
+      return {
         indexBefore: indexX + direction,
         indexAfter: indexX + direction + 1,
         indexClosest: indexX,
@@ -1005,7 +1018,8 @@ class SerieLine extends SerieScatter {
         xClosest: this.waveform.getX( indexX ),
         yClosest: this.waveform.getY( indexX ),
         xExact: valX
-      } }
+      };
+    }
   }
 
   handleMouseMove( xValue, doMarker, yValue ) {
@@ -1017,7 +1031,6 @@ class SerieLine extends SerieScatter {
     if ( !value ) {
       return;
     }
-
 
     var ratio, intY;
 
@@ -1081,10 +1094,10 @@ class SerieLine extends SerieScatter {
 
     for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
       initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
 
       for ( j = initJ; j <= maxJ; j += 2 ) {
-        max = Math.max( max, this.data[ i ][ j + 1 ] );
+        max = Math.max( max, this.data[i][j + 1] );
       }
     }
 
@@ -1125,10 +1138,10 @@ class SerieLine extends SerieScatter {
 
     for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
       initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
 
       for ( j = initJ; j <= maxJ; j += 2 ) {
-        min = Math.min( min, this.data[ i ][ j + 1 ] );
+        min = Math.min( min, this.data[i][j + 1] );
       }
     }
 
@@ -1139,13 +1152,13 @@ class SerieLine extends SerieScatter {
    */
 
   setStyle( style, selectionType = 'unselected' ) {
-    this.styles[ selectionType ] = style;
+    this.styles[selectionType] = style;
     this.styleHasChanged( selectionType );
   }
 
   setLineStyle( number, selectionType = 'unselected', applyToSelected ) {
-    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ].lineStyle = number;
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].lineStyle = number;
 
     if ( applyToSelected ) {
       this.setLineStyle( number, 'selected' );
@@ -1204,7 +1217,7 @@ class SerieLine extends SerieScatter {
         break;
 
       default:
-        return this.styles[ selectionType ].lineStyle;
+        return this.styles[selectionType].lineStyle;
         break;
     }
 
@@ -1212,23 +1225,24 @@ class SerieLine extends SerieScatter {
   }
 
   getStyle( selectionType = this.selectionType || 'unselected' ) {
-    return this.styles[ selectionType ] || this.styles.unselected;
+    return this.styles[selectionType] || this.styles.unselected;
   }
 
   extendStyles() {
     for ( var i in this.styles ) {
-      var s = this.styles[ i ];
+      var s = this.styles[i];
       if ( s ) {
-        this.styles[ i ] = util.extend( true, {}, this.styles.unselected, s );
+        this.styles[i] = util.extend( true, {}, this.styles.unselected, s );
       }
     }
   }
 
   extendStyle( styleTarget, styleOrigin ) {
-    var s = this.styles[ styleTarget ];
-    this.styles[ styleTarget ] = util.extend(
-      true, {},
-      this.styles[ styleOrigin || 'unselected' ],
+    var s = this.styles[styleTarget];
+    this.styles[styleTarget] = util.extend(
+      true,
+      {},
+      this.styles[styleOrigin || 'unselected'],
       s || {}
     );
     this.styleHasChanged( styleTarget );
@@ -1239,8 +1253,8 @@ class SerieLine extends SerieScatter {
 
   setLineWidth( width, selectionType, applyToSelected ) {
     selectionType = selectionType || 'unselected';
-    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ].lineWidth = width;
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].lineWidth = width;
 
     if ( applyToSelected ) {
       this.setLineWidth( width, 'selected' );
@@ -1259,8 +1273,8 @@ class SerieLine extends SerieScatter {
    */
   setLineColor( color, selectionType, applyToSelected ) {
     selectionType = selectionType || 'unselected';
-    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ].lineColor = color;
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].lineColor = color;
 
     if ( applyToSelected ) {
       this.setLineColor( color, 'selected' );
@@ -1275,8 +1289,8 @@ class SerieLine extends SerieScatter {
    */
   setFillColor( color, selectionType, applyToSelected ) {
     selectionType = selectionType || 'unselected';
-    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ].fillColor = color;
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType].fillColor = color;
 
     if ( applyToSelected ) {
       this.setFillColor( color, 'selected' );

@@ -2221,7 +2221,7 @@ class Graph extends EventEmitter {
     // Individual tracking
     if ( options.mode == 'individual' ) {
       seriesSet.forEach( ( serie ) => {
-        self.addSerieToTrackingLine( serie );
+        self.addSerieToTrackingLine( serie, options.serieOptions );
       } );
     } else {
       /*
@@ -2262,11 +2262,10 @@ class Graph extends EventEmitter {
 
       // return this.trackingLineShape;
     }
-    console.log( this.options.trackingLine );
     //return this.trackingObject;
   }
 
-  addSerieToTrackingLine( serie ) {
+  addSerieToTrackingLine( serie, options = {} ) {
     // Safeguard when claled externally
     if ( !this.options.trackingLine ) {
       this.trackingLine( {
@@ -2288,6 +2287,8 @@ class Graph extends EventEmitter {
         }
       };
     }
+
+    serie.options.tracking = options;
 
     if ( !serie.trackingShape ) {
       serie.trackingShape = this.newShape(
@@ -3411,15 +3412,20 @@ function _handleMouseMove( graph, x, y, e ) {
 
         var series = graph.options.trackingLine.series;
 
+        /*
         // Gets a default value
         if ( !series ) {
-          series = graph.getSeries().map( function( serie ) {
+          series = graph.getSeries();map( function( serie ) {
             return {
               serie: serie,
               withinPx: 20,
               withinVal: -1
             };
           } );
+        }*/
+        f;
+        if ( !series ) {
+          return;
         }
 
         if ( !index ) {
@@ -3437,34 +3443,101 @@ function _handleMouseMove( graph, x, y, e ) {
           xRef
         );
       } else if ( graph.options.trackingLine.mode == 'individual' ) {
+        // Series looping
+        const output = [];
         graph.options.trackingLine.series.forEach( ( serie ) => {
           //        const index = serie.handleMouseMove( false, true );
           //console.log( index );
+
+          if ( !serie.options.tracking ) {
+            return;
+          }
+
           const closestPoint = serie.getClosestPointToXY(
             serie.getXAxis().getMouseVal(),
             serie.getYAxis().getMouseVal(),
-            serie.withinPx,
-            serie.withinPx
+            serie.options.tracking.withinPx,
+            serie.options.tracking.withinPx
           );
+
+          // When all legends are in common mode, let's make sure we remove the serie-specific legend
+          if ( graph.options.trackingLine.legendType == 'common' ) {
+            serie._trackingLegend = _trackingLegendSerie(
+              graph,
+              [],
+              false,
+              false,
+              serie._trackingLegend
+            );
+          }
 
           // What happens if there is no point ?
           if ( !closestPoint ) {
             if ( serie.trackingShape ) {
               serie.trackingShape.hide();
+
+              if ( graph.options.trackingLine.legendType == 'independent' ) {
+                serie._trackingLegend = _trackingLegendSerie(
+                  graph,
+                  [],
+                  false,
+                  false,
+                  serie._trackingLegend
+                );
+              }
             }
           } else {
+            // We found a point: happy !
             if ( serie.trackingShape ) {
               serie.trackingShape.show();
+
               serie.trackingShape.setPosition( {
                 x: closestPoint.xClosest,
                 y: closestPoint.yClosest
               } );
+
               serie.trackingShape.redraw();
 
+              // If we want one legend per serie, then we got to show it
+              if ( graph.options.trackingLine.legendType == 'independent' ) {
+                serie._trackingLegend = _trackingLegendSerie(
+                  graph,
+                  [
+                    {
+                      serie: serie,
+                      closestPoint: closestPoint
+                    }
+                  ],
+                  x,
+                  y,
+                  serie._trackingLegend
+                );
+              }
               serie.emit( 'track', closestPoint );
             }
           }
+
+          if ( closestPoint )
+            output.push( { serie: serie, closestPoint: closestPoint } );
         } );
+
+        if ( graph.options.trackingLine.legendType == 'common' ) {
+          graph._trackingLegend = _trackingLegendSerie(
+            graph,
+            output,
+            x,
+            y,
+            graph._trackingLegend
+          );
+        } else {
+          graph._trackingLegend = _trackingLegendSerie(
+            graph,
+            [],
+            false,
+            false,
+            graph._trackingLegend
+          );
+        }
       }
     }
   }
@@ -3547,145 +3620,41 @@ function checkMouseActions( graph, e, parameters, methodName ) {
   return executed;
 }
 
+/**
+ *
+ * @returns {DOMElement} legend - The legend element, or the newly created one if it didn't exist
+ */
 var _trackingLegendSerie = function(
   graph,
-  serie,
-  x,
-  y,
-  legend,
-  textMethod,
-  xValue
+  seriesOutput,
+  posXPx,
+  posYPx,
+  legend
 ) {
+  const textMethod =
+    graph.options.trackingLine.textMethod || trackingLineDefaultTextMethod;
+
   var justCreated = false;
-
-  if ( !Array.isArray( serie ) ) {
-    serie = [ serie ];
-  }
-
-  var output = [];
-
   if ( !legend && graph.options.trackingLine.legend ) {
     justCreated = true;
     legend = _makeTrackingLegend( graph );
   }
-
-  serie.map( ( serie ) => {
-    var index = serie.serie.handleMouseMove( xValue, false );
-
-    if ( !index || !textMethod ) {
-      if ( serie.serie.trackingShape ) {
-        serie.serie.trackingShape.hide();
-      }
-
-      return legend;
-    }
-    // Should we display the dot ?
-    if (
-      ( serie.withinPx > 0 &&
-        Math.abs(
-          x -
-            graph.options.paddingLeft -
-            serie.serie.getXAxis().getPx( index.xClosest )
-        ) -
-          serie.withinPx >
-          1e-14 ) ||
-      ( serie.withinVal > 0 &&
-        Math.abs(
-          serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) -
-            index.xClosest
-        ) -
-          serie.withinVal >
-          serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) / 100000 )
-    ) {
-      if ( serie.serie.trackingShape ) {
-        serie.serie.trackingShape.hide();
-      }
-    } else {
-      output[serie.serie.getName()] = {
-        yValue: index.yClosest,
-        xValue: index.xClosest,
-        serie: serie,
-        index: index
-      };
-      /*
-      let serieShape;
-      if ( graph.options.trackingLine && graph.options.trackingLine.serieShape ) {
-        serieShape = graph.options.trackingLine.serieShape;
-      } else {
-        serieShape = {
-          shape: 'ellipse',
-          properties: {
-            rx: [ `${serie.serie.getLineWidth() * 3 }px` ],
-            ry: [ `${serie.serie.getLineWidth() * 3 }px` ]
-          }
-        };
-      }
-
-      if ( !serie.serie.trackingShape ) {
-
-        serie.serie.trackingShape = graph.newShape( serieShape.shape, {
-              fillColor: serie.serie.getLineColor(),
-              strokeColor: 'White',
-              strokeWidth: serie.serie.getLineWidth()
-            },
-            true,
-            serieShape.properties
-          )
-          .setSerie( serie.serie )
-          .forceParentDom( serie.serie.groupMain )
-          .draw();
-
-        ( serieShape.onCreated && serieShape.onCreated( serie.serie.trackingShape ) );
-
-        serie.serie.trackingShape.on( 'changed', () => {
-
-          ( serieShape.onChanged && serieShape.onChanged( serie.serie.trackingShape ) );
-
-        } );
-      }
-
-      serie.serie.trackingShape.show();
-      serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
-
-      if ( serieShape.magnet ) {
-
-        let magnetOptions = serieShape.magnet,
-          val = magnetOptions.within,
-          minmaxpos;
-
-        if ( magnetOptions.withinPx ) {
-          val = serie.serie.getXAxis().getRelVal( magnetOptions.withinPx );
-        }
-
-        if ( ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) ) {
-
-          serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;
-        }
-      }
-
-      serie.serie.trackingShape.redraw();
-    }
-
-
-    */
-    }
-  } ); // End map
-
   if ( !graph.options.trackingLine.legend ) {
     return;
   }
 
-  if ( Object.keys( output ).length == 0 || !textMethod ) {
+  if ( seriesOutput.length == 0 ) {
     legend.style.display = 'none';
+    return legend;
   } else {
     if ( legend.style.display == 'none' || justCreated ) {
-      forceTrackingLegendMode( graph, legend, x, y, true );
+      forceTrackingLegendMode( graph, legend, posXPx, posYPx, true );
     } else {
-      _trackingLegendMove( graph, legend, x, y );
+      _trackingLegendMove( graph, legend, posXPx, posYPx );
     }
 
     legend.style.display = 'block';
-    var txt = textMethod( output, xValue, x, y );
+    var txt = textMethod( seriesOutput, undefined, posXPx, posYPx );
 
     legend.innerHTML = txt;
 
@@ -3730,7 +3699,9 @@ var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
   window.requestAnimationFrame( next );
 };
 
-var _trackingLegendMove = util.debounce( forceTrackingLegendMode, 50 );
+var _trackingLegendMove = ( ...args ) => {
+  util.debounce( forceTrackingLegendMode, 50 )( ...args );
+};
 
 function _makeTrackingLegend( graph ) {
   var group = document.createElement( 'div' );
@@ -3754,9 +3725,14 @@ function _makeTrackingLegend( graph ) {
 const trackingLineDefaultTextMethod = ( output ) => {
   let txt = '';
   for ( var i in output ) {
-    txt += `${output[i].serie.serie.getName()}: ${output[i].serie.serie
+    if ( !output[i].closestPoint ) {
+      continue;
+    }
+
+    txt += `${output[i].serie.getName()}: ${output[i].serie
       .getYAxis()
-      .valueToHtml( output[i].yValue )}`;
+      .valueToHtml( output[i].closestPoint.yClosest, undefined, undefined, 2 )}
+      `;
   }
   return txt;
 };
