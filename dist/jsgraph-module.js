@@ -2595,6 +2595,49 @@ class Waveform {
     return binarySearch(val, valCollection, !isAscending);
   }
 
+  getShortestDistanceToPoint(valX, valY, maxDistanceX, maxDistanceY) {
+    valX -= this.getXShift();
+    valX /= this.getXScale();
+    valY -= this.getShift();
+    valY /= this.getScale();
+    let x, y, y2, x2, i, distance, shortestDistance, shortestDistanceIndex;
+    const point = {
+      x: valX,
+      y: valY
+    };
+
+    for (i = 0; i < this.length() - 1; i++) {
+      shortestDistance = Math.POSITIVE_INFINITY;
+      shortestDistanceIndex = 0;
+      x = this.getX(i);
+      y = this.getY(i);
+      x2 = this.getX(i + 1);
+      y2 = this.getY(i + 1);
+
+      if (maxDistanceX && (x - valX > maxDistanceX && x2 - valX > maxDistanceX || valX - x > maxDistanceX && valX - x2 > maxDistanceX) || maxDistanceY && (y - valY > maxDistanceY && y2 - valY > maxDistanceY || valY - y > maxDistanceY && valY - y2 > maxDistanceY)) {
+        continue;
+      }
+
+      distance = distToSegment(point, {
+        x: x,
+        y: y
+      }, {
+        x: x2,
+        y: y2
+      });
+
+      if (distance < shortestDistance) {
+        shortestDistance = distance;
+        shortestDistanceIndex = i;
+      }
+    }
+
+    return {
+      shortestDistance: distance,
+      index: shortestDistanceIndex
+    };
+  }
+
   getReductionType() {
     return this.dataInUseType;
   }
@@ -4130,6 +4173,25 @@ class WaveformHash extends Waveform {
 
 }
 
+function dist2(v, w) {
+  return Math.pow(v.x - w.x, 2) + Math.pow(v.y - w.y, 2);
+}
+
+function distToSegmentSquared(p, v, w) {
+  var l2 = dist2(v, w);
+  if (l2 == 0) return dist2(p, v);
+  var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+  t = Math.max(0, Math.min(1, t));
+  return dist2(p, {
+    x: v.x + t * (w.x - v.x),
+    y: v.y + t * (w.y - v.y)
+  });
+}
+
+function distToSegment(p, v, w) {
+  return Math.pow(distToSegmentSquared(p, v, w), 0.5);
+}
+
 /**
  * Default graph parameters
  * @name Graph~GraphOptionsDefault
@@ -5041,6 +5103,18 @@ class Graph extends EventEmitter {
     axis.setMinMaxToFitSeries();
     return this;
   }
+
+  gridsOff() {
+    this._applyToAxes(axis => {
+      axis.gridsOff();
+    }, undefined, true, true);
+  }
+
+  gridsOn() {
+    this._applyToAxes(axis => {
+      axis.gridsOn();
+    }, undefined, true, true);
+  }
   /**
    * Sets the background color
    * @param {String} color - An SVG accepted color for the background
@@ -5242,7 +5316,7 @@ class Graph extends EventEmitter {
    */
 
 
-  _applyToAxes(func, params, tb, lr) {
+  _applyToAxes(func, params, tb = false, lr = false) {
     var ax = [],
         i = 0,
         l;
@@ -6386,45 +6460,39 @@ class Graph extends EventEmitter {
         serie: serie
       }, options));
     }
-
-    serie.enableTracking((serie, index, x, y) => {
-      if (this.options.trackingLine.enable) {
-        if (index) {
-          if (this.trackingObject) {
-            this.trackingObject.show();
-            this.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
-
-            this.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
-
+    /*  serie.enableTracking( ( serie, index, x, y ) => {
+       if ( this.options.trackingLine.enable ) {
+         if ( index ) {
+           if ( this.trackingObject ) {
+             this.trackingObject.show();
+            this.trackingObject.getPosition( 0 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+            this.trackingObject.getPosition( 1 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
             this.trackingObject.redraw();
           }
-
-          serie._trackingLegend = _trackingLegendSerie(this, {
+           serie._trackingLegend = _trackingLegendSerie( this, {
             serie: serie
-          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX);
-
-          if (serie._trackingLegend) {
+          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX );
+           if ( serie._trackingLegend ) {
             serie._trackingLegend.style.display = 'block';
           }
         }
       }
-    }, serie => {
-      if (this.trackingObject) {
+    }, ( serie ) => {
+       if ( this.trackingObject ) {
         this.trackingObject.hide();
       }
-
-      if (serie.trackingShape) {
+       if ( serie.trackingShape ) {
         serie.trackingShape.hide();
       }
-
-      if (serie._trackingLegend) {
+       if ( serie._trackingLegend ) {
         serie._trackingLegend.style.display = 'none';
       }
-
-      serie._trackingLegend = _trackingLegendSerie(this, {
+       serie._trackingLegend = _trackingLegendSerie( this, {
         serie: serie
-      }, false, false, serie._trackingLegend, false, false);
-    });
+      }, false, false, serie._trackingLegend, false, false );
+     } );
+    */
+
   }
   /**
    *  Pass here the katex.render method to be used later
@@ -7240,8 +7308,8 @@ function _handleMouseMove(graph, x, y, e) {
   if (!graph.activePlugin) {
     var index; // Takes care of the tracking line
 
-    if (graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie) {
-      if (graph.options.trackingLine.mode == 'common') {
+    if (graph.options.trackingLine && graph.options.trackingLine.enable) {
+      if (graph.options.trackingLine.mode == 'common' && graph.options.trackingLine.snapToSerie) {
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove(false, true);
 
@@ -7276,6 +7344,13 @@ function _handleMouseMove(graph, x, y, e) {
         }
 
         graph._trackingLegend = _trackingLegendSerie(graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef);
+      } else if (graph.options.trackingLine.mode == 'individual') {
+        graph.options.trackingLine.series.forEach(serie => {
+          const index = serie.serie.handleMouseMove(false, true);
+          console.log(serie, index);
+          const distance = serie.serie.getShortestDistanceToPoint(x, y, serie.withinPx, serie.withinPx);
+          console.log(distance);
+        });
       }
     }
   } // End takes care of the tracking line
@@ -11003,7 +11078,7 @@ class AxisX extends Axis {
       return;
     }
 
-    var tick = this.nextTick(level, function (tick) {
+    var tick = this.nextTick(level, tick => {
       tick.setAttribute('y1', (self.top ? 1 : -1) * self.tickPx1 * self.tickScaling[level]);
       tick.setAttribute('y2', (self.top ? 1 : -1) * self.tickPx2 * self.tickScaling[level]);
 
@@ -13515,10 +13590,7 @@ class Serie extends EventEmitter {
 
 
   enableTracking(hoverCallback, outCallback) {
-    console.log('sdfsdf');
     this._tracker = true;
-    this._trackingCallback = hoverCallback;
-    this._trackingOutCallback = outCallback;
     return this;
   }
   /**
@@ -13537,7 +13609,6 @@ class Serie extends EventEmitter {
     }
 
     this._tracker = false;
-    this._trackingCallback = null;
     return this;
   }
   /**
@@ -14888,6 +14959,14 @@ class SerieLine extends SerieScatter {
       });
       return returnObj;
     }
+  }
+
+  getShortestDistanceToPoint(withiPxX, withinPxY) {
+    const valX = this.getXAxis().getMouseVal(),
+          valY = this.getYAxis().getMouseVal(),
+          distX = this.getXAxis().getRelVal(withinPxX),
+          distY = this.getYAxis().getRelVal(withinPxY);
+    return this.waveform.getShortestDistanceToPoint(valX, valY, distX, distY);
   }
 
   handleMouseMove(xValue, doMarker, yValue) {

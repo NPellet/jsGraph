@@ -5204,6 +5204,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
       }
     }, {
+      key: "getShortestDistanceToPoint",
+      value: function getShortestDistanceToPoint(withiPxX, withinPxY) {
+        var valX = this.getXAxis().getMouseVal(),
+            valY = this.getYAxis().getMouseVal(),
+            distX = this.getXAxis().getRelVal(withinPxX),
+            distY = this.getYAxis().getRelVal(withinPxY);
+        return this.waveform.getShortestDistanceToPoint(valX, valY, distX, distY);
+      }
+    }, {
       key: "handleMouseMove",
       value: function handleMouseMove(xValue, doMarker, yValue) {
         var valX = xValue || this.getXAxis().getMouseVal(),
@@ -7069,6 +7078,50 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return binarySearch(val, valCollection, !isAscending);
       }
     }, {
+      key: "getShortestDistanceToPoint",
+      value: function getShortestDistanceToPoint(valX, valY, maxDistanceX, maxDistanceY) {
+        valX -= this.getXShift();
+        valX /= this.getXScale();
+        valY -= this.getShift();
+        valY /= this.getScale();
+        var x, y, y2, x2, i, distance, shortestDistance, shortestDistanceIndex;
+        var point = {
+          x: valX,
+          y: valY
+        };
+
+        for (i = 0; i < this.length() - 1; i++) {
+          shortestDistance = Math.POSITIVE_INFINITY;
+          shortestDistanceIndex = 0;
+          x = this.getX(i);
+          y = this.getY(i);
+          x2 = this.getX(i + 1);
+          y2 = this.getY(i + 1);
+
+          if (maxDistanceX && (x - valX > maxDistanceX && x2 - valX > maxDistanceX || valX - x > maxDistanceX && valX - x2 > maxDistanceX) || maxDistanceY && (y - valY > maxDistanceY && y2 - valY > maxDistanceY || valY - y > maxDistanceY && valY - y2 > maxDistanceY)) {
+            continue;
+          }
+
+          distance = distToSegment(point, {
+            x: x,
+            y: y
+          }, {
+            x: x2,
+            y: y2
+          });
+
+          if (distance < shortestDistance) {
+            shortestDistance = distance;
+            shortestDistanceIndex = i;
+          }
+        }
+
+        return {
+          shortestDistance: distance,
+          index: shortestDistanceIndex
+        };
+      }
+    }, {
       key: "getReductionType",
       value: function getReductionType() {
         return this.dataInUseType;
@@ -8798,6 +8851,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }(Waveform);
 
   _exports.WaveformHash = WaveformHash;
+
+  function dist2(v, w) {
+    return Math.pow(v.x - w.x, 2) + Math.pow(v.y - w.y, 2);
+  }
+
+  function distToSegmentSquared(p, v, w) {
+    var l2 = dist2(v, w);
+    if (l2 == 0) return dist2(p, v);
+    var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+    t = Math.max(0, Math.min(1, t));
+    return dist2(p, {
+      x: v.x + t * (w.x - v.x),
+      y: v.y + t * (w.y - v.y)
+    });
+  }
+
+  function distToSegment(p, v, w) {
+    return Math.pow(distToSegmentSquared(p, v, w), 0.5);
+  }
 });
 
 /***/ }),
@@ -10260,6 +10332,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         axis.setMinMaxToFitSeries();
         return this;
       }
+    }, {
+      key: "gridsOff",
+      value: function gridsOff() {
+        this._applyToAxes(function (axis) {
+          axis.gridsOff();
+        }, undefined, true, true);
+      }
+    }, {
+      key: "gridsOn",
+      value: function gridsOn() {
+        this._applyToAxes(function (axis) {
+          axis.gridsOn();
+        }, undefined, true, true);
+      }
       /**
        * Sets the background color
        * @param {String} color - An SVG accepted color for the background
@@ -10472,7 +10558,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     }, {
       key: "_applyToAxes",
-      value: function _applyToAxes(func, params, tb, lr) {
+      value: function _applyToAxes(func, params) {
+        var tb = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var lr = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
         var ax = [],
             i = 0,
             l;
@@ -11710,8 +11798,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "addSerieToTrackingLine",
       value: function addSerieToTrackingLine(serie, options) {
-        var _this10 = this;
-
         if (!this.options.trackingLine) {
           this.trackingLine({
             mode: 'individual'
@@ -11731,46 +11817,39 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             serie: serie
           }, options));
         }
-
-        serie.enableTracking(function (serie, index, x, y) {
-          if (_this10.options.trackingLine.enable) {
-            if (index) {
-              if (_this10.trackingObject) {
-                _this10.trackingObject.show();
-
-                _this10.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
-
-                _this10.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
-
-                _this10.trackingObject.redraw();
-              }
-
-              serie._trackingLegend = _trackingLegendSerie(_this10, {
-                serie: serie
-              }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX);
-
-              if (serie._trackingLegend) {
-                serie._trackingLegend.style.display = 'block';
+        /*  serie.enableTracking( ( serie, index, x, y ) => {
+             if ( this.options.trackingLine.enable ) {
+               if ( index ) {
+                 if ( this.trackingObject ) {
+                   this.trackingObject.show();
+                  this.trackingObject.getPosition( 0 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                  this.trackingObject.getPosition( 1 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                  this.trackingObject.redraw();
+                }
+                 serie._trackingLegend = _trackingLegendSerie( this, {
+                  serie: serie
+                }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX );
+                 if ( serie._trackingLegend ) {
+                  serie._trackingLegend.style.display = 'block';
+                }
               }
             }
-          }
-        }, function (serie) {
-          if (_this10.trackingObject) {
-            _this10.trackingObject.hide();
-          }
+          }, ( serie ) => {
+             if ( this.trackingObject ) {
+              this.trackingObject.hide();
+            }
+             if ( serie.trackingShape ) {
+              serie.trackingShape.hide();
+            }
+             if ( serie._trackingLegend ) {
+              serie._trackingLegend.style.display = 'none';
+            }
+             serie._trackingLegend = _trackingLegendSerie( this, {
+              serie: serie
+            }, false, false, serie._trackingLegend, false, false );
+           } );
+        */
 
-          if (serie.trackingShape) {
-            serie.trackingShape.hide();
-          }
-
-          if (serie._trackingLegend) {
-            serie._trackingLegend.style.display = 'none';
-          }
-
-          serie._trackingLegend = _trackingLegendSerie(_this10, {
-            serie: serie
-          }, false, false, serie._trackingLegend, false, false);
-        });
       }
       /**
        *  Pass here the katex.render method to be used later
@@ -11818,7 +11897,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "exportToSchema",
       value: function exportToSchema() {
-        var _this11 = this;
+        var _this10 = this;
 
         var schema = {};
         schema.title = this.options.title;
@@ -11831,11 +11910,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           y: []
         };
         axesPositions.map(function (axisPosition) {
-          if (!_this11.axis[axisPosition]) {
+          if (!_this10.axis[axisPosition]) {
             return {};
           }
 
-          axesExport = axesExport.concat(_this11.axis[axisPosition].map(function (axis) {
+          axesExport = axesExport.concat(_this10.axis[axisPosition].map(function (axis) {
             return {
               type: axisPosition,
               label: axis.options.label,
@@ -11847,9 +11926,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }));
 
           if (axisPosition == 'top' || axisPosition == 'bottom') {
-            allaxes.x = allaxes.x.concat(_this11.axis[axisPosition]);
+            allaxes.x = allaxes.x.concat(_this10.axis[axisPosition]);
           } else {
-            allaxes.y = allaxes.y.concat(_this11.axis[axisPosition]);
+            allaxes.y = allaxes.y.concat(_this10.axis[axisPosition]);
           }
         });
         schema.axis = axesExport;
@@ -12348,7 +12427,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.1.15"
+        'data-jsgraph-version': "v2.1.16"
       });
     } catch (e) {// ignore
     }
@@ -12609,8 +12688,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (!graph.activePlugin) {
       var index; // Takes care of the tracking line
 
-      if (graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie) {
-        if (graph.options.trackingLine.mode == 'common') {
+      if (graph.options.trackingLine && graph.options.trackingLine.enable) {
+        if (graph.options.trackingLine.mode == 'common' && graph.options.trackingLine.snapToSerie) {
           var snapToSerie = graph.options.trackingLine.snapToSerie;
           index = snapToSerie.handleMouseMove(false, true);
 
@@ -12645,6 +12724,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           graph._trackingLegend = _trackingLegendSerie(graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef);
+        } else if (graph.options.trackingLine.mode == 'individual') {
+          graph.options.trackingLine.series.forEach(function (serie) {
+            var index = serie.serie.handleMouseMove(false, true);
+            console.log(serie, index);
+            var distance = serie.serie.getShortestDistanceToPoint(x, y, serie.withinPx, serie.withinPx);
+            console.log(distance);
+          });
         }
       }
     } // End takes care of the tracking line
@@ -17104,10 +17190,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "enableTracking",
       value: function enableTracking(hoverCallback, outCallback) {
-        console.log('sdfsdf');
         this._tracker = true;
-        this._trackingCallback = hoverCallback;
-        this._trackingOutCallback = outCallback;
         return this;
       }
       /**
@@ -17127,7 +17210,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this._tracker = false;
-        this._trackingCallback = null;
         return this;
       }
       /**

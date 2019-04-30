@@ -574,18 +574,20 @@ class Waveform {
 
   getShortestDistanceToPoint( valX, valY, maxDistanceX, maxDistanceY ) {
 
-
     valX -= this.getXShift();
     valX /= this.getXScale();
 
     valY -= this.getShift();
     valY /= this.getScale();
 
-    let x, y,y2,x2, i, distance, shortestDistance, shortestDistanceIndex;
+    let x, y, y2, x2, i, distance, shortestDistance, shortestDistanceIndex;
 
-    const point = { x: valX, y: valY };
+    const point = {
+      x: valX,
+      y: valY
+    };
 
-    for( i = 0; i < this.length() - 1; i ++ ) {
+    for ( i = 0; i < this.length() - 1; i++ ) {
 
       shortestDistance = Math.POSITIVE_INFINITY;
       shortestDistanceIndex = 0;
@@ -593,16 +595,22 @@ class Waveform {
       x = this.getX( i );
       y = this.getY( i );
 
-      x2 = this.getX( i+1 );
-      y2 = this.getY( i+1 );
+      x2 = this.getX( i + 1 );
+      y2 = this.getY( i + 1 );
 
-      if( ( maxDistanceX && ( ( ( x - valX ) > maxDistanceX && ( x2 - valX ) > maxDistanceX ) || ( ( valX - x ) > maxDistanceX && ( valX - x2 ) > maxDistanceX ) ) ) ||
-      ( maxDistanceY && ( ( ( y - valY ) > maxDistanceY && ( y2 - valY ) > maxDistanceY ) || ( ( valY - y ) > maxDistanceY && ( valY - y2 ) > maxDistanceY ) ) ) ) {
+      if ( ( maxDistanceX && ( ( ( x - valX ) > maxDistanceX && ( x2 - valX ) > maxDistanceX ) || ( ( valX - x ) > maxDistanceX && ( valX - x2 ) > maxDistanceX ) ) ) ||
+        ( maxDistanceY && ( ( ( y - valY ) > maxDistanceY && ( y2 - valY ) > maxDistanceY ) || ( ( valY - y ) > maxDistanceY && ( valY - y2 ) > maxDistanceY ) ) ) ) {
         continue;
       }
 
-      distance = distToSegment( point, { x: x, y: y }, { x: x2, y: y2 } );
-      if( distance < shortestDistance ) {
+      distance = distToSegment( point, {
+        x: x,
+        y: y
+      }, {
+        x: x2,
+        y: y2
+      } );
+      if ( distance < shortestDistance ) {
         shortestDistance = distance;
         shortestDistanceIndex = i;
       }
@@ -2237,19 +2245,24 @@ class WaveformHash extends Waveform {
   }
 }
 
-
-function dist2(v, w) { return (v.x - w.x)**2 + (v.y - w.y)**2 }
-function distToSegmentSquared(p, v, w) {
-  var l2 = dist2(v, w);
-  if (l2 == 0) return dist2(p, v);
-  var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
-  t = Math.max(0, Math.min(1, t));
-  return dist2(p, { x: v.x + t * (w.x - v.x),
-                    y: v.y + t * (w.y - v.y) });
+function dist2( v, w ) {
+  return ( v.x - w.x ) ** 2 + ( v.y - w.y ) ** 2
 }
-function distToSegment(p, v, w) { return distToSegmentSquared(p, v, w)**0.5; }
 
+function distToSegmentSquared( p, v, w ) {
+  var l2 = dist2( v, w );
+  if ( l2 == 0 ) return dist2( p, v );
+  var t = ( ( p.x - v.x ) * ( w.x - v.x ) + ( p.y - v.y ) * ( w.y - v.y ) ) / l2;
+  t = Math.max( 0, Math.min( 1, t ) );
+  return dist2( p, {
+    x: v.x + t * ( w.x - v.x ),
+    y: v.y + t * ( w.y - v.y )
+  } );
+}
 
+function distToSegment( p, v, w ) {
+  return distToSegmentSquared( p, v, w ) ** 0.5;
+}
 
 export {
   Waveform,

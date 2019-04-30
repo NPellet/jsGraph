@@ -1002,9 +1002,8 @@ class SerieLine extends SerieScatter {
     }
   }
 
-
   getShortestDistanceToPoint( withiPxX, withinPxY ) {
-    
+
     const valX = this.getXAxis().getMouseVal(),
       valY = this.getYAxis().getMouseVal(),
       distX = this.getXAxis().getRelVal( withinPxX ),

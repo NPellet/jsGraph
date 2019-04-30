@@ -889,12 +889,12 @@ class Graph extends EventEmitter {
     this._applyToAxes( ( axis ) => {
       axis.gridsOff();
     }, undefined, true, true );
-      }
-      gridsOn() {
+  }
+  gridsOn() {
     this._applyToAxes( ( axis ) => {
       axis.gridsOn();
     }, undefined, true, true );
-      }
+  }
 
   /**
    * Sets the background color
@@ -2312,7 +2312,7 @@ class Graph extends EventEmitter {
         serie: serie
       }, options ) );
     }
-  /*  serie.enableTracking( ( serie, index, x, y ) => {
+    /*  serie.enableTracking( ( serie, index, x, y ) => {
 
       if ( this.options.trackingLine.enable ) {
 
@@ -3350,7 +3350,7 @@ function _handleMouseMove( graph, x, y, e ) {
         }
         graph._trackingLegend = _trackingLegendSerie( graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef );
 
-      } else if( graph.options.trackingLine.mode == 'individual' ) {
+      } else if ( graph.options.trackingLine.mode == 'individual' ) {
 
         graph.options.trackingLine.series.forEach( serie => {
 
@@ -3358,10 +3358,9 @@ function _handleMouseMove( graph, x, y, e ) {
           console.log( serie, index );
 
           const distance = serie.serie.getShortestDistanceToPoint( x, y, serie.withinPx, serie.withinPx );
-console.log( distance );
+          console.log( distance );
 
-
-        });
+        } );
 
       }
     }
