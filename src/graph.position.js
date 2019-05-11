@@ -78,8 +78,8 @@ class Position {
 
     for ( var i in pos ) {
       var axis = i == 'x' ? xAxis : yAxis;
-      var val = this[i];
-      var dval = this[`d${i}`];
+      var val = this[ i ];
+      var dval = this[ `d${i}` ];
 
       if (
         val === undefined &&
@@ -91,13 +91,13 @@ class Position {
             continue;
           }
 
-          pos[i] = relativeTo ? relativeTo[i] : 0;
+          pos[ i ] = relativeTo ? relativeTo[ i ] : 0;
         } else if ( this.x !== undefined && serie ) {
           if ( _parsePx( this.x ) !== false ) {
             console.warn(
               'You have defined x in px and not y. Makes no sense. Returning 0 for y'
             );
-            pos[i] = 0;
+            pos[ i ] = 0;
           } else {
             try {
               var closest = serie.getClosestPointToXY( this.x );
@@ -110,24 +110,24 @@ class Position {
                 );
               }
 
-              pos[i] = serie.getY( closest.yClosest );
+              pos[ i ] = serie.getY( closest.yClosest );
             } catch ( error ) {
               console.error( error );
-              pos[i] = 0;
+              pos[ i ] = 0;
             }
           }
         }
       } else if ( val !== undefined ) {
-        pos[i] = this.getPx( val, axis );
+        pos[ i ] = this.getPx( val, axis );
       }
 
       if ( dval !== undefined ) {
         var def =
           val !== undefined ||
           relativeToComputed == undefined ||
-          relativeToComputed[i] == undefined
-            ? pos[i]
-            : relativeToComputed[i];
+          relativeToComputed[ i ] == undefined ?
+          pos[ i ] :
+          relativeToComputed[ i ];
 
         if (
           i == 'y' &&
@@ -155,11 +155,11 @@ class Position {
         if ( ( parsed = _parsePx( dval ) ) !== false ) {
           // dx in px => val + 10px
 
-          pos[i] = def + parsed; // return integer (will be interpreted as px)
+          pos[ i ] = def + parsed; // return integer (will be interpreted as px)
         } else if ( ( parsed = this._parsePercent( dval ) ) !== false ) {
-          pos[i] = def + this._getPositionPx( parsed, true, axis, graph ); // returns xx%
+          pos[ i ] = def + this._getPositionPx( parsed, true, axis, graph ); // returns xx%
         } else if ( axis ) {
-          pos[i] = def + axis.getRelPx( dval ); // px + unittopx
+          pos[ i ] = def + axis.getRelPx( dval ); // px + unittopx
         }
       }
     }
@@ -208,25 +208,25 @@ class Position {
 
   deltaPosition( mode, delta, axis ) {
     mode = mode == 'y' ? 'y' : 'x';
-    var ref = this[mode],
-      refd = this[`d${mode}`],
+    var ref = this[ mode ],
+      refd = this[ `d${mode}` ],
       refPx,
       deltaPx;
 
     if ( ref !== undefined ) {
       if ( ( refPx = _parsePx( ref ) ) !== false ) {
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[mode] = `${refPx + deltaPx}px`;
+          this[ mode ] = `${refPx + deltaPx}px`;
         } else {
-          this[mode] = `${refPx + axis.getRelPx( delta )}px`;
+          this[ mode ] = `${refPx + axis.getRelPx( delta )}px`;
         }
       } else {
         ref = this.getValPosition( ref, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[mode] = ref + axis.getRelVal( deltaPx );
+          this[ mode ] = ref + axis.getRelVal( deltaPx );
         } else {
-          this[mode] = ref + delta;
+          this[ mode ] = ref + delta;
         }
       }
     } else if ( refd !== undefined ) {
@@ -238,17 +238,17 @@ class Position {
 
       if ( ( refPx = _parsePx( refd ) ) !== false ) {
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[`d${mode}`] = `${refPx + deltaPx}px`;
+          this[ `d${mode}` ] = `${refPx + deltaPx}px`;
         } else {
-          this[`d${mode}`] = `${refPx + axis.getRelPx( delta )}px`;
+          this[ `d${mode}` ] = `${refPx + axis.getRelPx( delta )}px`;
         }
       } else {
         refd = this.getValPosition( refd, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[`d${mode}`] = refd + axis.getRelVal( deltaPx );
+          this[ `d${mode}` ] = refd + axis.getRelVal( deltaPx );
         } else {
-          this[`d${mode}`] = refd + delta;
+          this[ `d${mode}` ] = refd + delta;
         }
       }
     }

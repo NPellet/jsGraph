@@ -537,24 +537,23 @@ class SerieScatter extends Serie {
       interpolation: false
     } );
 
-
     return {
 
       indexBefore: closestPointIndex,
       indexAfter: closestPointIndex,
 
       xBefore: this.waveform.getX( closestPointIndex ),
-      xAfter:  this.waveform.getX( closestPointIndex ),
-      yBefore:  this.waveform.getY( closestPointIndex ),
-      yAfter:  this.waveform.getX( closestPointIndex ),
-      
-      xExact:  valX,
-      
-      indexClosest: closestPointIndex,
-      interpolatedY:  this.waveform.getY( closestPointIndex ),
+      xAfter: this.waveform.getX( closestPointIndex ),
+      yBefore: this.waveform.getY( closestPointIndex ),
+      yAfter: this.waveform.getX( closestPointIndex ),
 
-      xClosest:  this.waveform.getX( closestPointIndex ),
-      yClosest:  this.waveform.getY( closestPointIndex )
+      xExact: valX,
+
+      indexClosest: closestPointIndex,
+      interpolatedY: this.waveform.getY( closestPointIndex ),
+
+      xClosest: this.waveform.getX( closestPointIndex ),
+      yClosest: this.waveform.getY( closestPointIndex )
     };
   }
 }

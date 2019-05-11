@@ -1474,6 +1474,194 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 
     
 
+    <h4 class="doc-code" id="getClosestPointToXY"><span class="type-signature"></span><span>{<span class="doc-return">Object</span>} </span><span class="doc-name">getClosestPointToXY</span><span class="doc-signature">( <span class="doc-type">Number</span> valX , <span class="doc-type">number</span> valY )</span></h4>
+
+
+
+
+<div class="description">
+    Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>valX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x value to search for</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>valY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The y value to search for. Optional. When omitted, only a search in x will be done</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="SerieLine.html#getClosestPointToXY">SerieLine#getClosestPointToXY</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Object</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="getData"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;(Float64Array|Int32Array)></span>} </span><span class="doc-name">getData</span><span class="doc-signature">( )</span></h4>
 
 
@@ -4524,359 +4712,6 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 	
 
     The current serie instance
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="searchClosestValue"><span class="type-signature"></span><span>{<span class="doc-return">Object</span>} </span><span class="doc-name">searchClosestValue</span><span class="doc-signature">( <span class="doc-type">Number</span> valX )</span></h4>
-
-
-
-
-<div class="description">
-    Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>valX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The x value to search for</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#searchClosestValue">SerieLine#searchClosestValue</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Object</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="searchIndexByPxXY"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">searchIndexByPxXY</span><span class="doc-signature">( <span class="doc-type">Number</span> x , <span class="doc-type">Number</span> y )</span></h4>
-
-
-
-
-<div class="description">
-    Searches the closest point pair (x,y) to the a pair of pixel position
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The x position in pixels (from the left)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The y position in pixels (from the left)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#searchIndexByPxXY">SerieLine#searchIndexByPxXY</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
 </div>
 
         

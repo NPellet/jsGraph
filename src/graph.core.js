@@ -2,7 +2,10 @@ import GraphPosition from './graph.position.js';
 import * as util from './graph.util.js';
 import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
 import graphFromJson from './renderer/main.js';
-import { Waveform, WaveformHash } from './util/waveform.js';
+import {
+  Waveform,
+  WaveformHash
+} from './util/waveform.js';
 
 /**
  * Default graph parameters
@@ -148,19 +151,19 @@ class Graph extends EventEmitter {
     // Load all axes
     if ( axis ) {
       for ( var i in axis ) {
-        for ( var j = 0, l = axis[i].length; j < l; j++ ) {
+        for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
           switch ( i ) {
             case 'top':
-              this.getTopAxis( j, axis[i][j] );
+              this.getTopAxis( j, axis[ i ][ j ] );
               break;
             case 'left':
-              this.getLeftAxis( j, axis[i][j] );
+              this.getLeftAxis( j, axis[ i ][ j ] );
               break;
             case 'right':
-              this.getRightAxis( j, axis[i][j] );
+              this.getRightAxis( j, axis[ i ][ j ] );
               break;
             case 'bottom':
-              this.getBottomAxis( j, axis[i][j] );
+              this.getBottomAxis( j, axis[ i ][ j ] );
               break;
 
             default:
@@ -183,7 +186,7 @@ class Graph extends EventEmitter {
     } else if ( typeof wrapper == 'string' ) {
       wrapper = document.getElementById( wrapper );
     } else if ( typeof wrapper.length == 'number' ) {
-      wrapper = wrapper[0];
+      wrapper = wrapper[ 0 ];
     }
 
     if ( !wrapper ) {
@@ -194,11 +197,11 @@ class Graph extends EventEmitter {
       throw new Error( 'The wrapper appears to be an invalid HTMLElement' );
     }
 
-    wrapper.style['-webkit-user-select'] = 'none';
-    wrapper.style['-moz-user-select'] = 'none';
-    wrapper.style['-o-user-select'] = 'none';
-    wrapper.style['-ms-user-select'] = 'none';
-    wrapper.style['user-select'] = 'none';
+    wrapper.style[ '-webkit-user-select' ] = 'none';
+    wrapper.style[ '-moz-user-select' ] = 'none';
+    wrapper.style[ '-o-user-select' ] = 'none';
+    wrapper.style[ '-ms-user-select' ] = 'none';
+    wrapper.style[ 'user-select' ] = 'none';
 
     wrapper.style.position = 'relative';
     wrapper.style.outline = 'none';
@@ -256,7 +259,7 @@ class Graph extends EventEmitter {
    * @returns {Graph} - Graph instance
    */
   setOption( name, val ) {
-    this.options[name] = val;
+    this.options[ name ] = val;
     return this;
   }
 
@@ -543,7 +546,7 @@ class Graph extends EventEmitter {
   }
 
   getNumAxes( position ) {
-    return this.axis[position].length;
+    return this.axis[ position ].length;
   }
 
   /**
@@ -641,10 +644,10 @@ class Graph extends EventEmitter {
   setLeftAxis( axis, index ) {
     index = index || 0;
 
-    if ( this.axis.left[index] ) {
-      this.axis.left[index].kill();
+    if ( this.axis.left[ index ] ) {
+      this.axis.left[ index ].kill();
     }
-    this.axis.left[index] = axis;
+    this.axis.left[ index ] = axis;
   }
 
   /**
@@ -660,10 +663,10 @@ class Graph extends EventEmitter {
   setRightAxis( axis, index ) {
     index = index || 0;
 
-    if ( this.axis.right[index] ) {
-      this.axis.right[index].kill();
+    if ( this.axis.right[ index ] ) {
+      this.axis.right[ index ].kill();
     }
-    this.axis.right[index] = axis;
+    this.axis.right[ index ] = axis;
   }
 
   /**
@@ -679,10 +682,10 @@ class Graph extends EventEmitter {
   setTopAxis( axis, index ) {
     index = index || 0;
 
-    if ( this.axis.top[index] ) {
-      this.axis.top[index].kill();
+    if ( this.axis.top[ index ] ) {
+      this.axis.top[ index ].kill();
     }
-    this.axis.top[index] = axis;
+    this.axis.top[ index ] = axis;
   }
 
   /**
@@ -698,10 +701,10 @@ class Graph extends EventEmitter {
   setBottomAxis( axis, index ) {
     index = index || 0;
 
-    if ( this.axis.bottom[index] ) {
-      this.axis.bottom[index].kill();
+    if ( this.axis.bottom[ index ] ) {
+      this.axis.bottom[ index ].kill();
     }
-    this.axis.bottom[index] = axis;
+    this.axis.bottom[ index ] = axis;
   }
 
   killAxis( axis, noRedraw = false, noSerieKill = false ) {
@@ -808,11 +811,11 @@ class Graph extends EventEmitter {
    */
   hasAxis( axis, axisList ) {
     for ( var i = 0, l = axisList.length; i < l; i++ ) {
-      if ( axisList[i] == axis ) {
+      if ( axisList[ i ] == axis ) {
         return true;
       }
 
-      if ( axisList[i].hasAxis( axis ) ) {
+      if ( axisList[ i ].hasAxis( axis ) ) {
         return true;
       }
     }
@@ -906,7 +909,7 @@ class Graph extends EventEmitter {
   getAxisState() {
     var state = {};
     for ( var i in this.axis ) {
-      state[i] = this.axis[i].map( function( axis ) {
+      state[ i ] = this.axis[ i ].map( function( axis ) {
         return [ axis.getCurrentMin(), axis.getCurrentMax() ];
       } );
     }
@@ -916,17 +919,17 @@ class Graph extends EventEmitter {
   setAxisState( state ) {
     var j, l;
     for ( var i in state ) {
-      if ( !this.axis[i] ) {
+      if ( !this.axis[ i ] ) {
         continue;
       }
 
-      for ( j = 0, l = state[i].length; j < l; j++ ) {
-        if ( !this.axis[i][j] ) {
+      for ( j = 0, l = state[ i ].length; j < l; j++ ) {
+        if ( !this.axis[ i ][ j ] ) {
           continue;
         }
 
-        this.axis[i][j].setCurrentMin( state[i][j][0] );
-        this.axis[i][j].setCurrentMax( state[i][j][1] );
+        this.axis[ i ][ j ].setCurrentMin( state[ i ][ j ][ 0 ] );
+        this.axis[ i ][ j ].setCurrentMax( state[ i ][ j ][ 1 ] );
       }
     }
 
@@ -935,13 +938,13 @@ class Graph extends EventEmitter {
 
   saveAxisState( savedName ) {
     this.savedAxisState = this.savedAxisState || {};
-    this.savedAxisState[savedName] = this.getAxisState();
+    this.savedAxisState[ savedName ] = this.getAxisState();
     return this;
   }
 
   recallAxisState( savedName ) {
-    if ( this.savedAxisState[savedName] ) {
-      this.recallAxisState( this.savedAxisState[savedName] );
+    if ( this.savedAxisState[ savedName ] ) {
+      this.recallAxisState( this.savedAxisState[ savedName ] );
     }
     return this;
   }
@@ -952,15 +955,15 @@ class Graph extends EventEmitter {
         return function( type, func, params ) {
           //    params.splice(1, 0, type);
 
-          for ( var i = 0; i < this.axis[type].length; i++ ) {
-            this.axis[type][i][func].apply( this.axis[type][i], params );
+          for ( var i = 0; i < this.axis[ type ].length; i++ ) {
+            this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
           }
         };
 
       case 'function':
         return function( type, func, params ) {
-          for ( var i = 0; i < this.axis[type].length; i++ ) {
-            func.call( this, this.axis[type][i], type, params );
+          for ( var i = 0; i < this.axis[ type ].length; i++ ) {
+            func.call( this, this.axis[ type ][ i ], type, params );
           }
         };
 
@@ -993,7 +996,7 @@ class Graph extends EventEmitter {
     var min = minmax == 'min',
       val,
       func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
-      func2use = func[min ? 0 : 1],
+      func2use = func[ min ? 0 : 1 ],
       infinity2use = min ? +Infinity : -Infinity,
       serie,
       series,
@@ -1005,14 +1008,14 @@ class Graph extends EventEmitter {
     series = this.getSeriesFromAxis( axis );
 
     for ( i = 0, l = series.length; i < l; i++ ) {
-      serie = series[i];
+      serie = series[ i ];
 
       if ( !serie.isShown() ) {
         continue;
       }
 
-      serieValue = serie[func2use]( usingZValues );
-      val = Math[minmax](
+      serieValue = serie[ func2use ]( usingZValues );
+      val = Math[ minmax ](
         isNaN( val ) ? infinity2use : val,
         isNaN( serieValue ) ? infinity2use : serieValue
       );
@@ -1032,10 +1035,10 @@ class Graph extends EventEmitter {
 
     for ( ; i >= 0; i-- ) {
       if (
-        this.series[i].getXAxis() == axis ||
-        this.series[i].getYAxis() == axis
+        this.series[ i ].getXAxis() == axis ||
+        this.series[ i ].getYAxis() == axis
       ) {
-        series.push( this.series[i] );
+        series.push( this.series[ i ] );
       }
     }
 
@@ -1054,8 +1057,8 @@ class Graph extends EventEmitter {
       i;
 
     for ( j = 0, l = axisvars.length; j < l; j++ ) {
-      for ( i = this.axis[axisvars[j]].length - 1; i >= 0; i-- ) {
-        axis = this.axis[axisvars[j]][i];
+      for ( i = this.axis[ axisvars[ j ] ].length - 1; i >= 0; i-- ) {
+        axis = this.axis[ axisvars[ j ] ][ i ];
 
         // 25.10.2017. Wait a second, this cannot be real. Even hidden axes must have min max values.
         // The data can be displayed while the axis is hidden
@@ -1065,12 +1068,12 @@ class Graph extends EventEmitter {
         }
 
         let min = this.getBoundaryAxis(
-          this.axis[axisvars[j]][i],
+          this.axis[ axisvars[ j ] ][ i ],
           'min',
           usingZValues
         );
         let max = this.getBoundaryAxis(
-          this.axis[axisvars[j]][i],
+          this.axis[ axisvars[ j ] ][ i ],
           'max',
           usingZValues
         );
@@ -1119,7 +1122,7 @@ class Graph extends EventEmitter {
     }
 
     for ( l = ax.length; i < l; i++ ) {
-      this._applyToAxis( typeof func ).call( this, ax[i], func, params );
+      this._applyToAxis( typeof func ).call( this, ax[ i ], func, params );
     }
   }
 
@@ -1136,8 +1139,7 @@ class Graph extends EventEmitter {
         if ( a.linkedToAxis && a.linkedToAxis.axis == axis ) {
           axes.push( a );
         }
-      },
-      {},
+      }, {},
       axis instanceof this.getConstructor( 'graph.axis.x' ),
       axis instanceof this.getConstructor( 'graph.axis.y' )
     );
@@ -1194,7 +1196,7 @@ class Graph extends EventEmitter {
    */
   getSerie( name ) {
     if ( typeof name == 'number' ) {
-      return this.series[name] || false;
+      return this.series[ name ] || false;
     }
 
     if ( typeof name == 'function' ) {
@@ -1205,8 +1207,8 @@ class Graph extends EventEmitter {
       l = this.series.length;
 
     for ( ; i < l; i++ ) {
-      if ( this.series[i].getName() == name || this.series[i] == name ) {
-        return this.series[i];
+      if ( this.series[ i ].getName() == name || this.series[ i ] == name ) {
+        return this.series[ i ];
       }
     }
 
@@ -1271,8 +1273,8 @@ class Graph extends EventEmitter {
 
     var i = this.series.length - 1;
     for ( ; i >= 0; i-- ) {
-      if ( this.series[i].isShown() ) {
-        this.drawSerie( this.series[i], force );
+      if ( this.series[ i ].isShown() ) {
+        this.drawSerie( this.series[ i ], force );
       }
     }
   }
@@ -1296,8 +1298,8 @@ class Graph extends EventEmitter {
    * Removes all series from the graph
    */
   removeSeries() {
-    while ( this.series[0] ) {
-      this.series[0].kill( true );
+    while ( this.series[ 0 ] ) {
+      this.series[ 0 ].kill( true );
     }
     this.series = [];
 
@@ -1365,8 +1367,8 @@ class Graph extends EventEmitter {
     var i = this.shapes.length - 1;
 
     for ( ; i >= 0; i-- ) {
-      if ( this.shapes[i].getSerie() == serie ) {
-        shapes.push( this.shapes[i] );
+      if ( this.shapes[ i ].getSerie() == serie ) {
+        shapes.push( this.shapes[ i ] );
       }
     }
 
@@ -1451,13 +1453,13 @@ class Graph extends EventEmitter {
 
     if ( shapeData.props !== undefined ) {
       for ( var i in shapeData.props ) {
-        shape.setProp( i, shapeData.props[i] );
+        shape.setProp( i, shapeData.props[ i ] );
       }
     }
 
     if ( shapeData.position ) {
       for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
-        shape.setPosition( new GraphPosition( shapeData.position[i] ), i );
+        shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
       }
     }
 
@@ -1518,7 +1520,10 @@ class Graph extends EventEmitter {
       shapeData.transforms !== undefined &&
       Array.isArray( shapeData.transforms )
     ) {
-      shapeData.transforms.forEach( ( { type, value } ) => {
+      shapeData.transforms.forEach( ( {
+        type,
+        value
+      } ) => {
         shape.addTransform( type, value );
       } );
     }
@@ -1542,19 +1547,19 @@ class Graph extends EventEmitter {
 
       for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
         shape.showLabel( i );
-        shape.setLabelText( shapeData.label[i].text, i );
-        shape.setLabelPosition( shapeData.label[i].position, i );
-        shape.setLabelColor( shapeData.label[i].color || 'black', i );
-        shape.setLabelSize( shapeData.label[i].size, i );
-        shape.setLabelAngle( shapeData.label[i].angle || 0, i );
-        shape.setLabelBaseline( shapeData.label[i].baseline || 'no-change', i );
-        shape.setLabelAnchor( shapeData.label[i].anchor || 'start', i );
+        shape.setLabelText( shapeData.label[ i ].text, i );
+        shape.setLabelPosition( shapeData.label[ i ].position, i );
+        shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
+        shape.setLabelSize( shapeData.label[ i ].size, i );
+        shape.setLabelAngle( shapeData.label[ i ].angle || 0, i );
+        shape.setLabelBaseline( shapeData.label[ i ].baseline || 'no-change', i );
+        shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
         shape.setLabelBackgroundColor(
-          shapeData.label[i].backgroundColor || 'transparent',
+          shapeData.label[ i ].backgroundColor || 'transparent',
           i
         );
         shape.setLabelBackgroundOpacity(
-          shapeData.label[i].backgroundOpacity || 1,
+          shapeData.label[ i ].backgroundOpacity || 1,
           i
         );
       }
@@ -1594,7 +1599,7 @@ class Graph extends EventEmitter {
   redrawShapes() {
     //this.graphingZone.removeChild(this.shapeZone);
     for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-      this.shapes[i].redraw();
+      this.shapes[ i ].redraw();
     }
     //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
   }
@@ -1604,8 +1609,8 @@ class Graph extends EventEmitter {
    */
   removeShapes() {
     for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-      if ( this.shapes[i] && this.shapes[i].kill ) {
-        this.shapes[i].kill( true );
+      if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
+        this.shapes[ i ].kill( true );
       }
     }
     this.shapes = [];
@@ -1691,8 +1696,8 @@ class Graph extends EventEmitter {
    * @return {Graph} The current graph instance
    */
   unselectShapes( mute ) {
-    while ( this.selectedShapes[0] ) {
-      this.unselectShape( this.selectedShapes[0], mute );
+    while ( this.selectedShapes[ 0 ] ) {
+      this.unselectShape( this.selectedShapes[ 0 ], mute );
     }
 
     return this;
@@ -1729,40 +1734,40 @@ class Graph extends EventEmitter {
   }
 
   getLayer( layer, mode ) {
-    if ( !this.layers[layer] ) {
-      this.layers[layer] = [];
+    if ( !this.layers[ layer ] ) {
+      this.layers[ layer ] = [];
 
-      this.layers[layer][0] = document.createElementNS( Graph.ns, 'g' );
-      this.layers[layer][0].setAttribute( 'data-layer', layer );
-      this.layers[layer][1] = document.createElementNS( Graph.ns, 'g' );
-      this.layers[layer][2] = document.createElementNS( Graph.ns, 'g' );
+      this.layers[ layer ][ 0 ] = document.createElementNS( Graph.ns, 'g' );
+      this.layers[ layer ][ 0 ].setAttribute( 'data-layer', layer );
+      this.layers[ layer ][ 1 ] = document.createElementNS( Graph.ns, 'g' );
+      this.layers[ layer ][ 2 ] = document.createElementNS( Graph.ns, 'g' );
 
-      this.layers[layer][0].appendChild( this.layers[layer][1] );
-      this.layers[layer][0].appendChild( this.layers[layer][2] );
+      this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 1 ] );
+      this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 2 ] );
 
       var i = 1,
         prevLayer;
 
-      while ( !( prevLayer = this.layers[layer - i] ) && layer - i >= 0 ) {
+      while ( !( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
         i++;
       }
 
       if ( !prevLayer ) {
         this.plotGroup.insertBefore(
-          this.layers[layer][0],
+          this.layers[ layer ][ 0 ],
           this.plotGroup.firstChild
         );
       } else if ( prevLayer.nextSibling ) {
         this.plotGroup.insertBefore(
-          this.layers[layer][0],
+          this.layers[ layer ][ 0 ],
           prevLayer.nextSibling
         );
       } else {
-        this.plotGroup.appendChild( this.layers[layer][0] );
+        this.plotGroup.appendChild( this.layers[ layer ][ 0 ] );
       }
     }
 
-    return this.layers[layer][mode == 'shape' ? 2 : 1];
+    return this.layers[ layer ][ mode == 'shape' ? 2 : 1 ];
   }
 
   focus() {
@@ -1792,7 +1797,7 @@ class Graph extends EventEmitter {
       line.setAttribute( 'shape-rendering', 'crispEdges' );
       line.setAttribute( 'stroke-linecap', 'square' );
       line.setAttribute( 'display', 'none' );
-      this.closingLines[els[i]] = line;
+      this.closingLines[ els[ i ] ] = line;
       this.graphingZone.appendChild( line );
     }
   }
@@ -1811,9 +1816,9 @@ class Graph extends EventEmitter {
 
     if (
       action.enabled &&
-      ( typeof action.enabled == 'function'
-        ? !action.enabled( this )
-        : !action.enabled )
+      ( typeof action.enabled == 'function' ?
+        !action.enabled( this ) :
+        !action.enabled )
     ) {
       return;
     }
@@ -1835,7 +1840,7 @@ class Graph extends EventEmitter {
           right: 39
         };
 
-        if ( keyCheck[action.key] !== e.keyCode ) {
+        if ( keyCheck[ action.key ] !== e.keyCode ) {
           return;
         }
       }
@@ -1877,8 +1882,8 @@ class Graph extends EventEmitter {
     //			Array.prototype.splice.apply(args, [0, 0, this]);
 
     for ( var i in this.plugins ) {
-      if ( this.plugins[i] && this.plugins[i][funcName] ) {
-        this.plugins[i][funcName].apply( this.plugins[i], args );
+      if ( this.plugins[ i ] && this.plugins[ i ][ funcName ] ) {
+        this.plugins[ i ][ funcName ].apply( this.plugins[ i ], args );
       }
     }
   }
@@ -1889,8 +1894,8 @@ class Graph extends EventEmitter {
       return;
     }
 
-    if ( this.plugins[which] && this.plugins[which][func] ) {
-      this.plugins[which][func].apply( this.plugins[which], args );
+    if ( this.plugins[ which ] && this.plugins[ which ][ func ] ) {
+      this.plugins[ which ][ func ].apply( this.plugins[ which ], args );
       return true;
     }
   }
@@ -1904,7 +1909,7 @@ class Graph extends EventEmitter {
       serie = this.getSerie( serie );
     }
 
-    if ( typeof serie[func] == 'function' ) {
+    if ( typeof serie[ func ] == 'function' ) {
       serie.apply( serie, args );
     }
   }
@@ -1913,19 +1918,19 @@ class Graph extends EventEmitter {
 
     for ( var i in this.options.plugins ) {
       pluginName = i;
-      pluginOptions = this.options.plugins[i];
+      pluginOptions = this.options.plugins[ i ];
 
       constructor = this.getConstructor( `graph.plugin.${pluginName}` );
 
       if ( constructor ) {
         //var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
-        this.plugins[pluginName] = new constructor( pluginOptions );
+        this.plugins[ pluginName ] = new constructor( pluginOptions );
 
         util.mapEventEmission(
-          this.plugins[pluginName].options,
-          this.plugins[pluginName]
+          this.plugins[ pluginName ].options,
+          this.plugins[ pluginName ]
         );
-        this.plugins[pluginName].init( this, pluginOptions );
+        this.plugins[ pluginName ].init( this, pluginOptions );
       } else {
         util.throwError( `Plugin "${pluginName}" has not been registered` );
       }
@@ -1938,7 +1943,7 @@ class Graph extends EventEmitter {
    * @returns {Plugin} The plugin which name is <pluginName>
    */
   getPlugin( pluginName ) {
-    var plugin = this.plugins[pluginName];
+    var plugin = this.plugins[ pluginName ];
 
     if ( !plugin ) {
       return util.throwError(
@@ -1950,16 +1955,16 @@ class Graph extends EventEmitter {
   }
 
   hasPlugin( pluginName ) {
-    return !!this.plugins[pluginName];
+    return !!this.plugins[ pluginName ];
   }
 
   triggerEvent() {
-    var func = arguments[0];
+    var func = arguments[ 0 ];
     /*,
           args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
     */
-    if ( typeof this.options[func] == 'function' ) {
-      return this.options[func].apply( this, arguments );
+    if ( typeof this.options[ func ] == 'function' ) {
+      return this.options[ func ].apply( this, arguments );
     }
   }
 
@@ -2061,13 +2066,13 @@ class Graph extends EventEmitter {
     } );
 
     sort.sort( ( sa, sb ) => {
-      return sb[0] - sa[0];
+      return sb[ 0 ] - sa[ 0 ];
     } );
 
     let i = 0;
     sort.forEach( ( s ) => {
-      s[1].setLayer( i );
-      this.appendSerieToDom( s[1] );
+      s[ 1 ].setLayer( i );
+      this.appendSerieToDom( s[ 1 ] );
       i++;
     } );
 
@@ -2094,8 +2099,8 @@ class Graph extends EventEmitter {
 
     // Removes the current actions of the shapes
     for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-      this.shapes[i].moving = false;
-      this.shapes[i].resizing = false;
+      this.shapes[ i ].moving = false;
+      this.shapes[ i ].resizing = false;
     }
   }
   unlockShapes() {
@@ -2240,10 +2245,8 @@ class Graph extends EventEmitter {
         this.trackingLineShape = this.newShape(
           'line',
           util.extend(
-            true,
-            {
-              position: [
-                {
+            true, {
+              position: [ {
                   y: 'min'
                 },
                 {
@@ -2292,15 +2295,14 @@ class Graph extends EventEmitter {
 
     if ( !serie.trackingShape ) {
       serie.trackingShape = this.newShape(
-        serieShape.shape,
-        {
-          fillColor: serie.getLineColor(),
-          strokeColor: 'White',
-          strokeWidth: serie.getLineWidth()
-        },
-        true,
-        serieShape.properties
-      )
+          serieShape.shape, {
+            fillColor: serie.getLineColor(),
+            strokeColor: 'White',
+            strokeWidth: serie.getLineWidth()
+          },
+          true,
+          serieShape.properties
+        )
         .setSerie( serie )
         .forceParentDom( serie.groupMain )
         .draw();
@@ -2433,12 +2435,12 @@ class Graph extends EventEmitter {
     };
 
     axesPositions.map( ( axisPosition ) => {
-      if ( !this.axis[axisPosition] ) {
+      if ( !this.axis[ axisPosition ] ) {
         return {};
       }
 
       axesExport = axesExport.concat(
-        this.axis[axisPosition].map( ( axis ) => {
+        this.axis[ axisPosition ].map( ( axis ) => {
           return {
             type: axisPosition,
             label: axis.options.label,
@@ -2451,9 +2453,9 @@ class Graph extends EventEmitter {
       );
 
       if ( axisPosition == 'top' || axisPosition == 'bottom' ) {
-        allaxes.x = allaxes.x.concat( this.axis[axisPosition] );
+        allaxes.x = allaxes.x.concat( this.axis[ axisPosition ] );
       } else {
-        allaxes.y = allaxes.y.concat( this.axis[axisPosition] );
+        allaxes.y = allaxes.y.concat( this.axis[ axisPosition ] );
       }
     } );
 
@@ -2484,13 +2486,13 @@ class Graph extends EventEmitter {
       switch ( serie.getType() ) {
         case Graph.SERIE_LINE:
           for ( var i = 0; i < serie.data.length; i++ ) {
-            for ( var j = 0; j < serie.data[i].length - 1; j += 2 ) {
+            for ( var j = 0; j < serie.data[ i ].length - 1; j += 2 ) {
               data.push(
-                serie.data[i][
+                serie.data[ i ][
                   j +
-                    ( ( x && serie.isFlipped() ) || ( !x && !serie.isFlipped() )
-                      ? 1
-                      : 0 )
+                  ( ( x && serie.isFlipped() ) || ( !x && !serie.isFlipped() ) ?
+                    1 :
+                    0 )
                 ]
               );
             }
@@ -2502,9 +2504,9 @@ class Graph extends EventEmitter {
             data.push(
               serie.data[
                 i +
-                  ( ( x && serie.isFlipped() ) || ( !x && !serie.isFlipped() )
-                    ? 1
-                    : 0 )
+                ( ( x && serie.isFlipped() ) || ( !x && !serie.isFlipped() ) ?
+                  1 :
+                  0 )
               ]
             );
           }
@@ -2524,9 +2526,9 @@ class Graph extends EventEmitter {
           for ( var stylename in serie.styles ) {
             linestyle.push( {
               styleName: stylename,
-              color: serie.styles[stylename].lineColor,
-              lineWidth: serie.styles[stylename].lineWidth,
-              lineStyle: serie.styles[stylename].lineStyle
+              color: serie.styles[ stylename ].lineColor,
+              lineWidth: serie.styles[ stylename ].lineWidth,
+              lineStyle: serie.styles[ stylename ].lineStyle
             } );
 
             let styleObj = {
@@ -2536,7 +2538,7 @@ class Graph extends EventEmitter {
             style.push( styleObj );
 
             styleObj.styles = styleObj.styles.concat(
-              ( serie.styles[stylename].markers || [] ).map( ( markers ) => {
+              ( serie.styles[ stylename ].markers || [] ).map( ( markers ) => {
                 return {
                   shape: markers.type,
                   zoom: markers.zoom,
@@ -2645,11 +2647,11 @@ function makeSerie( graph, name, options, type ) {
 function getAxisLevelFromSpan( span, level ) {
   for ( var i = 0, l = level.length; i < l; i++ ) {
     var possible = true;
-    for ( var k = 0, m = level[i].length; k < m; k++ ) {
+    for ( var k = 0, m = level[ i ].length; k < m; k++ ) {
       if (
         !(
-          ( span[0] < level[i][k][0] && span[1] < level[i][k][0] ) ||
-          ( span[0] > level[i][k][1] && span[1] > level[i][k][1] )
+          ( span[ 0 ] < level[ i ][ k ][ 0 ] && span[ 1 ] < level[ i ][ k ][ 0 ] ) ||
+          ( span[ 0 ] > level[ i ][ k ][ 1 ] && span[ 1 ] > level[ i ][ k ][ 1 ] )
         )
       ) {
         possible = false;
@@ -2657,7 +2659,7 @@ function getAxisLevelFromSpan( span, level ) {
     }
 
     if ( possible ) {
-      level[i].push( span );
+      level[ i ].push( span );
       return i;
     }
   }
@@ -2697,12 +2699,12 @@ function refreshDrawingZone( graph ) {
         return;
       }
 
-      var level = getAxisLevelFromSpan( axis.getSpan(), levels[position] );
+      var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
       axis.setLevel( level );
 
-      shift[position][level] = Math.max(
+      shift[ position ][ level ] = Math.max(
         axis.getAxisPosition(),
-        shift[position][level] || 0
+        shift[ position ][ level ] || 0
       );
     },
     false,
@@ -2722,7 +2724,7 @@ function refreshDrawingZone( graph ) {
 
   [ shift.top, shift.bottom ].map( function( arr ) {
     arr.reduce( function( prev, current, index ) {
-      arr[index] = prev + current;
+      arr[ index ] = prev + current;
       return prev + current;
     }, 0 );
   } );
@@ -2734,7 +2736,7 @@ function refreshDrawingZone( graph ) {
         return;
       }
 
-      axis.setShift( shift[position][axis.getLevel()] );
+      axis.setShift( shift[ position ][ axis.getLevel() ] );
     },
     false,
     true,
@@ -2769,16 +2771,16 @@ function refreshDrawingZone( graph ) {
         return;
       }
       // Get axis position gives the extra shift that is common
-      var level = getAxisLevelFromSpan( axis.getSpan(), levels[position] );
+      var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
       axis.setLevel( level );
 
       if ( axis.options.forcedWidth ) {
-        shift[position][level] = axis.options.forcedWidth;
+        shift[ position ][ level ] = axis.options.forcedWidth;
       } else {
-        shift[position][level] = Math.max( drawn, shift[position][level] || 0 );
+        shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
 
-        if ( level < shift[position].length - 1 ) {
-          shift[position][level] += 10;
+        if ( level < shift[ position ].length - 1 ) {
+          shift[ position ][ level ] += 10;
         }
       }
     },
@@ -2796,9 +2798,9 @@ function refreshDrawingZone( graph ) {
         return;
       }
 
-      shift2[position][axis.getLevel()] = Math.max(
-        shift[position][axis.getLevel()],
-        axis.equalizePosition( shift[position][axis.getLevel()] )
+      shift2[ position ][ axis.getLevel() ] = Math.max(
+        shift[ position ][ axis.getLevel() ],
+        axis.equalizePosition( shift[ position ][ axis.getLevel() ] )
       );
     },
     false,
@@ -2820,7 +2822,7 @@ function refreshDrawingZone( graph ) {
 
   [ shift.left, shift.right ].forEach( function( arr ) {
     arr.reduce( function( prev, current, index ) {
-      arr[index] = prev + current;
+      arr[ index ] = prev + current;
       return prev + current;
     }, 0 );
   } );
@@ -2831,7 +2833,7 @@ function refreshDrawingZone( graph ) {
       if ( !axis.isShown() || axis.floating ) {
         return;
       }
-      axis.setShift( shift[position][axis.getLevel()] );
+      axis.setShift( shift[ position ][ axis.getLevel() ] );
     },
     false,
     false,
@@ -2982,46 +2984,46 @@ function checkKeyActions( graph, e, parameters, methodName ) {
     l;
 
   for ( i = 0, l = keyComb.length; i < l; i++ ) {
-    if ( keyComb[i].plugin ) {
+    if ( keyComb[ i ].plugin ) {
       // Is it a plugin ?
 
       if (
-        graph.forcedPlugin == keyComb[i].plugin ||
-        graph.isActionAllowed( e, keyComb[i] )
+        graph.forcedPlugin == keyComb[ i ].plugin ||
+        graph.isActionAllowed( e, keyComb[ i ] )
       ) {
-        if ( keyComb[i].options ) {
-          parameters.push( keyComb[i].options );
+        if ( keyComb[ i ].options ) {
+          parameters.push( keyComb[ i ].options );
         }
 
-        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
-        graph._pluginExecute( keyComb[i].plugin, methodName, parameters );
+        graph.activePlugin = keyComb[ i ].plugin; // Lease the mouse action to the current action
+        graph._pluginExecute( keyComb[ i ].plugin, methodName, parameters );
 
         e.preventDefault();
         e.stopPropagation();
 
         return true;
       }
-    } else if ( keyComb[i].callback && graph.isActionAllowed( e, keyComb[i] ) ) {
-      if ( keyComb[i].options ) {
-        parameters.push( keyComb[i].options );
+    } else if ( keyComb[ i ].callback && graph.isActionAllowed( e, keyComb[ i ] ) ) {
+      if ( keyComb[ i ].options ) {
+        parameters.push( keyComb[ i ].options );
       }
 
       e.preventDefault();
       e.stopPropagation();
 
-      keyComb[i].callback.apply( graph, parameters );
+      keyComb[ i ].callback.apply( graph, parameters );
       return true;
     }
 
     if (
-      keyComb[i].removeSelectedShape &&
-      graph.isActionAllowed( e, keyComb[i] )
+      keyComb[ i ].removeSelectedShape &&
+      graph.isActionAllowed( e, keyComb[ i ] )
     ) {
       e.preventDefault();
       e.stopPropagation();
 
       graph.selectedShapes.map( ( shape ) => {
-        shape.kill( keyComb[i].keepInDom );
+        shape.kill( keyComb[ i ].keepInDom );
       } );
     }
 
@@ -3437,9 +3439,9 @@ function _handleMouseMove( graph, x, y, e ) {
           xOverwritePx,
           y,
           graph._trackingLegend,
-          graph.options.trackingLine.textMethod
-            ? graph.options.trackingLine.textMethod
-            : trackingLineDefaultTextMethod,
+          graph.options.trackingLine.textMethod ?
+          graph.options.trackingLine.textMethod :
+          trackingLineDefaultTextMethod,
           xRef
         );
       } else if ( graph.options.trackingLine.mode == 'individual' ) {
@@ -3502,12 +3504,10 @@ function _handleMouseMove( graph, x, y, e ) {
               if ( graph.options.trackingLine.legendType == 'independent' ) {
                 serie._trackingLegend = _trackingLegendSerie(
                   graph,
-                  [
-                    {
-                      serie: serie,
-                      closestPoint: closestPoint
-                    }
-                  ],
+                  [ {
+                    serie: serie,
+                    closestPoint: closestPoint
+                  } ],
                   x,
                   y,
                   serie._trackingLegend
@@ -3518,7 +3518,10 @@ function _handleMouseMove( graph, x, y, e ) {
           }
 
           if ( closestPoint )
-            output.push( { serie: serie, closestPoint: closestPoint } );
+            output.push( {
+              serie: serie,
+              closestPoint: closestPoint
+            } );
         } );
 
         if ( graph.options.trackingLine.legendType == 'common' ) {
@@ -3547,7 +3550,7 @@ function _handleMouseMove( graph, x, y, e ) {
     var results = {};
 
     for ( var i = 0; i < graph.series.length; i++ ) {
-      results[graph.series[i].getName()] = graph.series[i].handleMouseMove(
+      results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove(
         false,
         true
       );
@@ -3566,51 +3569,51 @@ function checkMouseActions( graph, e, parameters, methodName ) {
     executed = false;
 
   for ( i = 0, l = keyComb.length; i < l; i++ ) {
-    if ( keyComb[i].plugin ) {
+    if ( keyComb[ i ].plugin ) {
       // Is it a plugin ?
 
       if (
-        graph.forcedPlugin == keyComb[i].plugin ||
-        graph.isActionAllowed( e, keyComb[i] )
+        graph.forcedPlugin == keyComb[ i ].plugin ||
+        graph.isActionAllowed( e, keyComb[ i ] )
       ) {
-        if ( keyComb[i].options ) {
-          parameters.push( keyComb[i].options );
+        if ( keyComb[ i ].options ) {
+          parameters.push( keyComb[ i ].options );
         }
 
         // Lease the mouse action to the current action
         // 25.10.2017: Except for mousewheel. See #111
         if ( e.type !== 'wheel' && e.type !== 'mousewheel' ) {
-          graph.activePlugin = keyComb[i].plugin;
+          graph.activePlugin = keyComb[ i ].plugin;
         }
 
-        graph._pluginExecute( keyComb[i].plugin, methodName, parameters );
+        graph._pluginExecute( keyComb[ i ].plugin, methodName, parameters );
         executed = true;
         continue;
       }
-    } else if ( keyComb[i].callback && graph.isActionAllowed( e, keyComb[i] ) ) {
-      if ( keyComb[i].options ) {
-        parameters.push( keyComb[i].options );
+    } else if ( keyComb[ i ].callback && graph.isActionAllowed( e, keyComb[ i ] ) ) {
+      if ( keyComb[ i ].options ) {
+        parameters.push( keyComb[ i ].options );
       }
 
-      keyComb[i].callback.apply( graph, parameters );
+      keyComb[ i ].callback.apply( graph, parameters );
       executed = true;
       continue;
-    } else if ( keyComb[i].series ) {
+    } else if ( keyComb[ i ].series ) {
       var series;
-      if ( keyComb[i].series === 'all' ) {
+      if ( keyComb[ i ].series === 'all' ) {
         series = graph.series;
       }
 
-      if ( !Array.isArray( keyComb[i].series ) ) {
+      if ( !Array.isArray( keyComb[ i ].series ) ) {
         series = [ series ];
       }
 
-      if ( keyComb[i].options ) {
-        parameters.push( keyComb[i].options );
+      if ( keyComb[ i ].options ) {
+        parameters.push( keyComb[ i ].options );
       }
 
       for ( var j = 0; j < series.length; i++ ) {
-        graph._serieExecute( series[i], methodName, parameters );
+        graph._serieExecute( series[ i ], methodName, parameters );
       }
       executed = true;
       continue;
@@ -3671,9 +3674,9 @@ var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
     startY = parseInt( legend.style.marginTop.replace( 'px', '' ) || 0, 10 );
 
   toX =
-    toX > graph.getWidth() / 2
-      ? toX - ( toX % 10 ) - 20 - legend.offsetWidth
-      : toX - ( toX % 10 ) + 30;
+    toX > graph.getWidth() / 2 ?
+    toX - ( toX % 10 ) - 20 - legend.offsetWidth :
+    toX - ( toX % 10 ) + 30;
   toY = toY - ( toY % 10 ) + h / 2;
 
   if ( skip ) {
@@ -3725,7 +3728,7 @@ function _makeTrackingLegend( graph ) {
 const trackingLineDefaultTextMethod = ( output ) => {
   let txt = '';
   for ( var i in output ) {
-    if ( !output[i].closestPoint ) {
+    if ( !output[ i ].closestPoint ) {
       continue;
     }
 
@@ -3846,12 +3849,12 @@ function _getAxis( graph, num, options, pos ) {
     num = 0;
   }
 
-  if ( !graph.axis[pos][num] ) {
-    graph.axis[pos][num] = new inst( graph, pos, options );
-    graph.axis[pos][num].init( graph, options );
+  if ( !graph.axis[ pos ][ num ] ) {
+    graph.axis[ pos ][ num ] = new inst( graph, pos, options );
+    graph.axis[ pos ][ num ].init( graph, options );
   }
 
-  return graph.axis[pos][num];
+  return graph.axis[ pos ][ num ];
 }
 
 function _closeLine( graph, mode, x1, x2, y1, y2 ) {
@@ -3861,20 +3864,20 @@ function _closeLine( graph, mode, x1, x2, y1, y2 ) {
 
   var l = 0;
 
-  graph.axis[mode].map( function( g ) {
+  graph.axis[ mode ].map( function( g ) {
     if ( g.isDisplayed() && !g.floating ) {
       l++;
     }
   } );
 
-  if ( ( graph.options.close === true || graph.options.close[mode] ) && l == 0 ) {
-    graph.closingLines[mode].setAttribute( 'display', 'block' );
-    graph.closingLines[mode].setAttribute( 'x1', x1 );
-    graph.closingLines[mode].setAttribute( 'x2', x2 );
-    graph.closingLines[mode].setAttribute( 'y1', y1 );
-    graph.closingLines[mode].setAttribute( 'y2', y2 );
+  if ( ( graph.options.close === true || graph.options.close[ mode ] ) && l == 0 ) {
+    graph.closingLines[ mode ].setAttribute( 'display', 'block' );
+    graph.closingLines[ mode ].setAttribute( 'x1', x1 );
+    graph.closingLines[ mode ].setAttribute( 'x2', x2 );
+    graph.closingLines[ mode ].setAttribute( 'y1', y1 );
+    graph.closingLines[ mode ].setAttribute( 'y2', y2 );
   } else {
-    graph.closingLines[mode].setAttribute( 'display', 'none' );
+    graph.closingLines[ mode ].setAttribute( 'display', 'none' );
   }
 }
 

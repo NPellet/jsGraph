@@ -5131,44 +5131,49 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        * @memberof SerieLine
        */
 
-    }, {
-      key: "searchIndexByPxXY",
-      value: function searchIndexByPxXY(x, y) {
+      /*
+       Let's deprecate this
+       searchIndexByPxXY( x, y ) {
         var oldDist = false,
-            xyindex = false,
-            dist;
-        var xData = this._xDataToUse,
-            p_x,
-            p_y;
-
-        for (var k = 0, m = this.waveform.getLength(); k < m; k += 1) {
-          p_x = this.waveform.getX(k);
-          p_y = this.waveform.getY(k);
-          dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-
-          if (!oldDist || dist < oldDist) {
+          xyindex = false,
+          dist;
+         var xData = this._xDataToUse,
+          p_x,
+          p_y;
+         for ( var k = 0, m = this.waveform.getLength(); k < m; k += 1 ) {
+          p_x = this.waveform.getX( k );
+          p_y = this.waveform.getY( k );
+           dist = Math.pow( this.getX( p_x ) - x, 2 ) + Math.pow( this.getY( p_y ) - y, 2 );
+           if ( !oldDist || dist < oldDist ) {
             oldDist = dist;
             xyindex = k;
           }
         }
-
-        return xyindex;
+         return xyindex;
       }
+      */
+
       /**
        * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
        * @param {Number} valX - The x value to search for
+       * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
        * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
        * @memberof SerieLine
        */
 
     }, {
-      key: "searchClosestValue",
-      value: function searchClosestValue(valX, valY) {
+      key: "getClosestPointToXY",
+      value: function getClosestPointToXY(valX, valY, withinPxX, withinPxY) {
         if (this.waveform) {
           var indexX;
 
           try {
-            indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
+            indexX = this.waveform.findWithShortestDistance({
+              x: valX,
+              y: valY,
+              scaleX: this.getXAxis().getRelPx(1),
+              scaleY: this.getYAxis().getRelPx(1)
+            });
           } catch (e) {
             console.log(e);
             throw new Error('Error while finding the closest index');
@@ -5178,8 +5183,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           if (isNaN(indexX) || indexX === false) {
             return false;
           }
+          /*
+                console.log(
+                  valX,
+                  this.waveform.getX( indexX ),
+                  this.getXAxis().getRelVal( withinPxX ),
+                  valY,
+                  this.waveform.getY( indexX ),
+                  this.getYAxis().getRelVal( withinPxY )
+                );
+           */
 
-          var returnObj = {};
+
+          if (Math.abs(valX - this.waveform.getX(indexX)) > Math.abs(this.getXAxis().getRelVal(withinPxX)) && withinPxX || Math.abs(valY - this.waveform.getY(indexX)) > Math.abs(this.getYAxis().getRelVal(withinPxY)) && withinPxY) {
+            return false;
+          }
+
           var direction; // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
 
           if (valX > this.waveform.getX(indexX)) {
@@ -5188,19 +5207,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             direction = 0;
           }
 
-          Object.assign(returnObj, {
-            indexMin: indexX + direction,
-            indexMax: indexX + direction + 1,
+          return {
+            indexBefore: indexX + direction,
+            indexAfter: indexX + direction + 1,
             indexClosest: indexX,
-            xMin: this.waveform.getX(indexX + direction),
-            xMax: this.waveform.getX(indexX + direction + 1),
-            yMin: this.waveform.getY(indexX + direction),
-            yMax: this.waveform.getY(indexX + direction + 1),
+            xBefore: this.waveform.getX(indexX + direction),
+            xAfter: this.waveform.getX(indexX + direction + 1),
+            yBefore: this.waveform.getY(indexX + direction),
+            yAfter: this.waveform.getY(indexX + direction + 1),
             xClosest: this.waveform.getX(indexX),
             yClosest: this.waveform.getY(indexX),
             xExact: valX
-          });
-          return returnObj;
+          };
         }
       }
     }, {
@@ -5208,7 +5226,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function handleMouseMove(xValue, doMarker, yValue) {
         var valX = xValue || this.getXAxis().getMouseVal(),
             valY = yValue || this.getYAxis().getMouseVal();
-        var value = this.searchClosestValue(valX, valY);
+        var value = this.getClosestPointToXY(valX, valY);
 
         if (!value) {
           return;
@@ -5253,8 +5271,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function getMax(start, end) {
         var start2 = Math.min(start, end),
             end2 = Math.max(start, end),
-            v1 = this.searchClosestValue(start2),
-            v2 = this.searchClosestValue(end2),
+            v1 = this.getClosestPointToXY(start2),
+            v2 = this.getClosestPointToXY(end2),
             i,
             j,
             max = -Infinity,
@@ -5263,12 +5281,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (!v1) {
           start2 = this.minX;
-          v1 = this.searchClosestValue(start2);
+          v1 = this.getClosestPointToXY(start2);
         }
 
         if (!v2) {
           end2 = this.maxX;
-          v2 = this.searchClosestValue(end2);
+          v2 = this.getClosestPointToXY(end2);
         }
 
         if (!v1 || !v2) {
@@ -5299,8 +5317,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function getMin(start, end) {
         var start2 = Math.min(start, end),
             end2 = Math.max(start, end),
-            v1 = this.searchClosestValue(start2),
-            v2 = this.searchClosestValue(end2),
+            v1 = this.getClosestPointToXY(start2),
+            v2 = this.getClosestPointToXY(end2),
             i,
             j,
             min = Infinity,
@@ -5309,12 +5327,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (!v1) {
           start2 = this.minX;
-          v1 = this.searchClosestValue(start2);
+          v1 = this.getClosestPointToXY(start2);
         }
 
         if (!v2) {
           end2 = this.maxX;
-          v2 = this.searchClosestValue(end2);
+          v2 = this.getClosestPointToXY(end2);
         }
 
         if (!v1 || !v2) {
@@ -5752,7 +5770,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 pos[i] = 0;
               } else {
                 try {
-                  var closest = serie.searchClosestValue(this.x);
+                  var closest = serie.getClosestPointToXY(this.x);
 
                   if (!closest) {
                     throw new Error("Could not find y position for x = ".concat(this.x, " on serie \"").concat(serie.getName(), "\". Returning 0 for y."));
@@ -5778,7 +5796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                 return;
               }
 
-              var closest = serie.searchClosestValue(relativeTo.x);
+              var closest = serie.getClosestPointToXY(relativeTo.x);
 
               if (closest) {
                 def = serie.getY(closest.yMin);
@@ -6962,7 +6980,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         var position;
-        position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
+        position = this.getIndexFromMonotoneousData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
 
         if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateY') {
           // In case of aggregation, round to the closest element of 4.
@@ -6987,7 +7005,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var position;
 
         if (this.hasXWaveform()) {
-          position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+          position = this.xdata.getIndexFromMonotoneousData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
         } else {
           position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
         }
@@ -6999,6 +7017,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         return position;
       }
+      /**
+       * Finds the point in the data stack with the smalled distance based on an x and y value.
+       * @param {number} xval
+       * @param {number} yval
+       * @param {boolean} useDataToUse
+       * @param {function} roundingMethod
+       * @param {number} scaleX
+       * @param {number} scaleY
+       * @returns {number} The index of the closest position
+       */
+
     }, {
       key: "getIndexFromXY",
       value: function getIndexFromXY(xval, yval) {
@@ -7026,7 +7055,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           if (this.hasXWaveform()) {
             // The x value HAS to be rescaled
-            position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+            position = this.xdata.getIndexFromMonotoneousData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
           } else {
             position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
           }
@@ -7043,6 +7072,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         return position;
       }
+      /**
+       * Finds the closest point in x and y direction.
+       * @see euclidianSearch
+       * @private
+       * @param {number} valX
+       * @param {array<number>} dataX
+       * @param {number} valY
+       * @param {array<number>} dataY
+       * @param {number} [ scaleX = 1 ]
+       * @param {number} [ scaleY = 1 ]
+       *
+       * @returns {number} The index of the closest point
+       */
+
     }, {
       key: "getIndexFromDataXY",
       value: function getIndexFromDataXY(valX, dataX, valY, dataY) {
@@ -7055,18 +7098,75 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         valY /= this.getScale();
         return euclidianSearch(valX, valY, dataX, dataY, scaleX, scaleY);
       }
+      /**
+       * Uses binary search to find the index the closest to ```val``` in ```valCollection```.
+       * @param {number} val
+       * @param {array<number>} valCollection
+       * @param {boolean} isAscending
+       */
+
     }, {
-      key: "getIndexFromData",
-      value: function getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+      key: "getIndexFromMonotoneousData",
+      value: function getIndexFromMonotoneousData(val, valCollection, isAscending) {
         if (!this.isMonotoneous()) {
           console.trace();
           throw 'Impossible to get the index from a non-monotoneous wave !';
         }
 
-        var data, position;
         val -= this.getShift();
         val /= this.getScale();
         return binarySearch(val, valCollection, !isAscending);
+      }
+    }, {
+      key: "findWithShortestDistance",
+      value: function findWithShortestDistance(options) {
+        if (!options.interpolation) {
+          return this.getIndexFromXY(options.x, options.y, true, undefined, options.scaleX, options.scaleY);
+        }
+      }
+    }, {
+      key: "getShortestDistanceToPoint",
+      value: function getShortestDistanceToPoint(valX, valY, maxDistanceX, maxDistanceY) {
+        valX -= this.getXShift();
+        valX /= this.getXScale();
+        valY -= this.getShift();
+        valY /= this.getScale();
+        var x, y, y2, x2, i, distance, shortestDistance, shortestDistanceIndex;
+        var point = {
+          x: valX,
+          y: valY
+        };
+
+        for (i = 0; i < this.length() - 1; i++) {
+          shortestDistance = Math.POSITIVE_INFINITY;
+          shortestDistanceIndex = 0;
+          x = this.getX(i);
+          y = this.getY(i);
+          x2 = this.getX(i + 1);
+          y2 = this.getY(i + 1);
+
+          if (maxDistanceX && (x - valX > maxDistanceX && x2 - valX > maxDistanceX || valX - x > maxDistanceX && valX - x2 > maxDistanceX) || maxDistanceY && (y - valY > maxDistanceY && y2 - valY > maxDistanceY || valY - y > maxDistanceY && valY - y2 > maxDistanceY)) {
+            continue;
+          }
+
+          distance = distToSegment(point, {
+            x: x,
+            y: y
+          }, {
+            x: x2,
+            y: y2
+          });
+
+          if (distance < shortestDistance) {
+            shortestDistance = distance;
+            shortestDistanceIndex = i;
+          }
+        }
+
+        return {
+          shortestDistance: distance,
+          index: shortestDistanceIndex
+        };
       }
     }, {
       key: "getReductionType",
@@ -8557,6 +8657,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
     return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
   }
+  /**
+   * @private
+   * Performs a euclidian search (as opposed to a binary search where the data must be monotoneously increasing and where the search is only in x). This is useful to find the closest point to a position (for example the one of the mouse) for any kind of data.
+   * The scaleX and scaleY parameters could be used to skew the search. For example, let's say that you want to search the closest point in pixel, and not in value, you would need to reflect the different axes scaling into the scaleX and scaleY parameter
+   *
+   * @param {number} targetX The x position we want to get close to
+   * @param {number} targetY The y position we want to get close to
+   * @param {array<number>} haystackX The source data (array of x's)
+   * @param {array<number>} haystackY The source data (array of y's) (paired by index to the x array)
+   * @param {number} [ scaleX = 1 ] X-scaler (the higher, the more importance given to the x distance)
+   * @param {number} [ scaleY = 1 ] Y-scaler (the higher, the more importance given to the y distance)
+   * @returns The index of the closest point
+   */
+
 
   function euclidianSearch(targetX, targetY, haystackX, haystackY) {
     var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
@@ -8798,6 +8912,25 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }(Waveform);
 
   _exports.WaveformHash = WaveformHash;
+
+  function dist2(v, w) {
+    return Math.pow(v.x - w.x, 2) + Math.pow(v.y - w.y, 2);
+  }
+
+  function distToSegmentSquared(p, v, w) {
+    var l2 = dist2(v, w);
+    if (l2 == 0) return dist2(p, v);
+    var t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+    t = Math.max(0, Math.min(1, t));
+    return dist2(p, {
+      x: v.x + t * (w.x - v.x),
+      y: v.y + t * (w.y - v.y)
+    });
+  }
+
+  function distToSegment(p, v, w) {
+    return Math.pow(distToSegmentSquared(p, v, w), 0.5);
+  }
 });
 
 /***/ }),
@@ -10260,6 +10393,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         axis.setMinMaxToFitSeries();
         return this;
       }
+    }, {
+      key: "gridsOff",
+      value: function gridsOff() {
+        this._applyToAxes(function (axis) {
+          axis.gridsOff();
+        }, undefined, true, true);
+      }
+    }, {
+      key: "gridsOn",
+      value: function gridsOn() {
+        this._applyToAxes(function (axis) {
+          axis.gridsOn();
+        }, undefined, true, true);
+      }
       /**
        * Sets the background color
        * @param {String} color - An SVG accepted color for the background
@@ -10472,7 +10619,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     }, {
       key: "_applyToAxes",
-      value: function _applyToAxes(func, params, tb, lr) {
+      value: function _applyToAxes(func, params) {
+        var tb = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var lr = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
         var ax = [],
             i = 0,
             l;
@@ -11216,18 +11365,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (action.key) {
           if (action.key !== e.keyCode) {
             var keyCheck = {
-              'backspace': 8,
-              'enter': 13,
-              'tab': 9,
-              'shift': 16,
-              'ctrl': 17,
-              'alt': 18,
-              'pause': 19,
-              'escape': 27,
-              'up': 33,
-              'down': 34,
-              'left': 37,
-              'right': 39
+              backspace: 8,
+              enter: 13,
+              tab: 9,
+              shift: 16,
+              ctrl: 17,
+              alt: 18,
+              pause: 19,
+              escape: 27,
+              up: 33,
+              down: 34,
+              left: 37,
+              right: 39
             };
 
             if (keyCheck[action.key] !== e.keyCode) {
@@ -11563,7 +11712,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       key: "updateGraphingZone",
       value: function updateGraphingZone() {
         util.setAttributeTo(this.graphingZone, {
-          'transform': "translate(".concat(this.options.paddingLeft, ", ").concat(this.options.paddingTop, ")")
+          transform: "translate(".concat(this.options.paddingLeft, ", ").concat(this.options.paddingTop, ")")
         });
         this._sizeChanged = true;
       } // We have to proxy the methods in case they are called anonymously
@@ -11622,6 +11771,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return _this8.drawingSpaceMaxY;
         };
       }
+    }, {
+      key: "tracking",
+      value: function tracking(options) {
+        // This is the new alias
+        return this.trackingLine(options);
+      }
       /**
        *  Enables the line tracking
        *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
@@ -11644,54 +11799,44 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (options) {
           this.options.trackingLine = options;
+        } // One can enable / disable the tracking
+
+
+        options.enable = options.enable === undefined ? true : !!options.enable; // Treat the series
+
+        var seriesSet = new Set();
+        var backupSeries = []; // If we defined an array, let's save it
+
+        if (Array.isArray(options.series)) {
+          options.series.forEach(function (serie) {
+            seriesSet.add(_this9.getSerie(serie));
+          });
+        } else if (options.series == 'all') {
+          this.allSeries().forEach(function (serie) {
+            return seriesSet.add(serie);
+          });
         }
 
-        options.series = options.series || [];
-        options.enable = options.enable === undefined ? true : !!options.enable; // Individual tracking
+        options.series = seriesSet; // Individual tracking
 
         if (options.mode == 'individual') {
-          if (options.series) {
-            if (!Array.isArray(options.series)) {
-              if (options.series == 'all') {
-                options.series = this.series.map(function (serie) {
-                  return {
-                    serie: serie
-                  };
-                });
-              } else {
-                options.series = [options.series];
-              }
-            }
-
-            options.series.forEach(function (sOptions) {
-              if (_typeof(sOptions.serie) !== 'object') {
-                if (_typeof(sOptions) !== 'object') {
-                  throw new Error('Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }');
-                }
-
-                sOptions.serie = _this9.getSerie(sOptions.serie);
-              }
-
-              if (!sOptions.serie) {
-                return;
-              }
-
-              self.addSerieToTrackingLine(sOptions.serie, sOptions);
-            });
-          }
-        } else {
-          options.series.forEach(function (serie) {
-            serie.serie.disableTracking();
+          seriesSet.forEach(function (serie) {
+            self.addSerieToTrackingLine(serie, options.serieOptions);
           });
-
+        } else {
+          /*
+          options.series.forEach( ( serie ) => {
+            serie.serie.disableTracking();
+          } );
+          */
           if (options.noLine) {
             return;
           }
 
-          if (!this.trackingObject) {
+          if (!this.trackingLineShape) {
             // Avoid multiple creation of tracking lines
             // Creates a new shape called trackingLine, in the first layer (below everything)
-            this.trackingObject = this.newShape('line', util.extend(true, {
+            this.trackingLineShape = this.newShape('line', util.extend(true, {
               position: [{
                 y: 'min'
               }, {
@@ -11702,75 +11847,96 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             }, options.trackingLineShapeOptions));
           }
 
-          this.trackingObject.draw();
-          return this.trackingObject;
+          this.trackingLineShape.draw(); // return this.trackingLineShape;
         } //return this.trackingObject;
 
       }
     }, {
       key: "addSerieToTrackingLine",
-      value: function addSerieToTrackingLine(serie, options) {
-        var _this10 = this;
+      value: function addSerieToTrackingLine(serie) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
+        // Safeguard when claled externally
         if (!this.options.trackingLine) {
           this.trackingLine({
             mode: 'individual'
           });
-        } // This was to avoid adding several series, but it causes a problem here...
-
-
-        var noAdd = false;
-        this.options.trackingLine.series.forEach(function (serieO, index) {
-          if (serieO.serie == serie) {
-            noAdd = true; //this.options.trackingLine.series.splice( index, 1 );
-          }
-        });
-
-        if (!noAdd) {
-          this.options.trackingLine.series.push(Object.assign({
-            serie: serie
-          }, options));
         }
 
-        serie.enableTracking(function (serie, index, x, y) {
-          if (_this10.options.trackingLine.enable) {
-            if (index) {
-              if (_this10.trackingObject) {
-                _this10.trackingObject.show();
+        this.options.trackingLine.series.add(serie);
+        var serieShape;
 
-                _this10.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+        if (this.options.trackingLine.serieShape) {
+          serieShape = this.options.trackingLine.serieShape;
+        } else {
+          serieShape = {
+            shape: 'ellipse',
+            properties: {
+              rx: ["".concat(serie.getLineWidth() * 3, "px")],
+              ry: ["".concat(serie.getLineWidth() * 3, "px")]
+            }
+          };
+        }
 
-                _this10.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+        serie.options.tracking = options;
 
-                _this10.trackingObject.redraw();
+        if (!serie.trackingShape) {
+          serie.trackingShape = this.newShape(serieShape.shape, {
+            fillColor: serie.getLineColor(),
+            strokeColor: 'White',
+            strokeWidth: serie.getLineWidth()
+          }, true, serieShape.properties).setSerie(serie).forceParentDom(serie.groupMain).draw();
+        }
+        /*
+          serie.serie.trackingShape.show();
+          serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
+           if ( serieShape.magnet ) {
+             let magnetOptions = serieShape.magnet,
+              val = magnetOptions.within,
+              minmaxpos;
+             if ( magnetOptions.withinPx ) {
+              val = serie.serie.getXAxis().getRelVal( magnetOptions.withinPx );
+            }
+             if ( ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) ) {
+               serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;
+            }
+          }
+           serie.serie.trackingShape.redraw();
+        */
+
+        /*  serie.enableTracking( ( serie, index, x, y ) => {
+           if ( this.options.trackingLine.enable ) {
+             if ( index ) {
+               if ( this.trackingObject ) {
+                 this.trackingObject.show();
+                this.trackingObject.getPosition( 0 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                this.trackingObject.getPosition( 1 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                this.trackingObject.redraw();
               }
-
-              serie._trackingLegend = _trackingLegendSerie(_this10, {
+               serie._trackingLegend = _trackingLegendSerie( this, {
                 serie: serie
-              }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX);
-
-              if (serie._trackingLegend) {
+              }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX );
+               if ( serie._trackingLegend ) {
                 serie._trackingLegend.style.display = 'block';
               }
             }
           }
-        }, function (serie) {
-          if (_this10.trackingObject) {
-            _this10.trackingObject.hide();
+        }, ( serie ) => {
+           if ( this.trackingObject ) {
+            this.trackingObject.hide();
           }
-
-          if (serie.trackingShape) {
+           if ( serie.trackingShape ) {
             serie.trackingShape.hide();
           }
-
-          if (serie._trackingLegend) {
+           if ( serie._trackingLegend ) {
             serie._trackingLegend.style.display = 'none';
           }
-
-          serie._trackingLegend = _trackingLegendSerie(_this10, {
+           serie._trackingLegend = _trackingLegendSerie( this, {
             serie: serie
-          }, false, false, serie._trackingLegend, false, false);
-        });
+          }, false, false, serie._trackingLegend, false, false );
+         } );
+        */
+
       }
       /**
        *  Pass here the katex.render method to be used later
@@ -11818,7 +11984,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "exportToSchema",
       value: function exportToSchema() {
-        var _this11 = this;
+        var _this10 = this;
 
         var schema = {};
         schema.title = this.options.title;
@@ -11831,11 +11997,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           y: []
         };
         axesPositions.map(function (axisPosition) {
-          if (!_this11.axis[axisPosition]) {
+          if (!_this10.axis[axisPosition]) {
             return {};
           }
 
-          axesExport = axesExport.concat(_this11.axis[axisPosition].map(function (axis) {
+          axesExport = axesExport.concat(_this10.axis[axisPosition].map(function (axis) {
             return {
               type: axisPosition,
               label: axis.options.label,
@@ -11847,9 +12013,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }));
 
           if (axisPosition == 'top' || axisPosition == 'bottom') {
-            allaxes.x = allaxes.x.concat(_this11.axis[axisPosition]);
+            allaxes.x = allaxes.x.concat(_this10.axis[axisPosition]);
           } else {
-            allaxes.y = allaxes.y.concat(_this11.axis[axisPosition]);
+            allaxes.y = allaxes.y.concat(_this10.axis[axisPosition]);
           }
         });
         schema.axis = axesExport;
@@ -12340,7 +12506,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.dom.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink'); //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
 
     util.setAttributeTo(this.dom, {
-      'xmlns': Graph.ns,
+      xmlns: Graph.ns,
       'font-family': this.options.fontFamily,
       'font-size': this.options.fontSize
     });
@@ -12348,7 +12514,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.1.15"
+        'data-jsgraph-version': "v2.2.0"
       });
     } catch (e) {// ignore
     }
@@ -12359,7 +12525,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.rectEvent = document.createElementNS(Graph.ns, 'rect');
     util.setAttributeTo(this.rectEvent, {
       'pointer-events': 'fill',
-      'fill': 'transparent'
+      fill: 'transparent'
     });
     this.groupEvent.appendChild(this.rectEvent);
     this.dom.appendChild(this.groupEvent); // Handling graph title
@@ -12368,7 +12534,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.setTitle(this.options.title);
     util.setAttributeTo(this.domTitle, {
       'text-anchor': 'middle',
-      'y': 20
+      y: 20
     });
     this.groupEvent.appendChild(this.domTitle); //
 
@@ -12609,35 +12775,42 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (!graph.activePlugin) {
       var index; // Takes care of the tracking line
 
-      if (graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie) {
-        if (graph.options.trackingLine.mode == 'common') {
+      if (graph.options.trackingLine && graph.options.trackingLine.enable) {
+        if (graph.options.trackingLine.mode == 'common' && graph.options.trackingLine.snapToSerie) {
           var snapToSerie = graph.options.trackingLine.snapToSerie;
           index = snapToSerie.handleMouseMove(false, true);
 
-          if (graph.trackingObject) {
+          if (graph.trackingLineShape) {
             if (!index) {
-              graph.trackingObject.hide();
+              graph.trackingLineShape.hide();
             } else {
-              graph.trackingObject.show();
-              graph.trackingObject.getPosition(0).x = index.xClosest;
-              graph.trackingObject.getPosition(1).x = index.xClosest;
-              graph.trackingObject.redraw();
+              graph.trackingLineShape.show();
+              graph.trackingLineShape.getPosition(0).x = index.xClosest;
+              graph.trackingLineShape.getPosition(1).x = index.xClosest;
+              graph.trackingLineShape.redraw();
               xRef = index.xClosest; //
 
               xOverwritePx = snapToSerie.getXAxis().getPx(index.xClosest) + graph.options.paddingLeft;
             }
           }
 
-          var series = graph.options.trackingLine.series; // Gets a default value
-
-          if (!series) {
-            series = graph.getSeries().map(function (serie) {
+          var series = graph.options.trackingLine.series;
+          /*
+          // Gets a default value
+          if ( !series ) {
+            series = graph.getSeries();map( function( serie ) {
               return {
                 serie: serie,
                 withinPx: 20,
                 withinVal: -1
               };
-            });
+            } );
+          }*/
+
+          f;
+
+          if (!series) {
+            return;
           }
 
           if (!index) {
@@ -12645,6 +12818,63 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           graph._trackingLegend = _trackingLegendSerie(graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef);
+        } else if (graph.options.trackingLine.mode == 'individual') {
+          // Series looping
+          var output = [];
+          graph.options.trackingLine.series.forEach(function (serie) {
+            //        const index = serie.handleMouseMove( false, true );
+            //console.log( index );
+            if (!serie.options.tracking) {
+              return;
+            }
+
+            var closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx); // When all legends are in common mode, let's make sure we remove the serie-specific legend
+
+            if (graph.options.trackingLine.legendType == 'common') {
+              serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);
+            } // What happens if there is no point ?
+
+
+            if (!closestPoint) {
+              if (serie.trackingShape) {
+                serie.trackingShape.hide();
+
+                if (graph.options.trackingLine.legendType == 'independent') {
+                  serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);
+                }
+              }
+            } else {
+              // We found a point: happy !
+              if (serie.trackingShape) {
+                serie.trackingShape.show();
+                serie.trackingShape.setPosition({
+                  x: closestPoint.xClosest,
+                  y: closestPoint.yClosest
+                });
+                serie.trackingShape.redraw(); // If we want one legend per serie, then we got to show it
+
+                if (graph.options.trackingLine.legendType == 'independent') {
+                  serie._trackingLegend = _trackingLegendSerie(graph, [{
+                    serie: serie,
+                    closestPoint: closestPoint
+                  }], x, y, serie._trackingLegend);
+                }
+
+                serie.emit('track', closestPoint);
+              }
+            }
+
+            if (closestPoint) output.push({
+              serie: serie,
+              closestPoint: closestPoint
+            });
+          });
+
+          if (graph.options.trackingLine.legendType == 'common') {
+            graph._trackingLegend = _trackingLegendSerie(graph, output, x, y, graph._trackingLegend);
+          } else {
+            graph._trackingLegend = _trackingLegendSerie(graph, [], false, false, graph._trackingLegend);
+          }
         }
       }
     } // End takes care of the tracking line
@@ -12722,106 +12952,37 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     return executed;
   }
+  /**
+   *
+   * @returns {DOMElement} legend - The legend element, or the newly created one if it didn't exist
+   */
 
-  var _trackingLegendSerie = function _trackingLegendSerie(graph, serie, x, y, legend, textMethod, xValue) {
+
+  var _trackingLegendSerie = function _trackingLegendSerie(graph, seriesOutput, posXPx, posYPx, legend) {
+    var textMethod = graph.options.trackingLine.textMethod || trackingLineDefaultTextMethod;
     var justCreated = false;
-
-    if (!Array.isArray(serie)) {
-      serie = [serie];
-    }
-
-    var output = [];
 
     if (!legend && graph.options.trackingLine.legend) {
       justCreated = true;
       legend = _makeTrackingLegend(graph);
     }
 
-    serie.map(function (serie) {
-      var index = serie.serie.handleMouseMove(xValue, false);
-
-      if (!index || !textMethod) {
-        if (serie.serie.trackingShape) {
-          serie.serie.trackingShape.hide();
-        }
-
-        return legend;
-      } // Should we display the dot ?
-
-
-      if (serie.withinPx > 0 && Math.abs(x - graph.options.paddingLeft - serie.serie.getXAxis().getPx(index.xClosest)) - serie.withinPx > 1e-14 || serie.withinVal > 0 && Math.abs(serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) - index.xClosest) - serie.withinVal > serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) / 100000) {
-        if (serie.serie.trackingShape) {
-          serie.serie.trackingShape.hide();
-        }
-      } else {
-        output[serie.serie.getName()] = {
-          yValue: index.yClosest,
-          xValue: index.xClosest,
-          serie: serie,
-          index: index
-        };
-        var serieShape;
-
-        if (graph.options.trackingLine && graph.options.trackingLine.serieShape) {
-          serieShape = graph.options.trackingLine.serieShape;
-        } else {
-          serieShape = {
-            shape: 'ellipse',
-            properties: {
-              rx: ["".concat(serie.serie.getLineWidth() * 3, "px")],
-              ry: ["".concat(serie.serie.getLineWidth() * 3, "px")]
-            }
-          };
-        }
-
-        if (!serie.serie.trackingShape) {
-          serie.serie.trackingShape = graph.newShape(serieShape.shape, {
-            fillColor: serie.serie.getLineColor(),
-            strokeColor: 'White',
-            strokeWidth: serie.serie.getLineWidth()
-          }, true, serieShape.properties).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();
-          serieShape.onCreated && serieShape.onCreated(serie.serie.trackingShape);
-          serie.serie.trackingShape.on('changed', function () {
-            serieShape.onChanged && serieShape.onChanged(serie.serie.trackingShape);
-          });
-        }
-
-        serie.serie.trackingShape.show();
-        serie.serie.trackingShape.getPosition(0).x = index.xClosest;
-
-        if (serieShape.magnet) {
-          var magnetOptions = serieShape.magnet,
-              val = magnetOptions.within,
-              minmaxpos;
-
-          if (magnetOptions.withinPx) {
-            val = serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);
-          }
-
-          if (minmaxpos = serie.serie.findLocalMinMax(index.xClosest, val, magnetOptions.mode)) {
-            serie.serie.trackingShape.getPosition(0).x = minmaxpos;
-          }
-        }
-
-        serie.serie.trackingShape.redraw();
-      }
-    }); // End map
-
     if (!graph.options.trackingLine.legend) {
       return;
     }
 
-    if (Object.keys(output).length == 0 || !textMethod) {
+    if (seriesOutput.length == 0) {
       legend.style.display = 'none';
+      return legend;
     } else {
       if (legend.style.display == 'none' || justCreated) {
-        forceTrackingLegendMode(graph, legend, x, y, true);
+        forceTrackingLegendMode(graph, legend, posXPx, posYPx, true);
       } else {
-        _trackingLegendMove(graph, legend, x, y);
+        _trackingLegendMove(graph, legend, posXPx, posYPx);
       }
 
       legend.style.display = 'block';
-      var txt = textMethod(output, xValue, x, y);
+      var txt = textMethod(seriesOutput, undefined, posXPx, posYPx);
       legend.innerHTML = txt; //legend.innerHTML = textMethod( output, xValue, x, y );
     }
 
@@ -12860,7 +13021,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     window.requestAnimationFrame(next);
   };
 
-  var _trackingLegendMove = util.debounce(forceTrackingLegendMode, 50);
+  var _trackingLegendMove = function _trackingLegendMove() {
+    util.debounce(forceTrackingLegendMode, 50).apply(void 0, arguments);
+  };
 
   function _makeTrackingLegend(graph) {
     var group = document.createElement('div');
@@ -12883,7 +13046,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var txt = '';
 
     for (var i in output) {
-      txt += "".concat(output[i].serie.serie.getName(), ": ").concat(output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue));
+      if (!output[i].closestPoint) {
+        continue;
+      }
+
+      txt += "".concat(output[i].serie.getName(), ": ").concat(output[i].serie.getYAxis().valueToHtml(output[i].closestPoint.yClosest, undefined, undefined, 2), "\n      ");
     }
 
     return txt;
@@ -14897,6 +15064,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "valueToText",
       value: function valueToText(value) {
+        var forceDecimals = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
+
         if (this.scientificExponent) {
           value /= Math.pow(10, this.scientificExponent);
           return value.toFixed(1);
@@ -14922,10 +15091,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             return '';
           }
 
-          if (dec > 0) {
-            value = value.toFixed(dec);
+          if (forceDecimals > 0) {
+            value = value.toFixed(forceDecimals);
           } else {
-            value = value.toFixed(0);
+            if (dec > 0) {
+              value = value.toFixed(dec);
+            } else {
+              value = value.toFixed(0);
+            }
           }
 
           if (this.options.unitInTicks && this.options.unit) {
@@ -14941,6 +15114,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        *  @param {Number} value - The value to compute
        *  @param {Boolean} noScaling - Does not display scaling
        *  @param {Boolean} noUnits - Does not display units
+       * @param {Number} [forceDecimals=0] - Force the precision of the display
        *  @return {String} An HTML string containing the computed value
        *  @example graph.getXAxis().setUnit( "m" ).setUnitDecade( true ).setScientific( true );
        *  graph.getXAxis().valueToHtml( 3500 ); // Returns "3.5 km"
@@ -14950,7 +15124,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "valueToHtml",
       value: function valueToHtml(value, noScaling, noUnits) {
-        var text = this.valueToText(value);
+        var forceDecimals = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+        var text = this.valueToText(value, forceDecimals);
         var letter;
 
         if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
@@ -17104,10 +17279,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "enableTracking",
       value: function enableTracking(hoverCallback, outCallback) {
-        console.log('sdfsdf');
         this._tracker = true;
-        this._trackingCallback = hoverCallback;
-        this._trackingOutCallback = outCallback;
         return this;
       }
       /**
@@ -17127,7 +17299,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this._tracker = false;
-        this._trackingCallback = null;
         return this;
       }
       /**
@@ -18963,6 +19134,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         return [];
+      }
+    }, {
+      key: "getClosestPointToXY",
+      value: function getClosestPointToXY(valX, valY, withinPxX, withinPxY) {
+        // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
+        //const xVal = this.getXAxis().getVal( x );
+        //const yVal = this.getYAxis().getVal( y );
+        var xValAllowed = this.getXAxis().getRelVal(withinPxX);
+        var yValAllowed = this.getYAxis().getRelVal(withinPxY); // Index of the closest point
+
+        var closestPointIndex = this.waveform.findWithShortestDistance({
+          x: valX,
+          y: valY,
+          xMax: xValAllowed,
+          yMax: yValAllowed,
+          interpolation: false
+        });
+        return {
+          indexBefore: closestPointIndex,
+          indexAfter: closestPointIndex,
+          xBefore: this.waveform.getX(closestPointIndex),
+          xAfter: this.waveform.getX(closestPointIndex),
+          yBefore: this.waveform.getY(closestPointIndex),
+          yAfter: this.waveform.getX(closestPointIndex),
+          xExact: valX,
+          indexClosest: closestPointIndex,
+          interpolatedY: this.waveform.getY(closestPointIndex),
+          xClosest: this.waveform.getX(closestPointIndex),
+          yClosest: this.waveform.getY(closestPointIndex)
+        };
       }
     }]);
 
@@ -32637,7 +32838,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.getPosition(1).deltaPosition('x', deltaX, this.getXAxis());
         } else if (this.serie && this.handleSelected) {
           this.resizingPosition = this.handleSelected == 1 ? this.getPosition(0) : this.getPosition(1);
-          var value = this.serie.searchClosestValue(this.getXAxis().getVal(this.graph._getXY(e).x - this.graph.getPaddingLeft()));
+          var value = this.serie.getClosestPointToXY(this.getXAxis().getVal(this.graph._getXY(e).x - this.graph.getPaddingLeft()));
 
           if (!value) {
             return;
@@ -32683,8 +32884,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return false;
         }
 
-        var v1 = this.serie.searchClosestValue(this.getPosition(0).x),
-            v2 = this.serie.searchClosestValue(this.getPosition(1).x),
+        var v1 = this.serie.getClosestPointToXY(this.getPosition(0).x),
+            v2 = this.serie.getClosestPointToXY(this.getPosition(1).x),
             v3,
             i,
             j,

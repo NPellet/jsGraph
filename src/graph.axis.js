@@ -1812,7 +1812,7 @@ class Axis extends EventEmitter {
         return '';
       }
 
-      if( forceDecimals > 0 ) {
+      if ( forceDecimals > 0 ) {
         value = value.toFixed( forceDecimals )
       } else {
         if ( dec > 0 ) {
