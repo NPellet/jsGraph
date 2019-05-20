@@ -310,6 +310,7 @@ module.exports = function(grunt) {
       };
 
       const makeExampleJS = el => {
+        console.log( el.path.replace(/\\/g, "/",) );
         return `
 <!doctype html>
 <html>
@@ -318,7 +319,7 @@ module.exports = function(grunt) {
     </body>
     <script type="module">
     console.log('a');
-        import "../../../${el.path}";
+        import "${( `../../../${el.path.replace(/\\/g, "/")}`)}";
         </script>
 </html>`;
       };
@@ -328,12 +329,12 @@ module.exports = function(grunt) {
           if (child.type == 'directory') {
             processTree(child);
           } else {
-            console.log(child);
+           
             const path = child.path
               .replace('v2', 'output')
               .replace('.json', '.html')
               .replace('.js', '.html');
-
+            
             ensureDirectoryExistence(path);
             let htmlFile;
 

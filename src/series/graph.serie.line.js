@@ -1326,6 +1326,59 @@ class SerieLine extends SerieScatter {
 
     return this.waveform.findLocalMinMax( xRef, xWithin, type );
   }
+
+  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0 ) {
+    // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
+
+    //const xVal = this.getXAxis().getVal( x );
+    //const yVal = this.getYAxis().getVal( y );
+    const xValAllowed = this.getXAxis().getRelVal( withinPxX );
+    const yValAllowed = this.getYAxis().getRelVal( withinPxY );
+
+    // Index of the closest point
+    const closestPointIndex = this.waveform.findWithShortestDistance( {
+      x: valX,
+      y: valY,
+      xMax: xValAllowed,
+      yMax: yValAllowed,
+      interpolation: false
+    } );
+
+    const dataOutput = {
+
+      indexBefore: closestPointIndex,
+      indexAfter: closestPointIndex,
+
+      xExact: valX,
+
+      indexClosest: closestPointIndex,
+      interpolatedY: this.waveform.getY( closestPointIndex ),
+
+      xClosest: this.waveform.getX( closestPointIndex ),
+      yClosest: this.waveform.getY( closestPointIndex )
+    };
+
+    if ( this.waveform.isMonotoneous() ) {
+
+      let xBefore = this.waveform.getX( closestPointIndex );
+      let xAfter = this.waveform.getX( closestPointIndex );
+      let yBefore = this.waveform.getY( closestPointIndex );
+      let yAfter = this.waveform.getX( closestPointIndex );
+
+      if ( xBefore < xAfter ) {
+        dataOutput.xBefore = xBefore;
+        dataOutput.xAfter = xAfter;
+        dataOutput.yBefore = yBefore;
+        dataOutput.yAfter = yAfter;
+      } else {
+        dataOutput.xBefore = xAfter;
+        dataOutput.xAfter = xBefore;
+        dataOutput.yBefore = yAfter;
+        dataOutput.yAfter = yBefore;
+      }
+    }
+    return dataOutput;
+  }
 }
 
 util.mix( SerieLine, ErrorBarMixin );

@@ -3546,17 +3546,18 @@ function _handleMouseMove( graph, x, y, e ) {
   }
   // End takes care of the tracking line
 
-  if ( graph.options.onMouseMoveData ) {
+  if ( graph.options.mouseMoveData ) {
     var results = {};
 
     for ( var i = 0; i < graph.series.length; i++ ) {
-      results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove(
-        false,
-        true
-      );
+      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY();
     }
 
-    graph.options.onMouseMoveData.call( graph, e, results );
+    if ( typeof graph.options.mouseMoveData == "function" ) {
+      graph.options.mouseMoveData.call( graph, e, results );
+    }
+
+    graph.emit( "mouseMoveData", results );
   }
 
   checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseMove' );
