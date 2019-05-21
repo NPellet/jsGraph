@@ -4571,6 +4571,18 @@ class Graph extends EventEmitter {
     this.options.title = title;
     this.domTitle.textContent = title;
   }
+
+  setTitleFontSize(fontSize) {
+    this.domTitle.setAttribute('font-size', fontSize);
+  }
+
+  setTitleFontColor(fontColor) {
+    this.domTitle.setAttribute('fill', fontColor);
+  }
+
+  setTitleFontFamily(fontColor) {
+    this.domTitle.setAttribute('font-family', fontColor);
+  }
   /**
    *  Shows the title of the graph
    */
@@ -7214,6 +7226,19 @@ function doDom() {
 
   this.domTitle = document.createElementNS(Graph.ns, 'text');
   this.setTitle(this.options.title);
+
+  if (this.options.titleFontSize) {
+    this.setTitleFontSize(this.options.titleFontSize);
+  }
+
+  if (this.options.titleFontColor) {
+    this.setTitleFontSize(this.options.titleFontColor);
+  }
+
+  if (this.options.titleFontFamily) {
+    this.setTitleFontFamily(this.options.titleFontFamily);
+  }
+
   setAttributeTo(this.domTitle, {
     'text-anchor': 'middle',
     y: 20

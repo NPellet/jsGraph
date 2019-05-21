@@ -9774,6 +9774,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.options.title = title;
         this.domTitle.textContent = title;
       }
+    }, {
+      key: "setTitleFontSize",
+      value: function setTitleFontSize(fontSize) {
+        this.domTitle.setAttribute('font-size', fontSize);
+      }
+    }, {
+      key: "setTitleFontColor",
+      value: function setTitleFontColor(fontColor) {
+        this.domTitle.setAttribute('fill', fontColor);
+      }
+    }, {
+      key: "setTitleFontFamily",
+      value: function setTitleFontFamily(fontColor) {
+        this.domTitle.setAttribute('font-family', fontColor);
+      }
       /**
        *  Shows the title of the graph
        */
@@ -12604,7 +12619,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.4"
+        'data-jsgraph-version': "v2.2.5"
       });
     } catch (e) {// ignore
     }
@@ -12622,6 +12637,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     this.domTitle = document.createElementNS(Graph.ns, 'text');
     this.setTitle(this.options.title);
+
+    if (this.options.titleFontSize) {
+      this.setTitleFontSize(this.options.titleFontSize);
+    }
+
+    if (this.options.titleFontColor) {
+      this.setTitleFontSize(this.options.titleFontColor);
+    }
+
+    if (this.options.titleFontFamily) {
+      this.setTitleFontFamily(this.options.titleFontFamily);
+    }
+
     util.setAttributeTo(this.domTitle, {
       'text-anchor': 'middle',
       y: 20
