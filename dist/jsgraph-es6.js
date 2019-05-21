@@ -5337,6 +5337,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       return position;
     }
+
+    getIndexFromY(yval, useDataToUse = false, roundingMethod = Math.round) {
+      let ydata;
+      let data, position;
+      yval -= this.getShift();
+      yval /= this.getScale();
+
+      if (yval < this.getDataMinY()) {
+        return false;
+      }
+
+      if (yval > this.getDataMaxY()) {
+        return false;
+      }
+
+      if (useDataToUse && this.dataInUse) {
+        ydata = this.dataInUse.y;
+      } else {
+        ydata = this.getData();
+      }
+
+      position = euclidianSearch(undefined, yval, undefined, ydata, 1, undefined);
+
+      if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
+        // In case of aggregation, round to the closest element of 4.
+        return position - position % 4;
+      }
+
+      return position;
+    }
     /*
       getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
         if ( this.getXMin() > xval || this.getXMax() < xval ) {
@@ -5471,6 +5501,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           return index;
         }
+
+        if (options.axisRef == 'y') {
+          const index = this.getIndexFromY(options.y, true, undefined);
+
+          if (options.yMaxDistance && Math.abs(options.y - this.getY(index)) > Math.abs(options.yMaxDistance)) {
+            return -1;
+          }
+
+          return index;
+        }
       }
     }
 
@@ -5573,7 +5613,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return this.maxY;
     }
 
-    getDataMaxY() {
+    getDataMinY() {
       return this.minY;
     }
 
@@ -10040,7 +10080,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.5"
+        'data-jsgraph-version': "v2.2.6"
       });
     } catch (e) {// ignore
     }
