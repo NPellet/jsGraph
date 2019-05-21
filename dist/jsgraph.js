@@ -12662,7 +12662,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.6"
+        'data-jsgraph-version': "v2.2.7"
       });
     } catch (e) {// ignore
     }
@@ -16751,7 +16751,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     }, {
       key: "hide",
-      value: function hide(hideShapes) {
+      value: function hide() {
+        var hideShapes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.options.bindShapesToDisplayState;
         var mute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         this.hidden = true;
         this.groupMain.setAttribute('display', 'none');
@@ -16790,7 +16791,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     }, {
       key: "show",
-      value: function show(showShapes) {
+      value: function show() {
+        var showShapes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.options.bindShapesToDisplayState;
         var mute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         this.hidden = false;
         this.groupMain.setAttribute('display', 'block');
@@ -27655,13 +27657,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (jsonSerie.annotations) {
           jsonSerie.annotations.forEach(function (annotation) {
-            (0, _annotations.default)(graph, annotation, undefined, axes);
+            (0, _annotations.default)(graph, annotation, serie, axes);
           });
         }
       });
     }
-
-    console.time('a');
 
     if (json.annotations) {
       json.annotations.forEach(function (annotation) {
@@ -27669,7 +27669,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       });
     }
 
-    console.timeEnd('a');
     return graph;
   };
 

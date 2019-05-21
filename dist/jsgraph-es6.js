@@ -10080,7 +10080,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.6"
+        'data-jsgraph-version': "v2.2.7"
       });
     } catch (e) {// ignore
     }
@@ -13920,7 +13920,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
 
-    hide(hideShapes, mute = false) {
+    hide(hideShapes = this.options.bindShapesToDisplayState, mute = false) {
       this.hidden = true;
       this.groupMain.setAttribute('display', 'none');
       this.getSymbolForLegend().setAttribute('opacity', 0.5);
@@ -13957,7 +13957,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
 
-    show(showShapes, mute = false) {
+    show(showShapes = this.options.bindShapesToDisplayState, mute = false) {
       this.hidden = false;
       this.groupMain.setAttribute('display', 'block');
       this.getSymbolForLegend().setAttribute('opacity', 1);
@@ -17812,13 +17812,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (jsonSerie.annotations) {
           jsonSerie.annotations.forEach(annotation => {
-            (0, _annotations.default)(graph, annotation, undefined, axes);
+            (0, _annotations.default)(graph, annotation, serie, axes);
           });
         }
       });
     }
-
-    console.time('a');
 
     if (json.annotations) {
       json.annotations.forEach(annotation => {
@@ -17826,7 +17824,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       });
     }
 
-    console.timeEnd('a');
     return graph;
   };
 

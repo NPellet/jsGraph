@@ -1457,13 +1457,11 @@ const makeGraph = (Graph, json, wrapper) => {
 
       if (jsonSerie.annotations) {
         jsonSerie.annotations.forEach(annotation => {
-          makeAnnotation(graph, annotation, undefined, axes);
+          makeAnnotation(graph, annotation, serie, axes);
         });
       }
     });
   }
-
-  console.time('a');
 
   if (json.annotations) {
     json.annotations.forEach(annotation => {
@@ -1471,7 +1469,6 @@ const makeGraph = (Graph, json, wrapper) => {
     });
   }
 
-  console.timeEnd('a');
   return graph;
 };
 
@@ -13166,7 +13163,7 @@ class Serie extends EventEmitter {
    */
 
 
-  hide(hideShapes, mute = false) {
+  hide(hideShapes = this.options.bindShapesToDisplayState, mute = false) {
     this.hidden = true;
     this.groupMain.setAttribute('display', 'none');
     this.getSymbolForLegend().setAttribute('opacity', 0.5);
@@ -13203,7 +13200,7 @@ class Serie extends EventEmitter {
    */
 
 
-  show(showShapes, mute = false) {
+  show(showShapes = this.options.bindShapesToDisplayState, mute = false) {
     this.hidden = false;
     this.groupMain.setAttribute('display', 'block');
     this.getSymbolForLegend().setAttribute('opacity', 1);

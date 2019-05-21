@@ -169,18 +169,18 @@ const makeGraph = ( Graph, json, wrapper ) => {
 
       if ( jsonSerie.annotations ) {
         jsonSerie.annotations.forEach( ( annotation ) => {
-          makeAnnotation( graph, annotation, undefined, axes );
+          makeAnnotation( graph, annotation, serie, axes );
         } );
       }
     } );
   }
-  console.time( 'a' );
+
   if ( json.annotations ) {
     json.annotations.forEach( ( annotation ) => {
       makeAnnotation( graph, annotation, undefined, axes );
     } );
   }
-  console.timeEnd( 'a' );
+
   return graph;
 };
 

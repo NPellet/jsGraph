@@ -128,7 +128,7 @@ class Serie extends EventEmitter {
    * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  hide( hideShapes, mute = false ) {
+  hide( hideShapes = this.options.bindShapesToDisplayState, mute = false ) {
     this.hidden = true;
     this.groupMain.setAttribute( 'display', 'none' );
 
@@ -171,7 +171,7 @@ class Serie extends EventEmitter {
    * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  show( showShapes, mute = false ) {
+  show( showShapes = this.options.bindShapesToDisplayState, mute = false ) {
     this.hidden = false;
     this.groupMain.setAttribute( 'display', 'block' );
 
