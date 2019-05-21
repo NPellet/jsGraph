@@ -3463,7 +3463,7 @@ function _handleMouseMove( graph, x, y, e ) {
             serie.options.tracking.withinPx,
             serie.options.tracking.useAxis
           );
-          console.log( serie.getName(), closestPoint );
+
           // When all legends are in common mode, let's make sure we remove the serie-specific legend
           if ( graph.options.trackingLine.legendType == 'common' ) {
             serie._trackingLegend = _trackingLegendSerie(

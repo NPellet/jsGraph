@@ -449,14 +449,14 @@ class SerieLine extends SerieScatter {
       if ( waveform.isXMonotoneousAscending() ) {
         try {
           i = waveform.getIndexFromX( xMin, true ) || 0;
-          l = waveform.getIndexFromX( xMax, true );
+          l = waveform.getIndexFromX( xMax, true ) || waveform.getLength();
         } catch ( e ) {
           l = waveform.getLength();
         }
       } else {
         try {
           i = waveform.getIndexFromX( xMax, true ) || 0;
-          l = waveform.getIndexFromX( xMin, true );
+          l = waveform.getIndexFromX( xMin, true ) || waveform.getLength();
         } catch ( e ) {
           l = waveform.getLength();
         }

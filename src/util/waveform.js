@@ -447,21 +447,38 @@ class Waveform {
   getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
     let xdata;
 
+    let data, position;
+
+    xval -= this.getXShift();
+    xval /= this.getXScale();
+
+    if ( xval < this.getDataMinX() ) {
+      return false;
+    }
+
+    if ( xval > this.getDataMaxX() ) {
+      return false;
+    }
+
     if ( useDataToUse && this.dataInUse ) {
       xdata = this.dataInUse.x;
     } else if ( this.xdata ) {
       xdata = this.xdata.getData();
     }
 
-    let position;
-
     if ( this.hasXWaveform() ) {
-      position = this.xdata.getIndexFromMonotoneousData(
-        xval,
-        xdata,
-        this.xdata.getMonotoneousAscending(),
-        roundingMethod
-      );
+
+      if ( this.isXMonotoneous() ) {
+        position = this.xdata.getIndexFromMonotoneousData(
+          xval,
+          xdata,
+          this.xdata.getMonotoneousAscending(),
+          roundingMethod
+        );
+      } else {
+        position = euclidianSearch( xval, undefined, xdata, undefined, 1, undefined );
+
+      }
     } else {
       position = Math.max(
         0,
@@ -2115,14 +2132,37 @@ function euclidianSearch(
 
   let index = -1;
 
-  for ( var i = 0, l = haystackX.length; i < l; i++ ) {
-    distance_i =
-      ( ( targetX - haystackX[ i ] ) * scaleX ) ** 2 +
-      ( ( targetY - haystackY[ i ] ) * scaleY ) ** 2;
+  if ( targetX !== undefined && targetY == undefined ) {
 
-    if ( distance_i < distance ) {
-      index = i;
-      distance = distance_i;
+    for ( var i = 0, l = haystackX.length; i < l; i++ ) {
+      distance_i = Math.abs( ( targetX - haystackX[ i ] ) * scaleX );
+      if ( distance_i < distance ) {
+        index = i;
+        distance = distance_i;
+      }
+    }
+
+  } else if ( targetX == undefined && targetY !== undefined ) {
+
+    for ( var i = 0, l = haystackY.length; i < l; i++ ) {
+      distance_i = Math.abs( ( targetY - haystackY[ i ] ) * scaleY );
+      if ( distance_i < distance ) {
+        index = i;
+        distance = distance_i;
+      }
+    }
+
+  } else {
+
+    for ( var i = 0, l = haystackX.length; i < l; i++ ) {
+      distance_i =
+        ( ( targetX - haystackX[ i ] ) * scaleX ) ** 2 +
+        ( ( targetY - haystackY[ i ] ) * scaleY ) ** 2;
+
+      if ( distance_i < distance ) {
+        index = i;
+        distance = distance_i;
+      }
     }
   }
 

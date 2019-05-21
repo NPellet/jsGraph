@@ -3223,14 +3223,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (waveform.isXMonotoneousAscending()) {
           try {
             i = waveform.getIndexFromX(xMin, true) || 0;
-            l = waveform.getIndexFromX(xMax, true);
+            l = waveform.getIndexFromX(xMax, true) || waveform.getLength();
           } catch (e) {
             l = waveform.getLength();
           }
         } else {
           try {
             i = waveform.getIndexFromX(xMax, true) || 0;
-            l = waveform.getIndexFromX(xMin, true);
+            l = waveform.getIndexFromX(xMin, true) || waveform.getLength();
           } catch (e) {
             l = waveform.getLength();
           }
@@ -3970,8 +3970,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return false;
       }
       /*
-      
-          if (
+            if (
             ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
               Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
               withinPxX ) ||
@@ -5303,6 +5302,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     getIndexFromX(xval, useDataToUse = false, roundingMethod = Math.round) {
       let xdata;
+      let data, position;
+      xval -= this.getXShift();
+      xval /= this.getXScale();
+
+      if (xval < this.getDataMinX()) {
+        return false;
+      }
+
+      if (xval > this.getDataMaxX()) {
+        return false;
+      }
 
       if (useDataToUse && this.dataInUse) {
         xdata = this.dataInUse.x;
@@ -5310,10 +5320,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         xdata = this.xdata.getData();
       }
 
-      let position;
-
       if (this.hasXWaveform()) {
-        position = this.xdata.getIndexFromMonotoneousData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+        if (this.isXMonotoneous()) {
+          position = this.xdata.getIndexFromMonotoneousData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+        } else {
+          position = euclidianSearch(xval, undefined, xdata, undefined, 1, undefined);
+        }
       } else {
         position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
       }
@@ -5330,11 +5342,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if ( this.getXMin() > xval || this.getXMax() < xval ) {
           return false;
         }
-    
-        if ( this.hasXWaveform() ) {
+          if ( this.hasXWaveform() ) {
           // The x value HAS to be rescaled
-    
-          position = this.xdata.getIndexFromMonotoneousData(
+            position = this.xdata.getIndexFromMonotoneousData(
             xval,
             xdata,
             this.xdata.getMonotoneousAscending(),
@@ -5349,8 +5359,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             )
           );
         }
-    
-        return position;
+          return position;
       }
     */
 
@@ -6865,12 +6874,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         distance_i;
     let index = -1;
 
-    for (var i = 0, l = haystackX.length; i < l; i++) {
-      distance_i = Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2);
+    if (targetX !== undefined && targetY == undefined) {
+      for (var i = 0, l = haystackX.length; i < l; i++) {
+        distance_i = Math.abs((targetX - haystackX[i]) * scaleX);
 
-      if (distance_i < distance) {
-        index = i;
-        distance = distance_i;
+        if (distance_i < distance) {
+          index = i;
+          distance = distance_i;
+        }
+      }
+    } else if (targetX == undefined && targetY !== undefined) {
+      for (var i = 0, l = haystackY.length; i < l; i++) {
+        distance_i = Math.abs((targetY - haystackY[i]) * scaleY);
+
+        if (distance_i < distance) {
+          index = i;
+          distance = distance_i;
+        }
+      }
+    } else {
+      for (var i = 0, l = haystackX.length; i < l; i++) {
+        distance_i = Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2);
+
+        if (distance_i < distance) {
+          index = i;
+          distance = distance_i;
+        }
       }
     }
 
@@ -9999,7 +10028,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.3"
+        'data-jsgraph-version': "v2.2.4"
       });
     } catch (e) {// ignore
     }
@@ -10311,8 +10340,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               return;
             }
 
-            const closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis);
-            console.log(serie.getName(), closestPoint); // When all legends are in common mode, let's make sure we remove the serie-specific legend
+            const closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis); // When all legends are in common mode, let's make sure we remove the serie-specific legend
 
             if (graph.options.trackingLine.legendType == 'common') {
               serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);
