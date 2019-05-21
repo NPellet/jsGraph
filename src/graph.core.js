@@ -2291,7 +2291,7 @@ class Graph extends EventEmitter {
       };
     }
 
-    serie.options.tracking = options;
+    serie.options.tracking = Object.assign( {}, options );
 
     if ( !serie.trackingShape ) {
       serie.trackingShape = this.newShape(
@@ -3425,7 +3425,7 @@ function _handleMouseMove( graph, x, y, e ) {
             };
           } );
         }*/
-        f;
+
         if ( !series ) {
           return;
         }
@@ -3446,6 +3446,7 @@ function _handleMouseMove( graph, x, y, e ) {
         );
       } else if ( graph.options.trackingLine.mode == 'individual' ) {
         // Series looping
+
         const output = [];
         graph.options.trackingLine.series.forEach( ( serie ) => {
           //        const index = serie.handleMouseMove( false, true );
@@ -3459,9 +3460,10 @@ function _handleMouseMove( graph, x, y, e ) {
             serie.getXAxis().getMouseVal(),
             serie.getYAxis().getMouseVal(),
             serie.options.tracking.withinPx,
-            serie.options.tracking.withinPx
+            serie.options.tracking.withinPx,
+            serie.options.tracking.useAxis
           );
-
+          console.log( serie.getName(), closestPoint );
           // When all legends are in common mode, let's make sure we remove the serie-specific legend
           if ( graph.options.trackingLine.legendType == 'common' ) {
             serie._trackingLegend = _trackingLegendSerie(

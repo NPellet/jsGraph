@@ -5153,74 +5153,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
       */
 
-      /**
-       * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-       * @param {Number} valX - The x value to search for
-       * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
-       * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-       * @memberof SerieLine
-       */
-
-    }, {
-      key: "getClosestPointToXY",
-      value: function getClosestPointToXY(valX, valY, withinPxX, withinPxY) {
-        if (this.waveform) {
-          var indexX;
-
-          try {
-            indexX = this.waveform.findWithShortestDistance({
-              x: valX,
-              y: valY,
-              scaleX: this.getXAxis().getRelPx(1),
-              scaleY: this.getYAxis().getRelPx(1)
-            });
-          } catch (e) {
-            console.log(e);
-            throw new Error('Error while finding the closest index');
-            return {};
-          }
-
-          if (isNaN(indexX) || indexX === false) {
-            return false;
-          }
-          /*
-                console.log(
-                  valX,
-                  this.waveform.getX( indexX ),
-                  this.getXAxis().getRelVal( withinPxX ),
-                  valY,
-                  this.waveform.getY( indexX ),
-                  this.getYAxis().getRelVal( withinPxY )
-                );
-           */
-
-
-          if (Math.abs(valX - this.waveform.getX(indexX)) > Math.abs(this.getXAxis().getRelVal(withinPxX)) && withinPxX || Math.abs(valY - this.waveform.getY(indexX)) > Math.abs(this.getYAxis().getRelVal(withinPxY)) && withinPxY) {
-            return false;
-          }
-
-          var direction; // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
-
-          if (valX > this.waveform.getX(indexX)) {
-            direction = -1;
-          } else {
-            direction = 0;
-          }
-
-          return {
-            indexBefore: indexX + direction,
-            indexAfter: indexX + direction + 1,
-            indexClosest: indexX,
-            xBefore: this.waveform.getX(indexX + direction),
-            xAfter: this.waveform.getX(indexX + direction + 1),
-            yBefore: this.waveform.getY(indexX + direction),
-            yAfter: this.waveform.getY(indexX + direction + 1),
-            xClosest: this.waveform.getX(indexX),
-            yClosest: this.waveform.getY(indexX),
-            xExact: valX
-          };
-        }
-      }
     }, {
       key: "handleMouseMove",
       value: function handleMouseMove(xValue, doMarker, yValue) {
@@ -5553,6 +5485,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         return this.waveform.findLocalMinMax(xRef, xWithin, type);
       }
+      /**
+       * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+       * @param {Number} valX - The x value to search for
+       * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
+       * @param {Number} withinPxX - The maximum distance in X
+       * @param {number} withinPxY - The maximum distance in Y
+       * @param {string} useAxis - ```x``` or ```y```. Use only the value of x or y to find the closest point
+       * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+       * @memberof SerieLine
+       */
+
     }, {
       key: "getClosestPointToXY",
       value: function getClosestPointToXY() {
@@ -5560,6 +5503,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var valY = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getYAxis().getMouseVal();
         var withinPxX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
         var withinPxY = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+        var useAxis = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
         // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
         //const xVal = this.getXAxis().getVal( x );
         //const yVal = this.getYAxis().getVal( y );
@@ -5569,10 +5513,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var closestPointIndex = this.waveform.findWithShortestDistance({
           x: valX,
           y: valY,
-          xMax: xValAllowed,
-          yMax: yValAllowed,
-          interpolation: false
+          xMaxDistance: xValAllowed,
+          yMaxDistance: yValAllowed,
+          axisRef: useAxis
         });
+
+        if (isNaN(closestPointIndex) || closestPointIndex === false) {
+          return false;
+        }
+        /*
+        
+            if (
+              ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
+                Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
+                withinPxX ) ||
+              ( Math.abs( valY - this.waveform.getY( closestPointIndex ) ) >
+                Math.abs( this.getYAxis().getRelVal( withinPxY ) ) &&
+                withinPxY )
+            ) {
+              return false;
+            }
+        */
+
+
+        if (closestPointIndex < 0) {
+          return false;
+        }
+
         var dataOutput = {
           indexBefore: closestPointIndex,
           indexAfter: closestPointIndex,
@@ -7068,6 +7035,40 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         return position;
       }
+      /*
+        getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
+          if ( this.getXMin() > xval || this.getXMax() < xval ) {
+            return false;
+          }
+      
+          if ( this.hasXWaveform() ) {
+            // The x value HAS to be rescaled
+      
+            position = this.xdata.getIndexFromMonotoneousData(
+              xval,
+              xdata,
+              this.xdata.getMonotoneousAscending(),
+              roundingMethod
+            );
+          } else {
+            position = Math.max(
+              0,
+              Math.min(
+                this.getLength() - 1,
+                roundingMethod( ( xval - this.xOffset ) / this.xScale )
+              )
+            );
+          }
+      
+          return position;
+        }
+      */
+
+    }, {
+      key: "setAtIndex",
+      value: function setAtIndex(index, value) {
+        this.data[index] = value;
+      }
       /**
        * Finds the point in the data stack with the smalled distance based on an x and y value.
        * @param {number} xval
@@ -7084,8 +7085,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function getIndexFromXY(xval, yval) {
         var useDataToUse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
         var roundingMethod = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Math.round;
-        var scaleX = arguments.length > 4 ? arguments[4] : undefined;
-        var scaleY = arguments.length > 5 ? arguments[5] : undefined;
+        var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+        var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
         var xdata, ydata;
 
         if (useDataToUse && this.dataInUse) {
@@ -7096,25 +7097,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           ydata = this.data;
         }
 
-        var position;
+        var position; //  if ( this.isXMonotoneous() ) {
+        // X lookup only
+        //     position = this.getIndexFromX( xval, useDataToUse, roundingMethod );
+        //   } else if ( !isNaN( yval ) ) {
 
-        if (this.isXMonotoneous()) {
-          // X lookup only
-          if (this.getXMin() > xval || this.getXMax() < xval) {
-            return false;
-          }
-
-          if (this.hasXWaveform()) {
-            // The x value HAS to be rescaled
-            position = this.xdata.getIndexFromMonotoneousData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
-          } else {
-            position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
-          }
-        } else if (!isNaN(yval)) {
-          position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
-        } else {
-          return;
-        }
+        position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY); //   } else {
+        //     return;
+        //   }
 
         if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
           // In case of aggregation, round to the closest element of 4.
@@ -7171,8 +7161,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "findWithShortestDistance",
       value: function findWithShortestDistance(options) {
-        if (!options.interpolation) {
-          return this.getIndexFromXY(options.x, options.y, true, undefined, options.scaleX, options.scaleY);
+        if (!options.axisRef) {
+          var index = this.getIndexFromXY(options.x, options.y, true, undefined, options.scaleX, options.scaleY);
+
+          if (options.xMaxDistance && Math.abs(options.x - this.getX(index)) > Math.abs(options.xMaxDistance)) {
+            return -1;
+          }
+
+          if (options.yMaxDistance && Math.abs(options.y - this.getY(index)) > Math.abs(options.yMaxDistance)) {
+            return -1;
+          }
+
+          return index;
+        } else {
+          if (options.axisRef == 'x') {
+            var _index = this.getIndexFromX(options.x, true, undefined);
+
+            if (options.xMaxDistance && Math.abs(options.x - this.getX(_index)) > Math.abs(options.xMaxDistance)) {
+              return -1;
+            }
+
+            return _index;
+          }
         }
       }
     }, {
@@ -11929,7 +11939,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           };
         }
 
-        serie.options.tracking = options;
+        serie.options.tracking = Object.assign({}, options);
 
         if (!serie.trackingShape) {
           serie.trackingShape = this.newShape(serieShape.shape, {
@@ -12565,7 +12575,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.2"
+        'data-jsgraph-version': "v2.2.3"
       });
     } catch (e) {// ignore
     }
@@ -12858,8 +12868,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             } );
           }*/
 
-          f;
-
           if (!series) {
             return;
           }
@@ -12879,7 +12887,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               return;
             }
 
-            var closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx); // When all legends are in common mode, let's make sure we remove the serie-specific legend
+            var closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis);
+            console.log(serie.getName(), closestPoint); // When all legends are in common mode, let's make sure we remove the serie-specific legend
 
             if (graph.options.trackingLine.legendType == 'common') {
               serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);

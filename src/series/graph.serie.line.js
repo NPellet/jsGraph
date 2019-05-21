@@ -951,77 +951,6 @@ class SerieLine extends SerieScatter {
     return xyindex;
   }
 */
-  /**
-   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-   * @param {Number} valX - The x value to search for
-   * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
-   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-   * @memberof SerieLine
-   */
-  getClosestPointToXY( valX, valY, withinPxX, withinPxY ) {
-    if ( this.waveform ) {
-      let indexX;
-
-      try {
-        indexX = this.waveform.findWithShortestDistance( {
-          x: valX,
-          y: valY,
-          scaleX: this.getXAxis().getRelPx( 1 ),
-          scaleY: this.getYAxis().getRelPx( 1 )
-        } );
-      } catch ( e ) {
-        console.log( e );
-        throw new Error( 'Error while finding the closest index' );
-        return {};
-      }
-
-      if ( isNaN( indexX ) || indexX === false ) {
-        return false;
-      }
-      /*
-            console.log(
-              valX,
-              this.waveform.getX( indexX ),
-              this.getXAxis().getRelVal( withinPxX ),
-              valY,
-              this.waveform.getY( indexX ),
-              this.getYAxis().getRelVal( withinPxY )
-            );
-       */
-      if (
-        ( Math.abs( valX - this.waveform.getX( indexX ) ) >
-          Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
-          withinPxX ) ||
-        ( Math.abs( valY - this.waveform.getY( indexX ) ) >
-          Math.abs( this.getYAxis().getRelVal( withinPxY ) ) &&
-          withinPxY )
-      ) {
-        return false;
-      }
-
-      let direction;
-      // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
-      if ( valX > this.waveform.getX( indexX ) ) {
-        direction = -1;
-      } else {
-        direction = 0;
-      }
-
-      return {
-        indexBefore: indexX + direction,
-        indexAfter: indexX + direction + 1,
-        indexClosest: indexX,
-        xBefore: this.waveform.getX( indexX + direction ),
-        xAfter: this.waveform.getX( indexX + direction + 1 ),
-        yBefore: this.waveform.getY( indexX + direction ),
-        yAfter: this.waveform.getY( indexX + direction + 1 ),
-        xClosest: this.waveform.getX( indexX ),
-        yClosest: this.waveform.getY( indexX ),
-        xExact: valX
-      };
-    }
-  }
-
   handleMouseMove( xValue, doMarker, yValue ) {
     var valX = xValue || this.getXAxis().getMouseVal(),
       valY = yValue || this.getYAxis().getMouseVal();
@@ -1327,7 +1256,17 @@ class SerieLine extends SerieScatter {
     return this.waveform.findLocalMinMax( xRef, xWithin, type );
   }
 
-  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0 ) {
+  /**
+   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+   * @param {Number} valX - The x value to search for
+   * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
+   * @param {Number} withinPxX - The maximum distance in X
+   * @param {number} withinPxY - The maximum distance in Y
+   * @param {string} useAxis - ```x``` or ```y```. Use only the value of x or y to find the closest point
+   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+   * @memberof SerieLine
+   */
+  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false ) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
 
     //const xVal = this.getXAxis().getVal( x );
@@ -1339,11 +1278,31 @@ class SerieLine extends SerieScatter {
     const closestPointIndex = this.waveform.findWithShortestDistance( {
       x: valX,
       y: valY,
-      xMax: xValAllowed,
-      yMax: yValAllowed,
-      interpolation: false
+      xMaxDistance: xValAllowed,
+      yMaxDistance: yValAllowed,
+      axisRef: useAxis
     } );
 
+    if ( isNaN( closestPointIndex ) || closestPointIndex === false ) {
+      return false;
+    }
+    /*
+
+        if (
+          ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
+            Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
+            withinPxX ) ||
+          ( Math.abs( valY - this.waveform.getY( closestPointIndex ) ) >
+            Math.abs( this.getYAxis().getRelVal( withinPxY ) ) &&
+            withinPxY )
+        ) {
+          return false;
+        }
+    */
+
+    if ( closestPointIndex < 0 ) {
+      return false;
+    }
     const dataOutput = {
 
       indexBefore: closestPointIndex,

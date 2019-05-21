@@ -480,39 +480,8 @@ class Waveform {
     return position;
   }
 
-  /**
-   * Finds the point in the data stack with the smalled distance based on an x and y value.
-   * @param {number} xval
-   * @param {number} yval
-   * @param {boolean} useDataToUse
-   * @param {function} roundingMethod
-   * @param {number} scaleX
-   * @param {number} scaleY
-   * @returns {number} The index of the closest position
-   */
-  getIndexFromXY(
-    xval,
-    yval,
-    useDataToUse = false,
-    roundingMethod = Math.round,
-    scaleX,
-    scaleY
-  ) {
-    let xdata, ydata;
-
-    if ( useDataToUse && this.dataInUse ) {
-      xdata = this.dataInUse.x;
-      ydata = this.dataInUse.y;
-    } else if ( this.xdata ) {
-      xdata = this.xdata.data;
-      ydata = this.data;
-    }
-
-    let position;
-
-    if ( this.isXMonotoneous() ) {
-      // X lookup only
-
+  /*
+    getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
       if ( this.getXMin() > xval || this.getXMax() < xval ) {
         return false;
       }
@@ -535,18 +504,60 @@ class Waveform {
           )
         );
       }
-    } else if ( !isNaN( yval ) ) {
-      position = this.getIndexFromDataXY(
-        xval,
-        xdata,
-        yval,
-        ydata,
-        scaleX,
-        scaleY
-      );
-    } else {
-      return;
+
+      return position;
     }
+  */
+
+  setAtIndex( index, value ) {
+    this.data[ index ] = value;
+  }
+  /**
+   * Finds the point in the data stack with the smalled distance based on an x and y value.
+   * @param {number} xval
+   * @param {number} yval
+   * @param {boolean} useDataToUse
+   * @param {function} roundingMethod
+   * @param {number} scaleX
+   * @param {number} scaleY
+   * @returns {number} The index of the closest position
+   */
+  getIndexFromXY(
+    xval,
+    yval,
+    useDataToUse = false,
+    roundingMethod = Math.round,
+    scaleX = 1,
+    scaleY = 1
+  ) {
+    let xdata, ydata;
+
+    if ( useDataToUse && this.dataInUse ) {
+      xdata = this.dataInUse.x;
+      ydata = this.dataInUse.y;
+    } else if ( this.xdata ) {
+      xdata = this.xdata.data;
+      ydata = this.data;
+    }
+
+    let position;
+
+    //  if ( this.isXMonotoneous() ) {
+    // X lookup only
+    //     position = this.getIndexFromX( xval, useDataToUse, roundingMethod );
+
+    //   } else if ( !isNaN( yval ) ) {
+    position = this.getIndexFromDataXY(
+      xval,
+      xdata,
+      yval,
+      ydata,
+      scaleX,
+      scaleY
+    );
+    //   } else {
+    //     return;
+    //   }
 
     if ( useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX' ) {
       // In case of aggregation, round to the closest element of 4.
@@ -600,8 +611,9 @@ class Waveform {
   }
 
   findWithShortestDistance( options ) {
-    if ( !options.interpolation ) {
-      return this.getIndexFromXY(
+
+    if ( !options.axisRef ) {
+      const index = this.getIndexFromXY(
         options.x,
         options.y,
         true,
@@ -609,6 +621,27 @@ class Waveform {
         options.scaleX,
         options.scaleY
       );
+
+      if ( options.xMaxDistance && Math.abs( options.x - this.getX( index ) ) > Math.abs( options.xMaxDistance ) ) {
+        return -1;
+      }
+
+      if ( options.yMaxDistance && Math.abs( options.y - this.getY( index ) ) > Math.abs( options.yMaxDistance ) ) {
+        return -1;
+      }
+
+      return index;
+    } else {
+
+      if ( options.axisRef == 'x' ) {
+        const index = this.getIndexFromX( options.x, true, undefined );
+
+        if ( options.xMaxDistance && Math.abs( options.x - this.getX( index ) ) > Math.abs( options.xMaxDistance ) ) {
+          return -1;
+        }
+
+        return index;
+      }
     }
   }
 

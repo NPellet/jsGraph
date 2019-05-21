@@ -2536,6 +2536,36 @@ class Waveform {
 
     return position;
   }
+  /*
+    getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
+      if ( this.getXMin() > xval || this.getXMax() < xval ) {
+        return false;
+      }
+        if ( this.hasXWaveform() ) {
+        // The x value HAS to be rescaled
+          position = this.xdata.getIndexFromMonotoneousData(
+          xval,
+          xdata,
+          this.xdata.getMonotoneousAscending(),
+          roundingMethod
+        );
+      } else {
+        position = Math.max(
+          0,
+          Math.min(
+            this.getLength() - 1,
+            roundingMethod( ( xval - this.xOffset ) / this.xScale )
+          )
+        );
+      }
+        return position;
+    }
+  */
+
+
+  setAtIndex(index, value) {
+    this.data[index] = value;
+  }
   /**
    * Finds the point in the data stack with the smalled distance based on an x and y value.
    * @param {number} xval
@@ -2548,7 +2578,7 @@ class Waveform {
    */
 
 
-  getIndexFromXY(xval, yval, useDataToUse = false, roundingMethod = Math.round, scaleX, scaleY) {
+  getIndexFromXY(xval, yval, useDataToUse = false, roundingMethod = Math.round, scaleX = 1, scaleY = 1) {
     let xdata, ydata;
 
     if (useDataToUse && this.dataInUse) {
@@ -2559,25 +2589,14 @@ class Waveform {
       ydata = this.data;
     }
 
-    let position;
+    let position; //  if ( this.isXMonotoneous() ) {
+    // X lookup only
+    //     position = this.getIndexFromX( xval, useDataToUse, roundingMethod );
+    //   } else if ( !isNaN( yval ) ) {
 
-    if (this.isXMonotoneous()) {
-      // X lookup only
-      if (this.getXMin() > xval || this.getXMax() < xval) {
-        return false;
-      }
-
-      if (this.hasXWaveform()) {
-        // The x value HAS to be rescaled
-        position = this.xdata.getIndexFromMonotoneousData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
-      } else {
-        position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
-      }
-    } else if (!isNaN(yval)) {
-      position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
-    } else {
-      return;
-    }
+    position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY); //   } else {
+    //     return;
+    //   }
 
     if (useDataToUse && this.dataInUse && this.dataInUseType == 'aggregateX') {
       // In case of aggregation, round to the closest element of 4.
@@ -2628,8 +2647,28 @@ class Waveform {
   }
 
   findWithShortestDistance(options) {
-    if (!options.interpolation) {
-      return this.getIndexFromXY(options.x, options.y, true, undefined, options.scaleX, options.scaleY);
+    if (!options.axisRef) {
+      const index = this.getIndexFromXY(options.x, options.y, true, undefined, options.scaleX, options.scaleY);
+
+      if (options.xMaxDistance && Math.abs(options.x - this.getX(index)) > Math.abs(options.xMaxDistance)) {
+        return -1;
+      }
+
+      if (options.yMaxDistance && Math.abs(options.y - this.getY(index)) > Math.abs(options.yMaxDistance)) {
+        return -1;
+      }
+
+      return index;
+    } else {
+      if (options.axisRef == 'x') {
+        const index = this.getIndexFromX(options.x, true, undefined);
+
+        if (options.xMaxDistance && Math.abs(options.x - this.getX(index)) > Math.abs(options.xMaxDistance)) {
+          return -1;
+        }
+
+        return index;
+      }
     }
   }
 
@@ -6507,7 +6546,7 @@ class Graph extends EventEmitter {
       };
     }
 
-    serie.options.tracking = options;
+    serie.options.tracking = Object.assign({}, options);
 
     if (!serie.trackingShape) {
       serie.trackingShape = this.newShape(serieShape.shape, {
@@ -7432,7 +7471,8 @@ function _handleMouseMove(graph, x, y, e) {
             return;
           }
 
-          const closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx); // When all legends are in common mode, let's make sure we remove the serie-specific legend
+          const closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis);
+          console.log(serie.getName(), closestPoint); // When all legends are in common mode, let's make sure we remove the serie-specific legend
 
           if (graph.options.trackingLine.legendType == 'common') {
             serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);
@@ -15016,73 +15056,6 @@ class SerieLine extends SerieScatter {
   }
   */
 
-  /**
-   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-   * @param {Number} valX - The x value to search for
-   * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
-   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-   * @memberof SerieLine
-   */
-
-
-  getClosestPointToXY(valX, valY, withinPxX, withinPxY) {
-    if (this.waveform) {
-      let indexX;
-
-      try {
-        indexX = this.waveform.findWithShortestDistance({
-          x: valX,
-          y: valY,
-          scaleX: this.getXAxis().getRelPx(1),
-          scaleY: this.getYAxis().getRelPx(1)
-        });
-      } catch (e) {
-        console.log(e);
-        throw new Error('Error while finding the closest index');
-        return {};
-      }
-
-      if (isNaN(indexX) || indexX === false) {
-        return false;
-      }
-      /*
-            console.log(
-              valX,
-              this.waveform.getX( indexX ),
-              this.getXAxis().getRelVal( withinPxX ),
-              valY,
-              this.waveform.getY( indexX ),
-              this.getYAxis().getRelVal( withinPxY )
-            );
-       */
-
-
-      if (Math.abs(valX - this.waveform.getX(indexX)) > Math.abs(this.getXAxis().getRelVal(withinPxX)) && withinPxX || Math.abs(valY - this.waveform.getY(indexX)) > Math.abs(this.getYAxis().getRelVal(withinPxY)) && withinPxY) {
-        return false;
-      }
-
-      let direction; // Changed on 8 March. Before is was 0 and +1, why ? In case of decreasing data ? Not sure
-
-      if (valX > this.waveform.getX(indexX)) {
-        direction = -1;
-      } else {
-        direction = 0;
-      }
-
-      return {
-        indexBefore: indexX + direction,
-        indexAfter: indexX + direction + 1,
-        indexClosest: indexX,
-        xBefore: this.waveform.getX(indexX + direction),
-        xAfter: this.waveform.getX(indexX + direction + 1),
-        yBefore: this.waveform.getY(indexX + direction),
-        yAfter: this.waveform.getY(indexX + direction + 1),
-        xClosest: this.waveform.getX(indexX),
-        yClosest: this.waveform.getY(indexX),
-        xExact: valX
-      };
-    }
-  }
 
   handleMouseMove(xValue, doMarker, yValue) {
     var valX = xValue || this.getXAxis().getMouseVal(),
@@ -15391,8 +15364,19 @@ class SerieLine extends SerieScatter {
 
     return this.waveform.findLocalMinMax(xRef, xWithin, type);
   }
+  /**
+   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+   * @param {Number} valX - The x value to search for
+   * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
+   * @param {Number} withinPxX - The maximum distance in X
+   * @param {number} withinPxY - The maximum distance in Y
+   * @param {string} useAxis - ```x``` or ```y```. Use only the value of x or y to find the closest point
+   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+   * @memberof SerieLine
+   */
 
-  getClosestPointToXY(valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0) {
+
+  getClosestPointToXY(valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
     //const xVal = this.getXAxis().getVal( x );
     //const yVal = this.getYAxis().getVal( y );
@@ -15402,10 +15386,32 @@ class SerieLine extends SerieScatter {
     const closestPointIndex = this.waveform.findWithShortestDistance({
       x: valX,
       y: valY,
-      xMax: xValAllowed,
-      yMax: yValAllowed,
-      interpolation: false
+      xMaxDistance: xValAllowed,
+      yMaxDistance: yValAllowed,
+      axisRef: useAxis
     });
+
+    if (isNaN(closestPointIndex) || closestPointIndex === false) {
+      return false;
+    }
+    /*
+          if (
+          ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
+            Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
+            withinPxX ) ||
+          ( Math.abs( valY - this.waveform.getY( closestPointIndex ) ) >
+            Math.abs( this.getYAxis().getRelVal( withinPxY ) ) &&
+            withinPxY )
+        ) {
+          return false;
+        }
+    */
+
+
+    if (closestPointIndex < 0) {
+      return false;
+    }
+
     const dataOutput = {
       indexBefore: closestPointIndex,
       indexAfter: closestPointIndex,
