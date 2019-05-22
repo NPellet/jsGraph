@@ -10080,7 +10080,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.7"
+        'data-jsgraph-version': "v2.2.8"
       });
     } catch (e) {// ignore
     }
@@ -15073,6 +15073,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       return container;
+    }
+
+    setStyle(style, styleName = "unselected") {
+      return this.setMarkerStyle(style, undefined, styleName);
     }
     /**
      * Sets style to the scatter points

@@ -13993,6 +13993,10 @@ class SerieScatter extends Serie {
 
     return container;
   }
+
+  setStyle(style, styleName = "unselected") {
+    return this.setMarkerStyle(style, undefined, styleName);
+  }
   /**
    * Sets style to the scatter points
    * First argument is the style applied by default to all points
