@@ -1248,6 +1248,30 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return this;
     }
     /**
+     * Adds a transform property to the shape.
+     * @param {Number} angle - The arguments following the transform
+     * @param {Number} cx - The arguments following the transform
+     * @param {Number} cy - The arguments following the transform
+     * @param {String} angleType - Which type of angle should be applied. ```degree``` or ```angleData``` 
+     * @return {Shape} The current shape
+     */
+
+
+    addTransformRotate(angle, cx, cy, angleType = 'degrees') {
+      this.addProp('transforms', {
+        type: "rotate",
+        arguments: {
+          center: {
+            x: cx,
+            y: cy
+          },
+          angle: angle,
+          angleType: angleType
+        }
+      });
+      return this;
+    }
+    /**
      * Resets the transforms
      * @see Shape#addTransform
      * @return {Shape} The current shape
@@ -1598,8 +1622,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             break;
 
           case 'rotate':
+            let angle;
+
             if (!transforms[i].arguments) {
-              transformString += transforms[i].angle;
+              if (transforms[i].angleType == 'angleData') {
+                if (!this.serie) {
+                  continue;
+                }
+
+                angle = Math.atan(Math.tan(transforms[i].angle * Math.PI / 180) * this.serie.getXAxis().getRelVal(1) / this.serie.getYAxis().getRelVal(1)) * 180 / Math.PI;
+              } else {
+                angle = transforms[i].angle;
+              }
+
+              transformString += angle;
 
               if (!transforms[i].center) {
                 var p = this.computePosition(0);
@@ -1614,6 +1650,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                   transformString += posCenter.y;
                 }
               }
+
+              console.log(transformString);
             } else {
               transformString += transforms[i].arguments[0];
               transformString += ', ';
@@ -10080,7 +10118,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.8"
+        'data-jsgraph-version': "v2.2.9"
       });
     } catch (e) {// ignore
     }
@@ -18077,6 +18115,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (json.serie) {
         shape.setSerie(json.serie);
+      }
+
+      if (serie) {
+        shape.setSerie(serie);
       }
 
       if (json.layer) {

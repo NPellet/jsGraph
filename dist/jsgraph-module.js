@@ -1269,6 +1269,10 @@ const makeAnnotation = (graph, json, serie, axes) => {
       shape.setSerie(json.serie);
     }
 
+    if (serie) {
+      shape.setSerie(serie);
+    }
+
     if (json.layer) {
       shape.setLayer(json.layer);
     }
@@ -18881,6 +18885,30 @@ class Shape extends EventEmitter {
     return this;
   }
   /**
+   * Adds a transform property to the shape.
+   * @param {Number} angle - The arguments following the transform
+   * @param {Number} cx - The arguments following the transform
+   * @param {Number} cy - The arguments following the transform
+   * @param {String} angleType - Which type of angle should be applied. ```degree``` or ```angleData``` 
+   * @return {Shape} The current shape
+   */
+
+
+  addTransformRotate(angle, cx, cy, angleType = 'degrees') {
+    this.addProp('transforms', {
+      type: "rotate",
+      arguments: {
+        center: {
+          x: cx,
+          y: cy
+        },
+        angle: angle,
+        angleType: angleType
+      }
+    });
+    return this;
+  }
+  /**
    * Resets the transforms
    * @see Shape#addTransform
    * @return {Shape} The current shape
@@ -19226,8 +19254,20 @@ class Shape extends EventEmitter {
           break;
 
         case 'rotate':
+          let angle;
+
           if (!transforms[i].arguments) {
-            transformString += transforms[i].angle;
+            if (transforms[i].angleType == 'angleData') {
+              if (!this.serie) {
+                continue;
+              }
+
+              angle = Math.atan(Math.tan(transforms[i].angle * Math.PI / 180) * this.serie.getXAxis().getRelVal(1) / this.serie.getYAxis().getRelVal(1)) * 180 / Math.PI;
+            } else {
+              angle = transforms[i].angle;
+            }
+
+            transformString += angle;
 
             if (!transforms[i].center) {
               var p = this.computePosition(0);
@@ -19242,6 +19282,8 @@ class Shape extends EventEmitter {
                 transformString += posCenter.y;
               }
             }
+
+            console.log(transformString);
           } else {
             transformString += transforms[i].arguments[0];
             transformString += ', ';

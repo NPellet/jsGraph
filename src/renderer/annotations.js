@@ -6,6 +6,10 @@ const makeAnnotation = ( graph, json, serie, axes ) => {
       shape.setSerie( json.serie );
     }
 
+    if ( serie ) {
+      shape.setSerie( serie );
+    }
+
     if ( json.layer ) {
       shape.setLayer( json.layer );
     }
