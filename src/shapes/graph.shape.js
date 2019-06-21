@@ -1063,11 +1063,17 @@ class Shape extends EventEmitter {
 
             if ( transforms[ i ].angleType == 'angleData' ) {
 
+              let xAxis, yAxis;
+
               if ( !this.serie ) {
-                continue;
+                xAxis = this.graph.getXAxis();
+                yAxis = this.graph.getYAxis();
+              } else {
+                xAxis = this.serie.getXAxis();
+                yAxis = this.serie.getYAxis();
               }
 
-              angle = Math.atan( Math.tan( transforms[ i ].angle * Math.PI / 180 ) * this.serie.getXAxis().getRelVal( 1 ) / this.serie.getYAxis().getRelVal( 1 ) ) * 180 / Math.PI;
+              angle = Math.atan( Math.tan( transforms[ i ].angle * Math.PI / 180 ) * xAxis.getRelVal( 1 ) / yAxis.getRelVal( 1 ) ) * 180 / Math.PI;
             } else {
               angle = transforms[ i ].angle;
             }

@@ -1626,11 +1626,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
             if (!transforms[i].arguments) {
               if (transforms[i].angleType == 'angleData') {
+                let xAxis, yAxis;
+
                 if (!this.serie) {
-                  continue;
+                  xAxis = this.graph.getXAxis();
+                  yAxis = this.graph.getYAxis();
+                } else {
+                  xAxis = this.serie.getXAxis();
+                  yAxis = this.serie.getYAxis();
                 }
 
-                angle = Math.atan(Math.tan(transforms[i].angle * Math.PI / 180) * this.serie.getXAxis().getRelVal(1) / this.serie.getYAxis().getRelVal(1)) * 180 / Math.PI;
+                angle = Math.atan(Math.tan(transforms[i].angle * Math.PI / 180) * xAxis.getRelVal(1) / yAxis.getRelVal(1)) * 180 / Math.PI;
               } else {
                 angle = transforms[i].angle;
               }
@@ -10118,7 +10124,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.11"
+        'data-jsgraph-version': "v2.2.12"
       });
     } catch (e) {// ignore
     }
