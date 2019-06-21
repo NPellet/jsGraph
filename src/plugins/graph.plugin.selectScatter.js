@@ -119,9 +119,9 @@ class PluginSelectScatter extends Plugin {
 
       if ( counter % 2 == 1 ) {
         selected.push( i );
-        this.serie.selectPoint( i, true, 'selected' );
+        this.serie.selectMarker( i, true, 'selected' );
       } else {
-        this.serie.unselectPoint( i );
+        this.serie.unselectMarker( i );
       }
 
     }

@@ -12702,7 +12702,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.9"
+        'data-jsgraph-version': "v2.2.10"
       });
     } catch (e) {// ignore
     }
@@ -13059,7 +13059,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                   }], x, y, serie._trackingLegend);
                 }
 
-                serie.emit('track', closestPoint);
+                serie.emit('track', e, closestPoint);
               }
             }
 
@@ -13090,7 +13090,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         graph.options.mouseMoveData.call(graph, e, results);
       }
 
-      graph.emit("mouseMoveData", results);
+      graph.emit("mouseMoveData", e, results);
     }
 
     checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
@@ -35438,9 +35438,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
           if (counter % 2 == 1) {
             selected.push(i);
-            this.serie.selectPoint(i, true, 'selected');
+            this.serie.selectMarker(i, true, 'selected');
           } else {
-            this.serie.unselectPoint(i);
+            this.serie.unselectMarker(i);
           }
         }
 

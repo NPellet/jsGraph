@@ -3537,7 +3537,7 @@ function _handleMouseMove( graph, x, y, e ) {
                   serie._trackingLegend
                 );
               }
-              serie.emit( 'track', closestPoint );
+              serie.emit( 'track', e, closestPoint );
             }
           }
 
@@ -3581,7 +3581,7 @@ function _handleMouseMove( graph, x, y, e ) {
       graph.options.mouseMoveData.call( graph, e, results );
     }
 
-    graph.emit( "mouseMoveData", results );
+    graph.emit( "mouseMoveData", e, results );
   }
 
   checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseMove' );

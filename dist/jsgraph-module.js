@@ -7602,7 +7602,7 @@ function _handleMouseMove(graph, x, y, e) {
                 }], x, y, serie._trackingLegend);
               }
 
-              serie.emit('track', closestPoint);
+              serie.emit('track', e, closestPoint);
             }
           }
 
@@ -7633,7 +7633,7 @@ function _handleMouseMove(graph, x, y, e) {
       graph.options.mouseMoveData.call(graph, e, results);
     }
 
-    graph.emit("mouseMoveData", results);
+    graph.emit("mouseMoveData", e, results);
   }
 
   checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
@@ -22517,9 +22517,9 @@ class PluginSelectScatter extends Plugin {
 
       if (counter % 2 == 1) {
         selected.push(i);
-        this.serie.selectPoint(i, true, 'selected');
+        this.serie.selectMarker(i, true, 'selected');
       } else {
-        this.serie.unselectPoint(i);
+        this.serie.unselectMarker(i);
       }
     }
 
