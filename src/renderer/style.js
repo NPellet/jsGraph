@@ -63,6 +63,7 @@ const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
       style.marker &&
       ( type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER )
     ) {
+
       setMarkerStyle( serie, style.marker );
     }
   } );

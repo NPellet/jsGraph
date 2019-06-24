@@ -1,0 +1,28 @@
+{
+    "name": "chart",
+    "title": "main data",
+    
+    "series": [
+        {
+           "data": {
+                "x": [ 1, 2, 3,4 ],
+                "y": [ 1,2,3,4],
+            },
+
+            "style": { 
+
+                "marker": {
+
+                    "default": {
+                        "fill": "red"
+                    },
+                    "modifiers": [null,{"fill": "green"},null,{"fill": "blue"}]
+                }
+
+               
+            }
+            ,
+            "type": "scatter"
+        }
+    ]
+}

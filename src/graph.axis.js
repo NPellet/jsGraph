@@ -778,7 +778,41 @@ class Axis extends EventEmitter {
     switch ( this.options.unitModification ) {
 
       case 'time':
-      case 'time:min.sec':
+        case 'time:min.sec':
+          {
+  
+            //const max = this.getModifiedValue( this.getMaxValue() );/*,
+            /*units = [
+              [ 60, 'min' ],
+              [ 3600, 'h' ],
+              [ 3600 * 24, 'd' ]
+            ];*/
+  
+            let i, l, k, m;
+            let breaked = false;
+            for ( i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
+              for ( k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
+                if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
+                  breaked = true;
+                  break;
+                }
+              }
+              if ( breaked ) {
+                break;
+              }
+            }
+  
+            //i and k contain the good variable;
+            if ( i !== this.unitModificationTimeTicks.length ) {
+              unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
+            } else {
+              unitPerTickCorrect = 1;
+            }
+  
+            break;
+          }
+
+          case 'time:min.sec_dec':
         {
 
           //const max = this.getModifiedValue( this.getMaxValue() );/*,

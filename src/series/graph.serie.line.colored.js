@@ -88,9 +88,9 @@ class SerieLineColor extends SerieLine {
 
       this.counter2 = j;
 
-      if ( this.markersShown() ) {
-        this.getMarkerCurrentFamily( this.counter2 );
-      }
+      //if ( this.markersShown() ) {
+        //this.getMarkerCurrentFamily( this.counter2 );
+      //}
 
       xpx2 = this.getX( x );
       ypx2 = this.getY( y );
