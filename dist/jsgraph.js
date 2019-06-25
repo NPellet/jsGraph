@@ -2212,6 +2212,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var i = 0;
 
         while (this.getProp('labelText', i) !== undefined) {
+          console.log(this.properties);
+
           if (!this._labels[i]) {
             this._labels[i] = document.createElementNS(this.graph.ns, 'text');
 
@@ -2239,8 +2241,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             });
           }
 
-          if (!Array.isArray(this.getProp('labelText', i))) {
-            break;
+          if (!Array.isArray(this.getProp('labelText', i))) {//   break;
           }
 
           i++;
@@ -12709,7 +12710,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.12"
+        'data-jsgraph-version': "v2.2.13"
       });
     } catch (e) {// ignore
     }
@@ -14324,6 +14325,42 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               break;
             }
 
+          case 'time:min.sec_dec':
+            {
+              //const max = this.getModifiedValue( this.getMaxValue() );/*,
+
+              /*units = [
+                [ 60, 'min' ],
+                [ 3600, 'h' ],
+                [ 3600 * 24, 'd' ]
+              ];*/
+              var _i, _l, _k, _m;
+
+              var _breaked = false;
+
+              for (_i = 0, _l = this.unitModificationTimeTicks.length; _i < _l; _i++) {
+                for (_k = 0, _m = this.unitModificationTimeTicks[_i][1].length; _k < _m; _k++) {
+                  if (unitPerTick < this.unitModificationTimeTicks[_i][0] * this.unitModificationTimeTicks[_i][1][_k]) {
+                    _breaked = true;
+                    break;
+                  }
+                }
+
+                if (_breaked) {
+                  break;
+                }
+              } //i and k contain the good variable;
+
+
+              if (_i !== this.unitModificationTimeTicks.length) {
+                unitPerTickCorrect = this.unitModificationTimeTicks[_i][0] * this.unitModificationTimeTicks[_i][1][_k];
+              } else {
+                unitPerTickCorrect = 1;
+              }
+
+              break;
+            }
+
           default:
             {
               // We take the log
@@ -14345,9 +14382,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               var possibleTicks = [1, 2, 5, 10];
               var closest = false;
 
-              for (var _i = possibleTicks.length - 1; _i >= 0; _i--) {
-                if (!closest || Math.abs(possibleTicks[_i] - numberToNatural) < Math.abs(closest - numberToNatural)) {
-                  closest = possibleTicks[_i];
+              for (var _i2 = possibleTicks.length - 1; _i2 >= 0; _i2--) {
+                if (!closest || Math.abs(possibleTicks[_i2] - numberToNatural) < Math.abs(closest - numberToNatural)) {
+                  closest = possibleTicks[_i2];
                 }
               } // Ok now closest is the number of unit per tick in the natural number
 
@@ -31499,11 +31536,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             continue;
           }
 
-          this.counter2 = j;
-
-          if (this.markersShown()) {
-            this.getMarkerCurrentFamily(this.counter2);
-          }
+          this.counter2 = j; //if ( this.markersShown() ) {
+          //this.getMarkerCurrentFamily( this.counter2 );
+          //}
 
           xpx2 = this.getX(x);
           ypx2 = this.getY(y);
