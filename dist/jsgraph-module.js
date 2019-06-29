@@ -1263,6 +1263,24 @@ const makeAxes = (Graph, graph, jsonAxes) => {
 
 const makeAnnotation = (graph, json, serie, axes) => {
   if (json.type) {
+    if (json.properties.label) {
+      if (!Array.isArray(json.properties.label)) {
+        json.properties.label = [json.properties.label];
+      }
+
+      json.properties.label.forEach((label, index) => {
+        for (let propertyName in label) {
+          let newPropertyName = "label" + propertyName.charAt(0).toUpperCase() + propertyName.slice(1);
+
+          if (!json.properties[newPropertyName]) {
+            json.properties[newPropertyName] = [];
+          }
+
+          json.properties[newPropertyName][index] = label[propertyName];
+        }
+      });
+    }
+
     const shape = graph.newShape(json.type, {}, false, json.properties);
 
     if (json.serie) {

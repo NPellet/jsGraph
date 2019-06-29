@@ -12710,7 +12710,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.15"
+        'data-jsgraph-version': "v2.2.16"
       });
     } catch (e) {// ignore
     }
@@ -28002,6 +28002,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var makeAnnotation = function makeAnnotation(graph, json, serie, axes) {
     if (json.type) {
+      if (json.properties.label) {
+        if (!Array.isArray(json.properties.label)) {
+          json.properties.label = [json.properties.label];
+        }
+
+        json.properties.label.forEach(function (label, index) {
+          for (var propertyName in label) {
+            var newPropertyName = "label" + propertyName.charAt(0).toUpperCase() + propertyName.slice(1);
+
+            if (!json.properties[newPropertyName]) {
+              json.properties[newPropertyName] = [];
+            }
+
+            json.properties[newPropertyName][index] = label[propertyName];
+          }
+        });
+      }
+
       var shape = graph.newShape(json.type, {}, false, json.properties);
 
       if (json.serie) {
