@@ -1819,7 +1819,7 @@ class Axis extends EventEmitter {
     return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
   }
 
-  valueToText( value, forceDecimals = 2 ) {
+  valueToText( value, forceDecimals ) {
 
     if ( this.scientificExponent ) {
 
@@ -1847,7 +1847,7 @@ class Axis extends EventEmitter {
       }
 
       if ( forceDecimals > 0 ) {
-        value = value.toFixed( forceDecimals )
+        value = value.toFixed( forceDecimals );
       } else {
         if ( dec > 0 ) {
           value = value.toFixed( dec );

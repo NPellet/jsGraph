@@ -10125,7 +10125,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.14"
+        'data-jsgraph-version': "v2.2.15"
       });
     } catch (e) {// ignore
     }
@@ -12604,7 +12604,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
     }
 
-    valueToText(value, forceDecimals = 2) {
+    valueToText(value, forceDecimals) {
       if (this.scientificExponent) {
         value /= Math.pow(10, this.scientificExponent);
         return value.toFixed(1);

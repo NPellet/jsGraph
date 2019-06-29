@@ -10300,7 +10300,7 @@ class Axis extends EventEmitter {
     return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
   }
 
-  valueToText(value, forceDecimals = 2) {
+  valueToText(value, forceDecimals) {
     if (this.scientificExponent) {
       value /= Math.pow(10, this.scientificExponent);
       return value.toFixed(1);
