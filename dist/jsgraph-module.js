@@ -19339,8 +19339,6 @@ class Shape extends EventEmitter {
                 transformString += posCenter.y;
               }
             }
-
-            console.log(transformString);
           } else {
             transformString += transforms[i].arguments[0];
             transformString += ', ';
@@ -19392,8 +19390,6 @@ class Shape extends EventEmitter {
     var i = 0;
 
     while (this.getProp('labelText', i) !== undefined) {
-      console.log(this.properties);
-
       if (!this._labels[i]) {
         this._labels[i] = document.createElementNS(this.graph.ns, 'text');
 
@@ -20644,7 +20640,6 @@ class ShapeLine extends Shape {
   applyPosition() {
     var position = this.calculatePosition(0);
     var position2 = this.calculatePosition(1);
-    console.log(position, position2, this.getProp('position'));
 
     if (!position || !position.x || !position.y) {
       return;

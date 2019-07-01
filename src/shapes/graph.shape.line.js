@@ -51,7 +51,7 @@ class ShapeLine extends GraphShape {
   applyPosition() {
     var position = this.calculatePosition( 0 );
     var position2 = this.calculatePosition( 1 );
-    console.log( position, position2, this.getProp( 'position' ) );
+
     if ( !position || !position.x || !position.y ) {
       return;
     }

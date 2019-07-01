@@ -1104,7 +1104,6 @@ class Shape extends EventEmitter {
 
             }
 
-            console.log( transformString );
           } else {
             transformString += transforms[ i ].arguments[ 0 ];
             transformString += ', ';
@@ -1163,7 +1162,7 @@ class Shape extends EventEmitter {
     var i = 0;
 
     while ( this.getProp( 'labelText', i ) !== undefined ) {
-      console.log( this.properties );
+
       if ( !this._labels[ i ] ) {
         this._labels[ i ] = document.createElementNS( this.graph.ns, 'text' );
         this._labels[ i ].setAttribute( 'data-label-i', i );

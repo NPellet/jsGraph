@@ -2156,8 +2156,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                     transformString += posCenter.y;
                   }
                 }
-
-                console.log(transformString);
               } else {
                 transformString += transforms[i].arguments[0];
                 transformString += ', ';
@@ -2212,8 +2210,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var i = 0;
 
         while (this.getProp('labelText', i) !== undefined) {
-          console.log(this.properties);
-
           if (!this._labels[i]) {
             this._labels[i] = document.createElementNS(this.graph.ns, 'text');
 
@@ -12710,7 +12706,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.16"
+        'data-jsgraph-version': "v2.2.17"
       });
     } catch (e) {// ignore
     }
@@ -19545,7 +19541,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       value: function applyPosition() {
         var position = this.calculatePosition(0);
         var position2 = this.calculatePosition(1);
-        console.log(position, position2, this.getProp('position'));
 
         if (!position || !position.x || !position.y) {
           return;
