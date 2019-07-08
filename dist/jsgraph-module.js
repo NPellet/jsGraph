@@ -7641,10 +7641,11 @@ function _handleMouseMove(graph, x, y, e) {
 
 
   if (graph.options.mouseMoveData) {
-    var results = {};
+    const results = {};
+    graph.options.mouseMoveDataOptions = graph.options.mouseMoveDataOptions || {};
 
-    for (var i = 0; i < graph.series.length; i++) {
-      results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY(undefined, undefined, undefined, undefined, undefined, true);
+    for (let i = 0; i < graph.series.length; i++) {
+      results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY(undefined, undefined, graph.options.mouseMoveDataOptions.withinPxX || 0, graph.options.mouseMoveDataOptions.withinPxY || 0, graph.options.mouseMoveDataOptions.useAxis, true);
     }
 
     if (typeof graph.options.mouseMoveData == "function") {
@@ -15523,6 +15524,7 @@ class SerieLine extends SerieScatter {
   }
   /**
    * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+   * If the serie is not monotoneously ascending, then a Euclidian search is made
    * @param {Number} valX - The x value to search for
    * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
    * @param {Number} withinPxX - The maximum distance in X

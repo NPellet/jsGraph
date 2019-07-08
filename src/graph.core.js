@@ -3572,10 +3572,12 @@ function _handleMouseMove( graph, x, y, e ) {
   // End takes care of the tracking line
 
   if ( graph.options.mouseMoveData ) {
-    var results = {};
+    const results = {};
 
-    for ( var i = 0; i < graph.series.length; i++ ) {
-      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY( undefined, undefined, undefined, undefined, undefined, true );
+    graph.options.mouseMoveDataOptions = graph.options.mouseMoveDataOptions || {};
+
+    for ( let i = 0; i < graph.series.length; i++ ) {
+      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY( undefined, undefined, graph.options.mouseMoveDataOptions.withinPxX || 0, graph.options.mouseMoveDataOptions.withinPxY || 0, graph.options.mouseMoveDataOptions.useAxis, true );
     }
 
     if ( typeof graph.options.mouseMoveData == "function" ) {

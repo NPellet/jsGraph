@@ -1258,6 +1258,7 @@ class SerieLine extends SerieScatter {
 
   /**
    * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+   * If the serie is not monotoneously ascending, then a Euclidian search is made
    * @param {Number} valX - The x value to search for
    * @param {number} valY - The y value to search for. Optional. When omitted, only a search in x will be done
    * @param {Number} withinPxX - The maximum distance in X
