@@ -539,8 +539,8 @@ class SerieScatter extends Serie {
       xMax: xValAllowed,
       yMax: yValAllowed,
       interpolation: false,
-      scaleX: !usePx ? 1 : this.getXAxis().getRelVal( 1 ),
-      scaleY: !usePx ? 1 : this.getYAxis().getRelVal( 1 )
+      scaleX: !usePx ? 1 : 1 / this.getXAxis().getRelVal( 1 ),
+      scaleY: !usePx ? 1 : 1 / this.getYAxis().getRelVal( 1 )
     } );
 
     return {

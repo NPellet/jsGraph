@@ -1282,8 +1282,8 @@ class SerieLine extends SerieScatter {
       xMaxDistance: xValAllowed,
       yMaxDistance: yValAllowed,
       axisRef: useAxis,
-      scaleX: !usePx ? 1 : this.getXAxis().getRelVal( 1 ),
-      scaleY: !usePx ? 1 : this.getYAxis().getRelVal( 1 )
+      scaleX: !usePx ? 1 : 1 / this.getXAxis().getRelVal( 1 ),
+      scaleY: !usePx ? 1 : 1 / this.getYAxis().getRelVal( 1 )
     } );
 
     if ( isNaN( closestPointIndex ) || closestPointIndex === false ) {

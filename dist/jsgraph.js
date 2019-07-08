@@ -5562,8 +5562,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           xMaxDistance: xValAllowed,
           yMaxDistance: yValAllowed,
           axisRef: useAxis,
-          scaleX: !usePx ? 1 : this.getXAxis().getRelVal(1),
-          scaleY: !usePx ? 1 : this.getYAxis().getRelVal(1)
+          scaleX: !usePx ? 1 : 1 / this.getXAxis().getRelVal(1),
+          scaleY: !usePx ? 1 : 1 / this.getYAxis().getRelVal(1)
         });
 
         if (isNaN(closestPointIndex) || closestPointIndex === false) {
@@ -12710,7 +12710,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.21"
+        'data-jsgraph-version': "v2.2.22"
       });
     } catch (e) {// ignore
     }
@@ -19410,8 +19410,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           xMax: xValAllowed,
           yMax: yValAllowed,
           interpolation: false,
-          scaleX: !usePx ? 1 : this.getXAxis().getRelVal(1),
-          scaleY: !usePx ? 1 : this.getYAxis().getRelVal(1)
+          scaleX: !usePx ? 1 : 1 / this.getXAxis().getRelVal(1),
+          scaleY: !usePx ? 1 : 1 / this.getYAxis().getRelVal(1)
         });
         return {
           indexBefore: closestPointIndex,
