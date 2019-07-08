@@ -12,7 +12,7 @@ const setMarkerStyle = ( serie, style, styleName ) => {
     _default = style;
     modifiers = [];
   }
-  console.log( styleName, _default );
+ 
   serie.setMarkerStyle( _default, modifiers, styleName );
 };
 

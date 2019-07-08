@@ -1,0 +1,53 @@
+{
+  "options": {
+    "plugins": {
+      "selectScatter": {
+        "serie": "MySerie"
+      }
+    },
+    "mouseActions": [{ "plugin": "selectScatter", "shift": false, "ctrl": false }]
+  },
+  "series": {
+      "name": "MySerie",
+    "type": "scatter",
+    "options": {  },
+    "data": { "x": [1, 2, 3, 4, 5], "y": [1, 2, 3, 2, 1] },
+    "style": [
+        {
+          "name": "unselected",
+          "style": {
+            "marker": {
+              "default": {
+                "shape": "rect",
+                "x": -2,
+                "y": -2,
+                "width": 4,
+                "height": 4,
+                "fill": "white",
+                "fill-opacity": 0.9,
+                "stroke": "blue",
+                "stroke-opacity": 0.7
+              },
+              "modifiers": [
+                null,
+                {
+                  "fill": "red"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "selected",
+          "extends": "unselected",
+          "style": {
+            "marker": {
+                "default": {
+                    "fill": "blue"
+                }
+            }
+          }
+        }
+      ]
+    }
+  }

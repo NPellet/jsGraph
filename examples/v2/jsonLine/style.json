@@ -26,10 +26,12 @@
         "x": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       },
       "style": {
-        "lineStyle": 3,
-        "lineWidth": 4,
-        "lineColor": "green",
-        "autoPeakPickingNb": 4,
+        "line": {
+          "style": 3,
+          "width": 4,
+          "color": "green",
+          "autoPeakPickingNb": 4
+        },
         "marker": {
           "default": {
             "shape": "rect",
@@ -62,9 +64,11 @@
         "x": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       },
       "style": {
-        "lineColor": "red",
-        "lineStyle": 5,
-        "lineWidth": 1,
+        "line": {
+          "color": "red",
+          "style": 5,
+          "width": 1
+        },
         "marker": {
           "default": {
             "shape": "circle",
