@@ -1266,7 +1266,7 @@ class SerieLine extends SerieScatter {
    * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
-  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false ) {
+  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false, usePx = true ) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
 
     //const xVal = this.getXAxis().getVal( x );
@@ -1280,7 +1280,9 @@ class SerieLine extends SerieScatter {
       y: valY,
       xMaxDistance: xValAllowed,
       yMaxDistance: yValAllowed,
-      axisRef: useAxis
+      axisRef: useAxis,
+      scaleX: !usePx ? 1 : this.getXAxis().getRelVal( 1 ),
+      scaleY: !usePx ? 1 : this.getYAxis().getRelVal( 1 )
     } );
 
     if ( isNaN( closestPointIndex ) || closestPointIndex === false ) {

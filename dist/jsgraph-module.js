@@ -7588,7 +7588,7 @@ function _handleMouseMove(graph, x, y, e) {
             return;
           }
 
-          const closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis); // When all legends are in common mode, let's make sure we remove the serie-specific legend
+          const closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis, true); // When all legends are in common mode, let's make sure we remove the serie-specific legend
 
           if (graph.options.trackingLine.legendType == 'common') {
             serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);
@@ -7644,7 +7644,7 @@ function _handleMouseMove(graph, x, y, e) {
     var results = {};
 
     for (var i = 0; i < graph.series.length; i++) {
-      results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY();
+      results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY(undefined, undefined, undefined, undefined, undefined, true);
     }
 
     if (typeof graph.options.mouseMoveData == "function") {
@@ -14365,7 +14365,7 @@ class SerieScatter extends Serie {
     return [];
   }
 
-  getClosestPointToXY(valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0) {
+  getClosestPointToXY(valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false, usePx = true) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
     //const xVal = this.getXAxis().getVal( x );
     //const yVal = this.getYAxis().getVal( y );
@@ -14377,7 +14377,9 @@ class SerieScatter extends Serie {
       y: valY,
       xMax: xValAllowed,
       yMax: yValAllowed,
-      interpolation: false
+      interpolation: false,
+      scaleX: !usePx ? 1 : this.getXAxis().getRelVal(1),
+      scaleY: !usePx ? 1 : this.getYAxis().getRelVal(1)
     });
     return {
       indexBefore: closestPointIndex,
@@ -15531,7 +15533,7 @@ class SerieLine extends SerieScatter {
    */
 
 
-  getClosestPointToXY(valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false) {
+  getClosestPointToXY(valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false, usePx = true) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
     //const xVal = this.getXAxis().getVal( x );
     //const yVal = this.getYAxis().getVal( y );
@@ -15543,7 +15545,9 @@ class SerieLine extends SerieScatter {
       y: valY,
       xMaxDistance: xValAllowed,
       yMaxDistance: yValAllowed,
-      axisRef: useAxis
+      axisRef: useAxis,
+      scaleX: !usePx ? 1 : this.getXAxis().getRelVal(1),
+      scaleY: !usePx ? 1 : this.getYAxis().getRelVal(1)
     });
 
     if (isNaN(closestPointIndex) || closestPointIndex === false) {

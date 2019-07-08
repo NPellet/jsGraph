@@ -5548,6 +5548,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var withinPxX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
         var withinPxY = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
         var useAxis = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+        var usePx = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
         // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
         //const xVal = this.getXAxis().getVal( x );
         //const yVal = this.getYAxis().getVal( y );
@@ -5559,7 +5560,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           y: valY,
           xMaxDistance: xValAllowed,
           yMaxDistance: yValAllowed,
-          axisRef: useAxis
+          axisRef: useAxis,
+          scaleX: !usePx ? 1 : this.getXAxis().getRelVal(1),
+          scaleY: !usePx ? 1 : this.getYAxis().getRelVal(1)
         });
 
         if (isNaN(closestPointIndex) || closestPointIndex === false) {
@@ -12706,7 +12709,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.19"
+        'data-jsgraph-version': "v2.2.20"
       });
     } catch (e) {// ignore
     }
@@ -13031,7 +13034,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               return;
             }
 
-            var closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis); // When all legends are in common mode, let's make sure we remove the serie-specific legend
+            var closestPoint = serie.getClosestPointToXY(serie.getXAxis().getMouseVal(), serie.getYAxis().getMouseVal(), serie.options.tracking.withinPx, serie.options.tracking.withinPx, serie.options.tracking.useAxis, true); // When all legends are in common mode, let's make sure we remove the serie-specific legend
 
             if (graph.options.trackingLine.legendType == 'common') {
               serie._trackingLegend = _trackingLegendSerie(graph, [], false, false, serie._trackingLegend);
@@ -13087,7 +13090,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var results = {};
 
       for (var i = 0; i < graph.series.length; i++) {
-        results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY();
+        results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY(undefined, undefined, undefined, undefined, undefined, true);
       }
 
       if (typeof graph.options.mouseMoveData == "function") {
@@ -19391,6 +19394,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var valY = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getYAxis().getMouseVal();
         var withinPxX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
         var withinPxY = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+        var useAxis = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+        var usePx = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
         // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
         //const xVal = this.getXAxis().getVal( x );
         //const yVal = this.getYAxis().getVal( y );
@@ -19402,7 +19407,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           y: valY,
           xMax: xValAllowed,
           yMax: yValAllowed,
-          interpolation: false
+          interpolation: false,
+          scaleX: !usePx ? 1 : this.getXAxis().getRelVal(1),
+          scaleY: !usePx ? 1 : this.getYAxis().getRelVal(1)
         });
         return {
           indexBefore: closestPointIndex,

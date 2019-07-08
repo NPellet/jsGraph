@@ -524,7 +524,7 @@ class SerieScatter extends Serie {
     return [];
   }
 
-  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0 ) {
+  getClosestPointToXY( valX = this.getXAxis().getMouseVal(), valY = this.getYAxis().getMouseVal(), withinPxX = 0, withinPxY = 0, useAxis = false, usePx = true ) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
 
     //const xVal = this.getXAxis().getVal( x );
@@ -538,7 +538,9 @@ class SerieScatter extends Serie {
       y: valY,
       xMax: xValAllowed,
       yMax: yValAllowed,
-      interpolation: false
+      interpolation: false,
+      scaleX: !usePx ? 1 : this.getXAxis().getRelVal( 1 ),
+      scaleY: !usePx ? 1 : this.getYAxis().getRelVal( 1 )
     } );
 
     return {

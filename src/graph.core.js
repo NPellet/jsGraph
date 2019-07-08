@@ -3483,7 +3483,8 @@ function _handleMouseMove( graph, x, y, e ) {
             serie.getYAxis().getMouseVal(),
             serie.options.tracking.withinPx,
             serie.options.tracking.withinPx,
-            serie.options.tracking.useAxis
+            serie.options.tracking.useAxis,
+            true
           );
 
           // When all legends are in common mode, let's make sure we remove the serie-specific legend
@@ -3574,7 +3575,7 @@ function _handleMouseMove( graph, x, y, e ) {
     var results = {};
 
     for ( var i = 0; i < graph.series.length; i++ ) {
-      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY();
+      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY( undefined, undefined, undefined, undefined, undefined, true );
     }
 
     if ( typeof graph.options.mouseMoveData == "function" ) {
