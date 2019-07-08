@@ -1133,7 +1133,6 @@ const setMarkerStyle = (serie, style, styleName) => {
     modifiers = [];
   }
 
-  console.log(styleName, _default);
   serie.setMarkerStyle(_default, modifiers, styleName);
 };
 

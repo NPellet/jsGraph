@@ -1,6 +1,6 @@
 {
   "name": "jsgraph",
-  "version": "2.2.18",
+  "version": "2.2.19",
   "homepage": "http://jsgraph.org",
   "main": [
     "dist/jsgraph.js",

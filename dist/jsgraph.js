@@ -12706,7 +12706,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.18"
+        'data-jsgraph-version': "v2.2.19"
       });
     } catch (e) {// ignore
     }
@@ -27803,7 +27803,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       modifiers = [];
     }
 
-    console.log(styleName, _default);
     serie.setMarkerStyle(_default, modifiers, styleName);
   };
 
