@@ -10121,7 +10121,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.17"
+        'data-jsgraph-version': "v2.2.18"
       });
     } catch (e) {// ignore
     }
@@ -17938,7 +17938,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   });
   _exports.default = void 0;
 
-  const setMarkerStyle = (serie, style) => {
+  const setMarkerStyle = (serie, style, styleName) => {
     serie.showMarkers();
     let _default = {};
     let modifiers = [];
@@ -17954,7 +17954,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       modifiers = [];
     }
 
-    serie.setMarkerStyle(_default, modifiers);
+    console.log(styleName, _default);
+    serie.setMarkerStyle(_default, modifiers, styleName);
   };
 
   const setSerieStyle = (Graph, serie, jsonSerie, type) => {
@@ -18002,7 +18003,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       if (style.marker && (type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER)) {
-        setMarkerStyle(serie, style.marker);
+        setMarkerStyle(serie, style.marker, name);
       }
     });
   };
@@ -24595,7 +24596,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setSerie(serie) {
-      this.serie = serie;
+      this.options.serie = serie;
     }
     /**
      * @private
@@ -24603,15 +24604,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     onMouseDown(graph, x, y, e, mute) {
-      if (!this.serie) {
+      if (!this.options.serie) {
         return;
       }
 
+      const serie = graph.getSerie(this.options.serie);
       this.path = `M ${x} ${y} `;
       this.currentX = x;
       this.currentY = y;
-      this.xs = [this.serie.getXAxis().getVal(x - graph.getPaddingLeft())];
-      this.ys = [this.serie.getYAxis().getVal(y - graph.getPaddingTop())];
+      this.xs = [serie.getXAxis().getVal(x - graph.getPaddingLeft())];
+      this.ys = [serie.getYAxis().getVal(y - graph.getPaddingTop())];
 
       this._path.setAttribute('d', '');
 
@@ -24623,12 +24625,18 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     onMouseMove(graph, x, y, e, mute) {
+      if (!this.options.serie) {
+        return;
+      }
+
+      const serie = graph.getSerie(this.options.serie);
+
       if (Math.pow(x - this.currentX, 2) + Math.pow(y - this.currentY, 2) > 25) {
         this.path += ` L ${x} ${y} `;
         this.currentX = x;
         this.currentY = y;
-        this.xs.push(this.serie.getXAxis().getVal(x - graph.getPaddingLeft()));
-        this.ys.push(this.serie.getYAxis().getVal(y - graph.getPaddingTop()));
+        this.xs.push(serie.getXAxis().getVal(x - graph.getPaddingLeft()));
+        this.ys.push(serie.getYAxis().getVal(y - graph.getPaddingTop()));
 
         this._path.setAttribute('d', `${this.path} z`);
 
@@ -24641,7 +24649,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     findPoints() {
-      var data = this.serie.waveform;
+      if (!this.options.serie) {
+        return;
+      }
+
+      const serie = this.graph.getSerie(this.options.serie);
+      var data = serie.waveform;
       var selected = [];
       var counter = 0,
           j2;
@@ -24665,9 +24678,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (counter % 2 == 1) {
           selected.push(i);
-          this.serie.selectMarker(i, true, 'selected');
+          serie.selectMarker(i, true, 'selected');
         } else {
-          this.serie.unselectMarker(i);
+          serie.unselectMarker(i);
         }
       }
 

@@ -1,4 +1,4 @@
-const setMarkerStyle = ( serie, style ) => {
+const setMarkerStyle = ( serie, style, styleName ) => {
   serie.showMarkers();
   let _default = {};
   let modifiers = [];
@@ -12,8 +12,8 @@ const setMarkerStyle = ( serie, style ) => {
     _default = style;
     modifiers = [];
   }
-
-  serie.setMarkerStyle( _default, modifiers );
+  console.log( styleName, _default );
+  serie.setMarkerStyle( _default, modifiers, styleName );
 };
 
 const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
@@ -64,7 +64,7 @@ const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
       ( type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER )
     ) {
 
-      setMarkerStyle( serie, style.marker );
+      setMarkerStyle( serie, style.marker, name );
     }
   } );
 };

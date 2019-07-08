@@ -145,6 +145,7 @@ const makeGraph = ( Graph, json, wrapper ) => {
         jsonSerie.options || {},
         type
       );
+
       serie.autoAxis();
 
       if ( jsonSerie.excludeFromLegend ) {
