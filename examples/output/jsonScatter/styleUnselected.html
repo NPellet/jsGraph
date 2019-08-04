@@ -1,0 +1,45 @@
+
+<!doctype html>
+<html>
+    <body>
+        <div id="graph"></div>
+    </body>
+    <script type="module">
+    console.log('a');
+        import Graph from '/src/graph.js'
+        console.log('a');
+        const graph = Graph.fromJSON( {
+  "series": {
+    "type": "scatter",
+    "data": {
+      "x": [1, 2, 3, 4, 5],
+      "y": [1, 2, 3, 2, 1]
+    },
+    "style": {
+      "marker": {
+        "unselected": {
+          "default": {
+            "fill": "red"
+          },
+          "modifiers": [
+            null,
+            {
+              "fill": "green"
+            },
+            null,
+            {
+              "fill": "blue"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+, "graph" );
+        console.log('a');
+        graph.draw();
+        graph.updateLegend();
+        
+        </script>
+</html>

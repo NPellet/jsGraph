@@ -224,6 +224,8 @@ class Axis extends EventEmitter {
     this.gridPrimary.setAttribute( 'clip-path', `url(#_clipplot${ this.graph._creation })` );
     this.gridSecondary.setAttribute( 'clip-path', `url(#_clipplot${ this.graph._creation })` );
     this.graph._axisHasChanged( this );
+
+    this.cache();
   }
 
   handleMouseMoveLocal() {}
@@ -356,40 +358,40 @@ class Axis extends EventEmitter {
       current = this.options.adaptTo.thisValue,
       foreign = this.options.adaptTo.foreignValue;
 
-    if ( axis.currentAxisMin === undefined || axis.currentAxisMax === undefined ) {
+    if ( axis.options.currentAxisMin === undefined || axis.options.currentAxisMax === undefined ) {
       axis.setMinMaxToFitSeries();
     }
 
     if ( ( this.options.forcedMin !== false && this.options.forcedMax == false ) || ( this.options.adaptTo.preference !== 'max' ) ) {
 
       if ( this.options.forcedMin !== false ) {
-        this.currentAxisMin = this.options.forcedMin;
+        this.options.currentAxisMin = this.options.forcedMin;
       } else {
-        this.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - ( current - this.getMinValue() ) * ( this.options.axisDataSpacing.min * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) );
+        this.options.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - ( current - this.getMinValue() ) * ( this.options.axisDataSpacing.min * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) );
       }
 
-      if ( this.currentAxisMin == current ) {
-        this.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
+      if ( this.options.currentAxisMin == current ) {
+        this.options.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
       }
 
-      var use = this.options.forcedMin !== false ? this.options.forcedMin : this.currentAxisMin;
-      this.currentAxisMax = ( current - use ) * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) + use;
+      var use = this.options.forcedMin !== false ? this.options.forcedMin : this.options.currentAxisMin;
+      this.options.currentAxisMax = ( current - use ) * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) + use;
 
     } else {
 
       if ( this.options.forcedMax !== false ) {
-        this.currentAxisMax = this.options.forcedMax;
+        this.options.currentAxisMax = this.options.forcedMax;
       } else {
-        this.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + ( this.getMaxValue() - current ) * ( this.options.axisDataSpacing.max * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( axis.getCurrentMax() - foreign ) );
+        this.options.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + ( this.getMaxValue() - current ) * ( this.options.axisDataSpacing.max * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( axis.getCurrentMax() - foreign ) );
       }
 
-      if ( this.currentAxisMax == current ) {
-        this.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
+      if ( this.options.currentAxisMax == current ) {
+        this.options.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
       }
 
-      var use = this.options.forcedMax !== false ? this.options.forcedMax : this.currentAxisMax;
+      var use = this.options.forcedMax !== false ? this.options.forcedMax : this.options.currentAxisMax;
 
-      this.currentAxisMin = ( current - use ) * ( axis.getCurrentMin() - axis.getCurrentMax() ) / ( foreign - axis.getCurrentMax() ) + use;
+      this.options.currentAxisMin = ( current - use ) * ( axis.getCurrentMin() - axis.getCurrentMax() ) / ( foreign - axis.getCurrentMax() ) + use;
     }
 
     this.graph._axisHasChanged( this );
@@ -750,7 +752,7 @@ class Axis extends EventEmitter {
 
     // New method
     if ( !mute ) {
-      this.emit( 'zoom', [ this.currentAxisMin, this.currentAxisMax, this ] );
+      this.emit( 'zoom', [ this.options.currentAxisMin, this.options.currentAxisMax, this ] );
     }
 
     return this;
@@ -918,16 +920,16 @@ class Axis extends EventEmitter {
 
       this.setCurrentMin( Math.max( 1e-50, this.getMinValue() * 0.9 ) );
       this.setCurrentMax( Math.max( 1e-50, this.getMaxValue() * 1.1 ) );
-      //this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
-      //this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
+      //this.options.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
+      //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
 
     } else {
 
       this.setCurrentMin( this.getMinValue() );
       this.setCurrentMax( this.getMaxValue() );
 
-      //this.currentAxisMin = this.getMinValue();
-      //this.currentAxisMax = this.getMaxValue();
+      //this.options.currentAxisMin = this.getMinValue();
+      //this.options.currentAxisMax = this.getMaxValue();
 
       if ( this.getForcedMin() === false ) {
 
@@ -940,9 +942,9 @@ class Axis extends EventEmitter {
       }
     }
 
-    if ( isNaN( this.currentAxisMin ) || isNaN( this.currentAxisMax ) ) {
-      this.currentAxisMax = undefined;
-      this.currentAxisMin = undefined;
+    if ( isNaN( this.options.currentAxisMin ) || isNaN( this.options.currentAxisMax ) ) {
+      this.options.currentAxisMax = undefined;
+      this.options.currentAxisMin = undefined;
     }
 
     this.cache();
@@ -955,7 +957,7 @@ class Axis extends EventEmitter {
       this.graph._axisHasChanged( this );
     }
 
-    this.emit( 'zoomOutFull', [ this.currentAxisMin, this.currentAxisMax, this ] );
+    this.emit( 'zoomOutFull', [ this.options.currentAxisMin, this.options.currentAxisMax, this ] );
 
     return this;
   }
@@ -997,7 +999,7 @@ class Axis extends EventEmitter {
    * @memberof Axis
    */
   cacheCurrentMin() {
-    this.cachedCurrentMin = this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
+    this.cachedCurrentMin = this.options.currentAxisMin == this.options.currentAxisMax ? ( this.options.logScale ? this.options.currentAxisMin / 10 : this.options.currentAxisMin - 1 ) : this.options.currentAxisMin;
   }
 
   /**
@@ -1005,7 +1007,7 @@ class Axis extends EventEmitter {
    * @memberof Axis
    */
   cacheCurrentMax() {
-    this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
+    this.cachedCurrentMax = this.options.currentAxisMax == this.options.currentAxisMin ? ( this.options.logScale ? this.options.currentAxisMax * 10 : this.options.currentAxisMax + 1 ) : this.options.currentAxisMax;
   }
 
   /**
@@ -1033,9 +1035,9 @@ class Axis extends EventEmitter {
     if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() || val < this.options.lowestMin || val === undefined ) ) ) {
       val = this.getMinValue();
     }
-    this.currentAxisMin = val;
+    this.options.currentAxisMin = val;
     if ( this.options.logScale ) {
-      this.currentAxisMin = Math.max( 1e-50, val );
+      this.options.currentAxisMin = Math.max( 1e-50, val );
     }
 
     this.cacheCurrentMin();
@@ -1057,10 +1059,10 @@ class Axis extends EventEmitter {
       val = this.getMaxValue();
     }
 
-    this.currentAxisMax = val;
+    this.options.currentAxisMax = val;
 
     if ( this.options.logScale ) {
-      this.currentAxisMax = Math.max( 1e-50, val );
+      this.options.currentAxisMax = Math.max( 1e-50, val );
     }
 
     this.cacheCurrentMax();
@@ -1109,7 +1111,7 @@ class Axis extends EventEmitter {
 
     //    this.drawInit();
 
-    if ( this.currentAxisMin === undefined || this.currentAxisMax === undefined ) {
+    if ( this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined ) {
       this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
     }
 
@@ -2679,7 +2681,7 @@ class Axis extends EventEmitter {
   }
 
   isZoomed() {
-    return !( this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue() );
+    return !( this.options.currentAxisMin == this.getMinValue() || this.options.currentAxisMax == this.getMaxValue() );
   }
 
   hasAxis() {
