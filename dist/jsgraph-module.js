@@ -7642,10 +7642,14 @@ function _handleMouseMove(graph, x, y, e) {
 
   if (graph.options.mouseMoveData) {
     const results = {};
-    graph.options.mouseMoveDataOptions = graph.options.mouseMoveDataOptions || {};
 
     for (let i = 0; i < graph.series.length; i++) {
-      results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY(undefined, undefined, graph.options.mouseMoveDataOptions.withinPxX || 0, graph.options.mouseMoveDataOptions.withinPxY || 0, graph.options.mouseMoveDataOptions.useAxis, true);
+      if (!serie.options.tracking) {
+        console.warn("Tracking not enabled for this serie");
+        continue;
+      }
+
+      results[graph.series[i].getName()] = graph.series[i].getClosestPointToXY(undefined, undefined, serie.options.tracking.withinPxX || 0, serie.options.tracking.withinPxY || 0, serie.options.tracking.useAxis, true);
     }
 
     if (typeof graph.options.mouseMoveData == "function") {
@@ -8641,10 +8645,16 @@ const defaults = {
   unitModification: false,
   primaryGrid: true,
   secondaryGrid: true,
-  primaryGridColor: '#f0f0f0',
-  secondaryGridColor: '#f0f0f0',
   primaryGridWidth: 1,
+  primaryGridColor: '#f0f0f0',
+  primaryGridDasharray: undefined,
+  primaryGridOpacity: undefined,
+  primaryTicksColor: 'black',
   secondaryGridWidth: 1,
+  secondaryGridColor: '#f0f0f0',
+  secondaryGridDasharray: undefined,
+  secondaryGridOpacity: undefined,
+  secondaryTicksColor: 'black',
   hideWhenNoSeriesShown: false,
   shiftToZero: false,
   tickPosition: 1,
@@ -9980,7 +9990,7 @@ class Axis extends EventEmitter {
 
         var loop2 = 0;
 
-        while (subIncrTick < incrTick + unitPerTick) {
+        while (subIncrTick < incrTick + unitPerTick && Math.abs(subIncrTick - (incrTick + unitPerTick)) > 1e-7) {
           loop2++;
 
           if (loop2 > 100) {
@@ -11358,6 +11368,7 @@ class AxisX extends Axis {
 
     tick.setAttribute('x1', val);
     tick.setAttribute('x2', val);
+    console.log(val, level);
     this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight()); //  this.groupTicks.appendChild( tick );
 
     if (level == 1) {

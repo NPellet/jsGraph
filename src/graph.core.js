@@ -3574,10 +3574,20 @@ function _handleMouseMove( graph, x, y, e ) {
   if ( graph.options.mouseMoveData ) {
     const results = {};
 
-    graph.options.mouseMoveDataOptions = graph.options.mouseMoveDataOptions || {};
-
     for ( let i = 0; i < graph.series.length; i++ ) {
-      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY( undefined, undefined, graph.options.mouseMoveDataOptions.withinPxX || 0, graph.options.mouseMoveDataOptions.withinPxY || 0, graph.options.mouseMoveDataOptions.useAxis, true );
+
+      if ( !serie.options.tracking ) {
+        console.warn( "Tracking not enabled for this serie" );
+        continue;
+      }
+      results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY(
+        undefined,
+        undefined,
+        serie.options.tracking.withinPxX || 0,
+        serie.options.tracking.withinPxY || 0,
+        serie.options.tracking.useAxis,
+        true
+      );
     }
 
     if ( typeof graph.options.mouseMoveData == "function" ) {

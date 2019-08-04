@@ -37,11 +37,17 @@ const defaults = {
   primaryGrid: true,
   secondaryGrid: true,
 
-  primaryGridColor: '#f0f0f0',
-  secondaryGridColor: '#f0f0f0',
-
   primaryGridWidth: 1,
+  primaryGridColor: '#f0f0f0',
+  primaryGridDasharray: undefined,
+  primaryGridOpacity: undefined,
+  primaryTicksColor: 'black',
+
   secondaryGridWidth: 1,
+  secondaryGridColor: '#f0f0f0',
+  secondaryGridDasharray: undefined,
+  secondaryGridOpacity: undefined,
+  secondaryTicksColor: 'black',
 
   hideWhenNoSeriesShown: false,
   shiftToZero: false,
@@ -1452,7 +1458,7 @@ class Axis extends EventEmitter {
         //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
         var loop2 = 0;
 
-        while ( subIncrTick < incrTick + unitPerTick ) {
+        while ( subIncrTick < incrTick + unitPerTick && Math.abs( subIncrTick - ( incrTick + unitPerTick ) ) > 1e-7 ) {
           loop2++;
           if ( loop2 > 100 ) {
             break;

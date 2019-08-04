@@ -9,33 +9,28 @@
         import Graph from '/src/graph.js'
         console.log('a');
         const graph = Graph.fromJSON( {
-    "name": "chart",
-    "title": "main data",
-    
-    "series": [
-        {
-           "data": {
-                "x": [ 1, 2, 3,4 ],
-                "y": [ 1,2,3,4],
-            },
+  "name": "chart",
+  "title": "main data",
 
-            "style": { 
-
-                "marker": {
-
-                    "default": {
-                        "fill": "red"
-                    },
-                    "modifiers": [null,{"fill": "green"},null,{"fill": "blue"}]
-                }
-
-               
-            }
-            ,
-            "type": "scatter"
+  "series": [
+    {
+      "data": {
+        "x": [1, 2, 3, 4],
+        "y": [1, 2, 3, 4]
+      },
+      "style": {
+        "marker": {
+          "default": {
+            "fill": "red"
+          },
+          "modifiers": [null, { "fill": "green" }, null, { "fill": "blue" }]
         }
-    ]
-}, "graph" );
+      },
+      "type": "scatter"
+    }
+  ]
+}
+, "graph" );
         console.log('a');
         graph.draw();
         graph.updateLegend();

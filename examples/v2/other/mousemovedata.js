@@ -2,7 +2,7 @@ import Graph from '../../../src/graph.js';
 
 const domGraph = 'graph';
 
-var graph = new Graph( domGraph, { mouseMoveData: true } );
+var graph = new Graph( domGraph, { mouseMoveData: true, mouseMoveDataOptions: { useAxis: 'x' } } );
 
 graph.resize( 400, 300 );
 
@@ -42,7 +42,7 @@ const data2 = [
   2002,
   12.7383,
   2003,
-  12.9565,
+  32.9565,
   2004,
   13.1612,
   2005,
@@ -88,8 +88,10 @@ graph
 
 graph.gridsOff();
 
-graph.on('mouseMoveData', ( results ) => {
-    console.log( results );
+graph.on('mouseMoveData', ( event, results ) => {
+  if( results.a ) {
+    console.log( results.a.xClosest, results.a.xExact );
+  }
 });
 
 /*graph.makeLegend().notHideable().setAutoPosition('bottom');
