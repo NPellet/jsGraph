@@ -6,6 +6,7 @@ graph.setJSON(
     {
         "axes": {
           "x": {
+              "name": "x",
             "currentAxisMin": -10,
             "currentAxisMax": 100
           },
@@ -36,6 +37,8 @@ setTimeout( () => {
     graph.setJSON( {
         "axes": {
           "x": {
+
+            "name": "x",
             "label": "Wavelength",
             "unit": "nm",
             "unitWrapperBefore": "[",
@@ -73,7 +76,7 @@ setTimeout( () => {
             }
           }
         ]
-      }
+      }, { keepState: true }
       );
 }, 2000 )
 

@@ -1,4 +1,5 @@
 const processAxes = ( Graph, graph, type, axisOptions, allAxes ) => {
+
   if ( !Array.isArray( axisOptions ) ) {
     axisOptions = [ axisOptions ];
   }
@@ -21,7 +22,7 @@ const processAxes = ( Graph, graph, type, axisOptions, allAxes ) => {
     } else {
       constructorName = 'graph.axis.y';
     }
-    
+
     var axis = new( Graph.getConstructor( constructorName ) )( graph, type );
     axis.init( graph, options );
 
@@ -47,7 +48,7 @@ const processAxes = ( Graph, graph, type, axisOptions, allAxes ) => {
 
 const makeAxes = ( Graph, graph, jsonAxes ) => {
   const allAxes = [];
-
+console.log( jsonAxes );
   if ( jsonAxes.x ) {
     processAxes( Graph, graph, 'x', jsonAxes.x, allAxes );
   }

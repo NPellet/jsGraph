@@ -2464,8 +2464,10 @@ class Graph extends EventEmitter {
     if ( options.keepState ) {
 
       this._applyToAxes( ( axis ) => {
-        if ( axis.name ) {
-          state[ name ] = { min: axis.getCurrentMin(), max: axis.getCurrentMax() };
+    
+        if ( axis.options.name ) {
+         
+          state[ axis.options.name ] = { min: axis.getCurrentMin(), max: axis.getCurrentMax() };
         }
       }, undefined, true, true );
     }
@@ -2482,9 +2484,11 @@ class Graph extends EventEmitter {
     if ( options.keepState ) {
 
       this._applyToAxes( ( axis ) => {
-        if ( axis.name && state.name ) {
-          axis.setCurrentMin( state[ name ].min );
-          axis.setCurrentMax( state[ name ].max );
+
+        if ( axis.options.name && state[ axis.options.name ] ) {
+       
+          axis.setCurrentMin( state[ axis.options.name ].min );
+          axis.setCurrentMax( state[ axis.options.name ].max );
         }
       }, undefined, true, true );
     }

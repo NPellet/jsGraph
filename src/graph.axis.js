@@ -26,6 +26,9 @@ import * as util from './graph.util.js';
  * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
  */
 const defaults = {
+
+  name: undefined,
+  
   lineAt: false,
   display: true,
   flipped: false,
@@ -1992,6 +1995,10 @@ class Axis extends EventEmitter {
     return this.options.exponentialLabelFactor;
   }
 
+  setName( name ) {
+    this.options.name = name;
+    return this;
+  }
   /**
    * Sets the label of the axis
    * @param {Number} label - The label to display under the axis
