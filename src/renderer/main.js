@@ -2,12 +2,9 @@ import serieStyle from './style.js';
 import makeAxes from './axes.js';
 import makeAnnotation from './annotations.js';
 
-const makeGraph = ( Graph, json, wrapper ) => {
-  const options = json.options || {};
-  const graph = new Graph( undefined, options );
+const makeGraph = ( Graph, graph, json ) => {
   let axes = [];
-  graph.setWrapper( wrapper );
-
+ 
   graph.resize( json.width || 400, json.height || 300 );
 
   if ( json.axes ) {
@@ -181,8 +178,6 @@ const makeGraph = ( Graph, json, wrapper ) => {
       makeAnnotation( graph, annotation, undefined, axes );
     } );
   }
-
-  return graph;
 };
 
 export default makeGraph;

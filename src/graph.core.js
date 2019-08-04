@@ -82,16 +82,27 @@ class Graph extends EventEmitter {
    * @example var graph = new Graph("someDomID");
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    */
-  constructor( wrapper, options, axis ) {
+  constructor( wrapper, options, axis = undefined ) {
     super();
+
+  
+    if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) {
+      // Wrapper is options
+      options = wrapper;
+      wrapper = undefined;
+    } 
+    
+    if( ! options.axes ) {
+      options.axes = axis;
+    }
 
     /*
       The unique ID of the graph
       @name Graph#uniqueid
       @type String
     */
-    this._creation = util.guid();
-    this._drawn = false;
+   this._creation = util.guid();
+   this._drawn = false;
 
     /**
      * @object
@@ -149,21 +160,21 @@ class Graph extends EventEmitter {
     this.nsxlink = Graph.nsxlink;
 
     // Load all axes
-    if ( axis ) {
-      for ( var i in axis ) {
-        for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
+    if ( options.axes ) {
+      for ( var i in options.axes ) {
+        for ( var j = 0, l = options.axes[ i ].length; j < l; j++ ) {
           switch ( i ) {
             case 'top':
-              this.getTopAxis( j, axis[ i ][ j ] );
+              this.getTopAxis( j, options.axes[ i ][ j ] );
               break;
             case 'left':
-              this.getLeftAxis( j, axis[ i ][ j ] );
+              this.getLeftAxis( j, options.axes[ i ][ j ] );
               break;
             case 'right':
-              this.getRightAxis( j, axis[ i ][ j ] );
+              this.getRightAxis( j, options.axes[ i ][ j ] );
               break;
             case 'bottom':
-              this.getBottomAxis( j, axis[ i ][ j ] );
+              this.getBottomAxis( j, options.axes[ i ][ j ] );
               break;
 
             default:
@@ -178,12 +189,8 @@ class Graph extends EventEmitter {
   }
 
   setWrapper( wrapper ) {
-    if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) {
-      // Wrapper is options
-      axis = options;
-      options = wrapper;
-      wrapper = null;
-    } else if ( typeof wrapper == 'string' ) {
+    
+    if ( typeof wrapper == 'string' ) {
       wrapper = document.getElementById( wrapper );
     } else if ( typeof wrapper.length == 'number' ) {
       wrapper = wrapper[ 0 ];
@@ -1306,6 +1313,19 @@ class Graph extends EventEmitter {
     this.resetSeries();
   }
 
+    killLegend() {
+      if ( this.legend ) {
+        this.legend.kill();
+      }
+      this.legend = undefined;
+    }
+
+    killShapes() {
+      this.shapes.forEach( ( shape ) => {
+        shape.kill( false );
+      } );
+    }
+
   /**
    * Removes all series from the graph
    */
@@ -2427,9 +2447,51 @@ class Graph extends EventEmitter {
    * @returns {Graph} Newly created graph
    */
   static fromJSON( json, wrapper ) {
-    const graph = graphFromJson( Graph, json, wrapper );
+    const options = json.options || {};
+    const graph = new Graph( undefined, options );
+  
+    graphFromJson( Graph, graph, json, wrapper );
+    graph.setWrapper( wrapper );
     return graph;
   }
+
+  setJSON( json, options = {} ) {
+
+    // Destroy the current elements
+    this.killSeries();
+
+    const state = {};
+    if ( options.keepState ) {
+
+      this._applyToAxes( ( axis ) => {
+        if ( axis.name ) {
+          state[ name ] = { min: axis.getCurrentMin(), max: axis.getCurrentMax() };
+        }
+      }, undefined, true, true );
+    }
+    
+    this._applyToAxes( ( axis ) => {
+      this.killAxis( axis, true, true );
+    }, undefined, true, true );
+
+    this.killLegend();
+    this.killShapes();
+
+    graphFromJson( Graph, this, json );
+
+    if ( options.keepState ) {
+
+      this._applyToAxes( ( axis ) => {
+        if ( axis.name && state.name ) {
+          axis.setCurrentMin( state[ name ].min );
+          axis.setCurrentMax( state[ name ].max );
+        }
+      }, undefined, true, true );
+    }
+
+    this.draw();
+  }
+
 
   exportToSchema() {
     let schema = {};

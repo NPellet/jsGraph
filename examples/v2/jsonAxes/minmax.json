@@ -9,7 +9,7 @@
         "unit": "%",
         "unitWrapperBefore": "[",
         "unitWrapperAfter": "]",
-
+        "flipped": true,
         "primaryGrid": false,
         "secondaryGrid": false
       }
