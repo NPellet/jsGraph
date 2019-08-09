@@ -4,7 +4,7 @@ import makeAnnotation from './annotations.js';
 
 const makeGraph = ( Graph, graph, json ) => {
   let axes = [];
- 
+
   graph.resize( json.width || 400, json.height || 300 );
 
   if ( json.axes ) {

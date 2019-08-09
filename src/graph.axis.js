@@ -28,7 +28,7 @@ import * as util from './graph.util.js';
 const defaults = {
 
   name: undefined,
-  
+
   lineAt: false,
   display: true,
   flipped: false,
