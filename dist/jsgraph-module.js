@@ -1235,6 +1235,7 @@ const processAxes = (Graph, graph, type, axisOptions, allAxes) => {
 
 const makeAxes = (Graph, graph, jsonAxes) => {
   const allAxes = [];
+  console.log(jsonAxes);
 
   if (jsonAxes.x) {
     processAxes(Graph, graph, 'x', jsonAxes.x, allAxes);
@@ -1308,11 +1309,8 @@ const makeAnnotation = (graph, json, serie, axes) => {
   }
 };
 
-const makeGraph = (Graph, json, wrapper) => {
-  const options = json.options || {};
-  const graph = new Graph(undefined, options);
+const makeGraph = (Graph, graph, json) => {
   let axes = [];
-  graph.setWrapper(wrapper);
   graph.resize(json.width || 400, json.height || 300);
 
   if (json.axes) {
@@ -1490,8 +1488,6 @@ const makeGraph = (Graph, json, wrapper) => {
       makeAnnotation(graph, annotation, undefined, axes);
     });
   }
-
-  return graph;
 };
 
 var dataAggregator;
@@ -4446,13 +4442,24 @@ class Graph extends EventEmitter {
    * @example var graph = new Graph("someDomID");
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    */
-  constructor(wrapper, options, axis) {
+  constructor(wrapper, options, axis = undefined) {
     super();
+
+    if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
+      // Wrapper is options
+      options = wrapper;
+      wrapper = undefined;
+    }
+
+    if (!options.axes) {
+      options.axes = axis;
+    }
     /*
       The unique ID of the graph
       @name Graph#uniqueid
       @type String
     */
+
 
     this._creation = guid();
     this._drawn = false;
@@ -4504,24 +4511,24 @@ class Graph extends EventEmitter {
     this.ns = Graph.ns;
     this.nsxlink = Graph.nsxlink; // Load all axes
 
-    if (axis) {
-      for (var i in axis) {
-        for (var j = 0, l = axis[i].length; j < l; j++) {
+    if (options.axes) {
+      for (var i in options.axes) {
+        for (var j = 0, l = options.axes[i].length; j < l; j++) {
           switch (i) {
             case 'top':
-              this.getTopAxis(j, axis[i][j]);
+              this.getTopAxis(j, options.axes[i][j]);
               break;
 
             case 'left':
-              this.getLeftAxis(j, axis[i][j]);
+              this.getLeftAxis(j, options.axes[i][j]);
               break;
 
             case 'right':
-              this.getRightAxis(j, axis[i][j]);
+              this.getRightAxis(j, options.axes[i][j]);
               break;
 
             case 'bottom':
-              this.getBottomAxis(j, axis[i][j]);
+              this.getBottomAxis(j, options.axes[i][j]);
               break;
 
             default:
@@ -4536,12 +4543,7 @@ class Graph extends EventEmitter {
   }
 
   setWrapper(wrapper) {
-    if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
-      // Wrapper is options
-      axis = options;
-      options = wrapper;
-      wrapper = null;
-    } else if (typeof wrapper == 'string') {
+    if (typeof wrapper == 'string') {
       wrapper = document.getElementById(wrapper);
     } else if (typeof wrapper.length == 'number') {
       wrapper = wrapper[0];
@@ -5704,6 +5706,20 @@ class Graph extends EventEmitter {
   killSeries() {
     this.resetSeries();
   }
+
+  killLegend() {
+    if (this.legend) {
+      this.legend.kill();
+    }
+
+    this.legend = undefined;
+  }
+
+  killShapes() {
+    this.shapes.forEach(shape => {
+      shape.kill(false);
+    });
+  }
   /**
    * Removes all series from the graph
    */
@@ -6752,8 +6768,47 @@ class Graph extends EventEmitter {
 
 
   static fromJSON(json, wrapper) {
-    const graph = makeGraph(Graph, json, wrapper);
+    const options = json.options || {};
+    const graph = new Graph(undefined, options);
+    makeGraph(Graph, graph, json, wrapper);
+    graph.setWrapper(wrapper);
     return graph;
+  }
+
+  setJSON(json, options = {}) {
+    // Destroy the current elements
+    this.killSeries();
+    const state = {};
+
+    if (options.keepState) {
+      this._applyToAxes(axis => {
+        if (axis.options.name) {
+          state[axis.options.name] = {
+            min: axis.getCurrentMin(),
+            max: axis.getCurrentMax()
+          };
+        }
+      }, undefined, true, true);
+    }
+
+    this._applyToAxes(axis => {
+      this.killAxis(axis, true, true);
+    }, undefined, true, true);
+
+    this.killLegend();
+    this.killShapes();
+    makeGraph(Graph, this, json);
+
+    if (options.keepState) {
+      this._applyToAxes(axis => {
+        if (axis.options.name && state[axis.options.name]) {
+          axis.setCurrentMin(state[axis.options.name].min);
+          axis.setCurrentMax(state[axis.options.name].max);
+        }
+      }, undefined, true, true);
+    }
+
+    this.draw();
   }
 
   exportToSchema() {
@@ -8132,6 +8187,14 @@ class Legend {
     return this.setAutoPosition(...arguments);
   }
 
+  kill() {
+    if (!this.autoPosition) {
+      this.graph.graphingZone.removeChild(this.getDom());
+    } else {
+      this.graph.getDom().removeChild(this.getDom());
+    }
+  }
+
   buildLegendBox() {
     var series = this.series || this.graph.getSeries(),
         posX = 0,
@@ -8635,6 +8698,7 @@ function getBBox(svgElement) {
  */
 
 const defaults = {
+  name: undefined,
   lineAt: false,
   display: true,
   flipped: false,
@@ -8800,6 +8864,8 @@ class Axis extends EventEmitter {
     this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
 
     this.graph._axisHasChanged(this);
+
+    this.cache();
   }
 
   handleMouseMoveLocal() {}
@@ -8935,36 +9001,36 @@ class Axis extends EventEmitter {
         current = this.options.adaptTo.thisValue,
         foreign = this.options.adaptTo.foreignValue;
 
-    if (axis.currentAxisMin === undefined || axis.currentAxisMax === undefined) {
+    if (axis.options.currentAxisMin === undefined || axis.options.currentAxisMax === undefined) {
       axis.setMinMaxToFitSeries();
     }
 
     if (this.options.forcedMin !== false && this.options.forcedMax == false || this.options.adaptTo.preference !== 'max') {
       if (this.options.forcedMin !== false) {
-        this.currentAxisMin = this.options.forcedMin;
+        this.options.currentAxisMin = this.options.forcedMin;
       } else {
-        this.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
+        this.options.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
       }
 
-      if (this.currentAxisMin == current) {
-        this.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
+      if (this.options.currentAxisMin == current) {
+        this.options.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
       }
 
-      var use = this.options.forcedMin !== false ? this.options.forcedMin : this.currentAxisMin;
-      this.currentAxisMax = (current - use) * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()) + use;
+      var use = this.options.forcedMin !== false ? this.options.forcedMin : this.options.currentAxisMin;
+      this.options.currentAxisMax = (current - use) * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()) + use;
     } else {
       if (this.options.forcedMax !== false) {
-        this.currentAxisMax = this.options.forcedMax;
+        this.options.currentAxisMax = this.options.forcedMax;
       } else {
-        this.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
+        this.options.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
       }
 
-      if (this.currentAxisMax == current) {
-        this.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
+      if (this.options.currentAxisMax == current) {
+        this.options.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
       }
 
-      var use = this.options.forcedMax !== false ? this.options.forcedMax : this.currentAxisMax;
-      this.currentAxisMin = (current - use) * (axis.getCurrentMin() - axis.getCurrentMax()) / (foreign - axis.getCurrentMax()) + use;
+      var use = this.options.forcedMax !== false ? this.options.forcedMax : this.options.currentAxisMax;
+      this.options.currentAxisMin = (current - use) * (axis.getCurrentMin() - axis.getCurrentMax()) / (foreign - axis.getCurrentMax()) + use;
     }
 
     this.graph._axisHasChanged(this);
@@ -9325,7 +9391,7 @@ class Axis extends EventEmitter {
     this._hasChanged = true; // New method
 
     if (!mute) {
-      this.emit('zoom', [this.currentAxisMin, this.currentAxisMax, this]);
+      this.emit('zoom', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
     }
 
     return this;
@@ -9490,12 +9556,12 @@ class Axis extends EventEmitter {
 
     if (this.options.logScale) {
       this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
-      this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1)); //this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
-      //this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
+      this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1)); //this.options.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
+      //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
     } else {
       this.setCurrentMin(this.getMinValue());
-      this.setCurrentMax(this.getMaxValue()); //this.currentAxisMin = this.getMinValue();
-      //this.currentAxisMax = this.getMaxValue();
+      this.setCurrentMax(this.getMaxValue()); //this.options.currentAxisMin = this.getMinValue();
+      //this.options.currentAxisMax = this.getMaxValue();
 
       if (this.getForcedMin() === false) {
         this.setCurrentMin(this.getCurrentMin() - this.options.axisDataSpacing.min * interval);
@@ -9506,9 +9572,9 @@ class Axis extends EventEmitter {
       }
     }
 
-    if (isNaN(this.currentAxisMin) || isNaN(this.currentAxisMax)) {
-      this.currentAxisMax = undefined;
-      this.currentAxisMin = undefined;
+    if (isNaN(this.options.currentAxisMin) || isNaN(this.options.currentAxisMax)) {
+      this.options.currentAxisMax = undefined;
+      this.options.currentAxisMin = undefined;
     }
 
     this.cache();
@@ -9519,7 +9585,7 @@ class Axis extends EventEmitter {
       this.graph._axisHasChanged(this);
     }
 
-    this.emit('zoomOutFull', [this.currentAxisMin, this.currentAxisMax, this]);
+    this.emit('zoomOutFull', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
     return this;
   }
   /**
@@ -9565,7 +9631,7 @@ class Axis extends EventEmitter {
 
 
   cacheCurrentMin() {
-    this.cachedCurrentMin = this.currentAxisMin == this.currentAxisMax ? this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 : this.currentAxisMin;
+    this.cachedCurrentMin = this.options.currentAxisMin == this.options.currentAxisMax ? this.options.logScale ? this.options.currentAxisMin / 10 : this.options.currentAxisMin - 1 : this.options.currentAxisMin;
   }
   /**
    * Caches the current axis maximum
@@ -9574,7 +9640,7 @@ class Axis extends EventEmitter {
 
 
   cacheCurrentMax() {
-    this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 : this.currentAxisMax;
+    this.cachedCurrentMax = this.options.currentAxisMax == this.options.currentAxisMin ? this.options.logScale ? this.options.currentAxisMax * 10 : this.options.currentAxisMax + 1 : this.options.currentAxisMax;
   }
   /**
    * Caches the current interval
@@ -9604,10 +9670,10 @@ class Axis extends EventEmitter {
       val = this.getMinValue();
     }
 
-    this.currentAxisMin = val;
+    this.options.currentAxisMin = val;
 
     if (this.options.logScale) {
-      this.currentAxisMin = Math.max(1e-50, val);
+      this.options.currentAxisMin = Math.max(1e-50, val);
     }
 
     this.cacheCurrentMin();
@@ -9630,10 +9696,10 @@ class Axis extends EventEmitter {
       val = this.getMaxValue();
     }
 
-    this.currentAxisMax = val;
+    this.options.currentAxisMax = val;
 
     if (this.options.logScale) {
-      this.currentAxisMax = Math.max(1e-50, val);
+      this.options.currentAxisMax = Math.max(1e-50, val);
     }
 
     this.cacheCurrentMax();
@@ -9681,7 +9747,7 @@ class Axis extends EventEmitter {
     var self = this; // var visible;
     //    this.drawInit();
 
-    if (this.currentAxisMin === undefined || this.currentAxisMax === undefined) {
+    if (this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined) {
       this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
     } // this.cache();
     //   this.setSlaveAxesBoundaries();
@@ -10485,6 +10551,11 @@ class Axis extends EventEmitter {
   getExponentialLabelFactor() {
     return this.options.exponentialLabelFactor;
   }
+
+  setName(name) {
+    this.options.name = name;
+    return this;
+  }
   /**
    * Sets the label of the axis
    * @param {Number} label - The label to display under the axis
@@ -11225,7 +11296,7 @@ class Axis extends EventEmitter {
   }
 
   isZoomed() {
-    return !(this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue());
+    return !(this.options.currentAxisMin == this.getMinValue() || this.options.currentAxisMax == this.getMaxValue());
   }
 
   hasAxis() {
@@ -18795,9 +18866,17 @@ class Shape extends EventEmitter {
 
 
   setDom(prop, val, noForce) {
+    this._cachedDOM = this._cachedDOM || {};
+
+    if (this._cachedDOM[prop] == val) {
+      return;
+    }
+
     if (this._dom) {
       if (!noForce || !hasSavedAttribute(this._dom, prop)) {
         this._dom.setAttribute(prop, val);
+
+        this._cachedDOM[prop] = val;
       }
     }
   }
@@ -19231,8 +19310,7 @@ class Shape extends EventEmitter {
 
 
   calculatePosition(index) {
-    var position;
-    position = index instanceof Position ? index : this.getPosition(index);
+    var position = this.getPosition(index); //position = index instanceof GraphPosition ? index : this.getPosition( index );
 
     if (!position) {
       return;
@@ -19253,6 +19331,11 @@ class Shape extends EventEmitter {
 
   getPosition(index) {
     var pos = this.getProp('position', index || 0);
+
+    if (pos == undefined) {
+      return;
+    }
+
     this.setProp('position', pos = Position.check(pos), index);
     return pos;
   }
@@ -20972,6 +21055,101 @@ class ShapePolyline extends Shape {
       }).join(' L ')}`);
     }
 
+    this.changed();
+    return true;
+  }
+
+}
+
+/**
+ * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
+ * @extends Shape
+ * @see Graph#newShape
+ */
+
+class ShapePolyline$2 extends Shape {
+  constructor(graph, options) {
+    super(graph, options);
+  }
+  /**
+   * Creates the DOM
+   * @private
+   * @return {Shape} The current shape
+   */
+
+
+  createDom() {
+    this._dom = document.createElementNS(this.graph.ns, 'path');
+
+    if (!this.getStrokeColor()) {
+      this.setStrokeColor('black');
+    }
+
+    if (this.getStrokeWidth() == undefined) {
+      this.setStrokeWidth(1);
+    }
+  }
+  /**
+   * No handles for the polyline
+   * @private
+   * @return {Shape} The current shape
+   */
+
+
+  createHandles() {}
+  /**
+   *  Force the points of the polyline already computed in pixels
+   *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
+   *  @return {ShapePolyline} The current polyline instance
+   */
+
+
+  setPointsPx(points) {
+    this.setProp('pxPoints', points);
+    return this;
+  }
+  /**
+   * Recalculates the positions and applies them
+   * @private
+   * @return {Boolean} Whether the shape should be redrawn
+   */
+
+
+  applyPosition() {
+    let str = '';
+    let index = 0;
+
+    while (true) {
+      let pos = this.getPosition(index);
+
+      if (pos === undefined) {
+        break;
+      }
+
+      let posXY;
+
+      if (this.serie) {
+        posXY = pos.compute(this.graph, this.serie.getXAxis(), this.serie.getYAxis(), this.serie);
+      } else {
+        posXY = pos.compute(this.graph, this.getXAxis(), this.getYAxis());
+      }
+
+      if (isNaN(posXY.x) || isNaN(posXY.y)) {
+        return;
+      }
+
+      if (index == 0) {
+        str += " M ";
+      } else {
+        str += " L ";
+      }
+
+      str += posXY.x + " " + posXY.y;
+      index++;
+    }
+
+    str += "z";
+    this.setDom('d', str);
     this.changed();
     return true;
   }
@@ -25075,6 +25253,7 @@ Graph.registerConstructor('graph.shape', Shape);
 Graph.registerConstructor('graph.shape.areaundercurve', ShapeSurfaceUnderCurve);
 Graph.registerConstructor('graph.shape.arrow', ShapeArrow);
 Graph.registerConstructor('graph.shape.ellipse', ShapeEllipse);
+Graph.registerConstructor('graph.shape.polygon', ShapePolyline$2);
 Graph.registerConstructor('graph.shape.label', ShapeLabel);
 Graph.registerConstructor('graph.shape.polyline', ShapePolyline);
 Graph.registerConstructor('graph.shape.line', ShapeLine);

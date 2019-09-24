@@ -48,7 +48,7 @@ const processAxes = ( Graph, graph, type, axisOptions, allAxes ) => {
 
 const makeAxes = ( Graph, graph, jsonAxes ) => {
   const allAxes = [];
-console.log( jsonAxes );
+  console.log( jsonAxes );
   if ( jsonAxes.x ) {
     processAxes( Graph, graph, 'x', jsonAxes.x, allAxes );
   }

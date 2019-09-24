@@ -542,9 +542,17 @@ class Shape extends EventEmitter {
    * Sets a DOM property to the shape
    */
   setDom( prop, val, noForce ) {
+
+    this._cachedDOM = this._cachedDOM || {};
+
+    if ( this._cachedDOM[ prop ] == val ) {
+      return;
+    }
+
     if ( this._dom ) {
       if ( !noForce || !util.hasSavedAttribute( this._dom, prop ) ) {
         this._dom.setAttribute( prop, val );
+        this._cachedDOM[ prop ] = val;
       }
     }
   }
@@ -952,9 +960,9 @@ class Shape extends EventEmitter {
    * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
    */
   calculatePosition( index ) {
-    var position;
+    var position = this.getPosition( index );
 
-    position = index instanceof GraphPosition ? index : this.getPosition( index );
+    //position = index instanceof GraphPosition ? index : this.getPosition( index );
 
     if ( !position ) {
       return;
@@ -979,6 +987,9 @@ class Shape extends EventEmitter {
    */
   getPosition( index ) {
     var pos = this.getProp( 'position', index || 0 );
+    if ( pos == undefined ) {
+      return;
+    }
     this.setProp( 'position', ( pos = GraphPosition.check( pos ) ), index );
     return pos;
   }

@@ -164,14 +164,14 @@ class Legend {
   }
 
   kill() {
-    
+
     if ( !this.autoPosition ) {
       this.graph.graphingZone.removeChild( this.getDom() );
     } else {
       this.graph.getDom().removeChild( this.getDom() );
     }
   }
-  
+
   buildLegendBox() {
     var series = this.series || this.graph.getSeries(),
       posX = 0,

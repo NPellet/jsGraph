@@ -1090,9 +1090,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setDom(prop, val, noForce) {
+      this._cachedDOM = this._cachedDOM || {};
+
+      if (this._cachedDOM[prop] == val) {
+        return;
+      }
+
       if (this._dom) {
         if (!noForce || !util.hasSavedAttribute(this._dom, prop)) {
           this._dom.setAttribute(prop, val);
+
+          this._cachedDOM[prop] = val;
         }
       }
     }
@@ -1528,8 +1536,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     calculatePosition(index) {
-      var position;
-      position = index instanceof _graphPosition.default ? index : this.getPosition(index);
+      var position = this.getPosition(index); //position = index instanceof GraphPosition ? index : this.getPosition( index );
 
       if (!position) {
         return;
@@ -1550,6 +1557,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     getPosition(index) {
       var pos = this.getProp('position', index || 0);
+
+      if (pos == undefined) {
+        return;
+      }
+
       this.setProp('position', pos = _graphPosition.default.check(pos), index);
       return pos;
     }
@@ -7299,13 +7311,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @example var graph = new Graph("someDomID");
      * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
      */
-    constructor(wrapper, options, axis) {
+    constructor(wrapper, options, axis = undefined) {
       super();
+
+      if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
+        // Wrapper is options
+        options = wrapper;
+        wrapper = undefined;
+      }
+
+      if (!options.axes) {
+        options.axes = axis;
+      }
       /*
         The unique ID of the graph
         @name Graph#uniqueid
         @type String
       */
+
 
       this._creation = util.guid();
       this._drawn = false;
@@ -7357,24 +7380,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.ns = Graph.ns;
       this.nsxlink = Graph.nsxlink; // Load all axes
 
-      if (axis) {
-        for (var i in axis) {
-          for (var j = 0, l = axis[i].length; j < l; j++) {
+      if (options.axes) {
+        for (var i in options.axes) {
+          for (var j = 0, l = options.axes[i].length; j < l; j++) {
             switch (i) {
               case 'top':
-                this.getTopAxis(j, axis[i][j]);
+                this.getTopAxis(j, options.axes[i][j]);
                 break;
 
               case 'left':
-                this.getLeftAxis(j, axis[i][j]);
+                this.getLeftAxis(j, options.axes[i][j]);
                 break;
 
               case 'right':
-                this.getRightAxis(j, axis[i][j]);
+                this.getRightAxis(j, options.axes[i][j]);
                 break;
 
               case 'bottom':
-                this.getBottomAxis(j, axis[i][j]);
+                this.getBottomAxis(j, options.axes[i][j]);
                 break;
 
               default:
@@ -7389,12 +7412,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     setWrapper(wrapper) {
-      if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
-        // Wrapper is options
-        axis = options;
-        options = wrapper;
-        wrapper = null;
-      } else if (typeof wrapper == 'string') {
+      if (typeof wrapper == 'string') {
         wrapper = document.getElementById(wrapper);
       } else if (typeof wrapper.length == 'number') {
         wrapper = wrapper[0];
@@ -8557,6 +8575,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     killSeries() {
       this.resetSeries();
     }
+
+    killLegend() {
+      if (this.legend) {
+        this.legend.kill();
+      }
+
+      this.legend = undefined;
+    }
+
+    killShapes() {
+      this.shapes.forEach(shape => {
+        shape.kill(false);
+      });
+    }
     /**
      * Removes all series from the graph
      */
@@ -9607,8 +9639,47 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     static fromJSON(json, wrapper) {
-      const graph = (0, _main.default)(Graph, json, wrapper);
+      const options = json.options || {};
+      const graph = new Graph(undefined, options);
+      (0, _main.default)(Graph, graph, json, wrapper);
+      graph.setWrapper(wrapper);
       return graph;
+    }
+
+    setJSON(json, options = {}) {
+      // Destroy the current elements
+      this.killSeries();
+      const state = {};
+
+      if (options.keepState) {
+        this._applyToAxes(axis => {
+          if (axis.options.name) {
+            state[axis.options.name] = {
+              min: axis.getCurrentMin(),
+              max: axis.getCurrentMax()
+            };
+          }
+        }, undefined, true, true);
+      }
+
+      this._applyToAxes(axis => {
+        this.killAxis(axis, true, true);
+      }, undefined, true, true);
+
+      this.killLegend();
+      this.killShapes();
+      (0, _main.default)(Graph, this, json);
+
+      if (options.keepState) {
+        this._applyToAxes(axis => {
+          if (axis.options.name && state[axis.options.name]) {
+            axis.setCurrentMin(state[axis.options.name].min);
+            axis.setCurrentMax(state[axis.options.name].max);
+          }
+        }, undefined, true, true);
+      }
+
+      this.draw();
     }
 
     exportToSchema() {
@@ -10124,7 +10195,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.23"
+        'data-jsgraph-version': "v2.2.24"
       });
     } catch (e) {// ignore
     }
@@ -10920,6 +10991,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
    * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
    */
   const defaults = {
+    name: undefined,
     lineAt: false,
     display: true,
     flipped: false,
@@ -11085,6 +11157,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
 
       this.graph._axisHasChanged(this);
+
+      this.cache();
     }
 
     handleMouseMoveLocal() {}
@@ -11220,36 +11294,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           current = this.options.adaptTo.thisValue,
           foreign = this.options.adaptTo.foreignValue;
 
-      if (axis.currentAxisMin === undefined || axis.currentAxisMax === undefined) {
+      if (axis.options.currentAxisMin === undefined || axis.options.currentAxisMax === undefined) {
         axis.setMinMaxToFitSeries();
       }
 
       if (this.options.forcedMin !== false && this.options.forcedMax == false || this.options.adaptTo.preference !== 'max') {
         if (this.options.forcedMin !== false) {
-          this.currentAxisMin = this.options.forcedMin;
+          this.options.currentAxisMin = this.options.forcedMin;
         } else {
-          this.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
+          this.options.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
         }
 
-        if (this.currentAxisMin == current) {
-          this.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
+        if (this.options.currentAxisMin == current) {
+          this.options.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
         }
 
-        var use = this.options.forcedMin !== false ? this.options.forcedMin : this.currentAxisMin;
-        this.currentAxisMax = (current - use) * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()) + use;
+        var use = this.options.forcedMin !== false ? this.options.forcedMin : this.options.currentAxisMin;
+        this.options.currentAxisMax = (current - use) * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()) + use;
       } else {
         if (this.options.forcedMax !== false) {
-          this.currentAxisMax = this.options.forcedMax;
+          this.options.currentAxisMax = this.options.forcedMax;
         } else {
-          this.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
+          this.options.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
         }
 
-        if (this.currentAxisMax == current) {
-          this.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
+        if (this.options.currentAxisMax == current) {
+          this.options.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
         }
 
-        var use = this.options.forcedMax !== false ? this.options.forcedMax : this.currentAxisMax;
-        this.currentAxisMin = (current - use) * (axis.getCurrentMin() - axis.getCurrentMax()) / (foreign - axis.getCurrentMax()) + use;
+        var use = this.options.forcedMax !== false ? this.options.forcedMax : this.options.currentAxisMax;
+        this.options.currentAxisMin = (current - use) * (axis.getCurrentMin() - axis.getCurrentMax()) / (foreign - axis.getCurrentMax()) + use;
       }
 
       this.graph._axisHasChanged(this);
@@ -11610,7 +11684,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this._hasChanged = true; // New method
 
       if (!mute) {
-        this.emit('zoom', [this.currentAxisMin, this.currentAxisMax, this]);
+        this.emit('zoom', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
       }
 
       return this;
@@ -11775,12 +11849,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       if (this.options.logScale) {
         this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
-        this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1)); //this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
-        //this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
+        this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1)); //this.options.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
+        //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
       } else {
         this.setCurrentMin(this.getMinValue());
-        this.setCurrentMax(this.getMaxValue()); //this.currentAxisMin = this.getMinValue();
-        //this.currentAxisMax = this.getMaxValue();
+        this.setCurrentMax(this.getMaxValue()); //this.options.currentAxisMin = this.getMinValue();
+        //this.options.currentAxisMax = this.getMaxValue();
 
         if (this.getForcedMin() === false) {
           this.setCurrentMin(this.getCurrentMin() - this.options.axisDataSpacing.min * interval);
@@ -11791,9 +11865,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
       }
 
-      if (isNaN(this.currentAxisMin) || isNaN(this.currentAxisMax)) {
-        this.currentAxisMax = undefined;
-        this.currentAxisMin = undefined;
+      if (isNaN(this.options.currentAxisMin) || isNaN(this.options.currentAxisMax)) {
+        this.options.currentAxisMax = undefined;
+        this.options.currentAxisMin = undefined;
       }
 
       this.cache();
@@ -11804,7 +11878,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.graph._axisHasChanged(this);
       }
 
-      this.emit('zoomOutFull', [this.currentAxisMin, this.currentAxisMax, this]);
+      this.emit('zoomOutFull', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
       return this;
     }
     /**
@@ -11850,7 +11924,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     cacheCurrentMin() {
-      this.cachedCurrentMin = this.currentAxisMin == this.currentAxisMax ? this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 : this.currentAxisMin;
+      this.cachedCurrentMin = this.options.currentAxisMin == this.options.currentAxisMax ? this.options.logScale ? this.options.currentAxisMin / 10 : this.options.currentAxisMin - 1 : this.options.currentAxisMin;
     }
     /**
      * Caches the current axis maximum
@@ -11859,7 +11933,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     cacheCurrentMax() {
-      this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 : this.currentAxisMax;
+      this.cachedCurrentMax = this.options.currentAxisMax == this.options.currentAxisMin ? this.options.logScale ? this.options.currentAxisMax * 10 : this.options.currentAxisMax + 1 : this.options.currentAxisMax;
     }
     /**
      * Caches the current interval
@@ -11889,10 +11963,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         val = this.getMinValue();
       }
 
-      this.currentAxisMin = val;
+      this.options.currentAxisMin = val;
 
       if (this.options.logScale) {
-        this.currentAxisMin = Math.max(1e-50, val);
+        this.options.currentAxisMin = Math.max(1e-50, val);
       }
 
       this.cacheCurrentMin();
@@ -11915,10 +11989,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         val = this.getMaxValue();
       }
 
-      this.currentAxisMax = val;
+      this.options.currentAxisMax = val;
 
       if (this.options.logScale) {
-        this.currentAxisMax = Math.max(1e-50, val);
+        this.options.currentAxisMax = Math.max(1e-50, val);
       }
 
       this.cacheCurrentMax();
@@ -11966,7 +12040,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var self = this; // var visible;
       //    this.drawInit();
 
-      if (this.currentAxisMin === undefined || this.currentAxisMax === undefined) {
+      if (this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined) {
         this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
       } // this.cache();
       //   this.setSlaveAxesBoundaries();
@@ -12770,6 +12844,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     getExponentialLabelFactor() {
       return this.options.exponentialLabelFactor;
     }
+
+    setName(name) {
+      this.options.name = name;
+      return this;
+    }
     /**
      * Sets the label of the axis
      * @param {Number} label - The label to display under the axis
@@ -13510,7 +13589,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
 
     isZoomed() {
-      return !(this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue());
+      return !(this.options.currentAxisMin == this.getMinValue() || this.options.currentAxisMax == this.getMaxValue());
     }
 
     hasAxis() {
@@ -17527,20 +17606,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(4), __webpack_require__(25), __webpack_require__(11), __webpack_require__(15), __webpack_require__(26), __webpack_require__(27), __webpack_require__(3), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(31), __webpack_require__(12), __webpack_require__(17), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(1), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(13), __webpack_require__(40), __webpack_require__(41), __webpack_require__(18), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(2), __webpack_require__(45), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(49), __webpack_require__(51), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(6), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(4), __webpack_require__(25), __webpack_require__(11), __webpack_require__(15), __webpack_require__(26), __webpack_require__(27), __webpack_require__(3), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(31), __webpack_require__(12), __webpack_require__(17), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(1), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(13), __webpack_require__(41), __webpack_require__(42), __webpack_require__(18), __webpack_require__(43), __webpack_require__(44), __webpack_require__(45), __webpack_require__(2), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(49), __webpack_require__(50), __webpack_require__(52), __webpack_require__(53), __webpack_require__(54), __webpack_require__(55), __webpack_require__(6), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("./graph.core.js"), require("./graph.position.js"), require("./graph.legend.js"), require("./graph.axis.x.js"), require("./graph.axis.y.js"), require("./graph.axis.x.bar.js"), require("./graph.axis.x.time.js"), require("./series/graph.serie.line.js"), require("./series/graph.serie.line.3d.js"), require("./series/graph.serie.bar.js"), require("./series/graph.serie.box.js"), require("./series/graph.serie.line.colored.js"), require("./series/graph.serie.scatter.js"), require("./series/graph.serie.zone.js"), require("./series/graph.serie.zone.3d.js"), require("./series/graph.serie.densitymap.js"), require("./series/graph.serie.contour.js"), require("./shapes/graph.shape.js"), require("./shapes/graph.shape.areaundercurve.js"), require("./shapes/graph.shape.arrow.js"), require("./shapes/graph.shape.ellipse.js"), require("./shapes/graph.shape.label.js"), require("./shapes/graph.shape.polyline.js"), require("./shapes/graph.shape.line.js"), require("./shapes/graph.shape.nmrintegral.js"), require("./shapes/graph.shape.peakintegration2d.js"), require("./shapes/graph.shape.rect.js"), require("./shapes/graph.shape.cross.js"), require("./shapes/graph.shape.peakboundariescenter.js"), require("./shapes/graph.shape.html.js"), require("./plugins/graph.plugin.js"), require("./plugins/graph.plugin.drag.js"), require("./plugins/graph.plugin.shape.js"), require("./plugins/graph.plugin.selectScatter.js"), require("./plugins/graph.plugin.zoom.js"), require("./plugins/graph.plugin.timeseriemanager.js"), require("./plugins/graph.plugin.serielinedifference.js"), require("./plugins/graph.plugin.axissplitting.js"), require("./plugins/graph.plugin.makeTracesDifferent.js"), require("./plugins/graph.plugin.peakpicking.js"), require("./util/waveform.js"), require("./util/fit_lm.js"));
+    factory(exports, require("./graph.core.js"), require("./graph.position.js"), require("./graph.legend.js"), require("./graph.axis.x.js"), require("./graph.axis.y.js"), require("./graph.axis.x.bar.js"), require("./graph.axis.x.time.js"), require("./series/graph.serie.line.js"), require("./series/graph.serie.line.3d.js"), require("./series/graph.serie.bar.js"), require("./series/graph.serie.box.js"), require("./series/graph.serie.line.colored.js"), require("./series/graph.serie.scatter.js"), require("./series/graph.serie.zone.js"), require("./series/graph.serie.zone.3d.js"), require("./series/graph.serie.densitymap.js"), require("./series/graph.serie.contour.js"), require("./shapes/graph.shape.js"), require("./shapes/graph.shape.areaundercurve.js"), require("./shapes/graph.shape.arrow.js"), require("./shapes/graph.shape.ellipse.js"), require("./shapes/graph.shape.label.js"), require("./shapes/graph.shape.polyline.js"), require("./shapes/graph.shape.polygon.js"), require("./shapes/graph.shape.line.js"), require("./shapes/graph.shape.nmrintegral.js"), require("./shapes/graph.shape.peakintegration2d.js"), require("./shapes/graph.shape.rect.js"), require("./shapes/graph.shape.cross.js"), require("./shapes/graph.shape.peakboundariescenter.js"), require("./shapes/graph.shape.html.js"), require("./plugins/graph.plugin.js"), require("./plugins/graph.plugin.drag.js"), require("./plugins/graph.plugin.shape.js"), require("./plugins/graph.plugin.selectScatter.js"), require("./plugins/graph.plugin.zoom.js"), require("./plugins/graph.plugin.timeseriemanager.js"), require("./plugins/graph.plugin.serielinedifference.js"), require("./plugins/graph.plugin.axissplitting.js"), require("./plugins/graph.plugin.makeTracesDifferent.js"), require("./plugins/graph.plugin.peakpicking.js"), require("./util/waveform.js"), require("./util/fit_lm.js"));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.graphCore, global.graphPosition, global.graphLegend, global.graphAxisX, global.graphAxisY, global.graphAxisXBar, global.graphAxisXTime, global.graphSerieLine, global.graphSerieLine3d, global.graphSerieBar, global.graphSerieBox, global.graphSerieLineColored, global.graphSerieScatter, global.graphSerieZone, global.graphSerieZone3d, global.graphSerieDensitymap, global.graphSerieContour, global.graphShape, global.graphShapeAreaundercurve, global.graphShapeArrow, global.graphShapeEllipse, global.graphShapeLabel, global.graphShapePolyline, global.graphShapeLine, global.graphShapeNmrintegral, global.graphShapePeakintegration2d, global.graphShapeRect, global.graphShapeCross, global.graphShapePeakboundariescenter, global.graphShapeHtml, global.graphPlugin, global.graphPluginDrag, global.graphPluginShape, global.graphPluginSelectScatter, global.graphPluginZoom, global.graphPluginTimeseriemanager, global.graphPluginSerielinedifference, global.graphPluginAxissplitting, global.graphPluginMakeTracesDifferent, global.graphPluginPeakpicking, global.waveform, global.fit_lm);
+    factory(mod.exports, global.graphCore, global.graphPosition, global.graphLegend, global.graphAxisX, global.graphAxisY, global.graphAxisXBar, global.graphAxisXTime, global.graphSerieLine, global.graphSerieLine3d, global.graphSerieBar, global.graphSerieBox, global.graphSerieLineColored, global.graphSerieScatter, global.graphSerieZone, global.graphSerieZone3d, global.graphSerieDensitymap, global.graphSerieContour, global.graphShape, global.graphShapeAreaundercurve, global.graphShapeArrow, global.graphShapeEllipse, global.graphShapeLabel, global.graphShapePolyline, global.graphShapePolygon, global.graphShapeLine, global.graphShapeNmrintegral, global.graphShapePeakintegration2d, global.graphShapeRect, global.graphShapeCross, global.graphShapePeakboundariescenter, global.graphShapeHtml, global.graphPlugin, global.graphPluginDrag, global.graphPluginShape, global.graphPluginSelectScatter, global.graphPluginZoom, global.graphPluginTimeseriemanager, global.graphPluginSerielinedifference, global.graphPluginAxissplitting, global.graphPluginMakeTracesDifferent, global.graphPluginPeakpicking, global.waveform, global.fit_lm);
     global.graph = mod.exports;
   }
-})(this, function (_exports, _graphCore, _graphPosition, _graphLegend, _graphAxisX, _graphAxisY, _graphAxisXBar, _graphAxisXTime, _graphSerieLine, _graphSerieLine3d, _graphSerieBar, _graphSerieBox, _graphSerieLineColored, _graphSerieScatter, _graphSerieZone, _graphSerieZone3d, _graphSerieDensitymap, _graphSerieContour, _graphShape, _graphShapeAreaundercurve, _graphShapeArrow, _graphShapeEllipse, _graphShapeLabel, _graphShapePolyline, _graphShapeLine, _graphShapeNmrintegral, _graphShapePeakintegration2d, _graphShapeRect, _graphShapeCross, _graphShapePeakboundariescenter, _graphShapeHtml, _graphPlugin, _graphPluginDrag, _graphPluginShape, _graphPluginSelectScatter, _graphPluginZoom, _graphPluginTimeseriemanager, _graphPluginSerielinedifference, _graphPluginAxissplitting, _graphPluginMakeTracesDifferent, _graphPluginPeakpicking, _waveform, _fit_lm) {
+})(this, function (_exports, _graphCore, _graphPosition, _graphLegend, _graphAxisX, _graphAxisY, _graphAxisXBar, _graphAxisXTime, _graphSerieLine, _graphSerieLine3d, _graphSerieBar, _graphSerieBox, _graphSerieLineColored, _graphSerieScatter, _graphSerieZone, _graphSerieZone3d, _graphSerieDensitymap, _graphSerieContour, _graphShape, _graphShapeAreaundercurve, _graphShapeArrow, _graphShapeEllipse, _graphShapeLabel, _graphShapePolyline, _graphShapePolygon, _graphShapeLine, _graphShapeNmrintegral, _graphShapePeakintegration2d, _graphShapeRect, _graphShapeCross, _graphShapePeakboundariescenter, _graphShapeHtml, _graphPlugin, _graphPluginDrag, _graphPluginShape, _graphPluginSelectScatter, _graphPluginZoom, _graphPluginTimeseriemanager, _graphPluginSerielinedifference, _graphPluginAxissplitting, _graphPluginMakeTracesDifferent, _graphPluginPeakpicking, _waveform, _fit_lm) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -17570,6 +17649,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   _graphShapeEllipse = _interopRequireDefault(_graphShapeEllipse);
   _graphShapeLabel = _interopRequireDefault(_graphShapeLabel);
   _graphShapePolyline = _interopRequireDefault(_graphShapePolyline);
+  _graphShapePolygon = _interopRequireDefault(_graphShapePolygon);
   _graphShapeLine = _interopRequireDefault(_graphShapeLine);
   _graphShapeNmrintegral = _interopRequireDefault(_graphShapeNmrintegral);
   _graphShapePeakintegration2d = _interopRequireDefault(_graphShapePeakintegration2d);
@@ -17671,6 +17751,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   _graphCore.default.registerConstructor('graph.shape.ellipse', _graphShapeEllipse.default);
 
+  _graphCore.default.registerConstructor('graph.shape.polygon', _graphShapePolygon.default);
+
   _graphCore.default.registerConstructor('graph.shape.label', _graphShapeLabel.default);
 
   _graphCore.default.registerConstructor('graph.shape.polyline', _graphShapePolyline.default);
@@ -17737,11 +17819,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-  const makeGraph = (Graph, json, wrapper) => {
-    const options = json.options || {};
-    const graph = new Graph(undefined, options);
+  const makeGraph = (Graph, graph, json) => {
     let axes = [];
-    graph.setWrapper(wrapper);
     graph.resize(json.width || 400, json.height || 300);
 
     if (json.axes) {
@@ -17919,8 +17998,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         (0, _annotations.default)(graph, annotation, undefined, axes);
       });
     }
-
-    return graph;
   };
 
   var _default = makeGraph;
@@ -18105,6 +18182,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   const makeAxes = (Graph, graph, jsonAxes) => {
     const allAxes = [];
+    console.log(jsonAxes);
 
     if (jsonAxes.x) {
       processAxes(Graph, graph, 'x', jsonAxes.x, allAxes);
@@ -18609,6 +18687,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     autoPosition() {
       return this.setAutoPosition(...arguments);
+    }
+
+    kill() {
+      if (!this.autoPosition) {
+        this.graph.graphingZone.removeChild(this.getDom());
+      } else {
+        this.graph.getDom().removeChild(this.getDom());
+      }
     }
 
     buildLegendBox() {
@@ -23200,6 +23286,135 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if (typeof exports !== "undefined") {
+    factory(exports, require("./graph.shape.js"));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    factory(mod.exports, global.graphShape);
+    global.graphShapePolygon = mod.exports;
+  }
+})(this, function (_exports, _graphShape) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+  _graphShape = _interopRequireDefault(_graphShape);
+
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+  /**
+   * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
+   * @extends Shape
+   * @see Graph#newShape
+   */
+  class ShapePolyline extends _graphShape.default {
+    constructor(graph, options) {
+      super(graph, options);
+    }
+    /**
+     * Creates the DOM
+     * @private
+     * @return {Shape} The current shape
+     */
+
+
+    createDom() {
+      this._dom = document.createElementNS(this.graph.ns, 'path');
+
+      if (!this.getStrokeColor()) {
+        this.setStrokeColor('black');
+      }
+
+      if (this.getStrokeWidth() == undefined) {
+        this.setStrokeWidth(1);
+      }
+    }
+    /**
+     * No handles for the polyline
+     * @private
+     * @return {Shape} The current shape
+     */
+
+
+    createHandles() {}
+    /**
+     *  Force the points of the polyline already computed in pixels
+     *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
+     *  @return {ShapePolyline} The current polyline instance
+     */
+
+
+    setPointsPx(points) {
+      this.setProp('pxPoints', points);
+      return this;
+    }
+    /**
+     * Recalculates the positions and applies them
+     * @private
+     * @return {Boolean} Whether the shape should be redrawn
+     */
+
+
+    applyPosition() {
+      let str = '';
+      let index = 0;
+
+      while (true) {
+        let pos = this.getPosition(index);
+
+        if (pos === undefined) {
+          break;
+        }
+
+        let posXY;
+
+        if (this.serie) {
+          posXY = pos.compute(this.graph, this.serie.getXAxis(), this.serie.getYAxis(), this.serie);
+        } else {
+          posXY = pos.compute(this.graph, this.getXAxis(), this.getYAxis());
+        }
+
+        if (isNaN(posXY.x) || isNaN(posXY.y)) {
+          return;
+        }
+
+        if (index == 0) {
+          str += " M ";
+        } else {
+          str += " L ";
+        }
+
+        str += posXY.x + " " + posXY.y;
+        index++;
+      }
+
+      str += "z";
+      this.setDom('d', str);
+      this.changed();
+      return true;
+    }
+
+  }
+
+  var _default = ShapePolyline;
+  _exports.default = _default;
+  module.exports = exports.default;
+});
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+  if (true) {
     !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(4), __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
@@ -23597,7 +23812,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23659,7 +23874,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -23799,7 +24014,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24040,7 +24255,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24179,7 +24394,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24368,7 +24583,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24539,7 +24754,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24722,7 +24937,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25331,12 +25546,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(50), __webpack_require__(0), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(7), __webpack_require__(51), __webpack_require__(0), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -25818,7 +26033,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -25961,7 +26176,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26222,7 +26437,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -26962,7 +27177,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -27171,7 +27386,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {

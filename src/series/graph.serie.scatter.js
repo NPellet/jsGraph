@@ -206,6 +206,7 @@ class SerieScatter extends Serie {
     ) {
       return;
     }
+
     let xpx, ypx, j, k, m;
     const isCategory = this.getXAxis().getType() == 'category';
     const keys = [];
@@ -222,7 +223,6 @@ class SerieScatter extends Serie {
     if ( this.hasErrors() ) {
       this.errorDrawInit();
     }
-
     if ( isCategory ) {
       let k = 0;
 

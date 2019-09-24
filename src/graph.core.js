@@ -85,14 +85,13 @@ class Graph extends EventEmitter {
   constructor( wrapper, options, axis = undefined ) {
     super();
 
-  
     if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) {
       // Wrapper is options
       options = wrapper;
       wrapper = undefined;
-    } 
-    
-    if( ! options.axes ) {
+    }
+
+    if ( !options.axes ) {
       options.axes = axis;
     }
 
@@ -101,8 +100,8 @@ class Graph extends EventEmitter {
       @name Graph#uniqueid
       @type String
     */
-   this._creation = util.guid();
-   this._drawn = false;
+    this._creation = util.guid();
+    this._drawn = false;
 
     /**
      * @object
@@ -189,7 +188,7 @@ class Graph extends EventEmitter {
   }
 
   setWrapper( wrapper ) {
-    
+
     if ( typeof wrapper == 'string' ) {
       wrapper = document.getElementById( wrapper );
     } else if ( typeof wrapper.length == 'number' ) {
@@ -1313,18 +1312,18 @@ class Graph extends EventEmitter {
     this.resetSeries();
   }
 
-    killLegend() {
-      if ( this.legend ) {
-        this.legend.kill();
-      }
-      this.legend = undefined;
+  killLegend() {
+    if ( this.legend ) {
+      this.legend.kill();
     }
+    this.legend = undefined;
+  }
 
-    killShapes() {
-      this.shapes.forEach( ( shape ) => {
-        shape.kill( false );
-      } );
-    }
+  killShapes() {
+    this.shapes.forEach( ( shape ) => {
+      shape.kill( false );
+    } );
+  }
 
   /**
    * Removes all series from the graph
@@ -2449,7 +2448,7 @@ class Graph extends EventEmitter {
   static fromJSON( json, wrapper ) {
     const options = json.options || {};
     const graph = new Graph( undefined, options );
-  
+
     graphFromJson( Graph, graph, json, wrapper );
     graph.setWrapper( wrapper );
     return graph;
@@ -2464,14 +2463,17 @@ class Graph extends EventEmitter {
     if ( options.keepState ) {
 
       this._applyToAxes( ( axis ) => {
-    
+
         if ( axis.options.name ) {
-         
-          state[ axis.options.name ] = { min: axis.getCurrentMin(), max: axis.getCurrentMax() };
+
+          state[ axis.options.name ] = {
+            min: axis.getCurrentMin(),
+            max: axis.getCurrentMax()
+          };
         }
       }, undefined, true, true );
     }
-    
+
     this._applyToAxes( ( axis ) => {
       this.killAxis( axis, true, true );
     }, undefined, true, true );
@@ -2486,7 +2488,7 @@ class Graph extends EventEmitter {
       this._applyToAxes( ( axis ) => {
 
         if ( axis.options.name && state[ axis.options.name ] ) {
-       
+
           axis.setCurrentMin( state[ axis.options.name ].min );
           axis.setCurrentMax( state[ axis.options.name ].max );
         }
@@ -2495,7 +2497,6 @@ class Graph extends EventEmitter {
 
     this.draw();
   }
-
 
   exportToSchema() {
     let schema = {};

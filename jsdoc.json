@@ -46,6 +46,7 @@
 			"./src/shapes/graph.shape.ellipse.js",
 			"./src/shapes/graph.shape.label.js",
 			"./src/shapes/graph.shape.polyline.js",
+			"./src/shapes/graph.shape.polygon.js",
 			"./src/shapes/graph.shape.nmrintegral.js",
 			"./src/shapes/graph.shape.peakintegration2d.js",
 			"./src/shapes/graph.shape.cross.js",
