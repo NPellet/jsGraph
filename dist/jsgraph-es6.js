@@ -10202,7 +10202,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.28"
+        'data-jsgraph-version': "v2.2.29"
       });
     } catch (e) {// ignore
     }
@@ -17406,6 +17406,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           width,
           height;
 
+      if (!pos || !pos2) {
+        return;
+      }
+
       if (pos.x < pos2.x) {
         x = pos.x;
         width = pos2.x - pos.x;
@@ -23083,6 +23087,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     applyPosition() {
       var pos = this.computePosition(0);
+
+      if (!pos) {
+        return;
+      }
+
       this.setDom('cx', pos.x || 0);
       this.setDom('cy', pos.y || 0);
       let posR = this.graph.newPosition({
@@ -23255,6 +23264,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     applyPosition() {
       let pxPoints;
       let pos = this.computePosition(0);
+
+      if (!pos) {
+        return;
+      }
 
       if (pxPoints = this.getProp('pxPoints')) {
         pxPoints = ` M ${pos.x} ${pos.y} ${pxPoints}`;

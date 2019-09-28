@@ -20937,6 +20937,11 @@ class ShapeEllipse extends Shape {
 
   applyPosition() {
     var pos = this.computePosition(0);
+
+    if (!pos) {
+      return;
+    }
+
     this.setDom('cx', pos.x || 0);
     this.setDom('cy', pos.y || 0);
     let posR = this.graph.newPosition({
@@ -21041,6 +21046,10 @@ class ShapePolyline extends Shape {
   applyPosition() {
     let pxPoints;
     let pos = this.computePosition(0);
+
+    if (!pos) {
+      return;
+    }
 
     if (pxPoints = this.getProp('pxPoints')) {
       pxPoints = ` M ${pos.x} ${pos.y} ${pxPoints}`;
@@ -21672,6 +21681,10 @@ class ShapeRectangle extends Shape {
         y,
         width,
         height;
+
+    if (!pos || !pos2) {
+      return;
+    }
 
     if (pos.x < pos2.x) {
       x = pos.x;

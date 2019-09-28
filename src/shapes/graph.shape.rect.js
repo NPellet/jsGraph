@@ -163,6 +163,10 @@ class ShapeRectangle extends GraphShape {
       width,
       height;
 
+    if ( !pos || !pos2 ) {
+      return;
+    }
+
     if ( pos.x < pos2.x ) {
       x = pos.x;
       width = pos2.x - pos.x;
