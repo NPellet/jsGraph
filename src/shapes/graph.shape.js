@@ -960,9 +960,15 @@ class Shape extends EventEmitter {
    * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
    */
   calculatePosition( index ) {
-    var position = this.getPosition( index );
+    //   var position = this.getPosition( index );
+    var position;
+    if ( !( index instanceof GraphPosition ) ) {
 
-    //position = index instanceof GraphPosition ? index : this.getPosition( index );
+      position = this.getPosition( index );
+
+    } else {
+      position = index;
+    }
 
     if ( !position ) {
       return;

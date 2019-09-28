@@ -1931,7 +1931,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "calculatePosition",
       value: function calculatePosition(index) {
-        var position = this.getPosition(index); //position = index instanceof GraphPosition ? index : this.getPosition( index );
+        //   var position = this.getPosition( index );
+        var position;
+
+        if (!(index instanceof _graphPosition.default)) {
+          position = this.getPosition(index);
+        } else {
+          position = index;
+        }
 
         if (!position) {
           return;
@@ -12789,7 +12796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.27"
+        'data-jsgraph-version': "v2.2.28"
       });
     } catch (e) {// ignore
     }
@@ -18780,7 +18787,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         tick.setAttribute('x1', val);
         tick.setAttribute('x2', val);
-        console.log(val, level);
         this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight()); //  this.groupTicks.appendChild( tick );
 
         if (level == 1) {

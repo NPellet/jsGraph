@@ -123,7 +123,6 @@ class AxisX extends Axis {
     //      tick.setAttribute( 'shape-rendering', 'crispEdges' );
     tick.setAttribute( 'x1', val );
     tick.setAttribute( 'x2', val );
-    console.log( val, level );
     this.nextGridLine( level == 1, val, val, 0, this.graph.getDrawingHeight() );
 
     //  this.groupTicks.appendChild( tick );

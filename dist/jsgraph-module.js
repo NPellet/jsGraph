@@ -11439,7 +11439,6 @@ class AxisX extends Axis {
 
     tick.setAttribute('x1', val);
     tick.setAttribute('x2', val);
-    console.log(val, level);
     this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight()); //  this.groupTicks.appendChild( tick );
 
     if (level == 1) {
@@ -19310,7 +19309,14 @@ class Shape extends EventEmitter {
 
 
   calculatePosition(index) {
-    var position = this.getPosition(index); //position = index instanceof GraphPosition ? index : this.getPosition( index );
+    //   var position = this.getPosition( index );
+    var position;
+
+    if (!(index instanceof Position)) {
+      position = this.getPosition(index);
+    } else {
+      position = index;
+    }
 
     if (!position) {
       return;
