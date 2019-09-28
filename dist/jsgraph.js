@@ -2215,7 +2215,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var position = this.calculatePosition(_graphPosition.default.check(this.getProp('labelPosition', labelIndex)));
 
-        if (isNaN(position.x) || isNaN(position.y) || position.y === false || position.x === false) {
+        if (!position || isNaN(position.x) || isNaN(position.y) || position.y === false || position.x === false) {
           /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
           console.log( this, this._labels );
           console.trace();*/
@@ -12789,7 +12789,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.26"
+        'data-jsgraph-version': "v2.2.27"
       });
     } catch (e) {// ignore
     }

@@ -1265,6 +1265,7 @@ class Shape extends EventEmitter {
     );
 
     if (
+      !position ||
       isNaN( position.x ) ||
       isNaN( position.y ) ||
       position.y === false ||

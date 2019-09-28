@@ -19577,7 +19577,7 @@ class Shape extends EventEmitter {
 
     var position = this.calculatePosition(Position.check(this.getProp('labelPosition', labelIndex)));
 
-    if (isNaN(position.x) || isNaN(position.y) || position.y === false || position.x === false) {
+    if (!position || isNaN(position.x) || isNaN(position.y) || position.y === false || position.x === false) {
       /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
       console.log( this, this._labels );
       console.trace();*/
