@@ -7699,6 +7699,8 @@ function _handleMouseMove(graph, x, y, e) {
     const results = {};
 
     for (let i = 0; i < graph.series.length; i++) {
+      let serie = graph.series[i];
+
       if (!serie.options.tracking) {
         console.warn("Tracking not enabled for this serie");
         continue;
