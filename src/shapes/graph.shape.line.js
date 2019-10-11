@@ -22,7 +22,7 @@ class ShapeLine extends GraphShape {
       this.setStrokeColor( 'black' );
     }
 
-    if ( !this.getStrokeWidth() ) {
+    if ( this.getStrokeWidth() === undefined ) {
       this.setStrokeWidth( 1 );
     }
   }

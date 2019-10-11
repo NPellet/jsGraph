@@ -24,7 +24,7 @@ class ShapePolyline extends Shape {
       this.setStrokeColor( 'black' );
     }
 
-    if ( this.getStrokeWidth() == undefined ) {
+    if ( this.getStrokeWidth() === undefined ) {
       this.setStrokeWidth( 1 );
     }
   }

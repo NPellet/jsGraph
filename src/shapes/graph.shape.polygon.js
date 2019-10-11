@@ -24,7 +24,7 @@ class ShapePolyline extends Shape {
       this.setStrokeColor( 'black' );
     }
 
-    if ( this.getStrokeWidth() == undefined ) {
+    if ( this.getStrokeWidth() === undefined ) {
       this.setStrokeWidth( 1 );
     }
   }
@@ -74,16 +74,16 @@ class ShapePolyline extends Shape {
       }
 
       if ( index == 0 ) {
-        str += " M ";
+        str += ' M ';
       } else {
-        str += " L ";
+        str += ' L ';
       }
 
-      str += posXY.x + " " + posXY.y;
+      str += `${posXY.x  } ${  posXY.y}`;
       index++;
     }
 
-    str += "z";
+    str += 'z';
 
     this.setDom( 'd', str );
 
