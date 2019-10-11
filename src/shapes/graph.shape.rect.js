@@ -75,7 +75,7 @@ class ShapeRectangle extends GraphShape {
 
         var j = 0;
         for ( var i in handles.sides ) {
-          if ( handles.sides[i] ) {
+          if ( handles.sides[ i ] ) {
             j++;
           }
         }
@@ -96,9 +96,9 @@ class ShapeRectangle extends GraphShape {
         var j = 1;
 
         for ( var i in handles.sides ) {
-          if ( handles.sides[i] ) {
-            this.handles[i] = this[`handle${j}`];
-            this.sides[j] = i;
+          if ( handles.sides[ i ] ) {
+            this.handles[ i ] = this[ `handle${j}` ];
+            this.sides[ j ] = i;
             j++;
           }
         }
@@ -115,11 +115,11 @@ class ShapeRectangle extends GraphShape {
         } );
 
         if ( this.handles ) {
-          this.handles[2].setAttribute( 'cursor', 'nesw-resize' );
-          this.handles[4].setAttribute( 'cursor', 'nesw-resize' );
+          this.handles[ 2 ].setAttribute( 'cursor', 'nesw-resize' );
+          this.handles[ 4 ].setAttribute( 'cursor', 'nesw-resize' );
 
-          this.handles[1].setAttribute( 'cursor', 'nwse-resize' );
-          this.handles[3].setAttribute( 'cursor', 'nwse-resize' );
+          this.handles[ 1 ].setAttribute( 'cursor', 'nwse-resize' );
+          this.handles[ 3 ].setAttribute( 'cursor', 'nwse-resize' );
         }
 
         break;
@@ -243,7 +243,7 @@ class ShapeRectangle extends GraphShape {
         case 'sides':
           // Do nothing for now
 
-          switch ( this.sides[this.handleSelected] ) {
+          switch ( this.sides[ this.handleSelected ] ) {
             case 'left':
               pos.deltaPosition( 'x', deltaX, this.getXAxis() );
               break;
@@ -311,22 +311,22 @@ class ShapeRectangle extends GraphShape {
 
     switch ( handles.type ) {
       case 'seamlessX':
-        if ( this.handles[1] ) {
-          this.handles[1].setAttribute(
+        if ( this.handles[ 1 ] ) {
+          this.handles[ 1 ].setAttribute(
             'transform',
             `translate(-10) translate(${pos.x})`
           );
-          this.handles[1].setAttribute( 'height', Math.abs( pos2.y - pos.y ) );
-          this.handles[1].setAttribute( 'y', Math.min( pos2.y, pos.y ) );
+          this.handles[ 1 ].setAttribute( 'height', Math.abs( pos2.y - pos.y ) );
+          this.handles[ 1 ].setAttribute( 'y', Math.min( pos2.y, pos.y ) );
         }
 
-        if ( this.handles[2] ) {
-          this.handles[2].setAttribute(
+        if ( this.handles[ 2 ] ) {
+          this.handles[ 2 ].setAttribute(
             'transform',
             `translate(-10)  translate(${pos2.x})`
           );
-          this.handles[2].setAttribute( 'height', Math.abs( pos2.y - pos.y ) );
-          this.handles[2].setAttribute( 'y', Math.min( pos2.y, pos.y ) );
+          this.handles[ 2 ].setAttribute( 'height', Math.abs( pos2.y - pos.y ) );
+          this.handles[ 2 ].setAttribute( 'y', Math.min( pos2.y, pos.y ) );
         }
 
         break;
@@ -366,17 +366,17 @@ class ShapeRectangle extends GraphShape {
 
       case 'corners':
       default:
-        this.handles[1].setAttribute( 'x', pos.x );
-        this.handles[1].setAttribute( 'y', pos.y );
+        this.handles[ 1 ].setAttribute( 'x', pos.x );
+        this.handles[ 1 ].setAttribute( 'y', pos.y );
 
-        this.handles[2].setAttribute( 'x', pos2.x );
-        this.handles[2].setAttribute( 'y', pos.y );
+        this.handles[ 2 ].setAttribute( 'x', pos2.x );
+        this.handles[ 2 ].setAttribute( 'y', pos.y );
 
-        this.handles[3].setAttribute( 'x', pos2.x );
-        this.handles[3].setAttribute( 'y', pos2.y );
+        this.handles[ 3 ].setAttribute( 'x', pos2.x );
+        this.handles[ 3 ].setAttribute( 'y', pos2.y );
 
-        this.handles[4].setAttribute( 'x', pos.x );
-        this.handles[4].setAttribute( 'y', pos2.y );
+        this.handles[ 4 ].setAttribute( 'x', pos.x );
+        this.handles[ 4 ].setAttribute( 'y', pos2.y );
 
         break;
     }

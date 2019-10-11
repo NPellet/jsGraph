@@ -12796,7 +12796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.31"
+        'data-jsgraph-version': "v2.2.32"
       });
     } catch (e) {// ignore
     }
@@ -19624,7 +19624,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.setStrokeColor('black');
         }
 
-        if (!this.getStrokeWidth()) {
+        if (this.getStrokeWidth() === undefined) {
           this.setStrokeWidth(1);
         }
       }
@@ -22591,7 +22591,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.setStrokeColor('black');
         }
 
-        if (!this.getStrokeWidth()) {
+        if (this.getStrokeWidth() === undefined) {
           this.setStrokeWidth(1);
         }
 
@@ -28055,7 +28055,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   var makeAxes = function makeAxes(Graph, graph, jsonAxes) {
     var allAxes = [];
-    console.log(jsonAxes);
 
     if (jsonAxes.x) {
       processAxes(Graph, graph, 'x', jsonAxes.x, allAxes);
@@ -33766,7 +33765,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.setStrokeColor('black');
         }
 
-        if (this.getStrokeWidth() == undefined) {
+        if (this.getStrokeWidth() === undefined) {
           this.setStrokeWidth(1);
         }
       }
@@ -33918,7 +33917,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.setStrokeColor('black');
         }
 
-        if (this.getStrokeWidth() == undefined) {
+        if (this.getStrokeWidth() === undefined) {
           this.setStrokeWidth(1);
         }
       }
@@ -33975,16 +33974,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (index == 0) {
-            str += " M ";
+            str += ' M ';
           } else {
-            str += " L ";
+            str += ' L ';
           }
 
-          str += posXY.x + " " + posXY.y;
+          str += "".concat(posXY.x, " ").concat(posXY.y);
           index++;
         }
 
-        str += "z";
+        str += 'z';
         this.setDom('d', str);
         this.changed();
         return true;

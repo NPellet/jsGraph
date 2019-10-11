@@ -1235,7 +1235,6 @@ const processAxes = (Graph, graph, type, axisOptions, allAxes) => {
 
 const makeAxes = (Graph, graph, jsonAxes) => {
   const allAxes = [];
-  console.log(jsonAxes);
 
   if (jsonAxes.x) {
     processAxes(Graph, graph, 'x', jsonAxes.x, allAxes);
@@ -20719,7 +20718,7 @@ class ShapeLine extends Shape {
       this.setStrokeColor('black');
     }
 
-    if (!this.getStrokeWidth()) {
+    if (this.getStrokeWidth() === undefined) {
       this.setStrokeWidth(1);
     }
   }
@@ -21017,7 +21016,7 @@ class ShapePolyline extends Shape {
       this.setStrokeColor('black');
     }
 
-    if (this.getStrokeWidth() == undefined) {
+    if (this.getStrokeWidth() === undefined) {
       this.setStrokeWidth(1);
     }
   }
@@ -21104,7 +21103,7 @@ class ShapePolyline$2 extends Shape {
       this.setStrokeColor('black');
     }
 
-    if (this.getStrokeWidth() == undefined) {
+    if (this.getStrokeWidth() === undefined) {
       this.setStrokeWidth(1);
     }
   }
@@ -21158,16 +21157,16 @@ class ShapePolyline$2 extends Shape {
       }
 
       if (index == 0) {
-        str += " M ";
+        str += ' M ';
       } else {
-        str += " L ";
+        str += ' L ';
       }
 
-      str += posXY.x + " " + posXY.y;
+      str += `${posXY.x} ${posXY.y}`;
       index++;
     }
 
-    str += "z";
+    str += 'z';
     this.setDom('d', str);
     this.changed();
     return true;
@@ -21557,7 +21556,7 @@ class ShapeRectangle extends Shape {
       this.setStrokeColor('black');
     }
 
-    if (!this.getStrokeWidth()) {
+    if (this.getStrokeWidth() === undefined) {
       this.setStrokeWidth(1);
     }
 
