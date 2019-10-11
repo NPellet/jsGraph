@@ -10202,7 +10202,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.30"
+        'data-jsgraph-version': "v2.2.31"
       });
     } catch (e) {// ignore
     }
@@ -18912,7 +18912,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var g,
             line,
             text,
-            xPadding = 0;
+            xPadding = 0,
+            j = i;
 
         if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
           var fullWidth = this.graph.getDrawingWidth();
@@ -18942,11 +18943,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             e.stopPropagation();
             var id;
 
-            if (series[i].isShown()) {
-              series[i].hide(self.options.hideShapesOnHideSerie);
+            if (series[j].isShown()) {
+              series[j].hide(self.options.hideShapesOnHideSerie);
               id = self.eyeCrossedId;
             } else {
-              series[i].show(self.options.hideShapesOnHideSerie);
+              series[j].show(self.options.hideShapesOnHideSerie);
               id = self.eyeId;
             }
 

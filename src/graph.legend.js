@@ -402,7 +402,8 @@ class Legend {
       var g,
         line,
         text,
-        xPadding = 0;
+        xPadding = 0,
+        j = i;
 
       if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
         var fullWidth = this.graph.getDrawingWidth();
@@ -441,11 +442,11 @@ class Legend {
           e.stopPropagation();
 
           var id;
-          if ( series[ i ].isShown() ) {
-            series[ i ].hide( self.options.hideShapesOnHideSerie );
+          if ( series[ j ].isShown() ) {
+            series[ j ].hide( self.options.hideShapesOnHideSerie );
             id = self.eyeCrossedId;
           } else {
-            series[ i ].show( self.options.hideShapesOnHideSerie );
+            series[ j ].show( self.options.hideShapesOnHideSerie );
             id = self.eyeId;
           }
 
