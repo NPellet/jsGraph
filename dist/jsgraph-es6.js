@@ -10202,7 +10202,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.32"
+        'data-jsgraph-version': "v2.2.34"
       });
     } catch (e) {// ignore
     }
@@ -23253,7 +23253,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setPointsPx(points) {
-      this.setProp('pxPoints', points);
+      //  this.setProp( 'pxPoints', points );
       return this;
     }
     /**
@@ -23262,39 +23262,80 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @return {Boolean} Whether the shape should be redrawn
      */
 
+    /**
+      * Recalculates the positions and applies them
+      * @private
+      * @return {Boolean} Whether the shape should be redrawn
+      */
+
 
     applyPosition() {
-      let pxPoints;
-      let pos = this.computePosition(0);
+      let str = '';
+      let index = 0;
 
-      if (!pos) {
-        return;
-      }
+      while (true) {
+        let pos = this.getPosition(index);
 
-      if (pxPoints = this.getProp('pxPoints')) {
-        pxPoints = ` M ${pos.x} ${pos.y} ${pxPoints}`;
-        this.setDom('d', pxPoints);
-      } else if (this.points) {
-        var xAxis, yAxis;
-
-        if (this.serie) {
-          xAxis = this.serie.getXAxis();
-          yAxis = this.serie.getYAxis();
-        } else if (this.xAxis && this.yAxis) {
-          xAxis = this.xAxis;
-          yAxis = this.yAxis;
+        if (pos === undefined) {
+          break;
         }
 
-        this.setDom('d', `M ${this.points.map(function (p) {
-          return `${xAxis.getPx(p[0])}, ${yAxis.getPx(p[1])}`;
-        }).join(' L ')}`);
+        let posXY;
+
+        if (this.serie) {
+          posXY = pos.compute(this.graph, this.serie.getXAxis(), this.serie.getYAxis(), this.serie);
+        } else {
+          posXY = pos.compute(this.graph, this.getXAxis(), this.getYAxis());
+        }
+
+        if (isNaN(posXY.x) || isNaN(posXY.y)) {
+          return;
+        }
+
+        if (index == 0) {
+          str += ' M ';
+        } else {
+          str += ' L ';
+        }
+
+        str += `${posXY.x} ${posXY.y}`;
+        index++;
       }
 
+      this.setDom('d', str);
       this.changed();
       return true;
     }
 
   }
+  /*
+  applyPosition() {
+     let pxPoints;
+   let pos = this.computePosition( 0 );
+   if ( !pos ) {
+     return;
+   }
+   if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
+       pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
+     this.setDom( 'd', pxPoints );
+     } else if ( this.points ) {
+       var xAxis, yAxis;
+       if ( this.serie ) {
+         xAxis = this.serie.getXAxis();
+       yAxis = this.serie.getYAxis();
+       } else if ( this.xAxis && this.yAxis ) {
+         xAxis = this.xAxis;
+       yAxis = this.yAxis;
+     }
+       this.setDom( 'd', `M ${ this.points.map( function( p ) {
+       return `${xAxis.getPx( p[ 0 ] ) }, ${ yAxis.getPx( p[ 1 ] )}`;
+     } ).join( ' L ' )}` );
+   }
+     this.changed();
+   return true;
+  }*/
+  //}
+
 
   var _default = ShapePolyline;
   _exports.default = _default;

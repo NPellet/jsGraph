@@ -79,7 +79,7 @@ class ShapePolyline extends Shape {
         str += ' L ';
       }
 
-      str += `${posXY.x  } ${  posXY.y}`;
+      str += `${posXY.x} ${posXY.y}`;
       index++;
     }
 
