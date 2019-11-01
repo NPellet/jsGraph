@@ -1440,7 +1440,6 @@ class Graph extends EventEmitter {
         return false;
       }
     }
-
     // Backward compatibility
     if ( typeof shapeType == 'object' ) {
       mute = shapeData;
@@ -1471,7 +1470,6 @@ class Graph extends EventEmitter {
     shape.type = shapeType;
     shape.graph = this;
     shape._data = shapeData;
-
     if ( shapeData.properties !== undefined ) {
       shape.setProperties( shapeData.properties );
     }
@@ -1487,13 +1485,11 @@ class Graph extends EventEmitter {
         shape.setProp( i, shapeData.props[ i ] );
       }
     }
-
     if ( shapeData.position ) {
       for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
         shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
       }
     }
-
     /* Setting shape properties */
     if ( shapeData.fillColor !== undefined ) {
       shape.setFillColor( shapeData.fillColor );

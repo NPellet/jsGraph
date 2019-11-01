@@ -27,19 +27,19 @@ const makeGraph = ( Graph, graph, json ) => {
     if ( json.legend.position ) {
       switch ( json.legend.position ) {
         case 'bottom':
-          legend.setAutoposition( 'bottom' );
+          legend.setAutoPosition( 'bottom' );
           break;
 
         case 'top':
-          legend.setAutoposition( 'top' );
+          legend.setAutoPosition( 'top' );
           break;
 
         case 'left':
-          legend.setAutoposition( 'left' );
+          legend.setAutoPosition( 'left' );
           break;
 
         case 'right':
-          legend.setAutoposition( 'right' );
+          legend.setAutoPosition( 'right' );
           break;
 
         default:
@@ -167,6 +167,7 @@ const makeGraph = ( Graph, graph, json ) => {
 
       if ( jsonSerie.annotations ) {
         jsonSerie.annotations.forEach( ( annotation ) => {
+
           makeAnnotation( graph, annotation, serie, axes );
         } );
       }
@@ -175,6 +176,7 @@ const makeGraph = ( Graph, graph, json ) => {
 
   if ( json.annotations ) {
     json.annotations.forEach( ( annotation ) => {
+
       makeAnnotation( graph, annotation, undefined, axes );
     } );
   }

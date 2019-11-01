@@ -1049,7 +1049,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     getProp(prop, index) {
-      if (!Array.isArray(this.properties[prop] || [])) {
+      if (!Array.isArray(this.properties[prop])) {
         return this.properties[prop];
       }
 
@@ -10202,7 +10202,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.34"
+        'data-jsgraph-version': "v2.2.35"
       });
     } catch (e) {// ignore
     }
@@ -17855,19 +17855,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (json.legend.position) {
         switch (json.legend.position) {
           case 'bottom':
-            legend.setAutoposition('bottom');
+            legend.setAutoPosition('bottom');
             break;
 
           case 'top':
-            legend.setAutoposition('top');
+            legend.setAutoPosition('top');
             break;
 
           case 'left':
-            legend.setAutoposition('left');
+            legend.setAutoPosition('left');
             break;
 
           case 'right':
-            legend.setAutoposition('right');
+            legend.setAutoPosition('right');
             break;
 
           default:
@@ -23218,6 +23218,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   class ShapePolyline extends _graphShape.default {
     constructor(graph, options) {
       super(graph, options);
+      this.setProp("fillColor", "none");
     }
     /**
      * Creates the DOM
@@ -23263,10 +23264,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
     /**
-      * Recalculates the positions and applies them
-      * @private
-      * @return {Boolean} Whether the shape should be redrawn
-      */
+     * Recalculates the positions and applies them
+     * @private
+     * @return {Boolean} Whether the shape should be redrawn
+     */
 
 
     applyPosition() {
@@ -23309,31 +23310,41 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   }
   /*
-  applyPosition() {
-     let pxPoints;
-   let pos = this.computePosition( 0 );
-   if ( !pos ) {
-     return;
-   }
-   if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
-       pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
-     this.setDom( 'd', pxPoints );
-     } else if ( this.points ) {
-       var xAxis, yAxis;
-       if ( this.serie ) {
-         xAxis = this.serie.getXAxis();
-       yAxis = this.serie.getYAxis();
-       } else if ( this.xAxis && this.yAxis ) {
-         xAxis = this.xAxis;
-       yAxis = this.yAxis;
-     }
-       this.setDom( 'd', `M ${ this.points.map( function( p ) {
-       return `${xAxis.getPx( p[ 0 ] ) }, ${ yAxis.getPx( p[ 1 ] )}`;
-     } ).join( ' L ' )}` );
-   }
-     this.changed();
-   return true;
-  }*/
+    applyPosition() {
+  
+      let pxPoints;
+      let pos = this.computePosition( 0 );
+      if ( !pos ) {
+        return;
+      }
+      if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
+  
+        pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
+        this.setDom( 'd', pxPoints );
+  
+      } else if ( this.points ) {
+  
+        var xAxis, yAxis;
+  
+        if ( this.serie ) {
+  
+          xAxis = this.serie.getXAxis();
+          yAxis = this.serie.getYAxis();
+  
+        } else if ( this.xAxis && this.yAxis ) {
+  
+          xAxis = this.xAxis;
+          yAxis = this.yAxis;
+        }
+  
+        this.setDom( 'd', `M ${ this.points.map( function( p ) {
+          return `${xAxis.getPx( p[ 0 ] ) }, ${ yAxis.getPx( p[ 1 ] )}`;
+        } ).join( ' L ' )}` );
+      }
+  
+      this.changed();
+      return true;
+    }*/
   //}
 
 

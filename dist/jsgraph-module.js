@@ -1332,19 +1332,19 @@ const makeGraph = (Graph, graph, json) => {
     if (json.legend.position) {
       switch (json.legend.position) {
         case 'bottom':
-          legend.setAutoposition('bottom');
+          legend.setAutoPosition('bottom');
           break;
 
         case 'top':
-          legend.setAutoposition('top');
+          legend.setAutoPosition('top');
           break;
 
         case 'left':
-          legend.setAutoposition('left');
+          legend.setAutoPosition('left');
           break;
 
         case 'right':
-          legend.setAutoposition('right');
+          legend.setAutoPosition('right');
           break;
 
         default:
@@ -18827,7 +18827,7 @@ class Shape extends EventEmitter {
 
 
   getProp(prop, index) {
-    if (!Array.isArray(this.properties[prop] || [])) {
+    if (!Array.isArray(this.properties[prop])) {
       return this.properties[prop];
     }
 
@@ -21001,6 +21001,7 @@ class ShapeLabel extends Shape {
 class ShapePolyline extends Shape {
   constructor(graph, options) {
     super(graph, options);
+    this.setProp("fillColor", "none");
   }
   /**
    * Creates the DOM

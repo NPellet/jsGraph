@@ -506,7 +506,9 @@ class Shape extends EventEmitter {
    * @param [ index = 0 ] - The index of the property array
    */
   getProp( prop, index ) {
-    if ( !Array.isArray( this.properties[ prop ] || [] ) ) {
+
+    if ( !Array.isArray( this.properties[ prop ] ) ) {
+
       return this.properties[ prop ];
     }
     return ( this.properties[ prop ] || [] )[ index || 0 ];

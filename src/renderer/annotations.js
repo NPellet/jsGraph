@@ -20,6 +20,7 @@ const makeAnnotation = ( graph, json, serie, axes ) => {
         }
       } );
     }
+
     const shape = graph.newShape( json.type, {}, false, json.properties );
 
     if ( json.serie ) {

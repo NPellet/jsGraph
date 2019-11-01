@@ -1396,7 +1396,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }, {
       key: "getProp",
       value: function getProp(prop, index) {
-        if (!Array.isArray(this.properties[prop] || [])) {
+        if (!Array.isArray(this.properties[prop])) {
           return this.properties[prop];
         }
 
@@ -12796,7 +12796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.34"
+        'data-jsgraph-version': "v2.2.35"
       });
     } catch (e) {// ignore
     }
@@ -27716,19 +27716,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (json.legend.position) {
         switch (json.legend.position) {
           case 'bottom':
-            legend.setAutoposition('bottom');
+            legend.setAutoPosition('bottom');
             break;
 
           case 'top':
-            legend.setAutoposition('top');
+            legend.setAutoPosition('top');
             break;
 
           case 'left':
-            legend.setAutoposition('left');
+            legend.setAutoPosition('left');
             break;
 
           case 'right':
-            legend.setAutoposition('right');
+            legend.setAutoPosition('right');
             break;
 
           default:
@@ -33745,9 +33745,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _inherits(ShapePolyline, _Shape);
 
     function ShapePolyline(graph, options) {
+      var _this;
+
       _classCallCheck(this, ShapePolyline);
 
-      return _possibleConstructorReturn(this, _getPrototypeOf(ShapePolyline).call(this, graph, options));
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(ShapePolyline).call(this, graph, options));
+
+      _this.setProp("fillColor", "none");
+
+      return _this;
     }
     /**
      * Creates the DOM
@@ -33797,10 +33803,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        */
 
       /**
-        * Recalculates the positions and applies them
-        * @private
-        * @return {Boolean} Whether the shape should be redrawn
-        */
+       * Recalculates the positions and applies them
+       * @private
+       * @return {Boolean} Whether the shape should be redrawn
+       */
 
     }, {
       key: "applyPosition",
@@ -33846,31 +33852,41 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return ShapePolyline;
   }(_graphShape.default);
   /*
-  applyPosition() {
-     let pxPoints;
-   let pos = this.computePosition( 0 );
-   if ( !pos ) {
-     return;
-   }
-   if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
-       pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
-     this.setDom( 'd', pxPoints );
-     } else if ( this.points ) {
-       var xAxis, yAxis;
-       if ( this.serie ) {
-         xAxis = this.serie.getXAxis();
-       yAxis = this.serie.getYAxis();
-       } else if ( this.xAxis && this.yAxis ) {
-         xAxis = this.xAxis;
-       yAxis = this.yAxis;
-     }
-       this.setDom( 'd', `M ${ this.points.map( function( p ) {
-       return `${xAxis.getPx( p[ 0 ] ) }, ${ yAxis.getPx( p[ 1 ] )}`;
-     } ).join( ' L ' )}` );
-   }
-     this.changed();
-   return true;
-  }*/
+    applyPosition() {
+  
+      let pxPoints;
+      let pos = this.computePosition( 0 );
+      if ( !pos ) {
+        return;
+      }
+      if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
+  
+        pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
+        this.setDom( 'd', pxPoints );
+  
+      } else if ( this.points ) {
+  
+        var xAxis, yAxis;
+  
+        if ( this.serie ) {
+  
+          xAxis = this.serie.getXAxis();
+          yAxis = this.serie.getYAxis();
+  
+        } else if ( this.xAxis && this.yAxis ) {
+  
+          xAxis = this.xAxis;
+          yAxis = this.yAxis;
+        }
+  
+        this.setDom( 'd', `M ${ this.points.map( function( p ) {
+          return `${xAxis.getPx( p[ 0 ] ) }, ${ yAxis.getPx( p[ 1 ] )}`;
+        } ).join( ' L ' )}` );
+      }
+  
+      this.changed();
+      return true;
+    }*/
   //}
 
 
