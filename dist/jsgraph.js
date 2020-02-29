@@ -12796,7 +12796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.35"
+        'data-jsgraph-version': "v2.2.36"
       });
     } catch (e) {// ignore
     }
@@ -28675,6 +28675,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             this.alignToY = 'top';
             this.alignToX = false;
             break;
+
+          default:
+            console.error('Position is not supported');
+            return;
         }
 
         if (this.autoPosition) {
@@ -28792,7 +28796,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           xPadding = 0;
-          j = i;
+          var j = i;
 
           if (_this.autoPosition == 'bottom' || _this.autoPosition == 'top') {
             fullWidth = _this.graph.getDrawingWidth();
@@ -28807,10 +28811,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           marker = series[i].getMarkerForLegend();
           text = series[i].getTextForLegend();
           dx = 35;
+          var eyeUse = document.createElementNS(self.graph.ns, 'use');
 
           if (_this.isHideable()) {
             dx += 20;
-            eyeUse = document.createElementNS(self.graph.ns, 'use');
             eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', "#".concat(series[i].isShown() ? _this.eyeId : _this.eyeCrossedId));
             eyeUse.setAttribute('width', 15);
             eyeUse.setAttribute('height', 15);
@@ -28879,14 +28883,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         };
 
         for (var i = 0, l = series.length; i < l; i++) {
-          var g, line, text, xPadding, j;
+          var g, line, text, xPadding;
           var fullWidth;
           var rect;
           var line;
           var marker;
           var text;
           var dx;
-          var eyeUse;
           var bbox;
 
           var _ret = _loop(i, l);

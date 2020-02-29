@@ -10202,7 +10202,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.2.35"
+        'data-jsgraph-version': "v2.2.36"
       });
     } catch (e) {// ignore
     }
@@ -18796,6 +18796,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.alignToY = 'top';
           this.alignToX = false;
           break;
+
+        default:
+          console.error('Position is not supported');
+          return;
       }
 
       if (this.autoPosition) {
@@ -18911,8 +18915,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var g,
             line,
             text,
-            xPadding = 0,
-            j = i;
+            xPadding = 0;
+        const j = i;
 
         if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
           var fullWidth = this.graph.getDrawingWidth();
@@ -18929,10 +18933,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var marker = series[i].getMarkerForLegend();
         var text = series[i].getTextForLegend();
         var dx = 35;
+        const eyeUse = document.createElementNS(self.graph.ns, 'use');
 
         if (this.isHideable()) {
           dx += 20;
-          var eyeUse = document.createElementNS(self.graph.ns, 'use');
           eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `#${series[i].isShown() ? this.eyeId : this.eyeCrossedId}`);
           eyeUse.setAttribute('width', 15);
           eyeUse.setAttribute('height', 15);

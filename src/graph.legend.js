@@ -271,10 +271,10 @@ class Legend {
         this.alignToX = false;
         break;
 
-        default:
-          console.error('Position is not supported');
-          return;
- 
+      default:
+        console.error( 'Position is not supported' );
+        return;
+
     }
     if ( this.autoPosition ) {
       let redrawGraph;
@@ -409,7 +409,7 @@ class Legend {
         text,
         xPadding = 0;
 
-     const j = i;
+      const j = i;
 
       if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
         var fullWidth = this.graph.getDrawingWidth();
@@ -433,7 +433,6 @@ class Legend {
       if ( this.isHideable() ) {
         dx += 20;
 
-       
         eyeUse.setAttributeNS(
           'http://www.w3.org/1999/xlink',
           'xlink:href',
