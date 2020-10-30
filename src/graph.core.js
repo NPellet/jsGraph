@@ -3640,7 +3640,7 @@ function _handleMouseMove( graph, x, y, e ) {
     for ( let i = 0; i < graph.series.length; i++ ) {
       let serie = graph.series[ i ];
       if ( !serie.options.tracking ) {
-        console.warn( "Tracking not enabled for this serie" );
+        console.warn( 'Tracking not enabled for this serie' );
         continue;
       }
       results[ graph.series[ i ].getName() ] = graph.series[ i ].getClosestPointToXY(
@@ -3653,11 +3653,11 @@ function _handleMouseMove( graph, x, y, e ) {
       );
     }
 
-    if ( typeof graph.options.mouseMoveData == "function" ) {
+    if ( typeof graph.options.mouseMoveData == 'function' ) {
       graph.options.mouseMoveData.call( graph, e, results );
     }
 
-    graph.emit( "mouseMoveData", e, results );
+    graph.emit( 'mouseMoveData', e, results );
   }
 
   checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseMove' );

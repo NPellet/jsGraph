@@ -10,7 +10,7 @@ class ShapePolyline extends Shape {
   constructor( graph, options ) {
     super( graph, options );
 
-    this.setProp( "fillColor", "none" );
+    this.setProp( 'fillColor', 'none' );
   }
 
   /**

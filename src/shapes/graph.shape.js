@@ -704,12 +704,12 @@ class Shape extends EventEmitter {
    * @param {Number} angle - The arguments following the transform
    * @param {Number} cx - The arguments following the transform
    * @param {Number} cy - The arguments following the transform
-   * @param {String} angleType - Which type of angle should be applied. ```degree``` or ```angleData``` 
+   * @param {String} angleType - Which type of angle should be applied. ```degree``` or ```angleData```
    * @return {Shape} The current shape
    */
   addTransformRotate( angle, cx, cy, angleType = 'degrees' ) {
     this.addProp( 'transforms', {
-      type: "rotate",
+      type: 'rotate',
       arguments: {
         center: {
           x: cx,

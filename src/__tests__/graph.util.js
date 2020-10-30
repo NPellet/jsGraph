@@ -3,7 +3,7 @@ import {
 } from '../graph.util';
 
 describe( 'util', () => {
-    test( 'guid', () => {
+    it( 'guid', () => {
         const result = guid();
         expect( result )
             .toMatch( /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ );

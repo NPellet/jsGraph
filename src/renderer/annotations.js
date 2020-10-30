@@ -10,7 +10,7 @@ const makeAnnotation = ( graph, json, serie, axes ) => {
       json.properties.label.forEach( ( label, index ) => {
 
         for ( let propertyName in label ) {
-          let newPropertyName = "label" + propertyName.charAt( 0 ).toUpperCase() + propertyName.slice( 1 );
+          let newPropertyName = `label${ propertyName.charAt( 0 ).toUpperCase() }${propertyName.slice( 1 )}`;
 
           if ( !json.properties[ newPropertyName ] ) {
             json.properties[ newPropertyName ] = [];

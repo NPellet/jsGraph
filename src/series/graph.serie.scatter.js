@@ -155,7 +155,7 @@ class SerieScatter extends Serie {
     return container;
   }
 
-  setStyle( style, styleName = "unselected" ) {
+  setStyle( style, styleName = 'unselected' ) {
     return this.setMarkerStyle( style, undefined, styleName );
   }
 

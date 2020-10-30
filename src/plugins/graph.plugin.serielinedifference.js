@@ -1,7 +1,8 @@
-import Plugin from './graph.plugin.js';
 import {
   Waveform
 } from '../util/waveform.js';
+
+import Plugin from './graph.plugin.js';
 
 /**
  * @class PluginSerieLineDifference
@@ -168,16 +169,16 @@ class PluginSerieLineDifference extends Plugin {
       currentChunk.wave2.push( [ wFinal2.getX( i ), wFinal2.getY( i ) ] );
     }
 
-    this.series.forEach( serie => serie.kill() );
+    this.series.forEach( ( serie ) => serie.kill() );
 
     this.series = chunks.forEach( ( chunk, index ) => {
 
-      const serie = this.graph.newSerie( '__graph_serielinedifference_' + this.serie1.getName() + '_' + this.serie2.getName() + '_' + index );
+      const serie = this.graph.newSerie( `__graph_serielinedifference_${ this.serie1.getName() }_${ this.serie2.getName() }_${ index}` );
       const wave = new Waveform();
 
       wave.setData(
-        chunk.wave1.map( el => el[ 1 ] ).concat( chunk.wave2.reverse().map( el => el[ 1 ] ) ),
-        chunk.wave1.map( el => el[ 0 ] ).concat( chunk.wave2.map( el => el[ 0 ] ) )
+        chunk.wave1.map( ( el ) => el[ 1 ] ).concat( chunk.wave2.reverse().map( ( el ) => el[ 1 ] ) ),
+        chunk.wave1.map( ( el ) => el[ 0 ] ).concat( chunk.wave2.map( ( el ) => el[ 0 ] ) )
       );
 
       if ( chunk.wave1[ 0 ] ) {
