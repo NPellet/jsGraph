@@ -70,6 +70,10 @@ const makeGraph = ( Graph, graph, json ) => {
           type = Graph.SERIE_BOX;
           break;
 
+        case 'color':
+          type = Graph.SERIE_LINE_COLORED;
+          break;
+
         case 'line':
         default:
           type = Graph.SERIE_LINE;
@@ -140,8 +144,17 @@ const makeGraph = ( Graph, graph, json ) => {
       const serie = graph.newSerie(
         jsonSerie.name || `_serie_${index}`,
         jsonSerie.options || {},
-        type
+        type,
       );
+
+      switch ( jsonSerie.type ) {
+        case 'color':
+          if ( jsonSerie.data.color ) {
+            serie.setColors( jsonSerie.data.color );
+          }
+          break;
+        default:
+      }
 
       serie.autoAxis();
 
@@ -149,12 +162,12 @@ const makeGraph = ( Graph, graph, json ) => {
         serie.excludeFromLegend( true );
       }
 
-      if ( data.xAxis && axes[ data.xAxis ] ) {
-        serie.setXAxis( axes[ data.xAxis ] );
+      if ( data.xAxis && axes[data.xAxis] ) {
+        serie.setXAxis( axes[data.xAxis] );
       }
 
-      if ( data.yAxis && axes[ data.yAxis ] ) {
-        serie.setYAxis( axes[ data.yAxis ] );
+      if ( data.yAxis && axes[data.yAxis] ) {
+        serie.setYAxis( axes[data.yAxis] );
       }
 
       if ( data ) {
@@ -167,7 +180,6 @@ const makeGraph = ( Graph, graph, json ) => {
 
       if ( jsonSerie.annotations ) {
         jsonSerie.annotations.forEach( ( annotation ) => {
-
           makeAnnotation( graph, annotation, serie, axes );
         } );
       }
@@ -176,7 +188,6 @@ const makeGraph = ( Graph, graph, json ) => {
 
   if ( json.annotations ) {
     json.annotations.forEach( ( annotation ) => {
-
       makeAnnotation( graph, annotation, undefined, axes );
     } );
   }
