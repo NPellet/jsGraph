@@ -6,7 +6,7 @@ const dirTree = require('directory-tree');
 
 const distPath = path.resolve(__dirname, './dist/');
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
@@ -248,28 +248,28 @@ module.exports = function(grunt) {
     'babel:minify'
   ]);
 
-  grunt.registerTask('release', 'Make a new release', function() {
+  grunt.registerTask('release', 'Make a new release', function () {
     grunt.task.run('bump:prerelease:bump-only');
     grunt.task.run('default');
     grunt.task.run('bump:prerelease:commit-only');
     grunt.task.run('exec:npm_publish');
   });
 
-  grunt.registerTask('patch', 'Make a new patch', function() {
+  grunt.registerTask('patch', 'Make a new patch', function () {
     grunt.task.run('bump:patch:bump-only');
     grunt.task.run('default');
     grunt.task.run('bump:patch:commit-only');
     grunt.task.run('exec:npm_publish');
   });
 
-  grunt.registerTask('minor', 'Make a minor release', function() {
+  grunt.registerTask('minor', 'Make a minor release', function () {
     grunt.task.run('bump:minor:bump-only');
     grunt.task.run('default');
     grunt.task.run('bump:minor:commit-only');
     grunt.task.run('exec:npm_publish');
   });
 
-  grunt.registerTask('major', 'Make a new release', function() {
+  grunt.registerTask('major', 'Make a new release', function () {
     grunt.task.run('bump:major:bump-only');
     grunt.task.run('default');
     grunt.task.run('bump:major:commit-only');
@@ -277,16 +277,17 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask(
-    'buildExamplesRenderer',
+    'exemples',
     'Builds new examples',
-    function() {
+    function () {
       const ensureDirectoryExistence = filePath => {
-        var dirname = path.dirname(filePath);
+        /*
         if (fs.existsSync(dirname)) {
           return true;
         }
-        ensureDirectoryExistence(dirname);
-        fs.mkdirSync(dirname);
+        ensureDirectoryExistence(dirname);*/
+        const dirname = path.dirname(filePath);
+        fs.mkdirSync(dirname, { recursive: true });
       };
 
       const makeExample = el => {
@@ -299,9 +300,7 @@ module.exports = function(grunt) {
     <script type="module">
     console.log('a');
         import Graph from '/src/graph.js'
-        console.log('a');
         const graph = Graph.fromJSON( ${fs.readFileSync(el.path)}, "graph" );
-        console.log('a');
         graph.draw();
         graph.updateLegend();
         
@@ -310,7 +309,7 @@ module.exports = function(grunt) {
       };
 
       const makeExampleJS = el => {
-        console.log( el.path.replace(/\\/g, "/",) );
+        // console.log(el.path.replace(/\\/g, "/",));
         return `
 <!doctype html>
 <html>
@@ -319,7 +318,7 @@ module.exports = function(grunt) {
     </body>
     <script type="module">
     console.log('a');
-        import "${( `../../../${el.path.replace(/\\/g, "/")}`)}";
+        import "${(`../../../${el.path.replace(/\\/g, "/")}`)}";
         </script>
 </html>`;
       };
@@ -329,12 +328,12 @@ module.exports = function(grunt) {
           if (child.type == 'directory') {
             processTree(child);
           } else {
-           
+
             const path = child.path
               .replace('v2', 'output')
               .replace('.json', '.html')
               .replace('.js', '.html');
-            
+
             ensureDirectoryExistence(path);
             let htmlFile;
 
@@ -354,7 +353,7 @@ module.exports = function(grunt) {
     }
   );
 
-  grunt.registerTask('buildExamples', 'Builds new examples', function() {
+  grunt.registerTask('buildExamples', 'Builds new examples', function () {
     var examples = [];
 
     var list = JSON.parse(fs.readFileSync('examples/list.json', 'utf8'));
@@ -371,7 +370,7 @@ module.exports = function(grunt) {
 
       example.codeShown = code.replace(
         /\/\* START IGNORE \*\/([\s\S]*)\/\* END IGNORE \*\//,
-        function() {
+        function () {
           return '';
         }
       );
@@ -391,7 +390,7 @@ module.exports = function(grunt) {
     );
   });
 
-  grunt.registerTask('tutorials', 'Builds tutorials', function() {
+  grunt.registerTask('tutorials', 'Builds tutorials', function () {
     exec('./node_modules/.bin/jsdoc -c jsdoc.json', err => {
       if (err) {
         console.error(err);
@@ -414,12 +413,12 @@ module.exports = function(grunt) {
     this._options = options;
   }
 
-  WebpackBeautifier.prototype.apply = function(compiler) {
+  WebpackBeautifier.prototype.apply = function (compiler) {
     var self = this;
-    compiler.plugin('done', function(stats) {
+    compiler.plugin('done', function (stats) {
       var json = stats.toJson({ assets: false, chunks: false, modules: true })
         .modules;
-      json.map(function(el) {
+      json.map(function (el) {
         //console.log( el );
 
         if (el.name == 'multi main' || el.name.indexOf('~') > -1) {
