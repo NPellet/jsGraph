@@ -118,6 +118,10 @@
 				"title": "simple.json"
 			},
 			{
+				"name": "color.json",
+				"title": "color.json"
+			},
+			{
 				"name": "style.json",
 				"title": "style.json"
 			},
