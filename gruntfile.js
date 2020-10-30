@@ -277,7 +277,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask(
-    'exemples',
+    'examples',
     'Builds new examples',
     function () {
       const ensureDirectoryExistence = filePath => {
