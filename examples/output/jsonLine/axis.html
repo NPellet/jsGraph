@@ -1,0 +1,40 @@
+
+<!doctype html>
+<html>
+    <body>
+        <div id="graph"></div>
+    </body>
+    <script type="module">
+    console.log('a');
+        import Graph from '/src/graph.js'
+        const graph = Graph.fromJSON( {
+  "axes": {
+    "x": {
+      "label": "Wavelength",
+      "unit": "nm",
+      "unitWrapperBefore": "[",
+      "unitWrapperAfter": "]"
+    },
+    "y": {
+      "label": "Transmission",
+      "unit": "%",
+      "unitWrapperBefore": "[",
+      "unitWrapperAfter": "]"
+    }
+  },
+  "series": [
+    {
+      "type": "line",
+      "data": {
+        "x": [1, 2, 3, 4, 5],
+        "y": [1, 2, 3, 2, 1]
+      }
+    }
+  ]
+}
+, "graph" );
+        graph.draw();
+        graph.updateLegend();
+        
+        </script>
+</html>

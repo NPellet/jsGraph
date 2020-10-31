@@ -10,12 +10,14 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
-
-    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    <script src="/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
+    <script src="/js/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- jQuery 
     
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    should load first -->
 
     <script>
         var baseUrl = "/";
@@ -23,10 +25,11 @@
 
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/prism-okaidia.css">
     <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-16-errorbars.html">
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-</head>
 
+
+</head>
 
   <body>
 
@@ -69,8 +72,8 @@
 	    <div class="container">
 
 	<div class="col-sm-3">
-		
-		<nav id="jsgraph-sidebar" class="affix-top">
+
+		<nav id="jsgraph-sidebar" class="jsgraph-sidebar affix-top">
 			<ul class="nav">
 
 			</ul>
@@ -79,7 +82,6 @@
 
 	<div class="col-sm-9" id="main">
 		<h2 id="error-bars">Error bars</h2>
-
 <script>
 
 </script>
@@ -118,37 +120,66 @@ For instance, you could assign 1 σ to the box and 3 σ to the bars. (**Note: **
 
 <p>Setting error data is not enough. You need to tell jsGraph how you want the error to be handled. For that, you need to call the method <code class="highlighter-rouge">setErrorStyle</code> that takes only one parameter: an array which elements are styles for each level of error. Example:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">(</span> <span class="p">[</span> 
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">serie</span><span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">([</span>
   <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="na">x</span><span class="p">:</span> <span class="p">{}</span> <span class="p">},</span> <span class="c1">// First level: bars, only displayed in the x direction (top and bottom)</span>
-    <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'box'</span><span class="p">,</span> <span class="c1">// Second level: boxes</span>
-      <span class="na">top</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'olive'</span> <span class="p">},</span> <span class="c1">// Displayed in green for boxes above the point</span>
-      <span class="na">bottom</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s2">"crimson"</span> <span class="p">}</span> <span class="c1">// And in red for those below</span>
-  <span class="p">}</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+  <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="s1">'box'</span><span class="p">,</span> <span class="c1">// Second level: boxes</span>
+    <span class="na">top</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'olive'</span> <span class="p">},</span> <span class="c1">// Displayed in green for boxes above the point</span>
+    <span class="na">bottom</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'crimson'</span> <span class="p">}</span> <span class="c1">// And in red for those below</span>
+  <span class="p">}</span>
+<span class="p">]);</span>
+</code></pre>
+</div>
 
 <h3 id="a-idexampleaexample-with-2-level-error-bars"><a id="example"></a>Example with 2 level error bars</h3>
 
 <p>Here is an example that displays error bars over a scatter plot</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.479425538604203</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.8414709848078965</span><span class="p">],[</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.9974949866040544</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.9092974268256817</span><span class="p">],[</span><span class="mf">2.5</span><span class="p">,</span><span class="mf">0.5984721441039564</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mf">0.1411200080598672</span><span class="p">],[</span><span class="mf">3.5</span><span class="p">,</span><span class="o">-</span><span class="mf">0.35078322768961984</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7568024953079282</span><span class="p">],[</span><span class="mf">4.5</span><span class="p">,</span><span class="o">-</span><span class="mf">0.977530117665097</span><span class="p">]];</span>
-<span class="kd">var</span> <span class="nx">errors</span> <span class="o">=</span> <span class="p">[[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.364</span><span class="p">,</span><span class="mf">0.278</span><span class="p">]],[[</span><span class="mf">0.355</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.376</span><span class="p">,</span><span class="mf">0.398</span><span class="p">]],[[</span><span class="mf">0.055</span><span class="p">,</span><span class="mf">0.37</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.39</span><span class="p">,</span><span class="mf">0.286</span><span class="p">]],[[</span><span class="mf">0.34</span><span class="p">,</span><span class="mf">0.205</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.22999999999999998</span><span class="p">,</span><span class="mf">0.356</span><span class="p">]],[[</span><span class="mf">0.39</span><span class="p">,</span><span class="mf">0.41</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.27599999999999997</span><span class="p">,</span><span class="mf">0.21800000000000003</span><span class="p">]],[[</span><span class="mf">0.455</span><span class="p">,</span><span class="mf">0.345</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.396</span><span class="p">,</span><span class="mf">0.328</span><span class="p">]],[[</span><span class="mf">0.145</span><span class="p">,</span><span class="mf">0.33</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.24</span><span class="p">,</span><span class="mf">0.266</span><span class="p">]],[[</span><span class="mf">0.455</span><span class="p">,</span><span class="mf">0.46</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.20600000000000002</span><span class="p">,</span><span class="mf">0.274</span><span class="p">]],[[</span><span class="mf">0.215</span><span class="p">,</span><span class="mf">0.47</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.20400000000000001</span><span class="p">,</span><span class="mf">0.23399999999999999</span><span class="p">]],[[</span><span class="mf">0.195</span><span class="p">,</span><span class="mf">0.305</span><span class="p">]]],[[</span><span class="kc">false</span><span class="p">,[</span><span class="mf">0.302</span><span class="p">,</span><span class="mf">0.282</span><span class="p">]],[[</span><span class="mf">0.46</span><span class="p">,</span><span class="mf">0.49</span><span class="p">]]]];</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.479425538604203</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.8414709848078965</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.9974949866040544</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.9092974268256817</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.5984721441039564</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.1411200080598672</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.35078322768961984</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7568024953079282</span><span class="p">],</span>
+  <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.977530117665097</span><span class="p">]</span>
+<span class="p">];</span>
+<span class="kd">var</span> <span class="nx">errors</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.364</span><span class="p">,</span> <span class="mf">0.278</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.355</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.376</span><span class="p">,</span> <span class="mf">0.398</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.055</span><span class="p">,</span> <span class="mf">0.37</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.39</span><span class="p">,</span> <span class="mf">0.286</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.34</span><span class="p">,</span> <span class="mf">0.205</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.22999999999999998</span><span class="p">,</span> <span class="mf">0.356</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.39</span><span class="p">,</span> <span class="mf">0.41</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.27599999999999997</span><span class="p">,</span> <span class="mf">0.21800000000000003</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.455</span><span class="p">,</span> <span class="mf">0.345</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.396</span><span class="p">,</span> <span class="mf">0.328</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.145</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.24</span><span class="p">,</span> <span class="mf">0.266</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.455</span><span class="p">,</span> <span class="mf">0.46</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.20600000000000002</span><span class="p">,</span> <span class="mf">0.274</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.215</span><span class="p">,</span> <span class="mf">0.47</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.20400000000000001</span><span class="p">,</span> <span class="mf">0.23399999999999999</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.195</span><span class="p">,</span> <span class="mf">0.305</span><span class="p">]]],</span>
+  <span class="p">[[</span><span class="kc">false</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.302</span><span class="p">,</span> <span class="mf">0.282</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.46</span><span class="p">,</span> <span class="mf">0.49</span><span class="p">]]]</span>
+<span class="p">];</span>
 
-<span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"someHTMLId"</span> <span class="p">);</span>
-<span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graphinstance</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"serieTest"</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"scatter"</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s1">'someHTMLId'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graphinstance</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'serieTest'</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'scatter'</span><span class="p">);</span>
 
 <span class="nx">serie</span>
-  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"My serie"</span> <span class="p">)</span>
+  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'My serie'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
-  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span>
-  <span class="p">.</span><span class="nx">setDataError</span><span class="p">(</span> <span class="nx">error</span> <span class="p">)</span>
-  <span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">(</span> <span class="p">[</span> 
-    <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="na">x</span><span class="p">:</span> <span class="p">{}</span> <span class="p">},</span> 
-      <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'box'</span><span class="p">,</span> 
-        <span class="na">top</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'olive'</span> <span class="p">},</span> 
-        <span class="na">bottom</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s2">"#800000"</span> <span class="p">}</span>
-      <span class="p">}</span> <span class="p">]</span> 
-    <span class="p">);</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setDataError</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">([</span>
+    <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="na">x</span><span class="p">:</span> <span class="p">{}</span> <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'box'</span><span class="p">,</span>
+      <span class="na">top</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'olive'</span> <span class="p">},</span>
+      <span class="na">bottom</span><span class="p">:</span> <span class="p">{</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#800000'</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]);</span>
 
-<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</code></pre>
+</div>
 
 <div id="example-1" class="jsgraph-example"></div>
 
@@ -188,29 +219,35 @@ For instance, you could assign 1 σ to the box and 3 σ to the bars. (**Note: **
   	</div>
     <footer class="site-footer">
 
-  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/prism.js"></script>
 
 	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-	  ga('create', 'UA-54296694-1', 'auto');
-	  ga('send', 'pageview');
+		ga('create', 'UA-54296694-1', 'auto');
+		ga('send', 'pageview');
 
 	</script>
 
-  <div class="col-sm-3">
-  	<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
-  	<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
-  </div>
-  <div class="col-sm-9 text-right">
-  	jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
-  </div>
+	<div class="col-sm-3">
+		<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
+		<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
+	</div>
+	<div class="col-sm-9 text-right">
+		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
+	</div>
 
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </footer>
-
 
   </body>
 

@@ -12,48 +12,26 @@ class SerieLineExtended extends SerieLine {
 
   constructor() {
     super( ...arguments );
+
     this.subSeries = [];
   }
 
   draw() {
-    this.eraseMarkers();
     return this;
   }
 
-  getSymbolForLegend() {
-    if ( !this.subSeries[ 0 ] ) {
-      return false;
-    }
-
-    return this.subSeries[ 0 ].getSymbolForLegend();
-  }
-
-  getMarkerForLegend() {
-    if ( !this.subSeries[ 0 ] ) {
-      return false;
-    }
-
-    return this.subSeries[ 0 ].getMarkerForLegend();
-  }
 }
 
 class SerieScatterExtended extends SerieScatter {
 
   constructor() {
+
     super( ...arguments );
     this.subSeries = [];
   }
 
   draw() {
     return this;
-  }
-
-  getSymbolForLegend() {
-    if ( !this.subSeries[ 0 ] ) {
-      return false;
-    }
-
-    return this.subSeries[ 0 ].getSymbolForLegend();
   }
 
   getMarkerForLegend() {
@@ -76,13 +54,12 @@ var excludingMethods = [
   'getLineWidth',
   'getLineStyle',
   'setMarkers',
-  'showMarkers',
-  'hideMarkers',
   'getMarkerDom',
   'getMarkerDomIndependant',
   'getMarkerPath',
-  'eraseMarkers',
-  '_recalculateMarkerPoints'
+  '_recalculateMarkerPoints',
+  'getSymbolForLegend',
+  '_getSymbolForLegendContainer'
 ];
 var addMethods = [];
 
@@ -98,12 +75,66 @@ Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( func
 
       var args = arguments;
       this.subSeries.map( ( subSerie ) => {
-        console.log( j );
         subSerie[ j ]( ...args );
       } );
     };
 
   } )( i );
+} );
+
+var returnMethods = [
+  'getSymbolForLegend'
+];
+
+var addMethods = [
+  '_getSymbolForLegendContainer'
+];
+
+Object.getOwnPropertyNames( SerieLine.prototype ).map( function( i ) {
+
+  if ( returnMethods.indexOf( i ) == -1 ) {
+    return;
+  }
+
+  SerieLineExtended.prototype[ i ] = ( function( j ) {
+
+    return function() {
+      var args = arguments;
+      return this.subSeries[ 0 ][ j ]( ...args );
+    };
+
+  } )( i );
+
+  SerieScatterExtended.prototype[ i ] = ( function( j ) {
+
+    return function() {
+      var args = arguments;
+      return this.subSeries[ 0 ][ j ]( ...args );
+    };
+
+  } )( i );
+} );
+
+addMethods.map( ( method ) => {
+
+  SerieLineExtended.prototype[ method ] = ( function( j ) {
+
+    return function() {
+      var args = arguments;
+      return this.subSeries[ 0 ][ j ]( ...args );
+    };
+
+  } )( method );
+
+  SerieScatterExtended.prototype[ method ] = ( function( j ) {
+
+    return function() {
+      var args = arguments;
+      return this.subSeries[ 0 ][ j ]( ...args );
+    };
+
+  } )( method );
+
 } );
 
 /**
@@ -510,7 +541,6 @@ var SplitAxis = function( mixin ) {
       let splits = [],
         total = 0,
         currentSplit = 0;
-      //console.log( this._splitVal );
       for ( let split of this._splitVal ) {
         total += split[ 1 ] - split[ 0 ];
       }

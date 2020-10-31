@@ -1,0 +1,45 @@
+{
+  "axes": {
+    "left": [
+      {
+        "label": "Produced mass",
+        "unit": "g",
+        "unitWrapperBefore": "[",
+        "unitWrapperAfter": "]",
+        "unitDecade": true
+      }
+    ],
+    "bottom": {
+      "type": "category",
+      "label": "Fruit type",
+      "name": "cat_btm",
+      "categories": [
+        { "name": "peach", "title": "Peaches" },
+        { "name": "apple", "title": "Apples" },
+        { "name": "orange", "title": "Oranges" }
+      ]
+    }
+  },
+  "series": [
+    {
+      "xAxis": "cat_btm",
+      "type": "bar",
+      "label": "July",
+      "data": {
+        "orange": 5,
+        "apple": 7,
+        "peach": 2
+      }
+    },
+    {
+      "xAxis": "cat_btm",
+      "type": "bar",
+      "label": "August",
+      "data": {
+        "orange": 15,
+        "apple": 20,
+        "peach": 22
+      }
+    }
+  ]
+}

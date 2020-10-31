@@ -14,9 +14,9 @@ This is where density maps come in. Density maps are really a great way to rende
 
 ### <a id="doc-seriedef"></a>Defining density map series
 
-{% highlight javascript %}
+```javascript
 var serieMapDensity = graph.newSerie( serieName, serieOptions, 'densitymap' ); // Case sensitive
-{% endhighlight %}
+```
 
 Where, as usual, ```serieName``` should be unique for your instance of jsGraph and serieOptions are currently not implemented for the density map.
 
@@ -24,9 +24,9 @@ Where, as usual, ```serieName``` should be unique for your instance of jsGraph a
 
 As of today, there is only one way to set the ```(x,y)``` data of the serie: an array of ```(x,y)``` arrays:
 
-{% highlight javascript %}
+```javascript
 serieMapDensity.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
-{% endhighlight %}
+```
 
 NB: Don't forget setting the axes of the serie using ```serie.setXAxis```, ```serie.setYAxis``` or ```serie.autoAxis```.
 
@@ -34,9 +34,9 @@ NB: Don't forget setting the axes of the serie using ```serie.setXAxis```, ```se
 
 Calculate the density map takes only one instruction, but it requires you to select the minimum values, interval values and number of bins you want to use. This can allow you to calculate the map on a subset of your data. The instruction goes as follows
 
-{% highlight javascript %}
+```javascript
 var map = serieMapDensity.calculateDensityMap( fromX, deltaX, numX, fromY, deltaY, numY );
-{% endhighlight %}
+```
 
 * ```fromX``` could be ```serieMapDensity.getDataMin()``` to select the minimum value to start computing with as the minimum value of your ```(x,y)``` data
 * ```deltaX``` could be ```( serieMapDensity.getDataMax() - serieMapDensity.getDataMin() ) / ( numX - 1 )
@@ -50,9 +50,9 @@ In practice ```calculateDensityMap``` is rather used internally. Although nothin
 
 A perhaps more clever way to calculate a density map is to take into account the amount of space on your graph. It doesn't make sense to show 1'000 bins x 1'000 bins on a 300x300 drawing area. ```serieMapDensity.setPxPerBin``` takes care of that problem by replacing ```calculateDensityMap``` and ```autoBins```. When the serie is about to be redrawn, ```setPxPerBin``` will look at the drawing width and height, divide it by a certain number you can specifiy (the number of bins per pixels) and recalculate the density map on the fly. Here's how to call it:
 
-{% highlight javascript %}
+```javascript
 var map = serieMapDensity.setPxPerBin( 3, 5 ); // 3px per bin in x direction, 5px per bin in y direction
-{% endhighlight %}
+```
 
 ### <a id="doc-colormap"></a>Color maps
 
@@ -68,13 +68,13 @@ Currently, they are the only kind of maps supported by jsGraph but they are prob
 
 Let's take the classical black-to-red-to-yellow example (the heat map):
 
-{% highlight javascript %}
+```javascript
 serieMapDensity.colorMapHSL( [
 	{ h: 0, s: 1, l: 0 }, // Black
 	{ h: 0, s: 1, l: 0.5 }, // Red
 	{ h: 60, s: 1, l: 0.5 } // Yellow
 ], 300 ); // Use 300 colors
-{% endhighlight %}
+```
 
 
 <div id="graph-example-1"></div>
@@ -101,12 +101,12 @@ serieMapDensity.colorMapHSL( [
 
 Another classic example is the rainbow color map, from blue to red, corresponding to three quarter of the hue wheel:
 
-{% highlight javascript %}
+```javascript
 serieMapDensity.colorMapHSL( [
 	{ h: 270, s: 1, l: 0.5 }, // Blue
 	{ h: 0, s: 1, l: 0.5 } // Red
 ], 300 ); // Use 300 colors
-{% endhighlight %}
+```
 
 <div id="graph-example-2"></div>
 <script language="javascript">
@@ -134,9 +134,9 @@ serieMapDensity.colorMapHSL( [
 
 jsGraph can use only a sub-set of the color map by changing the boundaries of the color map. There will be more to that later, but let's skip it for a second, and let's use the minimum and maximum bin number found by ```colorMapDensity```. For this, you need to call the method:
 
-{% highlight javascript %}
+```javascript
 serie.autoColorMapBinBoundaries();
-{% endhighlight %}
+```
 
 
 ### <a id="doc-alltogether"></a>Let's put all of this together
@@ -144,7 +144,7 @@ serie.autoColorMapBinBoundaries();
 Let's display your first color map. From there on we will use this example to demonstrate more advanced features.
 
 
-{% highlight javascript %}
+```javascript
 var graph = new Graph("graph-example-3").resize(400, 250);
 graph.getXAxis().turnGridsOff();
 graph.getYAxis().turnGridsOff();
@@ -156,7 +156,7 @@ s.colorMapHSL( [
   { h: 0, s: 1, l: 0.5 }, // Red
 ], 300 ); // Use 300 colors
 graph.draw();
-{% endhighlight %}
+```
 
 
 
@@ -194,11 +194,11 @@ To go a little further, let's imagine that in the previous data set, every bin w
 Let's take a look at the same example, but with an additional method in there:
 
 
-{% highlight javascript %}
+```javascript
 s.onRedrawColorMapBinBoundaries( function( min, max ) {
 	return [ (min + max) / 2, max ];
 });
-{% endhighlight %}
+```
 
 <div id="graph-example-4"></div>
 <script language="javascript">

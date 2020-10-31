@@ -1,5 +1,6 @@
 node_modules
 .idea
+examples/output
 examples/node_modules
 examples/requirejs
 examples/src
@@ -7,3 +8,5 @@ examples/workingplace
 examples/DD/
 .eslintcache
 /coverage/
+.vscode
+

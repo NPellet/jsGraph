@@ -9,6 +9,8 @@ class ShapePolyline extends Shape {
 
   constructor( graph, options ) {
     super( graph, options );
+
+    this.setProp( 'fillColor', 'none' );
   }
 
   /**
@@ -24,7 +26,7 @@ class ShapePolyline extends Shape {
       this.setStrokeColor( 'black' );
     }
 
-    if ( this.getStrokeWidth() == undefined ) {
+    if ( this.getStrokeWidth() === undefined ) {
       this.setStrokeWidth( 1 );
     }
   }
@@ -42,7 +44,7 @@ class ShapePolyline extends Shape {
    *  @return {ShapePolyline} The current polyline instance
    */
   setPointsPx( points ) {
-    this.setProp( 'pxPoints', points );
+    //  this.setProp( 'pxPoints', points );
     return this;
   }
 
@@ -51,11 +53,57 @@ class ShapePolyline extends Shape {
    * @private
    * @return {Boolean} Whether the shape should be redrawn
    */
+  /**
+   * Recalculates the positions and applies them
+   * @private
+   * @return {Boolean} Whether the shape should be redrawn
+   */
+  applyPosition() {
+
+    let str = '';
+    let index = 0;
+    while ( true ) {
+
+      let pos = this.getPosition( index );
+      if ( pos === undefined ) {
+        break;
+      }
+
+      let posXY;
+      if ( this.serie ) {
+        posXY = pos.compute( this.graph, this.serie.getXAxis(), this.serie.getYAxis(), this.serie );
+      } else {
+        posXY = pos.compute( this.graph, this.getXAxis(), this.getYAxis() );
+      }
+
+      if ( isNaN( posXY.x ) || isNaN( posXY.y ) ) {
+        return;
+      }
+
+      if ( index == 0 ) {
+        str += ' M ';
+      } else {
+        str += ' L ';
+      }
+
+      str += `${posXY.x} ${posXY.y}`;
+      index++;
+    }
+
+    this.setDom( 'd', str );
+
+    this.changed();
+    return true;
+  }
+}
+/*
   applyPosition() {
 
     let pxPoints;
     let pos = this.computePosition( 0 );
-
+    if ( !pos ) {
+      return;
+    }
     if ( ( pxPoints = this.getProp( 'pxPoints' ) ) ) {
 
       pxPoints = ` M ${ pos.x } ${ pos.y } ${ pxPoints}`;
@@ -83,7 +131,7 @@ class ShapePolyline extends Shape {
 
     this.changed();
     return true;
-  }
-}
+  }*/
+//}
 
 export default ShapePolyline;

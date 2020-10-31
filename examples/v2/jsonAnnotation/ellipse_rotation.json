@@ -1,0 +1,49 @@
+{
+  "axes": {
+    "left": [
+      {
+        "forcedMin": 0,
+        "forcedMax": 10,
+        "name": "axisY"
+      }
+    ],
+    "bottom": {
+      "forcedMin": 0,
+      "forcedMax": 50,
+      "name": "axisX"
+    }
+  },
+
+  "series": {
+    "type": "line",
+    "data": {
+      "x": [1, 2, 3, 4, 5],
+      "y": [1, 2, 3, 2, 1]
+    },
+
+    "annotations": [
+      {
+        "type": "ellipse",
+        "layer": 0,
+        "properties": {
+          "strokeColor": "#F00",
+          "fillColor": "#FF0",
+          "fillOpacity": 0.5,
+          "strokeWidth": 2,
+          "strokeDasharray": [3, 2, 1, 1],
+          "transforms": [
+            {
+              "type": "rotate",
+              "center": { "x": 25, "y": 5 },
+              "angle": 45,
+              "angleType": "angleData"
+            }
+          ],
+          "position": [{ "x": 25, "y": 5 }],
+          "rx": 25,
+          "ry": 2
+        }
+      }
+    ]
+  }
+}

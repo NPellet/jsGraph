@@ -15,8 +15,6 @@ class SerieDensityMap extends Serie {
     super( ...arguments );
     util.mapEventEmission( this.options, this ); // Register events
 
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
     this.rects = [];
     this.paths = [];
 
@@ -145,7 +143,6 @@ class SerieDensityMap extends Serie {
 
     this.maxIndexX = densitymap.length;
     this.maxIndexY = densitymap[ 0 ].length;
-    console.log( densitymap );
     this.binMin = binMin;
     this.binMax = binMax;
 
@@ -207,8 +204,6 @@ class SerieDensityMap extends Serie {
       compX = ( 1 - ( exactX - indexX ) );
       compY = ( 1 - ( exactY - indexY ) );
 
-      //console.log( exactY, indexY );
-      //console.log( compY, indexYLow, indexYHigh );
       if ( indexX > numX || indexY > numY || indexX < 0 || indexY < 0 ) {
         continue;
       }
@@ -398,7 +393,6 @@ class SerieDensityMap extends Serie {
         var dimension = Math.abs( axisGetter[ i ].call( this ).getRelPx( to - from ) );
         results[ i ].num = Math.ceil( widthValues[ i ] / this.densityMapCalculation[ i ].pxPerBin );
 
-        //console.log( from, from - axisGetter[ i ].call( this ).getRelVal( ( results[i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ), ( results[i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 );
         results[ i ].from = from - Math.abs( axisGetter[ i ].call( this ).getRelVal( ( ( results[ i ].num ) * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ) );
         results[ i ].delta = Math.abs( axisGetter[ i ].call( this ).getRelVal( this.densityMapCalculation[ i ].pxPerBin ) );
 
@@ -410,11 +404,7 @@ class SerieDensityMap extends Serie {
 
       }
 
-      //      console.log( axisGetter[ i ].call( this ).getCurrentMin(), axisGetter[ i ].call( this ).getCurrentMax(), )
     }
-    //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
-
-    //console.log( this.densityMapCalculation );
 
     ( weighing ? this.calculateDensityWeighted : this.calculateDensity ).call( this,
       results.x.from, results.x.delta, results.x.num,
@@ -628,8 +618,6 @@ class SerieDensityMap extends Serie {
     for ( var i = 0; i < this.paths.length; i++ ) {
       this.paths[ i ] = '';
     }
-
-    console.log( this.maxIndexX, this.maxIndexY );
 
     for ( var i = 0; i < this.maxIndexX; i++ ) {
 

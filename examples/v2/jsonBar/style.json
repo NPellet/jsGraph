@@ -1,0 +1,58 @@
+{
+  "axes": {
+    "left": [
+      {
+        "label": "Produced mass",
+        "unit": "g",
+        "unitWrapperBefore": "(",
+        "unitWrapperAfter": ")",
+        "unitDecade": true
+      }
+    ],
+    "bottom": {
+      "type": "category",
+      "name": "cat_btm",
+      "categories": [
+        { "name": "peach", "label": "Peaches" },
+        { "name": "apple", "label": "Apples" },
+        { "name": "orange", "label": "Oranges" }
+      ]
+    }
+  },
+  "series": [
+    {
+      "type": "bar",
+      "label": "July",
+      "data": {
+        "orange": 5,
+        "apple": 7,
+        "peach": 2
+      },
+      "style": {
+        "line": {
+          "color": "red",
+          "width": 4,
+          "fill": "red",
+          "fillOpacity": 0.2
+        }
+      }
+    },
+    {
+      "type": "bar",
+      "label": "July",
+      "data": {
+        "orange": 15,
+        "apple": 15,
+        "peach": 9
+      },
+      "style": {
+        "line": {
+          "color": "green",
+          "width": 4,
+          "fill": "DarkGreen",
+          "fillOpacity": 0.2
+        }
+      }
+    }
+  ]
+}

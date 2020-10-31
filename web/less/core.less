@@ -1,8 +1,6 @@
-
-@import "node_modules/bootstrap/less/bootstrap.less";
-@import "bootstrap-variables.less";
-@import "bootstrap-mixins.less";
-
+@import 'node_modules/bootstrap/less/bootstrap.less';
+@import 'bootstrap-variables.less';
+@import 'bootstrap-mixins.less';
 
 @theme-dark: #0b733f;
 @theme-bit-darker: #074b29;
@@ -11,359 +9,346 @@
 
 @theme-lighter: #2cbb73;
 
+.prism {
+  @import './node_modules/prismjs/themes/prism-okaidia.css';
+
+}
+
 * {
-    margin: 0;
+  margin: 0;
 }
 
 html {
-	height: 100%;
+  height: 100%;
 }
 
 body {
-	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	position: relative;
-	min-height: 100%;
-	height: 100%;
-
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  position: relative;
+  min-height: 100%;
+  height: 100%;
 }
 
 .larger {
-	font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 h2 {
-	margin-top: 25px;
+  margin-top: 25px;
 }
 
 #jsgraph-wrapper {
-/*	height: 100%;*/
-	min-height: 100%;
-	margin: 0 auto -40px;
-	padding-bottom: 80px;
+  /*	height: 100%;*/
+  min-height: 100%;
+  margin: 0 auto -40px;
+  padding-bottom: 80px;
 }
 
 .text-stroke( @strokewidth, @color:@theme-darker ) {
-	
- text-shadow:
-     -@strokewidth -@strokewidth 0 @theme-darker,  
-      @strokewidth -@strokewidth 0 @theme-darker,
-      -@strokewidth @strokewidth 0 @theme-darker,
-       @strokewidth @strokewidth 0 @theme-darker;
+  text-shadow: -@strokewidth -@strokewidth 0 @theme-darker,
+    @strokewidth -@strokewidth 0 @theme-darker,
+    -@strokewidth @strokewidth 0 @theme-darker,
+    @strokewidth @strokewidth 0 @theme-darker;
 }
-
 
 .border-radius (@radius: 5px) {
-	-webkit-border-radius: @radius;
-	-moz-border-radius:    @radius;
-	border-radius:         @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
 
-	-moz-background-clip:    padding;
-	-webkit-background-clip: padding-box;
-	background-clip:         padding-box;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
-
 
 .gradient (@startColor: #eee, @endColor: white) {
-	background-color: @startColor;
-	background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
-	background: -webkit-linear-gradient(top, @startColor, @endColor);
-	background: -moz-linear-gradient(top, @startColor, @endColor);
-	background: -ms-linear-gradient(top, @startColor, @endColor);
-	background: -o-linear-gradient(top, @startColor, @endColor);
+  background-color: @startColor;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(@startColor),
+    to(@endColor)
+  );
+  background: -webkit-linear-gradient(top, @startColor, @endColor);
+  background: -moz-linear-gradient(top, @startColor, @endColor);
+  background: -ms-linear-gradient(top, @startColor, @endColor);
+  background: -o-linear-gradient(top, @startColor, @endColor);
 }
 
+#jsgraph-index,
+#jsgraph-page {
+  background: @theme-dark; /* Old browsers */
+  background: linear-gradient(
+    to bottom,
+    @theme-dark 0%,
+    @theme-bit-darker 100%
+  );
 
-#jsgraph-index, #jsgraph-page {
-	
-	background: @theme-dark; /* Old browsers */
-	background: linear-gradient(to bottom, @theme-dark 0%,@theme-bit-darker 100%); 
-	
+  color: white;
+  min-height: 250px;
+  padding-top: 40px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid @theme-darker;
 
-	color: white;
-	min-height: 250px;
-	padding-top: 40px;
-	margin-bottom: 20px;
-	padding-bottom: 20px;
-	border-bottom: 1px solid @theme-darker;
+  .github-btns {
+    margin-top: 10px;
+  }
 
-	.github-btns {
-		margin-top: 10px;
-	}
+  #jsgraph-title {
+    .text-stroke(1px);
+    font-size: 3em;
+  }
 
-	#jsgraph-title {
+  #jsgraph-subtitle {
+    font-size: 1.3em;
+    font-weight: 250;
+    font-color: @theme-lighter;
+    margin-bottom: 15px;
+  }
 
-		.text-stroke( 1px );
-		font-size: 3em;
+  #jsgraph-install {
+    .border-radius(10px);
 
-		
-	}
+    background-color: @theme-darker;
+    height: 80px;
+    margin-top: 50px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border: 1px solid #a0a0a0;
+    margin: 20px;
 
-	#jsgraph-subtitle {
-
-		font-size: 1.3em;
-		font-weight: 250;
-		font-color: @theme-lighter;
-		margin-bottom: 15px;
-		
-	}
-
-	#jsgraph-install {
-
-		.border-radius( 10px );
-
-		background-color: @theme-darker;
-		height: 80px;
-		margin-top: 50px;
-		padding-top: 10px;
-		padding-left: 20px;
-		border: 1px solid #a0a0a0;
-		margin: 20px;
-
-	
-		pre.code {
-			background-color: transparent;
-			border-width: 0px;
-			height: 100%;
-			line-height: 30px;
-			color: white;
-			margin: 0px;
-			text-align: left;
-			padding: 0px;
-		}
-	
-	}
-
+    pre.code {
+      background-color: transparent;
+      border-width: 0px;
+      height: 100%;
+      line-height: 30px;
+      color: white;
+      margin: 0px;
+      text-align: left;
+      padding: 0px;
+    }
+  }
 }
-
 
 #jsgraph-page {
-	padding-top: 10px;
-	min-height: 120px;
-	margin-top: 0px;
-	h1 {
-		font-size: 1.8em;
-	}
+  padding-top: 10px;
+  min-height: 120px;
+  margin-top: 0px;
+  h1 {
+    font-size: 1.8em;
+  }
 }
 
 #jsgraph-nav {
+  margin-bottom: 0px;
 
-	margin-bottom: 0px;
-	
-	border-bottom-color: @theme-darker;
+  border-bottom-color: @theme-darker;
 
-	a {
-		color: @theme-darker;
-	}
+  a {
+    color: @theme-darker;
+  }
 }
 
-#jsgraph-docnav, #jsgraph-subdocnav {
-	position: static;
+#jsgraph-docnav,
+#jsgraph-subdocnav {
+  position: static;
 }
 
-@doc-blue: #59859E;
-@doc-green: #629E59;
-@doc-grey: #939A9E;
+@doc-blue: #59859e;
+@doc-green: #629e59;
+@doc-grey: #939a9e;
 @doc-dark-grey: #333333;
 
-.doc-member, .doc-method {
-	
-	margin-top: 25px;
-	padding-bottom: 25px;
-	border-bottom: 1px solid @theme-lighter;
+.doc-member,
+.doc-method {
+  margin-top: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid @theme-lighter;
 
-	&.expanded:not(.not-expandable) h4::before {
-		.caret();
-		margin-left: 0px;
-	}
+  &.expanded:not(.not-expandable) h4::before {
+    .caret();
+    margin-left: 0px;
+  }
 
-	.doc-details {
-		.hidden();
-	}
+  .doc-details {
+    .hidden();
+  }
 
-	&.expanded .doc-details {
-		.show();
-	}
+  &.expanded .doc-details {
+    .show();
+  }
 
-	h4 {
-		
-	}	
+  h4 {
+  }
 
+  &:not(.not-expandable) h4::before {
+    content: ' ';
+    border-left-color: black;
+    color: @doc-dark-grey;
+    cursor: pointer;
+    position: relative;
+    left: -5px;
+    margin-left: 4px;
+    .caret-right();
+  }
 
-	&:not(.not-expandable) h4::before {
-		content: ' ';
-		border-left-color: black;
-		color: @doc-dark-grey;
-		cursor: pointer;
-		position: relative;
-    	left: -5px;
-    	margin-left: 4px;
-		.caret-right();
-	}
+  .description,
+  .doc-details {
+    margin-left: 20px;
+  }
 
+  .doc-details {
+    margin-top: 15px;
 
-	.description, .doc-details {
-		margin-left: 20px;
-	}
+    div,
+    table,
+    pre {
+      margin-left: 15px;
+    }
+  }
 
-	.doc-details {
-		margin-top: 15px;
+  h5 {
+    font-weight: bold;
+  }
 
-		div, table, pre {
-			margin-left: 15px;
-		}
-	}
+  table.params,
+  table.props {
+    thead,
+    tbody tr {
+      border-bottom: 1px solid @theme-lighter;
+    }
 
-	
-
-	h5 {
-		font-weight: bold;
-	}
-
-	table.params, table.props {
-
-		
-    	thead, tbody tr {
-    		border-bottom: 1px solid @theme-lighter;
-    	}
-
-		td, th {
-			padding: 5px;	
-		}
-	}
+    td,
+    th {
+      padding: 5px;
+    }
+  }
 }
 
 .doc-name {
-		
-	color: @doc-blue;
+  color: @doc-blue;
 }
 
 .doc-code {
-	font-family: 'Source Code Pro', monospace;
-	color: @doc-grey;
-	font-weight: 400;
+  font-family: 'Source Code Pro', monospace;
+  color: @doc-grey;
+  font-weight: 400;
 
-	&h4 {
-		font-size: 1.1em;
-		padding-left: 5px;
-		font-weight: 700;
-	}
+  &h4 {
+    font-size: 1.1em;
+    padding-left: 5px;
+    font-weight: 700;
+  }
 }
 
-.doc-type, .doc-return {
+.doc-type,
+.doc-return {
+  color: @doc-green;
 
-	color: @doc-green;
-
-	a {
-		color: @doc-green;
-	}
-	
+  a {
+    color: @doc-green;
+  }
 }
-
 
 #jsgraph-docnav {
-	margin-bottom: 0px;
-	border-bottom-width: 0px;
+  margin-bottom: 0px;
+  border-bottom-width: 0px;
 }
 
-#jsgraph-subdocnav, #jsgraph-docnav {
-	
-	color: @theme-darker;
-	a {
-		color: white;
-		color: @theme-darker;
-	}
+#jsgraph-subdocnav,
+#jsgraph-docnav {
+  color: @theme-darker;
+  a {
+    color: white;
+    color: @theme-darker;
+  }
 }
 
 #jsgraph-subdocnav {
-	font-size: 0.9em;
-	min-height: 0px;
+  font-size: 0.9em;
+  min-height: 0px;
 
-	a {
-		padding-top: 5px;
-		padding-bottom: 5px;
-	}
+  a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 }
 
 .caret-right {
-    border-bottom: 4px solid transparent;
-    border-top: 4px solid transparent;
-    border-left: 4px solid;
-    display: inline-block;
-    height: 0;
-    opacity: 1;
-    vertical-align: middle;
-    width: 0;
+  border-bottom: 4px solid transparent;
+  border-top: 4px solid transparent;
+  border-left: 4px solid;
+  display: inline-block;
+  height: 0;
+  opacity: 1;
+  vertical-align: middle;
+  width: 0;
 }
 
+.jsgraph-sidebar {
+  &.affix {
+    top: 20px;
+  }
 
-#jsgraph-sidebar {
+  a {
+    color: @theme-darker;
+  }
 
+  li ul {
+    &.scrollspy {
+      .hidden();
+    }
 
-	&.affix {
-		top: 20px;
-	}
+    li {
+      font-size: 0.9em;
+      margin-left: 15px;
 
-	a {
-		color: @theme-darker;
-	}	
+      a {
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+    }
+  }
 
-	li ul {
-		.hidden();
+  li.active {
+    > a {
+      color: white;
+      background-color: @theme-dark;
+      font-weight: bold;
+    }
 
-		li {
-			font-size: 0.9em;
-			margin-left: 15px;
-
-			a {
-				padding-top: 5px;
-				padding-bottom: 5px;			
-			}
-		}
-	}
-
-	li.active {
-	
-		> a {
-			color: white;
-			background-color: @theme-dark;
-			font-weight: bold;
-		}
-
-		ul {
-			.show();
-		}
-	}
+    ul {
+      .show();
+    }
+  }
 }
 
 #jsgraph-highlights {
+  .row {
+    margin-bottom: 20px;
+  }
 
-	.row {
-		margin-bottom: 20px;
-	}
-		
-	h2 {
+  h2 {
+    text-align: center;
+    color: @theme-darker;
+  }
 
-		text-align: center;
-		color: @theme-darker;
-	}
-
-	p.larger {
-		font-size: 1.3em;
-	}
+  p.larger {
+    font-size: 1.3em;
+  }
 }
-
-.example {
-	padding-bottom: 20px;
-	margin-bottom: 20px;
-	border-bottom: 1px solid @theme-darker;
-}
-
 footer {
-	border-top: 1px solid @theme-dark;
-	height: 40px;
-	line-height: 40px;
+  border-top: 1px solid @theme-dark;
+  height: 40px;
+  line-height: 40px;
 
-	a {
-		color: @theme-bit-darker;
-	}
+  a {
+    color: @theme-bit-darker;
+  }
+}
+
+#example-code-editable {
+  height: 800px;
 }

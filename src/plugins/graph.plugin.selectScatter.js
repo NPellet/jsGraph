@@ -46,7 +46,7 @@ class PluginSelectScatter extends Plugin {
    * @return {PluginSelectScatter} The current plugin instance
    */
   setSerie( serie ) {
-    this.serie = serie;
+    this.options.serie = serie;
   }
 
   /**
@@ -54,16 +54,18 @@ class PluginSelectScatter extends Plugin {
    */
   onMouseDown( graph, x, y, e, mute ) {
 
-    if ( !this.serie ) {
+    if ( !this.options.serie ) {
       return;
     }
 
-    this.path = `M ${ x } ${ y } `;
+    const serie = graph.getSerie( this.options.serie );
+
+    this.path = `M ${x} ${y} `;
     this.currentX = x;
     this.currentY = y;
 
-    this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
-    this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+    this.xs = [ serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
+    this.ys = [ serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
     this._path.setAttribute( 'd', '' );
     this._path.setAttribute( 'display', 'block' );
 
@@ -74,16 +76,22 @@ class PluginSelectScatter extends Plugin {
    */
   onMouseMove( graph, x, y, e, mute ) {
 
+    if ( !this.options.serie ) {
+      return;
+    }
+
+    const serie = graph.getSerie( this.options.serie );
+
     if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
 
-      this.path += ` L ${ x } ${ y } `;
+      this.path += ` L ${x} ${y} `;
       this.currentX = x;
       this.currentY = y;
 
-      this.xs.push( this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
-      this.ys.push( this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
+      this.xs.push( serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
+      this.ys.push( serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
 
-      this._path.setAttribute( 'd', `${this.path } z` );
+      this._path.setAttribute( 'd', `${this.path} z` );
 
       this.findPoints();
     }
@@ -94,7 +102,13 @@ class PluginSelectScatter extends Plugin {
    */
   findPoints() {
 
-    var data = this.serie.waveform;
+    if ( !this.options.serie ) {
+      return;
+    }
+
+    const serie = this.graph.getSerie( this.options.serie );
+
+    var data = serie.waveform;
     var selected = [];
     var counter = 0,
       j2;
@@ -118,10 +132,11 @@ class PluginSelectScatter extends Plugin {
       }
 
       if ( counter % 2 == 1 ) {
+
         selected.push( i );
-        this.serie.selectPoint( i, true, 'selected' );
+        serie.selectMarker( i, true, 'selected' );
       } else {
-        this.serie.unselectPoint( i );
+        serie.unselectMarker( i );
       }
 
     }

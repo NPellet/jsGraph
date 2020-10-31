@@ -8,6 +8,36 @@ from '../graph.util.js';
 
 import Serie from './graph.serie.js';
 
+const defaultOptions = {
+  orientation: 'y',
+  maxBoxWidth: 20,
+
+  defaultStyle: {
+
+    meanLineColor: 'rgb( 100, 0, 0 )',
+    meanLineWidth: 2,
+
+    boxAboveLineWidth: 1,
+    boxAboveLineColor: 'rgb( 0, 0, 0 )',
+    boxAboveFillColor: 'transparent',
+    boxAboveFillOpacity: 1,
+    boxBelowLineWidth: 1,
+    boxBelowLineColor: 'rgb( 0, 0, 0 )',
+    boxBelowFillColor: 'transparent',
+    boxBelowFillOpacity: 1,
+
+    barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+    barAboveLineWidth: 1,
+    barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+    barBelowLineWidth: 1,
+
+    outlierLineWidth: 1,
+    outlierLineColor: 'rgb( 255, 255, 255 )',
+    outlierFillColor: 'rgb( 0, 0, 0 )',
+    outlierFillOpacity: 1
+  }
+};
+
 /**
  * @static
  * @extends Serie
@@ -15,45 +45,9 @@ import Serie from './graph.serie.js';
  * @see Graph#newSerie
  */
 class SerieBox extends Serie {
+  constructor( graph, name, options, defaultInherited = {} ) {
 
-  static
-  default () {
-    return {
-      orientation: 'y',
-      maxBoxWidth: 20,
-
-      defaultStyle: {
-
-        meanLineColor: 'rgb( 100, 0, 0 )',
-        meanLineWidth: 2,
-
-        boxAboveLineWidth: 1,
-        boxAboveLineColor: 'rgb( 0, 0, 0 )',
-        boxAboveFillColor: 'transparent',
-        boxAboveFillOpacity: 1,
-        boxBelowLineWidth: 1,
-        boxBelowLineColor: 'rgb( 0, 0, 0 )',
-        boxBelowFillColor: 'transparent',
-        boxBelowFillOpacity: 1,
-
-        barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
-        barAboveLineWidth: 1,
-        barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
-        barBelowLineWidth: 1,
-
-        outlierLineWidth: 1,
-        outlierLineColor: 'rgb( 255, 255, 255 )',
-        outlierFillColor: 'rgb( 0, 0, 0 )',
-        outlierFillOpacity: 1
-      }
-    };
-  }
-
-  constructor( graph, name, options ) {
-
-    super( ...arguments );
-
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+    super( graph, name, options, extend( true, {}, defaultOptions, defaultInherited ) );
 
     this.pathDom = document.createElementNS( this.graph.ns, 'path' );
     this.groupMain.appendChild( this.pathDom );
@@ -128,9 +122,7 @@ class SerieBox extends Serie {
       }
 
       if ( this.data[ i ].Q3 ) {
-
         methodval( this.data[ i ].Q3 );
-
       }
 
       if ( this.data[ i ].Q1 ) {
@@ -142,6 +134,7 @@ class SerieBox extends Serie {
         if ( Array.isArray( this.data[ i ].whiskers ) ) {
 
           if ( this.data[ i ].whiskers.length > 0 ) {
+
             methodval( this.data[ i ].whiskers[ 0 ] );
           }
 
@@ -215,7 +208,6 @@ class SerieBox extends Serie {
   }
 
   setStyle( style, selectionType = 'unselected' ) {
-    //console.log( style, selectionType );
     this.styles[ selectionType ] = extend( {}, this.default().defaultStyle, this.styles.unselected, style );
     this.styleHasChanged( selectionType );
   }
@@ -554,12 +546,11 @@ class SerieBox extends Serie {
     } else {
       // Get all the spacing and determine the smallest one
       boxOtherDimension = this.options.maxBoxWidth;
-      console.log( boxOtherDimension );
       for ( var i = 0, l = this.data.length; i < l - 1; i++ ) {
 
-        //     console.log( Math.abs( axis.getPx( this.data[ i + 1 ].pos ) - axis.getPx( this.data[ i ].pos ) ), axis.getPx( this.data[ i + 1 ].pos ), axis.getPx( this.data[ i ].pos ) );
-        boxOtherDimension = Math.max( 5, Math.min( boxOtherDimension, Math.abs( axis2.getPx( this.data[ i + 1 ].pos ) - axis2.getPx( this.data[ i ].pos ) ) ) );
+        boxOtherDimension = Math.max( 5, Math.min( boxOtherDimension, Math.abs( axis2.getPx( this.data[ i + 1 ].x ) - axis2.getPx( this.data[ i ].x ) ) ) );
       }
+
     }
 
     for ( var i = 0, l = this.data.length; i < l; i++ ) {

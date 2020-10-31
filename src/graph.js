@@ -21,6 +21,7 @@ import ShapeArrow from './shapes/graph.shape.arrow.js';
 import ShapeEllipse from './shapes/graph.shape.ellipse.js';
 import ShapeLabel from './shapes/graph.shape.label.js';
 import ShapePolyline from './shapes/graph.shape.polyline.js';
+import ShapePolygon from './shapes/graph.shape.polygon.js';
 import ShapeLine from './shapes/graph.shape.line.js';
 import ShapeNMRIntegral from './shapes/graph.shape.nmrintegral.js';
 import ShapePeakIntegration2D from './shapes/graph.shape.peakintegration2d.js';
@@ -38,7 +39,9 @@ import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinediff
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting.js';
 import GraphPluginMakeTracesDifferent from './plugins/graph.plugin.makeTracesDifferent.js';
 import GraphPluginPeakPicking from './plugins/graph.plugin.peakpicking.js';
-import Waveform from './util/waveform.js';
+import {
+  Waveform
+} from './util/waveform.js';
 import FitLM from './util/fit_lm.js';
 
 // Corrent naming is important here !
@@ -89,6 +92,7 @@ Graph.registerConstructor( 'graph.shape', Shape );
 Graph.registerConstructor( 'graph.shape.areaundercurve', ShapeAreaUnderCurve );
 Graph.registerConstructor( 'graph.shape.arrow', ShapeArrow );
 Graph.registerConstructor( 'graph.shape.ellipse', ShapeEllipse );
+Graph.registerConstructor( 'graph.shape.polygon', ShapePolygon );
 Graph.registerConstructor( 'graph.shape.label', ShapeLabel );
 Graph.registerConstructor( 'graph.shape.polyline', ShapePolyline );
 Graph.registerConstructor( 'graph.shape.line', ShapeLine );

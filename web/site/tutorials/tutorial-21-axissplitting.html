@@ -10,12 +10,14 @@
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
 ">
 
-    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
-
-    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    <script src="/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script>
+    <script src="/js/jquery/dist/jquery.min.js"></script>
+    <script src="/js/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- jQuery 
     
-    <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    should load first -->
 
     <script>
         var baseUrl = "/";
@@ -23,10 +25,11 @@
 
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/prism-okaidia.css">
     <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-21-axissplitting.html">
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
-</head>
 
+
+</head>
 
   <body>
 
@@ -69,8 +72,8 @@
 	    <div class="container">
 
 	<div class="col-sm-3">
-		
-		<nav id="jsgraph-sidebar" class="affix-top">
+
+		<nav id="jsgraph-sidebar" class="jsgraph-sidebar affix-top">
 			<ul class="nav">
 
 			</ul>
@@ -88,43 +91,50 @@ var data = [ 10.0052,116,10.0135,127,10.0219,133,10.0302,114,10.0386,162,10.047
 
 <p>Let’s take the following example throughout this tutorial. This is a power X-ray diffraction diagram of a powder I prepared in my lab. Because I have indentified the compound, I know that the peaks of interest are 14° and the two peaks between 28° and 35°, corresponding to different diffraction planes of the crystals making my powder. In particular, there’s a small impurity at 12°, but I’d like to enhance it significantly.</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"example-1"</span><span class="p">);</span> <span class="c1">// Creates a new graph</span>
-<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Resizes the graph</span>
-<span class="nx">g</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="s2">"XRD spectrum"</span><span class="p">);</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s1">'example-1'</span><span class="p">);</span> <span class="c1">// Creates a new graph</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">);</span> <span class="c1">// Resizes the graph</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="s1">'XRD spectrum'</span><span class="p">);</span>
 
 <span class="nx">g</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">()</span>
-  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"2 theta"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"°"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"("</span><span class="p">,</span> <span class="s2">")"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'2 theta'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s1">'°'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s1">'('</span><span class="p">,</span> <span class="s1">')'</span><span class="p">)</span>
   <span class="p">.</span><span class="nx">gridsOff</span><span class="p">()</span>
-  <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+  <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 
 <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">()</span>
   <span class="p">.</span><span class="nx">turnGridsOff</span><span class="p">()</span>
-  <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 
-<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"xrd_1"</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"line"</span> <span class="p">).</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">).</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#aa0000"</span> <span class="p">);</span>
-<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">'xrd_1'</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'line'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">wave</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#aa0000'</span><span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</code></pre>
+</div>
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
+
+const wave = Graph.newWaveform().setData( data.filter( ( val, index ) => index % 2 == 1 ), data.filter( ( val, index ) => index % 2 == 0 ) );
 
 var g = new Graph("example-1"); // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 g.setTitle("XRD spectrum");
 
 g.getBottomAxis()
-	.setLabel("2 theta")
-	.setUnit("°")
-	.setUnitWrapper("(", ")")
-	.gridsOff()
-	.dataSpacing( 0, 0 );
+.setLabel("2 theta")
+.setUnit("°")
+.setUnitWrapper("(", ")")
+.gridsOff()
+.dataSpacing( 0, 0 );
 
 g.getLeftAxis()
-	.turnGridsOff()
-	.dataSpacing(0,0);
+.turnGridsOff()
+.dataSpacing(0,0);
 
-g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
+g.newSerie("xrd_1", {}, "line" ).autoAxis().setWaveform( wave ).setLineColor( "#aa0000" );
 
 g.draw();
 </script>
@@ -133,22 +143,26 @@ g.draw();
 
 <p>To do so, let’s use the axis splitting plugin:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">domGraph</span><span class="p">,</span> <span class="p">{</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="nx">domGraph</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">'axissplitting'</span><span class="p">:</span> <span class="p">{}</span>
-  <span class="p">}</span> 
-<span class="p">}</span> <span class="p">);</span></code></pre></figure>
+    <span class="na">axissplitting</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+</div>
 
 <p>Which, in itself, does nothing but initialize the plugin. The next step is to <em>use the plugin to create a new split axis</em>. In other words, the axis need to be created via the plugin and not via the graph like it is done normally. The syntax is quite simple, though:</p>
 
 <h3 id="a-idinitializeacreating-axes"><a id="initialize"></a>Creating axes</h3>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">graph</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">)</span> <span class="c1">// Gets the plugin</span>
   <span class="p">.</span><span class="nx">newBottomAxis</span><span class="p">();</span> <span class="c1">// Creates the new axis</span>
 
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="p">{}</span> <span class="p">);</span> <span class="c1">// The axis needs initialization. DO NOT FORGET</span>
-<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">bottom</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">graph</span><span class="p">,</span> <span class="p">{});</span> <span class="c1">// The axis needs initialization. DO NOT FORGET</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span><span class="nx">bottom</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</code></pre>
+</div>
 
 <p>Now, the <code class="highlighter-rouge">init</code> method is important and cannot be avoided. This is simply the way jsGraph is built, and this method is normally called internally. In this case, there’s no way (yet) to avoid it.
 The last line is to overwrite the first bottom axis by our new axis that has splitting capability. Note that you could assign it to the index 1 or other, but keep in mind that <code class="highlighter-rouge">serie.autoAxis()</code> will assign the axis with the index 0, so you then couldn’t use this method…</p>
@@ -157,9 +171,11 @@ The last line is to overwrite the first bottom axis by our new axis that has spl
 
 <p>We kept a reference to your axis, since we will now need to split it into two new axes:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">bottom</span><span class="p">.</span><span class="nx">splitAxis</span><span class="p">(</span> <span class="mf">0.2</span> <span class="p">);</span> <span class="c1">// Splits the axis at 20% of the width</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">bottom</span><span class="p">.</span><span class="nx">splitAxis</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span> <span class="c1">// Splits the axis at 20% of the width</span>
+</code></pre>
+</div>
 
-<p>This instruction will tell jsGraph to cut this axis into two parts, and the cut is at 20% of the width. 
+<p>This instruction will tell jsGraph to cut this axis into two parts, and the cut is at 20% of the width.
 <em>NB</em>: This has nothing to do yet with the minimum and maximum values of the two new axes. This is just to define the positions of the cuts on the x axis.
 We will see a bit later what happens with more than one cut.</p>
 
@@ -167,48 +183,56 @@ We will see a bit later what happens with more than one cut.</p>
 
 <p>Now, we have to define the boundaries of the two chunks of axes. The easy way to do it is to specify the values for all chunks. Here, we basically make a zoom on the 12-14° region, while on the other 80% of the graph width, we will display the full spectrum:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span> <span class="p">],</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">([[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">]]);</span>
+</code></pre>
+</div>
 
 <h3 id="a-idline-serieasplit-line-serie"><a id="line-serie"></a>Split line serie</h3>
 
 <p>Now, the problem is that you also need to use the plugin to display a split serie. Under the hood, for a n x m cut (n horizontal chunks and m vertical ones), jsGraph will actually create (n * m) series (which can then be treated individually). So the syntax has to be a bit different.</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">).</span><span class="nx">newLineSerie</span><span class="p">(</span> <span class="s2">"xrd-split"</span> <span class="p">)</span>
-<span class="c1">// or var serie = graph.getPlugin('axissplitting').newSerie( "xrd-split", options, "line" )       </span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">).</span><span class="nx">newLineSerie</span><span class="p">(</span><span class="s1">'xrd-split'</span><span class="p">);</span>
+<span class="c1">// or var serie = graph.getPlugin('axissplitting').newSerie( "xrd-split", options, "line" )</span>
+</code></pre>
+</div>
 
 <p>The rest of the serie handling is the same, i.e.</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">serie</span>
   <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
-  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">bottom</span> <span class="p">)</span>
-  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">);</span></code></pre></figure>
+  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span><span class="nx">bottom</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</code></pre>
+</div>
 
 <p>It is important to understand that at this point, a normal serie (created by <code class="highlighter-rouge">graph.newSerie</code>) will not be displayed. This is because the only axis that <code class="highlighter-rouge">graph</code> is aware about is the split axis (the master axis) which has no drawing capability. If you want to display a normal serie, you would have to create a new axis using <code class="highlighter-rouge">graph.getBottomAxis( 1 );</code> and assign this axis to the serie. I will give a short example later on.</p>
 
 <p>So now we’re up ! The only thing left is to call <code class="highlighter-rouge">graph.draw();</code> and this should work. Let’s summarize</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">domGraph</span><span class="p">,</span> <span class="p">{</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="nx">domGraph</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s1">'axissplitting'</span><span class="p">:</span> <span class="p">{}</span>
-  <span class="p">}</span> 
-<span class="p">}</span> <span class="p">);</span>
+    <span class="na">axissplitting</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
 
-<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">)</span> <span class="c1">// Gets the plugin</span>
   <span class="p">.</span><span class="nx">newBottomAxis</span><span class="p">();</span> <span class="c1">// Creates the new axis</span>
 
-<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">bottom</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="p">{}</span> <span class="p">);</span> <span class="c1">// The axis needs initialization. DO NOT FORGET</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">splitAxis</span><span class="p">(</span> <span class="mf">0.2</span> <span class="p">);</span> <span class="c1">// Splits the axis at 20% of the width</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span> <span class="p">],</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span><span class="nx">bottom</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">graph</span><span class="p">,</span> <span class="p">{});</span> <span class="c1">// The axis needs initialization. DO NOT FORGET</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">splitAxis</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span> <span class="c1">// Splits the axis at 20% of the width</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">([[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">80</span><span class="p">]]);</span>
 
 <span class="nx">serie</span>
   <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
-  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">bottom</span> <span class="p">)</span>
-  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">);</span>
+  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span><span class="nx">bottom</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
 
-<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</code></pre>
+</div>
 
 <script>
 function makeGraph( dom ) {
@@ -236,7 +260,7 @@ var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 serie
   .autoAxis()
   .setXAxis( bottom )
-  .setData( data );
+  .setWaveform( wave );
 
 	return { g: g, bottom: bottom, left: g.getLeftAxis(), serie: serie };
 }
@@ -251,35 +275,37 @@ re.g.draw();
 <p>And tadaaam, the axis is split. But the job is far from done. There’s much more we can do.</p>
 
 <h3 id="a-idstylingastyling-the-serie"><a id="styling"></a>Styling the serie</h3>
+
 <p>At this stage, a few words about style should be said. Styling, whether it is of the series or the axes, should not be affected by the splitting. Most methods delegate automatically to the chunks (serie and axes).
 For example, we can add the following to the previous example:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// No splitting</span>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="c1">// No splitting</span>
 <span class="nx">left</span><span class="p">.</span><span class="nx">gridsOff</span><span class="p">();</span>
-<span class="nx">left</span><span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Intensity"</span><span class="p">);</span> <span class="c1">// No splitting</span>
+<span class="nx">left</span><span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'Intensity'</span><span class="p">);</span> <span class="c1">// No splitting</span>
 
 <span class="c1">// Splitting with delegation</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">setPrimaryGridColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">setPrimaryGridOpacity</span><span class="p">(</span> <span class="mf">0.1</span> <span class="p">);</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">setPrimaryGridDasharray</span><span class="p">(</span> <span class="s2">"4, 4 "</span> <span class="p">);</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">setPrimaryGridOpacity</span><span class="p">(</span><span class="mf">0.1</span><span class="p">);</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">setPrimaryGridDasharray</span><span class="p">(</span><span class="s1">'4, 4 '</span><span class="p">);</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">setGridLinesStyle</span><span class="p">();</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">setTicksLabelColor</span><span class="p">(</span><span class="s1">'#00aa00'</span><span class="p">);</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">setPrimaryTicksColor</span><span class="p">(</span><span class="s1">'#00aa00'</span><span class="p">);</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">setSecondaryTicksColor</span><span class="p">(</span><span class="s1">'#0000aa'</span><span class="p">);</span>
 
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">axes</span><span class="p">[</span> <span class="mi">0</span> <span class="p">].</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"First part"</span><span class="p">);</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">axes</span><span class="p">[</span> <span class="mi">1</span> <span class="p">].</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Second part"</span><span class="p">);</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'First part'</span><span class="p">);</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'Second part'</span><span class="p">);</span>
 
 <span class="c1">// The following have no delegation</span>
 <span class="nx">bottom</span>
-  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Angle"</span> <span class="p">)</span>
-  <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"°"</span><span class="p">)</span>
-  <span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"("</span><span class="p">,</span> <span class="s2">")"</span><span class="p">);</span>
+  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'Angle'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s1">'°'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s1">'('</span><span class="p">,</span> <span class="s1">')'</span><span class="p">);</span>
 
 <span class="c1">// Serie delegation</span>
-<span class="nx">serie</span>
-	<span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#aa0000"</span><span class="p">);</span></code></pre></figure>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#aa0000'</span><span class="p">);</span>
+</code></pre>
+</div>
 
 <div id="example-5" class="jsgraph-example"></div>
 <script>
@@ -288,7 +314,6 @@ var re = makeGraph( dom );
 // No splitting
 re.left.gridsOff();
 re.left.setLabel("Intensity"); // No splitting
-
 
 // Splitting with delegation
 re.bottom.setPrimaryGridColor('red');
@@ -320,16 +345,21 @@ return re;
 makeGraph2( 'example-5' );
 </script>
 
-<p>While most methods are delegated to the chunk elements, the methods <code class="highlighter-rouge">setLabel</code>, <code class="highlighter-rouge">setUnit</code> and <code class="highlighter-rouge">setUnitWrapper</code> behave a bit differently: instead of duplicating the label in each chunk, it displays a single label in the middle of the whole axis. Therefore, there is no delegation. 
+<p>While most methods are delegated to the chunk elements, the methods <code class="highlighter-rouge">setLabel</code>, <code class="highlighter-rouge">setUnit</code> and <code class="highlighter-rouge">setUnitWrapper</code> behave a bit differently: instead of duplicating the label in each chunk, it displays a single label in the middle of the whole axis. Therefore, there is no delegation.
 If you want to access a specific chunk, you can use <code class="highlighter-rouge">bottom.axes[ index ]</code>.</p>
 
 <h3 id="a-idgoing-furthera-going-further"><a id="going-further"></a> Going further</h3>
+
 <p>However, you can do more with the axis splittings. Here are some of the more advanced features.</p>
 
 <h4 id="a-idmean-valuesa-setting-mean-values"><a id="mean-values"></a> Setting mean values</h4>
-<p>For example, the <code class="highlighter-rouge">setChunksBoundaries</code> method can take a slightly different format. Before, we were using an array of arrays, each containing two elements, i.e. the start and the end of the chunk. It looked like <code class="highlighter-rouge">[ [ from1, to1 ], [ from2, to2 ] ]</code>. But if, instead of using an array, you use a single value, it will be treated as the middle point of the chunk <code class="highlighter-rouge">[ middle1, [ from2, to2 ] ]</code>. The full span of the chunk is calculated on the fly upon redraw based on the relative widths of the chunk with the reference chunk (the one containing two elements). 
-* The reference chunk is the first one in the list containing an array of 2 elements
-* Make sure you have at least one of them</p>
+
+<p>For example, the <code class="highlighter-rouge">setChunksBoundaries</code> method can take a slightly different format. Before, we were using an array of arrays, each containing two elements, i.e. the start and the end of the chunk. It looked like <code class="highlighter-rouge">[ [ from1, to1 ], [ from2, to2 ] ]</code>. But if, instead of using an array, you use a single value, it will be treated as the middle point of the chunk <code class="highlighter-rouge">[ middle1, [ from2, to2 ] ]</code>. The full span of the chunk is calculated on the fly upon redraw based on the relative widths of the chunk with the reference chunk (the one containing two elements).</p>
+
+<ul>
+  <li>The reference chunk is the first one in the list containing an array of 2 elements</li>
+  <li>Make sure you have at least one of them</li>
+</ul>
 
 <p>Here’s an example to explain this perhaps better:</p>
 
@@ -360,10 +390,10 @@ The exposed method to do that is called with the cryptic name <code class="highl
 <div id="example-4" class="jsgraph-example"></div>
 <script>
 
-	var re = makeGraph2( "example-4" );
-	re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
-	re.bottom.fixGridIntervalBasedOnAxis( 1 );
-	re.g.draw();
+    var re = makeGraph2( "example-4" );
+    re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
+    re.bottom.fixGridIntervalBasedOnAxis( 1 );
+    re.g.draw();
 
 </script>
 
@@ -372,17 +402,19 @@ The exposed method to do that is called with the cryptic name <code class="highl
 <p>Chunk spreading is basically the opposite of setting the mean values, where the boundaries were calculated from the width of each chunk. Here, on the contrary, the width of each chunk is calculated from the relative widths set from the <code class="highlighter-rouge">setChunkBoundaries</code> method. Note that in this case, setting mean is not allowed.
 To enable the spread behaviour, call <code class="highlighter-rouge">axis.splitSpread( true )</code> at any time before a redraw. Using our previous examples, we could write</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span> <span class="p">],</span> <span class="p">[</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span>
-<span class="nx">bottom</span><span class="p">.</span><span class="nx">splitSpread</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
-<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">([[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">]]);</span>
+<span class="nx">bottom</span><span class="p">.</span><span class="nx">splitSpread</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</code></pre>
+</div>
 
 <div id="example-7" class="jsgraph-example"></div>
 <script>
 
-	var re = makeGraph2( "example-7" );
-	re.bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 25 ] ] );
-	re.bottom.splitSpread( true );
-	re.g.draw();
+    var re = makeGraph2( "example-7" );
+    re.bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 25 ] ] );
+    re.bottom.splitSpread( true );
+    re.g.draw();
 
 </script>
 
@@ -392,29 +424,35 @@ To enable the spread behaviour, call <code class="highlighter-rouge">axis.splitS
   	</div>
     <footer class="site-footer">
 
-  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+	<script src="/js/prism.js"></script>
 
 	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+		(function (i, s, o, g, r, a, m) {
+			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+				(i[r].q = i[r].q || []).push(arguments)
+			}, i[r].l = 1 * new Date(); a = s.createElement(o),
+				m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+		})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-	  ga('create', 'UA-54296694-1', 'auto');
-	  ga('send', 'pageview');
+		ga('create', 'UA-54296694-1', 'auto');
+		ga('send', 'pageview');
 
 	</script>
 
-  <div class="col-sm-3">
-  	<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
-  	<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
-  </div>
-  <div class="col-sm-9 text-right">
-  	jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
-  </div>
+	<div class="col-sm-3">
+		<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
+		<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a>
+	</div>
+	<div class="col-sm-9 text-right">
+		jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
+	</div>
 
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </footer>
-
 
   </body>
 

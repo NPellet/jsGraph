@@ -1,0 +1,91 @@
+{
+  "title": "Multi charts",
+  "options": {
+    "plugins": {
+      "zoom": {
+        "zoomMode": "xy"
+      }
+    },
+    "mouseActions": [
+      {
+        "plugin": "zoom",
+        "shift": false,
+        "ctrl": false
+      }
+    ]
+  },
+  "series": [
+    {
+      "data": {
+        "y": [
+          0.04695,
+          0.92235,
+          0.23304,
+          0.18811,
+          0.37288,
+          0.22087,
+          0.95161,
+          0.30119,
+          0.00326,
+          0.81202
+        ],
+        "x": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      },
+      "style": {
+        "line": {
+          "style": 3,
+          "width": 4,
+          "color": "green",
+          "autoPeakPickingNb": 4
+        },
+        "marker": {
+          "default": {
+            "shape": "rect",
+            "x": -2,
+            "y": -2,
+            "width": 4,
+            "height": 4,
+            "fillColor": "blue",
+            "strokeColor": "yellow",
+            "strokeWidth": 3
+          }
+        }
+      }
+    },
+    {
+      "label": "customLabel",
+      "data": {
+        "y": [
+          0.06252,
+          0.29886,
+          0.29234,
+          0.78914,
+          0.98178,
+          0.32066,
+          0.12801,
+          0.62031,
+          0.54239,
+          0.46619
+        ],
+        "x": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      },
+      "style": {
+        "line": {
+          "color": "red",
+          "style": 5,
+          "width": 1
+        },
+        "marker": {
+          "default": {
+            "shape": "circle",
+            "fillColor": "yellow",
+            "zoom": 1,
+            "type": 1,
+            "strokeColor": false,
+            "strokeWidth": 1
+          }
+        }
+      }
+    }
+  ]
+}

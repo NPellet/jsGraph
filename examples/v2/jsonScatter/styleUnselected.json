@@ -1,0 +1,28 @@
+{
+  "series": {
+    "type": "scatter",
+    "data": {
+      "x": [1, 2, 3, 4, 5],
+      "y": [1, 2, 3, 2, 1]
+    },
+    "style": {
+      "marker": {
+        "unselected": {
+          "default": {
+            "fill": "red"
+          },
+          "modifiers": [
+            null,
+            {
+              "fill": "green"
+            },
+            null,
+            {
+              "fill": "blue"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

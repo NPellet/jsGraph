@@ -1,0 +1,27 @@
+{
+    "axes": {
+      "x": {
+        "currentAxisMin": -10,
+        "currentAxisMax": 100
+      },
+      "y": {
+        "label": "Transmission",
+        "unit": "%",
+        "unitWrapperBefore": "[",
+        "unitWrapperAfter": "]",
+        "flipped": true,
+        "primaryGrid": false,
+        "secondaryGrid": false
+      }
+    },
+    "series": [
+      {
+        "type": "line",
+        "data": {
+          "x": [1, 2, 3, 4, 5],
+          "y": [1, 2, 3, 2, 1]
+        }
+      }
+    ]
+  }
+  

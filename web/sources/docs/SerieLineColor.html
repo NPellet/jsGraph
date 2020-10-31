@@ -2102,143 +2102,6 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 
     
 
-    <h4 class="doc-code" id="getMarkerCurrentFamily"><span class="type-signature"></span><span></span><span class="doc-name">getMarkerCurrentFamily</span><span class="doc-signature">( <span class="doc-type">Number</span> k )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>k</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of the point for which we should get the family</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#getMarkerCurrentFamily">SerieLine#getMarkerCurrentFamily</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
     <h4 class="doc-code" id="getMax"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMax</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
 
 
@@ -3214,7 +3077,7 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
     
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Serie.html#getSymbolForLegend">Serie#getSymbolForLegend</a>
+        <a href="SerieLine.html#getSymbolForLegend">SerieLine#getSymbolForLegend</a>
     </li></ul></dd>
     
 
@@ -4141,14 +4004,10 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 
     
 
-    <h4 class="doc-code" id="hideTrackingMarker"><span class="type-signature"></span><span></span><span class="doc-name">hideTrackingMarker</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="isMonotoneous"><span class="type-signature"></span><span></span><span class="doc-name">isMonotoneous</span><span class="doc-signature">( )</span></h4>
 
 
 
-
-<div class="description">
-    Hides the tracking marker (see the trackMouse option)
-</div>
 
 
 <div class="doc-details">
@@ -4176,7 +4035,7 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
     
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#hideTrackingMarker">SerieLine#hideTrackingMarker</a>
+        <a href="SerieLine.html#isMonotoneous">SerieLine#isMonotoneous</a>
     </li></ul></dd>
     
 
@@ -4564,238 +4423,6 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 	
 
     The current serie instance
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="markersOffHover"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">markersOffHover</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Toggles off markers that have the hover mode "on"
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#markersOffHover">SerieLine#markersOffHover</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="markersOffSelect"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">markersOffSelect</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Toggles off markers that have the select mode "on"
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#markersOffSelect">SerieLine#markersOffSelect</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
 </div>
 
         
@@ -6681,6 +6308,94 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 
     
 
+    <h4 class="doc-code" id="setLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="SerieLine.html#setLineWidth">SerieLine#setLineWidth</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="setOption"><span class="type-signature"></span><span></span><span class="doc-name">setOption</span><span class="doc-signature">( <span class="doc-type">String</span> name , value )</span></h4>
 
 
@@ -7892,263 +7607,6 @@ Starting from jsGraph 2.0, it does not calculate the minimum and maximum and cre
 	
 
     The current serie
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="toggleMarker"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">toggleMarker</span><span class="doc-signature">( <span class="doc-type">Number</span> index [ , <span class="doc-type">Boolean</span> force ] [ , <span class="doc-type">Boolean</span> hover ] )</span></h4>
-
-
-
-
-<div class="description">
-    Selects one of the markers of the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The point index to select (starting at 0)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>force</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>hover</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last"><code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#toggleMarker">SerieLine#toggleMarker</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Boolean</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The new state of the marker
 </div>
 
         

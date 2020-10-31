@@ -14,9 +14,7 @@ function isNumeric( n ) {
  * @class
  */
 class Position {
-
   constructor( x, y, dx, dy ) {
-
     if ( typeof x == 'object' ) {
       this.x = x.x;
       this.y = x.y;
@@ -43,24 +41,22 @@ class Position {
    *  @return {Object} An object in the format ```{x: xPx, y: yPx}``` containing the position in pixels of the position
    */
   compute( graph, xAxis, yAxis, serie ) {
-
     if ( !graph || !xAxis || !yAxis || !graph.hasXAxis || !graph.hasYAxis ) {
       graph.throw();
     }
 
     if ( !graph.hasXAxis( xAxis ) ) {
-      throw ( 'Graph does not contain the x axis that was used as a parameter' );
+      throw 'Graph does not contain the x axis that was used as a parameter';
     }
 
     if ( !graph.hasYAxis( yAxis ) ) {
-      throw ( 'Graph does not contain the x axis that was used as a parameter' );
+      throw 'Graph does not contain the x axis that was used as a parameter';
     }
 
     return this._compute( graph, xAxis, yAxis, serie );
   }
 
   _compute( graph, xAxis, yAxis, serie ) {
-
     var relativeTo = this._relativeTo;
     if ( relativeTo ) {
       var relativeToComputed = relativeTo._compute( graph, xAxis, yAxis, serie );
@@ -81,62 +77,69 @@ class Position {
     }
 
     for ( var i in pos ) {
-
       var axis = i == 'x' ? xAxis : yAxis;
       var val = this[ i ];
-      var dval = this[ `d${ i}` ];
+      var dval = this[ `d${i}` ];
 
-      if ( val === undefined && ( ( dval !== undefined && relativeTo === undefined ) || relativeTo === undefined ) ) {
-
+      if (
+        val === undefined &&
+        ( ( dval !== undefined && relativeTo === undefined ) ||
+          relativeTo === undefined )
+      ) {
         if ( i == 'x' ) {
-
           if ( dval === undefined ) {
             continue;
           }
 
           pos[ i ] = relativeTo ? relativeTo[ i ] : 0;
-
         } else if ( this.x !== undefined && serie ) {
-
           if ( _parsePx( this.x ) !== false ) {
-            console.warn( 'You have defined x in px and not y. Makes no sense. Returning 0 for y' );
+            console.warn(
+              'You have defined x in px and not y. Makes no sense. Returning 0 for y'
+            );
             pos[ i ] = 0;
           } else {
-
             try {
-
-              var closest = serie.searchClosestValue( this.x );
+              var closest = serie.getClosestPointToXY( this.x );
 
               if ( !closest ) {
-                throw new Error( `Could not find y position for x = ${ this.x } on serie "${ serie.getName() }". Returning 0 for y.` );
+                throw new Error(
+                  `Could not find y position for x = ${this.x
+                  } on serie "${serie.getName()}". Returning 0 for y.`
+                );
               }
 
               pos[ i ] = serie.getY( closest.yClosest );
-
             } catch ( error ) {
               console.error( error );
               pos[ i ] = 0;
             }
           }
         }
-
       } else if ( val !== undefined ) {
-
         pos[ i ] = this.getPx( val, axis );
       }
 
       if ( dval !== undefined ) {
+        var def =
+          val !== undefined ||
+          relativeToComputed == undefined ||
+          relativeToComputed[ i ] == undefined ?
+          pos[ i ] :
+          relativeToComputed[ i ];
 
-        var def = ( val !== undefined || relativeToComputed == undefined || relativeToComputed[ i ] == undefined ) ? pos[ i ] : ( relativeToComputed[ i ] );
-
-        if ( i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined ) {
-
+        if (
+          i == 'y' &&
+          relativeToComputed &&
+          relativeToComputed.x !== undefined &&
+          relativeToComputed.y == undefined
+        ) {
           if ( !serie ) {
             throw new Error( 'Error. No serie exists. Cannot find y value' );
             return;
           }
 
-          var closest = serie.searchClosestValue( relativeTo.x );
+          var closest = serie.getClosestPointToXY( relativeTo.x );
           if ( closest ) {
             def = serie.getY( closest.yMin );
           }
@@ -148,18 +151,14 @@ class Position {
           def = 0;
         }
 
-        if ( ( parsed = _parsePx( dval ) ) !== false ) { // dx in px => val + 10px
+        if ( ( parsed = _parsePx( dval ) ) !== false ) {
+          // dx in px => val + 10px
 
           pos[ i ] = def + parsed; // return integer (will be interpreted as px)
-
         } else if ( ( parsed = this._parsePercent( dval ) ) !== false ) {
-
           pos[ i ] = def + this._getPositionPx( parsed, true, axis, graph ); // returns xx%
-
         } else if ( axis ) {
-
           pos[ i ] = def + axis.getRelPx( dval ); // px + unittopx
-
         }
       }
     }
@@ -168,7 +167,6 @@ class Position {
   }
 
   _getPositionPx( value, x, axis, graph ) {
-
     var parsed;
 
     if ( ( parsed = _parsePx( value ) ) !== false ) {
@@ -176,7 +174,10 @@ class Position {
     }
 
     if ( ( parsed = this._parsePercent( value ) ) !== false ) {
-      return parsed / 100 * ( x ? graph.getDrawingWidth() : graph.getDrawingHeight() );
+      return (
+        ( parsed / 100 ) *
+        ( x ? graph.getDrawingWidth() : graph.getDrawingHeight() )
+      );
     } else if ( axis ) {
       return axis.getPos( value );
     }
@@ -198,68 +199,68 @@ class Position {
   getDeltaPx( value, axis ) {
     var v;
     if ( ( v = _parsePx( value ) ) !== false ) {
-      return `${v }px`;
+      return `${v}px`;
     } else {
-
-      return `${axis.getRelPx( value ) }px`;
+      return `${axis.getRelPx(value)}px`;
     }
   }
 
   deltaPosition( mode, delta, axis ) {
-
     mode = mode == 'y' ? 'y' : 'x';
     var ref = this[ mode ],
-      refd = this[ `d${ mode}` ],
+      refd = this[ `d${mode}` ],
       refPx,
       deltaPx;
 
     if ( ref !== undefined ) {
       if ( ( refPx = _parsePx( ref ) ) !== false ) {
-
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ mode ] = `${refPx + deltaPx }px`;
+          this[ mode ] = `${refPx + deltaPx}px`;
         } else {
-          this[ mode ] = `${refPx + axis.getRelPx( delta ) }px`;
+          this[ mode ] = `${refPx + axis.getRelPx(delta)}px`;
         }
       } else {
-
         ref = this.getValPosition( ref, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ mode ] = ( ref + axis.getRelVal( deltaPx ) );
+          this[ mode ] = ref + axis.getRelVal( deltaPx );
         } else {
-          this[ mode ] = ( ref + delta );
+          this[ mode ] = ref + delta;
         }
       }
     } else if ( refd !== undefined ) {
-
-      if ( mode == 'y' && ref === undefined && !this._relativeTo ) { // This means that the shape is placed by the x value. Therefore, the dy is only a stand-off.
+      if ( mode == 'y' && ref === undefined && !this._relativeTo ) {
+        // This means that the shape is placed by the x value. Therefore, the dy is only a stand-off.
         // Therefore, we do nothing
         return;
       }
 
       if ( ( refPx = _parsePx( refd ) ) !== false ) {
-
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ `d${ mode}` ] = `${refPx + deltaPx }px`;
+          this[ `d${mode}` ] = `${refPx + deltaPx}px`;
         } else {
-          this[ `d${ mode}` ] = `${refPx + axis.getRelPx( delta ) }px`;
+          this[ `d${mode}` ] = `${refPx + axis.getRelPx(delta)}px`;
         }
       } else {
-
         refd = this.getValPosition( refd, axis );
 
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          this[ `d${ mode}` ] = ( refd + axis.getRelVal( deltaPx ) );
+          this[ `d${mode}` ] = refd + axis.getRelVal( deltaPx );
         } else {
-          this[ `d${ mode}` ] = ( refd + delta );
+          this[ `d${mode}` ] = refd + delta;
         }
       }
-
     }
   }
 
   getValPosition( rel, axis ) {
+    if ( rel == 'max' ) {
+      return axis.getMaxValue();
+    }
+
+    if ( rel == 'min' ) {
+      return axis.getMinValue();
+    }
 
     if ( rel == 'max' ) {
       return axis.getMaxValue();
@@ -280,37 +281,22 @@ class Position {
    *  @return {(Number|String)} The computed value
    */
   getPx( value, axis, rel ) {
-
     var parsed;
 
     if ( typeof value == 'function' ) {
-
       return value( axis, rel );
-
     } else if ( ( parsed = _parsePx( value ) ) !== false ) {
-
       return parsed; // return integer (will be interpreted as px)
-
     } else if ( ( parsed = this._parsePercent( value ) ) !== false ) {
-
       return parsed; // returns xx%
-
     } else if ( axis ) {
-
       if ( value == 'min' ) {
-
         return axis.getMinPx();
-
       } else if ( value == 'max' ) {
-
         return axis.getMaxPx();
-
       } else if ( rel ) {
-
         return axis.getRelPx( value );
-
       } else if ( isNumeric( value ) ) {
-
         return axis.getPos( value );
       }
     }

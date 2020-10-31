@@ -1,0 +1,36 @@
+{
+  "axes": {
+    "y": [
+      {
+        "forcedMin": 0,
+        "forcedMax": 10
+      }
+    ],
+    "x": {
+      "forcedMin": 0,
+      "forcedMax": 10
+    }
+  },
+  "annotations": [
+    {
+      "type": "rectangle",
+      "properties": {
+        "strokeColor": "#F00",
+        "fillColor": "#FF0",
+        "fillOpacity": 0.5,
+        "strokeWidth": 2,
+        "strokeDasharray": [3, 2, 1, 1],
+        "position": [{ "x": 1, "y": 1 }, { "x": 3, "y": 3, "dx": "100px" }],
+        "labelText": "Boum",
+        "labelAngle": 30,
+        "labelBaseline": "hanging",
+        "labelSize": 14,
+        "labelColor": "green",
+        "labelAnchor": "middle",
+        "labelBackgroundColor": "green",
+        "labelBackgroundOpacity": 0.7,
+        "labelPosition": { "x": 1, "y": 1, "dy": "-30px" }
+      }
+    }
+  ]
+}

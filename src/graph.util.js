@@ -294,7 +294,9 @@ var isPlainObject = function isPlainObject( obj ) {
   // Own properties are enumerated firstly, so to speed up,
   // if last one is own, then all properties are own.
   var key;
-  for ( key in obj ) { /**/ }
+  for ( key in obj ) {
+    /**/
+  }
 
   return typeof key === 'undefined' || hasOwn.call( obj, key );
 };

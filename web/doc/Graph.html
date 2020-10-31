@@ -914,7 +914,7 @@ Access directly the options of the graph using this public object.</li>
 
     
 
-    <h4 class="doc-code" id=".fromJSON"><span class="type-signature">(static) </span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">fromJSON</span><span class="doc-signature">( <span class="doc-type">Object</span> schema , <span class="doc-type">HTMLElement</span> wrapper )</span></h4>
+    <h4 class="doc-code" id=".fromJSON"><span class="type-signature">(static) </span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">fromJSON</span><span class="doc-signature">( <span class="doc-type">Object</span> json , <span class="doc-type">HTMLElement</span> wrapper )</span></h4>
 
 
 
@@ -960,7 +960,7 @@ Access directly the options of the graph using this public object.</li>
 
         <tr>
             
-                <td class="name"><code>schema</code></td>
+                <td class="name"><code>json</code></td>
             
 
             <td class="type">
@@ -976,7 +976,7 @@ Access directly the options of the graph using this public object.</li>
 
             
 
-            <td class="description last">The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -7282,6 +7282,10 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+<div class="description">
+    Removes all series from the graph
+</div>
+
 
 <div class="doc-details">
 
@@ -7329,10 +7333,6 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
-
-<div class="description">
-    Removes all series from the graph
-</div>
 
 
 <div class="doc-details">
@@ -10169,6 +10169,113 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="sortSeries"><span class="type-signature"></span><span></span><span class="doc-name">sortSeries</span><span class="doc-signature">( <span class="doc-type">function</span> method )</span></h4>
+
+
+
+
+<div class="description">
+    Sorts the series
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>method</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Sorting method (arguments: serieA, serieB)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    {% highlight JavaScript %}graph.sortSeries( ( sA, sB ) => sA.label > sB.label ? 1 : -1 );{% endhighlight %}
 
     
 

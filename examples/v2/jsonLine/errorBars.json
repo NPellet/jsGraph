@@ -1,0 +1,36 @@
+{
+  "series": {
+    "type": "scatter",
+    "style": {
+      "errorBar": {
+        "all": {
+          "strokeColor": "black",
+          "strokeWidth": 1
+        }
+      },
+      "errorBox": {
+        "x": {
+          "strokeColor": "black",
+          "fillColor": "red",
+          "fillOpacity": 0.2,
+          "strokeWidth": 1
+        },
+        "y": {
+          "strokeColor": "black",
+          "strokeWidth": 1
+        }
+      }
+    },
+    "data": {
+      "x": [1, 2, 3, 4, 5],
+      "y": [1, 2, 3, 2, 1],
+      "errors": {
+        "xBar": [0.1, 0.2, 0.1, 0.2, 0.1],
+        "xBoxBelow": [0.01, 0.02, 0.03, 0.04, 0.01],
+        "xBoxAbove": [0.05, 0.08, 0.03, 0.08, 0.01],
+        "yBarAbove": [0.1, 0.2, 0.1, 0.2, 0.1],
+        "yBarBelow": [0.01, 0.02, 0.03, 0.04, 0.01]
+      }
+    }
+  }
+}

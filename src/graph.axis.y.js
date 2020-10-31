@@ -5,13 +5,15 @@ import Axis from './graph.axis.js';
  * @extends Axis
  */
 class AxisY extends Axis {
-
   constructor( graph, leftright, options ) {
-
     super( graph, leftright, options );
     this.leftright = leftright;
     this.left = leftright == 'left';
+  }
 
+  forceWidth( width ) {
+    this.options.forcedWidth = width;
+    return this;
   }
 
   /**
@@ -61,13 +63,17 @@ class AxisY extends Axis {
   /**
    *  @private
    */
-  getMaxSizeTick() { // Gives an extra margin of 5px
-    return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() + 5 : 0 ); //(this.left ? 10 : 0);
+  getMaxSizeTick() {
+    // Gives an extra margin of 5px
+    return this.longestTick && this.longestTick[ 0 ] ?
+      this.longestTick[ 0 ].getComputedTextLength() + 5 :
+      0; //(this.left ? 10 : 0);
   }
 
   draw() {
-
-    this.tickMargin = ( this.left ? -5 - this.tickPx1 * this.tickScaling[ 1 ] : 2 - this.tickPx1 * this.tickScaling[ 1 ] );
+    this.tickMargin = this.left ?
+      -5 - this.tickPx1 * this.tickScaling[ 1 ] :
+      2 - this.tickPx1 * this.tickScaling[ 1 ];
     var tickWidth = super.draw( ...arguments );
     tickWidth += this.getAdditionalWidth();
     this.drawSpecifics( tickWidth );
@@ -78,7 +84,6 @@ class AxisY extends Axis {
   }
 
   equalizePosition( width ) {
-
     this.placeLabel( this.left ? -width : width );
 
     if ( this.getLabel() ) {
@@ -92,9 +97,7 @@ class AxisY extends Axis {
    *  @private
    */
   drawTick( value, level, options, forcedPos ) {
-    let pos,
-      tick,
-      tickLabel;
+    let pos, tick, tickLabel;
 
     pos = forcedPos || this.getPos( value );
 
@@ -103,16 +106,20 @@ class AxisY extends Axis {
     }
 
     tick = this.nextTick( level, ( tick ) => {
-
-      tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * this.tickScaling[ level ] );
-      tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * this.tickScaling[ level ] );
+      tick.setAttribute(
+        'x1',
+        ( this.left ? 1 : -1 ) * this.tickPx1 * this.tickScaling[ level ]
+      );
+      tick.setAttribute(
+        'x2',
+        ( this.left ? 1 : -1 ) * this.tickPx2 * this.tickScaling[ level ]
+      );
 
       if ( level == 1 ) {
         tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
       } else {
         tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
       }
-
     } );
 
     tick.setAttribute( 'y1', pos );
@@ -123,8 +130,10 @@ class AxisY extends Axis {
     //  this.groupTicks.appendChild( tick );
     if ( level == 1 ) {
       tickLabel = this.nextTickLabel( ( tickLabel ) => {
-
-        tickLabel.setAttribute( 'x', this.tickMargin + this.options.tickLabelOffset );
+        tickLabel.setAttribute(
+          'x',
+          this.tickMargin + this.options.tickLabelOffset
+        );
         if ( this.getTicksLabelColor() !== 'black' ) {
           tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
         }
@@ -135,7 +144,6 @@ class AxisY extends Axis {
           tickLabel.setAttribute( 'text-anchor', 'start' );
         }
         tickLabel.style.dominantBaseline = 'central';
-
       } );
 
       tickLabel.setAttribute( 'y', pos );
@@ -144,13 +152,11 @@ class AxisY extends Axis {
       if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
         this.longestTick[ 0 ] = tickLabel;
         this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
-
       }
     }
   }
 
   drawLabel() {
-
     if ( this.getLabelColor() !== 'black' ) {
       this.label.setAttribute( 'fill', this.getLabelColor() );
     }
@@ -160,7 +166,11 @@ class AxisY extends Axis {
   }
 
   placeLabel( y ) {
-    this.label.setAttribute( 'transform', `translate(${ y }, ${ Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 }) rotate(-90)` );
+    this.label.setAttribute(
+      'transform',
+      `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) /
+      2}) rotate(-90)`
+    );
   }
 
   /**
@@ -188,15 +198,22 @@ class AxisY extends Axis {
     this.line.setAttribute( 'stroke', this.getAxisColor() );
 
     var span = this.getSpan();
-    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks || span[ 0 ] == 0 ? '' : `url(#verticalsplit_${ this.graph.getId() })` ) );
-    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks || span[ 1 ] == 1 ? '' : `url(#verticalsplit_${ this.graph.getId() })` ) );
+    this.line.setAttribute(
+      'marker-start', !this.options.splitMarks || span[ 0 ] == 0 ?
+      '' :
+      `url(#verticalsplit_${this.graph.getId()})`
+    );
+    this.line.setAttribute(
+      'marker-end', !this.options.splitMarks || span[ 1 ] == 1 ?
+      '' :
+      `url(#verticalsplit_${this.graph.getId()})`
+    );
   }
 
   /**
    *  @private
    */
   setShift( shift ) {
-
     this.shift = shift;
 
     if ( !this.shift || !this.graph.getWidth() ) {
@@ -204,8 +221,15 @@ class AxisY extends Axis {
     }
 
     let xshift = this.shift;
-    xshift = this.floating ? xshift : ( this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift );
-    this.group.setAttribute( 'transform', `translate( ${ xshift } 0 )` );
+    xshift = this.floating ?
+      xshift :
+      this.isLeft() ?
+      xshift :
+      this.graph.getWidth() -
+      this.graph.getPaddingRight() -
+      this.graph.getPaddingLeft() -
+      xshift;
+    this.group.setAttribute( 'transform', `translate( ${xshift} 0 )` );
     this.drawLabel();
   }
 
@@ -234,7 +258,6 @@ class AxisY extends Axis {
    *  @private
    */
   _drawLine( pos, line ) {
-
     let px = this.getPx( pos );
 
     if ( !line ) {
@@ -314,7 +337,6 @@ class AxisY extends Axis {
       j = 0;
 
     for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
-
       if ( !this.graph.series[ i ].isShown() ) {
         continue;
       }
@@ -323,7 +345,9 @@ class AxisY extends Axis {
         continue;
       }
 
-      if ( !( this.graph.series[ i ].getXAxis() == axis ) || ( this.graph.series[ i ].getYAxis() !== this ) ) {
+      if ( !( this.graph.series[ i ].getXAxis() == axis ) ||
+        this.graph.series[ i ].getYAxis() !== this
+      ) {
         continue;
       }
 
@@ -334,19 +358,16 @@ class AxisY extends Axis {
     }
 
     if ( j == 0 ) {
-
       this.setMinMaxToFitSeries(); // No point was found
-
     } else {
-
       // If we wanted originally to resize min and max. Otherwise we use the current value
       minV = min ? minV : this.getCurrentMin();
       maxV = max ? maxV : this.getCurrentMax();
 
       var interval = maxV - minV;
 
-      minV -= ( this.options.axisDataSpacing.min * interval );
-      maxV += ( this.options.axisDataSpacing.max * interval );
+      minV -= this.options.axisDataSpacing.min * interval;
+      maxV += this.options.axisDataSpacing.max * interval;
 
       this._doZoomVal( minV, maxV );
     }
@@ -359,25 +380,24 @@ class AxisY extends Axis {
    *  @return {Axis} The current axis instance
    */
   setMinMaxFlipped() {
-
     var interval = this.maxPx - this.minPx;
 
     if ( isNaN( interval ) ) {
       return;
     }
 
-    var maxPx = this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
-    var minPx = this.maxPx - interval * this.options.span[ 1 ] + this.options.marginMax;
+    var maxPx =
+      this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
+    var minPx =
+      this.maxPx - interval * this.options.span[ 1 ] + this.options.marginMax;
 
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-
   }
 
   getZProj( zValue ) {
     return zValue * this.graph.options.zAxis.shiftY;
   }
-
 }
 
 export default AxisY;

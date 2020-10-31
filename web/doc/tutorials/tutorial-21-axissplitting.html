@@ -10,146 +10,148 @@ Axis splitting is a powerful way to display the useful bits of information of yo
 
 Let's take the following example throughout this tutorial. This is a power X-ray diffraction diagram of a powder I prepared in my lab. Because I have indentified the compound, I know that the peaks of interest are 14° and the two peaks between 28° and 35°, corresponding to different diffraction planes of the crystals making my powder. In particular, there's a small impurity at 12°, but I'd like to enhance it significantly.
 
-{% highlight javascript %}
-var g = new Graph("example-1"); // Creates a new graph
-g.resize( 400, 300 ); // Resizes the graph
-g.setTitle("XRD spectrum");
+```javascript
+var g = new Graph('example-1'); // Creates a new graph
+g.resize(400, 300); // Resizes the graph
+g.setTitle('XRD spectrum');
 
 g.getBottomAxis()
-  .setLabel("2 theta")
-  .setUnit("°")
-  .setUnitWrapper("(", ")")
+  .setLabel('2 theta')
+  .setUnit('°')
+  .setUnitWrapper('(', ')')
   .gridsOff()
-  .dataSpacing( 0, 0 );
+  .dataSpacing(0, 0);
 
 g.getLeftAxis()
   .turnGridsOff()
-  .dataSpacing(0,0);
+  .dataSpacing(0, 0);
 
-g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
+g.newSerie('xrd_1', {}, 'line')
+  .autoAxis()
+  .setWaveform(wave)
+  .setLineColor('#aa0000');
 g.draw();
-{% endhighlight %}
+```
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
 
+const wave = Graph.newWaveform().setData( data.filter( ( val, index ) => index % 2 == 1 ), data.filter( ( val, index ) => index % 2 == 0 ) );
+
 var g = new Graph("example-1"); // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 g.setTitle("XRD spectrum");
 
 g.getBottomAxis()
-	.setLabel("2 theta")
-	.setUnit("°")
-	.setUnitWrapper("(", ")")
-	.gridsOff()
-	.dataSpacing( 0, 0 );
+.setLabel("2 theta")
+.setUnit("°")
+.setUnitWrapper("(", ")")
+.gridsOff()
+.dataSpacing( 0, 0 );
 
 g.getLeftAxis()
-	.turnGridsOff()
-	.dataSpacing(0,0);
+.turnGridsOff()
+.dataSpacing(0,0);
 
-g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
+g.newSerie("xrd_1", {}, "line" ).autoAxis().setWaveform( wave ).setLineColor( "#aa0000" );
 
 g.draw();
 </script>
 
 ### <a id="initialize"></a>Initializing the plugin
 
-
 To do so, let's use the axis splitting plugin:
 
-{% highlight javascript %}
-var graph = new Graph( domGraph, {
+```javascript
+var graph = new Graph(domGraph, {
   plugins: {
-    'axissplitting': {}
-  } 
-} );
-{% endhighlight %}
+    axissplitting: {}
+  }
+});
+```
 
-Which, in itself, does nothing but initialize the plugin. The next step is to *use the plugin to create a new split axis*. In other words, the axis need to be created via the plugin and not via the graph like it is done normally. The syntax is quite simple, though:
+Which, in itself, does nothing but initialize the plugin. The next step is to _use the plugin to create a new split axis_. In other words, the axis need to be created via the plugin and not via the graph like it is done normally. The syntax is quite simple, though:
 
 ### <a id="initialize"></a>Creating axes
 
-{% highlight javascript %}
+```javascript
 var bottom = graph
   .getPlugin('axissplitting') // Gets the plugin
   .newBottomAxis(); // Creates the new axis
 
-bottom.init( graph, {} ); // The axis needs initialization. DO NOT FORGET
-graph.setBottomAxis( bottom, 0 );
-{%endhighlight%}
+bottom.init(graph, {}); // The axis needs initialization. DO NOT FORGET
+graph.setBottomAxis(bottom, 0);
+```
 
-Now, the ```init``` method is important and cannot be avoided. This is simply the way jsGraph is built, and this method is normally called internally. In this case, there's no way (yet) to avoid it.
-The last line is to overwrite the first bottom axis by our new axis that has splitting capability. Note that you could assign it to the index 1 or other, but keep in mind that ```serie.autoAxis()``` will assign the axis with the index 0, so you then couldn't use this method...
+Now, the `init` method is important and cannot be avoided. This is simply the way jsGraph is built, and this method is normally called internally. In this case, there's no way (yet) to avoid it.
+The last line is to overwrite the first bottom axis by our new axis that has splitting capability. Note that you could assign it to the index 1 or other, but keep in mind that `serie.autoAxis()` will assign the axis with the index 0, so you then couldn't use this method...
 
 ### <a id="split-position"></a>Split position
 
 We kept a reference to your axis, since we will now need to split it into two new axes:
 
-{% highlight javascript %}
-bottom.splitAxis( 0.2 ); // Splits the axis at 20% of the width
-{% endhighlight %}
+```javascript
+bottom.splitAxis(0.2); // Splits the axis at 20% of the width
+```
 
-This instruction will tell jsGraph to cut this axis into two parts, and the cut is at 20% of the width. 
-*NB*: This has nothing to do yet with the minimum and maximum values of the two new axes. This is just to define the positions of the cuts on the x axis.
+This instruction will tell jsGraph to cut this axis into two parts, and the cut is at 20% of the width.
+_NB_: This has nothing to do yet with the minimum and maximum values of the two new axes. This is just to define the positions of the cuts on the x axis.
 We will see a bit later what happens with more than one cut.
 
 ### <a id="boundaries"></a>Chunk boundaries
 
 Now, we have to define the boundaries of the two chunks of axes. The easy way to do it is to specify the values for all chunks. Here, we basically make a zoom on the 12-14° region, while on the other 80% of the graph width, we will display the full spectrum:
 
-{% highlight javascript %}
-bottom.setChunkBoundaries( [ [ 12, 14 ], [ 10, 80 ] ] );
-{%endhighlight%}
-
+```javascript
+bottom.setChunkBoundaries([[12, 14], [10, 80]]);
+```
 
 ### <a id="line-serie"></a>Split line serie
 
-Now, the problem is that you also need to use the plugin to display a split serie. Under the hood, for a n x m cut (n horizontal chunks and m vertical ones), jsGraph will actually create (n * m) series (which can then be treated individually). So the syntax has to be a bit different.
+Now, the problem is that you also need to use the plugin to display a split serie. Under the hood, for a n x m cut (n horizontal chunks and m vertical ones), jsGraph will actually create (n \* m) series (which can then be treated individually). So the syntax has to be a bit different.
 
-{% highlight javascript %}
-var serie = graph.getPlugin('axissplitting').newLineSerie( "xrd-split" )
-// or var serie = graph.getPlugin('axissplitting').newSerie( "xrd-split", options, "line" )       
-{%endhighlight%}
+```javascript
+var serie = graph.getPlugin('axissplitting').newLineSerie('xrd-split');
+// or var serie = graph.getPlugin('axissplitting').newSerie( "xrd-split", options, "line" )
+```
 
 The rest of the serie handling is the same, i.e.
 
-{% highlight javascript %}
+```javascript
 serie
   .autoAxis()
-  .setXAxis( bottom )
-  .setData( data );
-{%endhighlight%}
+  .setXAxis(bottom)
+  .setData(data);
+```
 
-It is important to understand that at this point, a normal serie (created by ```graph.newSerie```) will not be displayed. This is because the only axis that ```graph``` is aware about is the split axis (the master axis) which has no drawing capability. If you want to display a normal serie, you would have to create a new axis using ```graph.getBottomAxis( 1 );``` and assign this axis to the serie. I will give a short example later on.
+It is important to understand that at this point, a normal serie (created by `graph.newSerie`) will not be displayed. This is because the only axis that `graph` is aware about is the split axis (the master axis) which has no drawing capability. If you want to display a normal serie, you would have to create a new axis using `graph.getBottomAxis( 1 );` and assign this axis to the serie. I will give a short example later on.
 
-So now we're up ! The only thing left is to call ```graph.draw();``` and this should work. Let's summarize
+So now we're up ! The only thing left is to call `graph.draw();` and this should work. Let's summarize
 
-{% highlight javascript %}
-var graph = new Graph( domGraph, {
+```javascript
+var graph = new Graph(domGraph, {
   plugins: {
-    'axissplitting': {}
-  } 
-} );
+    axissplitting: {}
+  }
+});
 
-graph.resize( 400, 300 );
+graph.resize(400, 300);
 var bottom = graph
   .getPlugin('axissplitting') // Gets the plugin
   .newBottomAxis(); // Creates the new axis
 
-graph.setBottomAxis( bottom, 0 );
-bottom.init( graph, {} ); // The axis needs initialization. DO NOT FORGET
-bottom.splitAxis( 0.2 ); // Splits the axis at 20% of the width
-bottom.setChunkBoundaries( [ [ 11, 16 ], [ 10, 80 ] ] );
+graph.setBottomAxis(bottom, 0);
+bottom.init(graph, {}); // The axis needs initialization. DO NOT FORGET
+bottom.splitAxis(0.2); // Splits the axis at 20% of the width
+bottom.setChunkBoundaries([[11, 16], [10, 80]]);
 
 serie
   .autoAxis()
-  .setXAxis( bottom )
-  .setData( data );
+  .setXAxis(bottom)
+  .setData(data);
 
 graph.draw();
-{%endhighlight%}
-
+```
 
 <script>
 function makeGraph( dom ) {
@@ -177,7 +179,7 @@ var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 serie
   .autoAxis()
   .setXAxis( bottom )
-  .setData( data );
+  .setWaveform( wave );
 
 	return { g: g, bottom: bottom, left: g.getLeftAxis(), serie: serie };
 }
@@ -191,38 +193,37 @@ re.g.draw();
 And tadaaam, the axis is split. But the job is far from done. There's much more we can do.
 
 ### <a id="styling"></a>Styling the serie
+
 At this stage, a few words about style should be said. Styling, whether it is of the series or the axes, should not be affected by the splitting. Most methods delegate automatically to the chunks (serie and axes).
 For example, we can add the following to the previous example:
 
-
-{% highlight javascript %}
+```javascript
 // No splitting
 left.gridsOff();
-left.setLabel("Intensity"); // No splitting
+left.setLabel('Intensity'); // No splitting
 
 // Splitting with delegation
 bottom.setPrimaryGridColor('red');
-bottom.setPrimaryGridOpacity( 0.1 );
-bottom.setPrimaryGridDasharray( "4, 4 " );
+bottom.setPrimaryGridOpacity(0.1);
+bottom.setPrimaryGridDasharray('4, 4 ');
 bottom.setGridLinesStyle();
 bottom.secondaryGridOff();
 bottom.setTicksLabelColor('#00aa00');
 bottom.setPrimaryTicksColor('#00aa00');
 bottom.setSecondaryTicksColor('#0000aa');
 
-bottom.axes[ 0 ].setLabel("First part");
-bottom.axes[ 1 ].setLabel("Second part");
+bottom.axes[0].setLabel('First part');
+bottom.axes[1].setLabel('Second part');
 
 // The following have no delegation
 bottom
-  .setLabel( "Angle" )
-  .setUnit("°")
-  .setUnitWrapper("(", ")");
+  .setLabel('Angle')
+  .setUnit('°')
+  .setUnitWrapper('(', ')');
 
 // Serie delegation
-serie
-	.setLineColor("#aa0000");
-{%endhighlight%}
+serie.setLineColor('#aa0000');
+```
 
 <div id="example-5" class="jsgraph-example"></div>
 <script>
@@ -231,7 +232,6 @@ var re = makeGraph( dom );
 // No splitting
 re.left.gridsOff();
 re.left.setLabel("Intensity"); // No splitting
-
 
 // Splitting with delegation
 re.bottom.setPrimaryGridColor('red');
@@ -263,18 +263,19 @@ return re;
 makeGraph2( 'example-5' );
 </script>
 
-While most methods are delegated to the chunk elements, the methods ```setLabel```, ```setUnit``` and ```setUnitWrapper``` behave a bit differently: instead of duplicating the label in each chunk, it displays a single label in the middle of the whole axis. Therefore, there is no delegation. 
-If you want to access a specific chunk, you can use ```bottom.axes[ index ]```.
-
+While most methods are delegated to the chunk elements, the methods `setLabel`, `setUnit` and `setUnitWrapper` behave a bit differently: instead of duplicating the label in each chunk, it displays a single label in the middle of the whole axis. Therefore, there is no delegation.
+If you want to access a specific chunk, you can use `bottom.axes[ index ]`.
 
 ### <a id="going-further"></a> Going further
+
 However, you can do more with the axis splittings. Here are some of the more advanced features.
 
-
 #### <a id="mean-values"></a> Setting mean values
-For example, the ```setChunksBoundaries``` method can take a slightly different format. Before, we were using an array of arrays, each containing two elements, i.e. the start and the end of the chunk. It looked like ```[ [ from1, to1 ], [ from2, to2 ] ]```. But if, instead of using an array, you use a single value, it will be treated as the middle point of the chunk ```[ middle1, [ from2, to2 ] ]```. The full span of the chunk is calculated on the fly upon redraw based on the relative widths of the chunk with the reference chunk (the one containing two elements). 
-* The reference chunk is the first one in the list containing an array of 2 elements
-* Make sure you have at least one of them
+
+For example, the `setChunksBoundaries` method can take a slightly different format. Before, we were using an array of arrays, each containing two elements, i.e. the start and the end of the chunk. It looked like `[ [ from1, to1 ], [ from2, to2 ] ]`. But if, instead of using an array, you use a single value, it will be treated as the middle point of the chunk `[ middle1, [ from2, to2 ] ]`. The full span of the chunk is calculated on the fly upon redraw based on the relative widths of the chunk with the reference chunk (the one containing two elements).
+
+- The reference chunk is the first one in the list containing an array of 2 elements
+- Make sure you have at least one of them
 
 Here's an example to explain this perhaps better:
 
@@ -285,14 +286,12 @@ re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
 re.g.draw();
 </script>
 
-
 #### <a id="ticking-units"></a>Ticking unit
 
 Now, you will notice that jsGraph assigns different ticking units for the two bottom axes (2° for the first chunk, 10° for the second one). In some cases, for esthetic purposes, you would like to force the ticking units to be the same.
-The exposed method to do that is called with the cryptic name ```fixGridIntervalBasedOnAxis``` which simply forces the interval between major ticks (the ones with the labels) to be uniform. This method takes on argument: the index of the reference axis.
+The exposed method to do that is called with the cryptic name `fixGridIntervalBasedOnAxis` which simply forces the interval between major ticks (the ones with the labels) to be uniform. This method takes on argument: the index of the reference axis.
 
-Using ```bottom.fixGridIntervalBasedOnAxis( 0 );``` we would get:
-
+Using `bottom.fixGridIntervalBasedOnAxis( 0 );` we would get:
 
 <div id="example-3" class="jsgraph-example"></div>
 <script>
@@ -302,38 +301,35 @@ Using ```bottom.fixGridIntervalBasedOnAxis( 0 );``` we would get:
 	re.g.draw();
 </script>
 
-
-Using ```bottom.fixGridIntervalBasedOnAxis( 1 );``` we would get:
-
+Using `bottom.fixGridIntervalBasedOnAxis( 1 );` we would get:
 
 <div id="example-4" class="jsgraph-example"></div>
 <script>
 
-	var re = makeGraph2( "example-4" );
-	re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
-	re.bottom.fixGridIntervalBasedOnAxis( 1 );
-	re.g.draw();
+    var re = makeGraph2( "example-4" );
+    re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
+    re.bottom.fixGridIntervalBasedOnAxis( 1 );
+    re.g.draw();
 
 </script>
 
 #### <a id="chunk-spreading"></a>Chunk spreading
 
-Chunk spreading is basically the opposite of setting the mean values, where the boundaries were calculated from the width of each chunk. Here, on the contrary, the width of each chunk is calculated from the relative widths set from the ```setChunkBoundaries``` method. Note that in this case, setting mean is not allowed.
-To enable the spread behaviour, call ```axis.splitSpread( true )``` at any time before a redraw. Using our previous examples, we could write
+Chunk spreading is basically the opposite of setting the mean values, where the boundaries were calculated from the width of each chunk. Here, on the contrary, the width of each chunk is calculated from the relative widths set from the `setChunkBoundaries` method. Note that in this case, setting mean is not allowed.
+To enable the spread behaviour, call `axis.splitSpread( true )` at any time before a redraw. Using our previous examples, we could write
 
-{% highlight javascript %}
-bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 30 ] ] );
-bottom.splitSpread( true );
+```javascript
+bottom.setChunkBoundaries([[11, 16], [20, 30]]);
+bottom.splitSpread(true);
 graph.draw();
-{%endhighlight%}
-
+```
 
 <div id="example-7" class="jsgraph-example"></div>
 <script>
 
-	var re = makeGraph2( "example-7" );
-	re.bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 25 ] ] );
-	re.bottom.splitSpread( true );
-	re.g.draw();
+    var re = makeGraph2( "example-7" );
+    re.bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 25 ] ] );
+    re.bottom.splitSpread( true );
+    re.g.draw();
 
 </script>

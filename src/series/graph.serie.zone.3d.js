@@ -1,5 +1,5 @@
-import Graph from '../graph.core.js';
-import Waveform from '../util/waveform.js';
+// import Graph from '../graph.core.js';
+// import { Waveform } from '../util/waveform.js';
 import Serie3DMixin from '../mixins/graph.mixin.serie3d.js';
 import * as util from '../graph.util.js';
 
@@ -12,7 +12,6 @@ import Serie from './graph.serie.zone.js';
  * @extends SerieLine
  */
 class SerieZone3D extends Serie {
-
   static
   default () {
     return {

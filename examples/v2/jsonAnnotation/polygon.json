@@ -1,0 +1,32 @@
+{
+  "axes": {
+    "left": [
+      {
+        "forcedMin": 0,
+        "forcedMax": 10,
+        "name": "axisY"
+      }
+    ],
+    "bottom": {
+      "forcedMin": 0,
+      "forcedMax": 10,
+      "name": "axisX"
+    }
+  },
+
+  "annotations": [
+    {
+      "type": "polygon",
+      "xAxis": "axisX",
+      "yAxis": "axisY",
+      "layer": 0,
+      "properties": {
+        "strokeColor": "#F00",
+        "fillColor": "#FF0",
+
+        "position": [{ "x": 1, "y": 1 }, { "x": 3, "y": 3 }, { "x": 8, "y": -2 }]
+       
+      }
+    }
+  ]
+}

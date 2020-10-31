@@ -1,5 +1,3 @@
-import Graph from '../graph.core.js';
-import Waveform from '../util/waveform.js';
 import Serie3DMixin from '../mixins/graph.mixin.serie3d.js';
 import * as util from '../graph.util.js';
 

@@ -306,7 +306,6 @@ class PluginZoom extends Plugin {
 
     if ( options.baseline == 'mousePosition' ) {
       baseline = this.graph.getYAxis().getVal( coordY );
-      console.log( baseline );
     }
 
     /*var serie;

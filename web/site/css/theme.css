@@ -6817,6 +6817,9 @@ button.close {
   src: url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot');
   src: url('../node_modules/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
+.prism {
+  @import 'node_modules/prismjs/themes/prism-okaidia.css';
+}
 * {
   margin: 0;
 }
@@ -6824,7 +6827,7 @@ html {
   height: 100%;
 }
 body {
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   position: relative;
   min-height: 100%;
   height: 100%;
@@ -7003,11 +7006,11 @@ h2 {
   padding: 5px;
 }
 .doc-name {
-  color: #59859E;
+  color: #59859e;
 }
 .doc-code {
   font-family: 'Source Code Pro', monospace;
-  color: #939A9E;
+  color: #939a9e;
   font-weight: 400;
 }
 .doc-codeh4 {
@@ -7017,11 +7020,11 @@ h2 {
 }
 .doc-type,
 .doc-return {
-  color: #629E59;
+  color: #629e59;
 }
 .doc-type a,
 .doc-return a {
-  color: #629E59;
+  color: #629e59;
 }
 #jsgraph-docnav {
   margin-bottom: 0px;
@@ -7054,29 +7057,29 @@ h2 {
   vertical-align: middle;
   width: 0;
 }
-#jsgraph-sidebar.affix {
+.jsgraph-sidebar.affix {
   top: 20px;
 }
-#jsgraph-sidebar a {
+.jsgraph-sidebar a {
   color: #032e18;
 }
-#jsgraph-sidebar li ul {
+.jsgraph-sidebar li ul.scrollspy {
   display: none !important;
 }
-#jsgraph-sidebar li ul li {
+.jsgraph-sidebar li ul li {
   font-size: 0.9em;
   margin-left: 15px;
 }
-#jsgraph-sidebar li ul li a {
+.jsgraph-sidebar li ul li a {
   padding-top: 5px;
   padding-bottom: 5px;
 }
-#jsgraph-sidebar li.active > a {
+.jsgraph-sidebar li.active > a {
   color: white;
   background-color: #0b733f;
   font-weight: bold;
 }
-#jsgraph-sidebar li.active ul {
+.jsgraph-sidebar li.active ul {
   display: block !important;
 }
 #jsgraph-highlights .row {
@@ -7089,11 +7092,6 @@ h2 {
 #jsgraph-highlights p.larger {
   font-size: 1.3em;
 }
-.example {
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #032e18;
-}
 footer {
   border-top: 1px solid #0b733f;
   height: 40px;
@@ -7101,5 +7099,8 @@ footer {
 }
 footer a {
   color: #074b29;
+}
+#example-code-editable {
+  height: 800px;
 }
 /*# sourceMappingURL=site/css/theme.css.map */

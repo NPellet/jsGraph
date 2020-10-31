@@ -90,8 +90,8 @@ define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
         return false;
       }
 
-      var v1 = this.serie.searchClosestValue( this.getFromData( 'pos' ).x ),
-        v2 = this.serie.searchClosestValue( this.getFromData( 'pos2' ).x ),
+      var v1 = this.serie.getClosestPointToXY( this.getFromData( 'pos' ).x ),
+        v2 = this.serie.getClosestPointToXY( this.getFromData( 'pos2' ).x ),
         v3,
         i,
         j,
