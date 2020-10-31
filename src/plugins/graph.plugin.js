@@ -6,18 +6,18 @@ import EventMixin from '../mixins/graph.mixin.event_graph.js'
 class Plugin {
 
   static
-    default() {
+  default () {
     return {};
   }
 
-  constructor(options) {
-    this.options = Object.assign({}, Plugin.default(), this.constructor.default(), options);
+  constructor( options ) {
+    this.options = Object.assign( {}, Plugin.default(), this.constructor.default(), options );
   }
 
   /**
    * Init function called by jsGraph on load
    */
-  init(graph) {
+  init( graph ) {
     this.graph = graph;
   }
 
@@ -29,7 +29,7 @@ class Plugin {
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
    */
-  onMouseDown() { }
+  onMouseDown() {}
 
   /**
    * Handles the mouseup event from jsGraph
@@ -39,7 +39,7 @@ class Plugin {
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
    */
-  onMouseUp() { }
+  onMouseUp() {}
 
   /**
    * Handles the mousemove event from jsGraph
@@ -49,8 +49,8 @@ class Plugin {
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
    */
-  onMouseMove() { }
+  onMouseMove() {}
 }
 
-EventMixin(Plugin, "plugin");
+EventMixin( Plugin, "plugin" );
 export default Plugin;

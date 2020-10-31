@@ -63,5 +63,7 @@
   },
   "repository": "NPellet/jsGraph",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.12.1"
+  }
 }

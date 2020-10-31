@@ -657,466 +657,6 @@ function emptyDom(dom) {
   }
 }
 
-/*!
- * EventEmitter v4.2.9 - git.io/ee
- * Oliver Caldwell
- * MIT license
- * @preserve
- */
-/**
- * Class for managing events.
- * Can be extended to provide event functionality in other classes.
- *
- * @class EventEmitter Manages event registering and emitting.
- */
-
-function EventEmitter() {} // Shortcuts to improve speed and size
-
-
-var proto = EventEmitter.prototype;
-/**
- * Finds the index of the listener for the event in its storage array.
- *
- * @param {Function[]} listeners Array of listeners to search through.
- * @param {Function} listener Method to look for.
- * @return {Number} Index of the specified listener, -1 if not found
- * @api private
- */
-
-function indexOfListener(listeners, listener) {
-  var i = listeners.length;
-
-  while (i--) {
-    if (listeners[i].listener === listener) {
-      return i;
-    }
-  }
-
-  return -1;
-}
-/**
- * Alias a method while keeping the context correct, to allow for overwriting of target method.
- *
- * @param {String} name The name of the target method.
- * @return {Function} The aliased method
- * @api private
- */
-
-
-function alias(name) {
-  return function aliasClosure() {
-    return this[name].apply(this, arguments);
-  };
-}
-/**
- * Returns the listener array for the specified event.
- * Will initialise the event object and listener arrays if required.
- * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
- * Each property in the object response is an array of listener functions.
- *
- * @param {String|RegExp} evt Name of the event to return the listeners from.
- * @return {Function[]|Object} All listener functions for the event.
- */
-
-
-proto.getListeners = function getListeners(evt) {
-  var events = this._getEvents();
-
-  var response;
-  var key; // Return a concatenated array of all matching events if
-  // the selector is a regular expression.
-
-  if (evt instanceof RegExp) {
-    response = {};
-
-    for (key in events) {
-      if (events.hasOwnProperty(key) && evt.test(key)) {
-        response[key] = events[key];
-      }
-    }
-  } else {
-    response = events[evt] || (events[evt] = []);
-  }
-
-  return response;
-};
-/**
- * Takes a list of listener objects and flattens it into a list of listener functions.
- *
- * @param {Object[]} listeners Raw listener objects.
- * @return {Function[]} Just the listener functions.
- */
-
-
-proto.flattenListeners = function flattenListeners(listeners) {
-  var flatListeners = [];
-  var i;
-
-  for (i = 0; i < listeners.length; i += 1) {
-    flatListeners.push(listeners[i].listener);
-  }
-
-  return flatListeners;
-};
-/**
- * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
- *
- * @param {String|RegExp} evt Name of the event to return the listeners from.
- * @return {Object} All listener functions for an event in an object.
- */
-
-
-proto.getListenersAsObject = function getListenersAsObject(evt) {
-  var listeners = this.getListeners(evt);
-  var response;
-
-  if (listeners instanceof Array) {
-    response = {};
-    response[evt] = listeners;
-  }
-
-  return response || listeners;
-};
-/**
- * Adds a listener function to the specified event.
- * The listener will not be added if it is a duplicate.
- * If the listener returns true then it will be removed after it is called.
- * If you pass a regular expression as the event name then the listener will be added to all events that match it.
- *
- * @param {String|RegExp} evt Name of the event to attach the listener to.
- * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.addListener = function addListener(evt, listener) {
-  var listeners = this.getListenersAsObject(evt);
-  var listenerIsWrapped = typeof listener === 'object';
-  var key;
-
-  for (key in listeners) {
-    if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-      listeners[key].push(listenerIsWrapped ? listener : {
-        listener: listener,
-        once: false
-      });
-    }
-  }
-
-  return this;
-};
-/**
- * Alias of addListener
- */
-
-
-proto.on = alias('addListener');
-/**
- * Semi-alias of addListener. It will add a listener that will be
- * automatically removed after its first execution.
- *
- * @param {String|RegExp} evt Name of the event to attach the listener to.
- * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-proto.addOnceListener = function addOnceListener(evt, listener) {
-  return this.addListener(evt, {
-    listener: listener,
-    once: true
-  });
-};
-/**
- * Alias of addOnceListener.
- */
-
-
-proto.once = alias('addOnceListener');
-/**
- * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
- * You need to tell it what event names should be matched by a regex.
- *
- * @param {String} evt Name of the event to create.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-proto.defineEvent = function defineEvent(evt) {
-  this.getListeners(evt);
-  return this;
-};
-/**
- * Uses defineEvent to define multiple events.
- *
- * @param {String[]} evts An array of event names to define.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.defineEvents = function defineEvents(evts) {
-  for (var i = 0; i < evts.length; i += 1) {
-    this.defineEvent(evts[i]);
-  }
-
-  return this;
-};
-/**
- * Removes a listener function from the specified event.
- * When passed a regular expression as the event name, it will remove the listener from all events that match it.
- *
- * @param {String|RegExp} evt Name of the event to remove the listener from.
- * @param {Function} listener Method to remove from the event.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.removeListener = function removeListener(evt, listener) {
-  var listeners = this.getListenersAsObject(evt);
-  var index;
-  var key;
-
-  for (key in listeners) {
-    if (listeners.hasOwnProperty(key)) {
-      index = indexOfListener(listeners[key], listener);
-
-      if (index !== -1) {
-        listeners[key].splice(index, 1);
-      }
-    }
-  }
-
-  return this;
-};
-/**
- * Alias of removeListener
- */
-
-
-proto.off = alias('removeListener');
-/**
- * Adds listeners in bulk using the manipulateListeners method.
- * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
- * You can also pass it a regular expression to add the array of listeners to all events that match it.
- * Yeah, this function does quite a bit. That's probably a bad thing.
- *
- * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
- * @param {Function[]} [listeners] An optional array of listener functions to add.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-proto.addListeners = function addListeners(evt, listeners) {
-  // Pass through to manipulateListeners
-  return this.manipulateListeners(false, evt, listeners);
-};
-/**
- * Removes listeners in bulk using the manipulateListeners method.
- * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
- * You can also pass it an event name and an array of listeners to be removed.
- * You can also pass it a regular expression to remove the listeners from all events that match it.
- *
- * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
- * @param {Function[]} [listeners] An optional array of listener functions to remove.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.removeListeners = function removeListeners(evt, listeners) {
-  // Pass through to manipulateListeners
-  return this.manipulateListeners(true, evt, listeners);
-};
-/**
- * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
- * The first argument will determine if the listeners are removed (true) or added (false).
- * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
- * You can also pass it an event name and an array of listeners to be added/removed.
- * You can also pass it a regular expression to manipulate the listeners of all events that match it.
- *
- * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
- * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
- * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-  var i;
-  var value;
-  var single = remove ? this.removeListener : this.addListener;
-  var multiple = remove ? this.removeListeners : this.addListeners; // If evt is an object then pass each of its properties to this method
-
-  if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-    for (i in evt) {
-      if (evt.hasOwnProperty(i) && (value = evt[i])) {
-        // Pass the single listener straight through to the singular method
-        if (typeof value === 'function') {
-          single.call(this, i, value);
-        } else {
-          // Otherwise pass back to the multiple function
-          multiple.call(this, i, value);
-        }
-      }
-    }
-  } else {
-    // So evt must be a string
-    // And listeners must be an array of listeners
-    // Loop over it and pass each one to the multiple method
-    i = listeners.length;
-
-    while (i--) {
-      single.call(this, evt, listeners[i]);
-    }
-  }
-
-  return this;
-};
-/**
- * Removes all listeners from a specified event.
- * If you do not specify an event then all listeners will be removed.
- * That means every event will be emptied.
- * You can also pass a regex to remove all events that match it.
- *
- * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.removeEvent = function removeEvent(evt) {
-  var type = typeof evt;
-
-  var events = this._getEvents();
-
-  var key; // Remove different things depending on the state of evt
-
-  if (type === 'string') {
-    // Remove all listeners for the specified event
-    delete events[evt];
-  } else if (evt instanceof RegExp) {
-    // Remove all events matching the regex.
-    for (key in events) {
-      if (events.hasOwnProperty(key) && evt.test(key)) {
-        delete events[key];
-      }
-    }
-  } else {
-    // Remove all listeners in all events
-    delete this._events;
-  }
-
-  return this;
-};
-/**
- * Alias of removeEvent.
- *
- * Added to mirror the node API.
- */
-
-
-proto.removeAllListeners = alias('removeEvent');
-/**
- * Emits an event of your choice.
- * When emitted, every listener attached to that event will be executed.
- * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
- * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
- * So they will not arrive within the array on the other side, they will be separate.
- * You can also pass a regular expression to emit to all events that match it.
- *
- * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
- * @param {Array} [args] Optional array of arguments to be passed to each listener.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-proto.emitEvent = function emitEvent(evt, args) {
-  var listeners = this.getListenersAsObject(evt);
-  var listener;
-  var i;
-  var key;
-  var response;
-
-  for (key in listeners) {
-    if (listeners.hasOwnProperty(key)) {
-      i = listeners[key].length;
-
-      while (i--) {
-        // If the listener returns true then it shall be removed from the event
-        // The function is executed either with a basic call or an apply if there is an args array
-        listener = listeners[key][i];
-
-        if (listener.once === true) {
-          this.removeListener(evt, listener.listener);
-        }
-
-        response = listener.listener.apply(this, args || []);
-
-        if (response === this._getOnceReturnValue()) {
-          this.removeListener(evt, listener.listener);
-        }
-      }
-    }
-  }
-
-  return this;
-};
-/**
- * Alias of emitEvent
- */
-
-
-proto.trigger = alias('emitEvent');
-/**
- * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
- * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
- *
- * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
- * @param {...*} Optional additional arguments to be passed to each listener.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-proto.emit = function emit(evt) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  return this.emitEvent(evt, args);
-};
-/**
- * Sets the current value to check against when executing listeners. If a
- * listeners return value matches the one set here then it will be removed
- * after execution. This value defaults to true.
- *
- * @param {*} value The new value to check for when executing listeners.
- * @return {Object} Current instance of EventEmitter for chaining.
- */
-
-
-proto.setOnceReturnValue = function setOnceReturnValue(value) {
-  this._onceReturnValue = value;
-  return this;
-};
-/**
- * Fetches the current value to check against when executing listeners. If
- * the listeners return value matches this one then it should be removed
- * automatically. It will return true by default.
- *
- * @return {*|Boolean} The current value to check for or the default, true.
- * @api private
- */
-
-
-proto._getOnceReturnValue = function _getOnceReturnValue() {
-  if (this.hasOwnProperty('_onceReturnValue')) {
-    return this._onceReturnValue;
-  } else {
-    return true;
-  }
-};
-/**
- * Fetches the events object and creates one if required.
- *
- * @return {Object} The events storage object.
- * @api private
- */
-
-
-proto._getEvents = function _getEvents() {
-  return this._events || (this._events = {});
-};
-
 const setMarkerStyle = (serie, style, styleName) => {
   serie.showMarkers();
   let _default = {};
@@ -1150,8 +690,8 @@ const setSerieStyle = (Graph, serie, jsonSerie, type) => {
     name,
     style
   }, index) => {
-    if (style.line && (type == Graph.SERIE_LINE || type == Graph.SERIE_BAR)) {
-      if (style.line.color) {
+    if (style.line && (type == Graph.SERIE_LINE || type == Graph.SERIE_BAR || type == Graph.SERIE_LINE_COLORED)) {
+      if (style.line.color && type != Graph.SERIE_LINE_COLORED) {
         serie.setLineColor(style.line.color, name);
       }
 
@@ -1159,8 +699,8 @@ const setSerieStyle = (Graph, serie, jsonSerie, type) => {
         serie.setLineWidth(style.line.width, name);
       }
 
-      if (style.line.dash) {
-        serie.setLineStyle(style.line.dash, name);
+      if (style.line.dash || style.line.style) {
+        serie.setLineStyle(style.line.dash || style.line.style, name);
       }
 
       if (style.line.fill) {
@@ -1504,6 +1044,126 @@ const makeGraph = (Graph, graph, json) => {
     });
   }
 };
+
+var GraphJSON = (Graph => {
+  /**
+   * Returns a graph created from a schema
+   * @param {Object} json
+   * @param {HTMLElement} wrapper - The wrapping element
+   * @param {Function} callback - A callback function called when something has changed, in the form of ( event, params... ) {}
+   * @returns {Graph} Newly created graph
+   */
+  Graph.fromJSON = (json, wrapper, callback) => {
+    const options = json.options || {};
+    const graph = new Graph(undefined, options);
+    makeGraph(Graph, graph, json, wrapper);
+    graph.setWrapper(wrapper);
+    graph.onAll(function (eventName, ...args) {
+      callback(eventName, ...args);
+    });
+    return graph;
+  };
+
+  Graph.prototype.setJSON = (json, options = {}) => {
+    // Destroy the current elements
+    undefined.killSeries();
+    const state = {};
+
+    if (options.keepState) {
+      undefined._applyToAxes(axis => {
+        if (axis.options.name) {
+          state[axis.options.name] = {
+            min: axis.getCurrentMin(),
+            max: axis.getCurrentMax()
+          };
+        }
+      }, undefined, true, true);
+    }
+
+    undefined._applyToAxes(axis => {
+      undefined.killAxis(axis, true, true);
+    }, undefined, true, true);
+
+    undefined.killLegend();
+    undefined.killShapes();
+    makeGraph(Graph, undefined, json);
+
+    if (options.keepState) {
+      undefined._applyToAxes(axis => {
+        if (axis.options.name && state[axis.options.name]) {
+          axis.setCurrentMin(state[axis.options.name].min);
+          axis.setCurrentMax(state[axis.options.name].max);
+        }
+      }, undefined, true, true);
+    }
+
+    undefined.draw();
+  };
+});
+
+const EventMixin = {
+  on(eventName, handler) {
+    if (!this.__eventHandlers) {
+      this.__eventHandlers = {};
+    }
+
+    if (!this.__eventHandlers[eventName]) {
+      this.__eventHandlers[eventName] = [];
+    }
+
+    this.__eventHandlers[eventName].push(handler);
+  },
+
+  off(eventName, handler) {
+    var _this$__eventHandlers;
+
+    let handlers = (_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName];
+
+    if (!handlers) {
+      return;
+    }
+
+    if (!handler) {
+      handlers = []; // Reset the array and let the GC recycle all the handlers
+    } else {
+      for (let i = 0, l = handlers.length; i < l; i++) {
+        if (handlers[i] == handler) {
+          handlers.splice(i--, 1);
+        }
+      }
+    }
+  },
+
+  onAll(handler) {
+    this.on('__all', handler);
+  },
+
+  ofAll(handler) {
+    this.off('__all', handler);
+  },
+
+  trigger(eventName, ...params) {
+    var _this$__eventHandlers2, _this$__eventHandlers3;
+
+    if ((_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2[eventName]) {
+      this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
+    }
+
+    const allHandlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3.__all;
+
+    if (allHandlers) {
+      allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
+    }
+  },
+
+  emit(eventName, ...params) {
+    return this.trigger(eventName, ...params);
+  }
+
+};
+var EventMixin$1 = (Obj => {
+  Object.assign(Obj.prototype, EventMixin);
+});
 
 var dataAggregator;
 
@@ -4439,12 +4099,11 @@ const GraphOptionsDefault = {
 var _constructors = new Map();
 /**
  * Entry class of jsGraph that creates a new graph.
- * @extends EventEmitter
  * @tutorial basic
  */
 
 
-class Graph extends EventEmitter {
+class Graph {
   /**
    * Graph constructor
    * @param {(HTMLElement|String)} [wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
@@ -4458,8 +4117,6 @@ class Graph extends EventEmitter {
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    */
   constructor(wrapper, options, axis = undefined) {
-    super();
-
     if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
       // Wrapper is options
       options = wrapper;
@@ -6774,57 +6431,6 @@ class Graph extends EventEmitter {
 
     return false;
   }
-  /**
-   * Returns a graph created from a schema
-   * @param {Object} json
-   * @param {HTMLElement} wrapper - The wrapping element
-   * @returns {Graph} Newly created graph
-   */
-
-
-  static fromJSON(json, wrapper) {
-    const options = json.options || {};
-    const graph = new Graph(undefined, options);
-    makeGraph(Graph, graph, json, wrapper);
-    graph.setWrapper(wrapper);
-    return graph;
-  }
-
-  setJSON(json, options = {}) {
-    // Destroy the current elements
-    this.killSeries();
-    const state = {};
-
-    if (options.keepState) {
-      this._applyToAxes(axis => {
-        if (axis.options.name) {
-          state[axis.options.name] = {
-            min: axis.getCurrentMin(),
-            max: axis.getCurrentMax()
-          };
-        }
-      }, undefined, true, true);
-    }
-
-    this._applyToAxes(axis => {
-      this.killAxis(axis, true, true);
-    }, undefined, true, true);
-
-    this.killLegend();
-    this.killShapes();
-    makeGraph(Graph, this, json);
-
-    if (options.keepState) {
-      this._applyToAxes(axis => {
-        if (axis.options.name && state[axis.options.name]) {
-          axis.setCurrentMin(state[axis.options.name].min);
-          axis.setCurrentMax(state[axis.options.name].max);
-        }
-      }, undefined, true, true);
-    }
-
-    this.draw();
-  }
 
   exportToSchema() {
     let schema = {};
@@ -7089,8 +6695,7 @@ function refreshDrawingZone(graph) {
       arr[index] = prev + current;
       return prev + current;
     }, 0);
-  });
-  console.log(shift.bottom); // Apply to top and bottom
+  }); // Apply to top and bottom
 
   graph._applyToAxes(function (axis, position) {
     if (!axis.isShown() || axis.floating) {
@@ -8069,6 +7674,8 @@ Graph.TICKS_INSIDE = Symbol();
 Graph.TICKS_CENTERED = Symbol();
 Graph.ns = 'http://www.w3.org/2000/svg';
 Graph.nsxlink = 'http://www.w3.org/1999/xlink';
+GraphJSON(Graph);
+EventMixin$1(Graph);
 
 /**
  * Default legend configuration
@@ -8696,6 +8303,29 @@ function getBBox(svgElement) {
   }
 }
 
+let ExtendedEventMixin = manglingName => {
+  return {
+    __proto__: EventMixin,
+
+    trigger(eventName, ...args) {
+      super.trigger(eventName, ...args);
+
+      if (this.graph) {
+        this.graph.trigger(manglingName + "." + eventName, ...args);
+      }
+    },
+
+    emit(eventName, ...args) {
+      this.trigger(eventName, ...args);
+    }
+
+  };
+};
+
+var EventMixin$2 = ((Obj, manglingName = "__") => {
+  Object.assign(Obj.prototype, ExtendedEventMixin(manglingName));
+});
+
 /**
  * Default graph parameters
  * @name AxisOptionsDefault
@@ -8774,16 +8404,13 @@ const defaults = {
  * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
  * @class Axis
  * @static
- * @augments EventEmitter
  * @example function myAxis() {};
  * myAxis.prototype = new Graph.getConstructor("axis");
  * graph.setBottomAxis( new myAxis( { } ) );
  */
 
-class Axis extends EventEmitter {
-  constructor() {
-    super();
-  }
+class Axis {
+  constructor() {}
 
   init(graph, options, overwriteoptions) {
     this.unitModificationTimeTicks = [[1, [1, 2, 5, 10, 20, 30]], [60, [1, 2, 5, 10, 20, 30]], [3600, [1, 2, 6, 12]], [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]];
@@ -9444,7 +9071,6 @@ class Axis extends EventEmitter {
 
 
     var unitPerTick = valrange / nbTick;
-    console.log(this.options.unitModification, this.unitModificationTimeTicks, px, nbTicks, pxPerTick, unitPerTick, valrange);
 
     switch (this.options.unitModification) {
       case 'time':
@@ -11322,6 +10948,7 @@ Axis.prototype.getValue = Axis.prototype.getVal;
  */
 
 Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
+EventMixin$2(Axis, "axis");
 
 /**
  * Generic constructor of a y axis
@@ -13182,9 +12809,8 @@ const defaultOptions = {
  * @static
  */
 
-class Serie extends EventEmitter {
+class Serie {
   constructor(graph, name, options, defaultInherited) {
-    super(...arguments);
     this.options = extend(true, {}, defaultOptions, defaultInherited, options);
     this.graph = graph;
     this.name = name;
@@ -14006,6 +13632,8 @@ class Serie extends EventEmitter {
   }
 
 }
+
+EventMixin$2(Serie, 'serie');
 
 var type = 'scatter';
 const defaultOptions$1 = {
@@ -16907,7 +16535,8 @@ class SerieLineColor extends SerieLine {
         color: color
       };
       line.object.setAttribute('stroke', color);
-      line.color = color; //      this.applyLineStyle( line );
+      line.color = color;
+      this.applyLineStyle(line.object); //      this.applyLineStyle( line );
 
       this.groupLines.appendChild(line.object);
     }
@@ -18303,10 +17932,8 @@ class SerieContour extends SerieLine {
  * @static
  */
 
-class Shape extends EventEmitter {
-  constructor() {
-    super();
-  }
+class Shape {
+  constructor() {}
   /**
    * Initializes the shape
    * @param {Graph} graph - The graph containing the shape
@@ -20510,6 +20137,7 @@ Shape.prototype.showLabel = Shape.prototype.displayLabel;
  */
 
 Shape.prototype.remove = Shape.prototype.kill;
+EventMixin$2(Shape, 'shape');
 
 /**
  *  Displays a surface under a line serie
@@ -22343,13 +21971,12 @@ class ShapeHTML extends Shape {
  * @interface
  */
 
-class Plugin extends EventEmitter {
+class Plugin {
   static default() {
     return {};
   }
 
   constructor(options) {
-    super(...arguments);
     this.options = Object.assign({}, Plugin.default(), this.constructor.default(), options);
   }
   /**
@@ -22395,6 +22022,8 @@ class Plugin extends EventEmitter {
   onMouseMove() {}
 
 }
+
+EventMixin$2(Plugin, "plugin");
 
 /**
  * Constructor for the drag plugin. Do not use this constructor directly.

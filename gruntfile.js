@@ -36,7 +36,7 @@ module.exports = function (grunt) {
           'dist/jsgraph.min.js': 'dist/jsgraph.js'
         },
         options: {
-          banner: '/*! jsGraph (c) 2014 Norman Pellet, MIT license, v@<%= pkg.version %>, Date: @DATE */\n'.replace(
+          banner: '/*! jsGraph (c) 2014-2020 Norman Pellet, MIT license, v@<%= pkg.version %>, Date: @DATE */\n'.replace(
             /@DATE/g,
             new Date().toISOString().replace(/:\d+\.\d+Z$/, 'Z')
           )
@@ -45,11 +45,6 @@ module.exports = function (grunt) {
     },
 
     copy: {
-      dist: {
-        files: {
-          //'dist/jquery.min.js': 'lib/components/jquery/dist/jquery.min.js'
-        }
-      },
 
       examples: {
         files: {
@@ -75,19 +70,7 @@ module.exports = function (grunt) {
         }
       },
 
-      raytracer: {
-        files: {
-          '/Users/normanpellet/Documents/Candlelight/code/board_generator/raytracer/node_modules/node-jsgraph/dist/jsgraph-module.js':
-            'dist/jsgraph-module.js'
-        }
-      },
 
-      candlelight: {
-        files: {
-          '/Users/normanpellet/Documents/Candlelight/code/website/node_modules/node-jsgraph/dist/jsgraph-es6.js':
-            'dist/jsgraph-es6.js'
-        }
-      }
     },
 
     watch: {
@@ -110,6 +93,7 @@ module.exports = function (grunt) {
             babel({
               babelrc: false,
               plugins: [
+                '@babel/plugin-proposal-optional-chaining',
                 '@babel/transform-exponentiation-operator',
                 [
                   'inline-replace-variables',
@@ -148,6 +132,7 @@ module.exports = function (grunt) {
 
                 plugins: [
                   'add-module-exports',
+                  '@babel/plugin-proposal-optional-chaining',
                   '@babel/transform-modules-umd',
                   '@babel/transform-exponentiation-operator',
                   [
@@ -184,6 +169,7 @@ module.exports = function (grunt) {
               query: {
                 plugins: [
                   'add-module-exports',
+                  '@babel/plugin-proposal-optional-chaining',
                   '@babel/transform-modules-umd',
                   '@babel/transform-exponentiation-operator',
                   [
@@ -358,7 +344,6 @@ module.exports = function (grunt) {
     var list = JSON.parse(fs.readFileSync('examples/list.json', 'utf8'));
 
     for (var i = 0, l = list.length; i < l; i++) {
-      console.log(list[i]);
       var code = fs.readFileSync(`examples/v2/${list[i].file}.js`, 'utf8');
       var example = {};
       example.id = list[i].file;
@@ -424,15 +409,18 @@ module.exports = function (grunt) {
           return;
         }
 
-        grunt.file.write(
-          el.name,
-          beautify(grunt.file.read(el.name), {
-            indent_size: 2,
-            preserve_newlines: true,
-            space_in_paren: true,
-            max_preserve_newlines: 2
-          })
-        );
+        // Messing with ES6 features
+        /*
+                grunt.file.write(
+                  el.name,
+                  beautify(grunt.file.read(el.name), {
+                    indent_size: 2,
+                    preserve_newlines: true,
+                    space_in_paren: true,
+                    max_preserve_newlines: 2
+                  })
+                );*/
+
       });
 
       if (!self._options.jsdoc) {

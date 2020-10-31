@@ -14,7 +14,7 @@ const defaultOptions = {
  * @static
  */
 class Serie {
-  constructor(graph, name, options, defaultInherited) {
+  constructor( graph, name, options, defaultInherited ) {
     this.options = util.extend(
       true, {},
       defaultOptions,
@@ -23,25 +23,25 @@ class Serie {
     );
     this.graph = graph;
     this.name = name;
-    this.groupMain = document.createElementNS(this.graph.ns, 'g');
+    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
-    this._symbolLegendContainer = document.createElementNS(this.graph.ns, 'g');
+    this._symbolLegendContainer = document.createElementNS( this.graph.ns, 'g' );
   }
 
-  postInit() { }
+  postInit() {}
 
-  draw() { }
+  draw() {}
 
-  beforeDraw() { }
+  beforeDraw() {}
 
   afterDraw() {
-    if (this.options.redrawShapesAfterDraw) {
-      this.graph.getShapesOfSerie(this).forEach((shape) => {
+    if ( this.options.redrawShapesAfterDraw ) {
+      this.graph.getShapesOfSerie( this ).forEach( ( shape ) => {
         shape.redraw();
-      });
+      } );
     }
 
-    this.emit('draw');
+    this.emit( 'draw' );
   }
 
   /**
@@ -55,15 +55,15 @@ class Serie {
    * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
    * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
    */
-  setData(data, oneDimensional, type) {
-    if (data instanceof Waveform) {
-      return this.setWaveform(data);
+  setData( data, oneDimensional, type ) {
+    if ( data instanceof Waveform ) {
+      return this.setWaveform( data );
     }
 
     throw 'Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class.';
   }
 
-  _addData(type, howmany) {
+  _addData( type, howmany ) {
     return [];
   }
 
@@ -72,7 +72,7 @@ class Serie {
    * @returns {Serie} The current serie
    */
   clearData() {
-    this.setData(new Waveform());
+    this.setData( new Waveform() );
     return this;
   }
 
@@ -90,7 +90,7 @@ class Serie {
    * @param {Object} options - The options of the serie
    * @memberof Serie
    */
-  setOptions(options) {
+  setOptions( options ) {
     this.options = options || {};
   }
 
@@ -101,8 +101,8 @@ class Serie {
    * @memberof Serie
    * @example serie.setOption('selectableOnClick', true );
    */
-  setOption(name, value) {
-    this.options[name] = value;
+  setOption( name, value ) {
+    this.options[ name ] = value;
   }
 
   /**
@@ -110,11 +110,11 @@ class Serie {
    * @return {Serie} The current serie instance
    * @memberof Serie
    */
-  kill(noLegendUpdate) {
-    this.graph.removeSerieFromDom(this);
-    this.graph._removeSerie(this);
+  kill( noLegendUpdate ) {
+    this.graph.removeSerieFromDom( this );
+    this.graph._removeSerie( this );
 
-    if (this.graph.legend && !noLegendUpdate) {
+    if ( this.graph.legend && !noLegendUpdate ) {
       this.graph.legend.update();
     }
 
@@ -128,38 +128,38 @@ class Serie {
    * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  hide(hideShapes = this.options.bindShapesToDisplayState, mute = false) {
+  hide( hideShapes = this.options.bindShapesToDisplayState, mute = false ) {
     this.hidden = true;
-    this.groupMain.setAttribute('display', 'none');
+    this.groupMain.setAttribute( 'display', 'none' );
 
-    this.getSymbolForLegend().setAttribute('opacity', 0.5);
-    this.getTextForLegend().setAttribute('opacity', 0.5);
+    this.getSymbolForLegend().setAttribute( 'opacity', 0.5 );
+    this.getTextForLegend().setAttribute( 'opacity', 0.5 );
 
     this.hideImpl();
 
-    if (hideShapes) {
-      var shapes = this.graph.getShapesOfSerie(this);
-      for (var i = 0, l = shapes.length; i < l; i++) {
-        shapes[i].hide();
+    if ( hideShapes ) {
+      var shapes = this.graph.getShapesOfSerie( this );
+      for ( var i = 0, l = shapes.length; i < l; i++ ) {
+        shapes[ i ].hide();
       }
     }
 
-    if (!mute) {
-      this.emit('hide');
+    if ( !mute ) {
+      this.emit( 'hide' );
     }
 
     if (
       this.getXAxis().doesHideWhenNoSeriesShown() ||
       this.getYAxis().doesHideWhenNoSeriesShown()
     ) {
-      this.graph.draw(true);
+      this.graph.draw( true );
     }
 
     if (
-      this.graph.hasPlugin('peakPicking') &&
-      this.graph.getPlugin('peakPicking').getSerie() == this
+      this.graph.hasPlugin( 'peakPicking' ) &&
+      this.graph.getPlugin( 'peakPicking' ).getSerie() == this
     ) {
-      this.graph.getPlugin('peakPicking').hidePeakPicking();
+      this.graph.getPlugin( 'peakPicking' ).hidePeakPicking();
     }
 
     return this;
@@ -171,47 +171,47 @@ class Serie {
    * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  show(showShapes = this.options.bindShapesToDisplayState, mute = false) {
+  show( showShapes = this.options.bindShapesToDisplayState, mute = false ) {
     this.hidden = false;
-    this.groupMain.setAttribute('display', 'block');
+    this.groupMain.setAttribute( 'display', 'block' );
 
-    this.getSymbolForLegend().setAttribute('opacity', 1);
-    this.getTextForLegend().setAttribute('opacity', 1);
+    this.getSymbolForLegend().setAttribute( 'opacity', 1 );
+    this.getTextForLegend().setAttribute( 'opacity', 1 );
 
     this.showImpl();
 
-    this.draw(true);
+    this.draw( true );
 
-    if (showShapes) {
-      var shapes = this.graph.getShapesOfSerie(this);
-      for (var i = 0, l = shapes.length; i < l; i++) {
-        shapes[i].show();
+    if ( showShapes ) {
+      var shapes = this.graph.getShapesOfSerie( this );
+      for ( var i = 0, l = shapes.length; i < l; i++ ) {
+        shapes[ i ].show();
       }
     }
 
-    if (!mute) {
-      this.emit('show');
+    if ( !mute ) {
+      this.emit( 'show' );
     }
 
     if (
       this.getXAxis().doesHideWhenNoSeriesShown() ||
       this.getYAxis().doesHideWhenNoSeriesShown()
     ) {
-      this.graph.draw(true);
+      this.graph.draw( true );
     }
 
     if (
-      this.graph.hasPlugin('peakPicking') &&
-      this.graph.getPlugin('peakPicking').getSerie() == this
+      this.graph.hasPlugin( 'peakPicking' ) &&
+      this.graph.getPlugin( 'peakPicking' ).getSerie() == this
     ) {
-      this.graph.getPlugin('peakPicking').showPeakPicking();
+      this.graph.getPlugin( 'peakPicking' ).showPeakPicking();
     }
 
     return this;
   }
 
-  hideImpl() { }
-  showImpl() { }
+  hideImpl() {}
+  showImpl() {}
 
   /**
    * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
@@ -220,7 +220,7 @@ class Serie {
    * @returns {Serie} The current serie
    */
   toggleDisplay() {
-    if (!this.isShown()) {
+    if ( !this.isShown() ) {
       this.show();
     } else {
       this.hide();
@@ -243,15 +243,15 @@ class Serie {
    * @memberof Serie
    */
   axisCheck() {
-    if (!this.getXAxis() || !this.getYAxis()) {
+    if ( !this.getXAxis() || !this.getYAxis() ) {
       throw 'No axis exist for this serie. Check that they were properly assigned';
     }
 
     if (
-      isNaN(this.getXAxis().getCurrentMin()) ||
-      isNaN(this.getXAxis().getCurrentMax()) ||
-      isNaN(this.getYAxis().getCurrentMin()) ||
-      isNaN(this.getYAxis().getCurrentMax())
+      isNaN( this.getXAxis().getCurrentMin() ) ||
+      isNaN( this.getXAxis().getCurrentMax() ) ||
+      isNaN( this.getYAxis().getCurrentMin() ) ||
+      isNaN( this.getYAxis().getCurrentMax() )
     ) {
       throw 'Axis min and max values are not defined. Try autoscaling';
     }
@@ -262,8 +262,8 @@ class Serie {
    * @param {Number} val - Value to convert to pixels position
    * @returns {Number} The x position in px corresponding to the x value
    */
-  getX(val) {
-    return (val = this.getXAxis().getPx(val)) - (val % 0.2);
+  getX( val ) {
+    return ( val = this.getXAxis().getPx( val ) ) - ( val % 0.2 );
   }
 
   /**
@@ -272,8 +272,8 @@ class Serie {
    * @param {Number} val - Value to convert to pixels position
    * @returns {Number} The y position in px corresponding to the y value
    */
-  getY(val) {
-    return (val = this.getYAxis().getPx(val)) - (val % 0.2);
+  getY( val ) {
+    return ( val = this.getYAxis().getPx( val ) ) - ( val % 0.2 );
   }
 
   /**
@@ -285,14 +285,14 @@ class Serie {
     return this.selected || this.selectionType !== 'unselected';
   }
 
-  _checkX(val) {
-    this.minX = Math.min(this.minX, val);
-    this.maxX = Math.max(this.maxX, val);
+  _checkX( val ) {
+    this.minX = Math.min( this.minX, val );
+    this.maxX = Math.max( this.maxX, val );
   }
 
-  _checkY(val) {
-    this.minY = Math.min(this.minY, val);
-    this.maxY = Math.max(this.maxY, val);
+  _checkY( val ) {
+    this.minY = Math.min( this.minY, val );
+    this.maxY = Math.max( this.maxY, val );
   }
 
   /**
@@ -312,12 +312,12 @@ class Serie {
    * @returns {Serie} The current serie
    */
   autoAxis() {
-    if (this.isFlipped()) {
-      this.setXAxis(this.graph.getYAxis());
-      this.setYAxis(this.graph.getXAxis());
+    if ( this.isFlipped() ) {
+      this.setXAxis( this.graph.getYAxis() );
+      this.setYAxis( this.graph.getXAxis() );
     } else {
-      this.setXAxis(this.graph.getXAxis());
-      this.setYAxis(this.graph.getYAxis());
+      this.setXAxis( this.graph.getXAxis() );
+      this.setYAxis( this.graph.getYAxis() );
     }
 
     // After axes have been assigned, the graph axes should update their min/max
@@ -326,7 +326,7 @@ class Serie {
   }
 
   autoAxes() {
-    return this.autoAxis(...arguments);
+    return this.autoAxis( ...arguments );
   }
 
   /**
@@ -336,11 +336,11 @@ class Serie {
    * @returns {Serie} The current serie
    * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
    */
-  setXAxis(axis) {
-    if (typeof axis == 'number') {
+  setXAxis( axis ) {
+    if ( typeof axis == 'number' ) {
       this.xaxis = this.isFlipped() ?
-        this.graph.getYAxis(axis) :
-        this.graph.getXAxis(axis);
+        this.graph.getYAxis( axis ) :
+        this.graph.getXAxis( axis );
     } else {
       this.xaxis = axis;
     }
@@ -357,11 +357,11 @@ class Serie {
    * @returns {Serie} The current serie
    * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
    */
-  setYAxis(axis) {
-    if (typeof axis == 'number') {
+  setYAxis( axis ) {
+    if ( typeof axis == 'number' ) {
       this.xaxis = this.isFlipped() ?
-        this.graph.getXAxis(axis) :
-        this.graph.getYAxis(axis);
+        this.graph.getXAxis( axis ) :
+        this.graph.getYAxis( axis );
     } else {
       this.yaxis = axis;
     }
@@ -379,9 +379,9 @@ class Serie {
    * @memberof Serie
    */
   setAxes() {
-    for (var i = 0; i < 2; i++) {
-      if (arguments[i]) {
-        this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
+    for ( var i = 0; i < 2; i++ ) {
+      if ( arguments[ i ] ) {
+        this[ arguments[ i ].isX() ? 'setXAxis' : 'setYAxis' ]( arguments[ i ] );
       }
     }
 
@@ -447,13 +447,13 @@ class Serie {
   }
 
   getWaveforms() {
-    return [this.waveform];
+    return [ this.waveform ];
   }
 
-  setWaveform(waveform) {
-    if (!(waveform instanceof Waveform)) {
+  setWaveform( waveform ) {
+    if ( !( waveform instanceof Waveform ) ) {
       console.trace();
-      console.error(waveform);
+      console.error( waveform );
       throw new Error(
         'Cannot assign waveform to serie. Waveform is not of the proper Waveform instance'
       );
@@ -478,16 +478,16 @@ class Serie {
    * @memberof Serie
    */
   getSymbolForLegend() {
-    if (!this.lineForLegend) {
-      var line = document.createElementNS(this.graph.ns, 'line');
-      this.applyLineStyle(line);
+    if ( !this.lineForLegend ) {
+      var line = document.createElementNS( this.graph.ns, 'line' );
+      this.applyLineStyle( line );
 
-      line.setAttribute('x1', 5);
-      line.setAttribute('x2', 25);
-      line.setAttribute('y1', 0);
-      line.setAttribute('y2', 0);
+      line.setAttribute( 'x1', 5 );
+      line.setAttribute( 'x2', 25 );
+      line.setAttribute( 'y1', 0 );
+      line.setAttribute( 'y2', 0 );
 
-      line.setAttribute('cursor', 'pointer');
+      line.setAttribute( 'cursor', 'pointer' );
 
       this.lineForLegend = line;
     }
@@ -506,7 +506,7 @@ class Serie {
    * @memberof Serie
    */
   setLegendSymbolStyle() {
-    this.applyLineStyle(this.getSymbolForLegend());
+    this.applyLineStyle( this.getSymbolForLegend() );
   }
 
   /**
@@ -525,9 +525,9 @@ class Serie {
    * @see Serie#getLabel
    */
   getTextForLegend() {
-    if (!this.textForLegend) {
-      var text = document.createElementNS(this.graph.ns, 'text');
-      text.setAttribute('cursor', 'pointer');
+    if ( !this.textForLegend ) {
+      var text = document.createElementNS( this.graph.ns, 'text' );
+      text.setAttribute( 'cursor', 'pointer' );
       text.textContent = this.getLabel();
 
       this.textForLegend = text;
@@ -541,7 +541,7 @@ class Serie {
    * @memberof Serie
    */
   getIndex() {
-    return this.graph.series.indexOf(this);
+    return this.graph.series.indexOf( this );
   }
 
   /**
@@ -558,10 +558,10 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  setLabel(label) {
+  setLabel( label ) {
     this.options.label = label;
 
-    if (this.textForLegend) {
+    if ( this.textForLegend ) {
       this.textForLegend.textContent = label;
     }
 
@@ -577,7 +577,7 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  setFlip(flipped) {
+  setFlip( flipped ) {
     this.options.flip = flipped;
     return this;
   }
@@ -604,12 +604,12 @@ class Serie {
    * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
    * @returns {Serie} The current serie
    */
-  setLayer(layerIndex) {
-    let newLayer = parseInt(layerIndex) || 1;
+  setLayer( layerIndex ) {
+    let newLayer = parseInt( layerIndex ) || 1;
 
-    if (newLayer !== this.options.layer) {
+    if ( newLayer !== this.options.layer ) {
       this.options.layer = newLayer;
-      this.graph.appendSerieToDom(this);
+      this.graph.appendSerieToDom( this );
     }
 
     return this;
@@ -624,9 +624,9 @@ class Serie {
     return this.options.layer || 1;
   }
 
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
+  setStyle( style, selectionType = 'unselected' ) {
+    this.styles[ selectionType ] = style;
+    this.styleHasChanged( selectionType );
   }
 
   /**
@@ -635,15 +635,15 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  styleHasChanged(selectionType = 'unselected') {
+  styleHasChanged( selectionType = 'unselected' ) {
     this._changedStyles = this._changedStyles || {};
 
-    if (selectionType === false) {
-      for (var i in this._changedStyles) {
-        this._changedStyles[i] = false;
+    if ( selectionType === false ) {
+      for ( var i in this._changedStyles ) {
+        this._changedStyles[ i ] = false;
       }
     } else {
-      this._changedStyles[selectionType || 'unselected'] = true;
+      this._changedStyles[ selectionType || 'unselected' ] = true;
     }
 
     this.graph.requireLegendUpdate();
@@ -657,9 +657,9 @@ class Serie {
    * @private
    * @memberof Serie
    */
-  hasStyleChanged(selectionType) {
+  hasStyleChanged( selectionType ) {
     this._changedStyles = this._changedStyles || {};
-    return this._changedStyles[selectionType || 'unselected'];
+    return this._changedStyles[ selectionType || 'unselected' ];
   }
 
   /**
@@ -667,7 +667,7 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  dataHasChanged(arg) {
+  dataHasChanged( arg ) {
     this._dataHasChanged = arg === undefined || arg;
     return this;
   }
@@ -690,9 +690,9 @@ class Serie {
    * @see Serie#getInfo
    * @memberof Serie
    */
-  setInfo(prop, value) {
+  setInfo( prop, value ) {
     this.infos = this.infos || {};
-    this.infos[prop] = value;
+    this.infos[ prop ] = value;
     return this;
   }
 
@@ -703,15 +703,15 @@ class Serie {
    * @see Serie#setInfo
    * @memberof Serie
    */
-  getInfo(prop, value) {
-    return (this.infos || {})[prop];
+  getInfo( prop, value ) {
+    return ( this.infos || {} )[ prop ];
   }
 
   /**
    * @deprecated
    * @memberof Serie
    */
-  setAdditionalData(data) {
+  setAdditionalData( data ) {
     this.additionalData = data;
     return this;
   }
@@ -729,8 +729,8 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  select(selectName) {
-    if (selectName == 'unselected') {
+  select( selectName ) {
+    if ( selectName == 'unselected' ) {
       return this;
     }
     this.selected = true;
@@ -755,7 +755,7 @@ class Serie {
    * @param {Function} outCallback - Function to be called when the mouse exits the serie area
    * @private
    */
-  enableTracking(hoverCallback, outCallback) {
+  enableTracking( hoverCallback, outCallback ) {
     this._tracker = true;
 
     return this;
@@ -768,7 +768,7 @@ class Serie {
    * @private
    */
   disableTracking() {
-    if (this._trackerDom) {
+    if ( this._trackerDom ) {
       this._trackerDom.remove();
       this._trackerDom = null;
     }
@@ -783,9 +783,9 @@ class Serie {
    *  @param {Object} options - The tracking line options
    *  @returns {Serie} The current serie
    */
-  allowTrackingLine(options) {
+  allowTrackingLine( options ) {
     options = options || {};
-    this.graph.addSerieToTrackingLine(this, options);
+    this.graph.addSerieToTrackingLine( this, options );
   }
 
   getMarkerForLegend() {
@@ -810,13 +810,13 @@ class Serie {
     return this;
   }
 
-  setDataIndices(categories, nb) {
+  setDataIndices( categories, nb ) {
     this.categoryIndices = categories;
     this.nbCategories = nb;
   }
 
   hasErrors() {
-    if (!this.waveform) {
+    if ( !this.waveform ) {
       return false;
     }
 
@@ -824,6 +824,6 @@ class Serie {
   }
 }
 
-EventMixing(Serie, 'serie');
+EventMixing( Serie, 'serie' );
 
 export default Serie;

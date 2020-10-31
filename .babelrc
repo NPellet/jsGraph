@@ -6,6 +6,7 @@
         "__VERSION__": "v<%= pkg.version %>"
       }
     ],
-    "@babel/transform-modules-commonjs"
+    "@babel/transform-modules-commonjs",
+    "@babel/plugin-proposal-optional-chaining"
   ]
 }
