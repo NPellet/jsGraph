@@ -1936,7 +1936,7 @@ class Axis extends EventEmitter {
       case 'time:min.sec':
         value = value / 60;
         var valueRounded = Math.floor( value );
-        var s = ( `${Math.round((value - valueRounded) * 60)}` );
+        var s = ( `${Math.round( ( value - valueRounded ) * 60 )}` );
         s = s.length == 1 ? `0${s}` : s;
         text = `${valueRounded}:${s}`;
         break;
@@ -1944,7 +1944,7 @@ class Axis extends EventEmitter {
       case 'time:min_dec':
         value = value / 60;
         var valueRounded = Math.floor( value );
-        var s = ( `${Math.round((value - valueRounded) * 100)}` );
+        var s = ( `${Math.round( ( value - valueRounded ) * 100 )}` );
         s = s.length == 1 ? `0${s}` : s;
         text = `${valueRounded}.${s}`;
         break;

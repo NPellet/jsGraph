@@ -4,7 +4,7 @@
   "version": "2.2.39",
   "scripts": {
     "build": "grunt",
-    "buildExamplesRenderer": "grunt buildExamplesRenderer",
+    "buildExamples": "grunt examples",
     "doc": "git subtree push --prefix doc origin gh-pages",
     "eslint": "eslint src gruntfile.js --cache",
     "eslint-fix": "npm run eslint -- --fix",

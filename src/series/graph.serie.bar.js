@@ -124,11 +124,11 @@ class SerieBar extends Serie {
         continue;
       }
 
-      path += `M ${this.getXAxis().getPos(this.categoryIndices[this.waveform.getX(j)])
-        } ${this.getYAxis().getPos(this.getYAxis().getCurrentMin())
-        } V ${this.getYAxis().getPos(this.waveform.getY(j))
-        } h ${this.getXAxis().getDeltaPx(1 / this.nbCategories)
-        } V ${this.getYAxis().getPos(this.getYAxis().getCurrentMin())}`;
+      path += `M ${this.getXAxis().getPos( this.categoryIndices[this.waveform.getX( j )] )
+        } ${this.getYAxis().getPos( this.getYAxis().getCurrentMin() )
+        } V ${this.getYAxis().getPos( this.waveform.getY( j ) )
+        } h ${this.getXAxis().getDeltaPx( 1 / this.nbCategories )
+        } V ${this.getYAxis().getPos( this.getYAxis().getCurrentMin() )}`;
 
       if ( this.hasErrors() ) {
 

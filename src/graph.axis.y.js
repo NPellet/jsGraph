@@ -168,7 +168,7 @@ class AxisY extends Axis {
   placeLabel( y ) {
     this.label.setAttribute(
       'transform',
-      `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) /
+      `translate(${y}, ${Math.abs( this.getMaxPx() + this.getMinPx() ) /
       2}) rotate(-90)`
     );
   }

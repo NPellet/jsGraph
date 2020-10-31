@@ -2,6 +2,7 @@ import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 
 import SerieScatter from './graph.serie.scatter.js';
+import Serie from './graph.serie.js';
 
 const type = 'line';
 
@@ -26,8 +27,6 @@ const defaultOptions = {
   overflowX: false,
   overflowY: false
 };
-
-import Serie from './graph.serie.js';
 
 /**
  * Serie line
