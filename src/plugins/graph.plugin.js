@@ -52,5 +52,5 @@ class Plugin {
   onMouseMove() { }
 }
 
-EventMixin(Plugin);
+EventMixin(Plugin, "plugin");
 export default Plugin;

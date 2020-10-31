@@ -824,6 +824,6 @@ class Serie {
   }
 }
 
-EventMixing(Serie);
+EventMixing(Serie, 'serie');
 
 export default Serie;

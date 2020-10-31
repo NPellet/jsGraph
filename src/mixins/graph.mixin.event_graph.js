@@ -1,22 +1,25 @@
 import { EventMixin } from './graph.mixin.event.js';
 
-let ExtendedEventMixin = {
-    __proto__: EventMixin,
+let ExtendedEventMixin = (manglingName) => {
 
-    trigger(eventName, ...args) {
+    return {
+        __proto__: EventMixin,
 
-        super.trigger(eventName, ...args);
+        trigger(eventName, ...args) {
 
-        if (this.graph) {
-            this.graph.trigger(eventName, ...args);
+            super.trigger(eventName, ...args);
+
+            if (this.graph) {
+                this.graph.trigger(manglingName + "." + eventName, ...args);
+            }
+        },
+
+        emit(eventName, ...args) {
+            this.trigger(eventName, ...args);
         }
-    },
-
-    emit(eventName, ...args) {
-        this.trigger(eventName, ...args);
     }
 };
 
-export default (Obj) => {
-    Object.assign(Obj.prototype, ExtendedEventMixin);
+export default (Obj, manglingName = "__") => {
+    Object.assign(Obj.prototype, ExtendedEventMixin(manglingName));
 };
