@@ -6,9 +6,10 @@ export default (Graph) => {
      * Returns a graph created from a schema
      * @param {Object} json
      * @param {HTMLElement} wrapper - The wrapping element
+     * @param {Function} callback - A callback function called when something has changed, in the form of ( event, params... ) {}
      * @returns {Graph} Newly created graph
      */
-    Graph.fromJSON = (json, wrapper) => {
+    Graph.fromJSON = (json, wrapper, callback) => {
         const options = json.options || {};
         const graph = new Graph(undefined, options);
 

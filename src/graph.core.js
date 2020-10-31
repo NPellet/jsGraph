@@ -1,7 +1,7 @@
 import GraphPosition from './graph.position.js';
 import * as util from './graph.util.js';
 import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
-import GraphJSON from './renderer/inject.js';
+import GraphJSON from './renderer/mixin.js';
 import {
   Waveform,
   WaveformHash
