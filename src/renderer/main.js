@@ -162,12 +162,12 @@ const makeGraph = ( Graph, graph, json ) => {
         serie.excludeFromLegend( true );
       }
 
-      if ( data.xAxis && axes[data.xAxis] ) {
-        serie.setXAxis( axes[data.xAxis] );
+      if ( data.xAxis && axes[ data.xAxis ] ) {
+        serie.setXAxis( axes[ data.xAxis ] );
       }
 
-      if ( data.yAxis && axes[data.yAxis] ) {
-        serie.setYAxis( axes[data.yAxis] );
+      if ( data.yAxis && axes[ data.yAxis ] ) {
+        serie.setYAxis( axes[ data.yAxis ] );
       }
 
       if ( data ) {

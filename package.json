@@ -1,13 +1,14 @@
 {
   "name": "node-jsgraph",
   "description": "library that can be used to render scientific data in the form of graphs and charts",
-  "version": "2.2.36",
+  "version": "2.2.37",
   "scripts": {
     "build": "grunt",
     "buildExamplesRenderer": "grunt buildExamplesRenderer",
     "doc": "git subtree push --prefix doc origin gh-pages",
     "eslint": "eslint src gruntfile.js --cache",
     "eslint-fix": "npm run eslint -- --fix",
+    "release:patch": "grunt patch",
     "test": "npm run test-only && npm run eslint -- --quiet",
     "test-coverage": "jest --coverage",
     "test-only": "jest"
