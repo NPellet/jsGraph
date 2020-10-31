@@ -5,7 +5,7 @@
         <div id="graph"></div>
     </body>
     <script type="module">
-    console.log('a');
+   
         import Graph from '/src/graph.js'
         const graph = Graph.fromJSON( {
   "options": {
@@ -60,7 +60,7 @@
       ]
     }
   }
-, "graph" );
+, "graph", ( eventName, ...params ) => { console.log( eventName, params ); } );
         graph.draw();
         graph.updateLegend();
         

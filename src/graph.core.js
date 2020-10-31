@@ -1,7 +1,7 @@
 import GraphPosition from './graph.position.js';
 import * as util from './graph.util.js';
-import EventEmitter from './dependencies/eventEmitter/EventEmitter.js';
 import GraphJSON from './renderer/mixin.js';
+import EventMixin from './mixins/graph.mixin.event.js';
 import {
   Waveform,
   WaveformHash
@@ -66,10 +66,9 @@ var _constructors = new Map();
 
 /**
  * Entry class of jsGraph that creates a new graph.
- * @extends EventEmitter
  * @tutorial basic
  */
-class Graph extends EventEmitter {
+class Graph {
   /**
    * Graph constructor
    * @param {(HTMLElement|String)} [wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
@@ -83,7 +82,6 @@ class Graph extends EventEmitter {
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    */
   constructor(wrapper, options, axis = undefined) {
-    super();
 
     if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
       // Wrapper is options
@@ -2637,8 +2635,8 @@ class Graph extends EventEmitter {
   }
 }
 
-    // Adds getConstructor to the prototype. Cannot do that in ES6 classes
-    Graph.prototype.getConstructor = Graph.getConstructor;
+// Adds getConstructor to the prototype. Cannot do that in ES6 classes
+Graph.prototype.getConstructor = Graph.getConstructor;
 
 function makeSerie(graph, name, options, type) {
   var constructor = graph.getConstructor(type, true);
@@ -2743,7 +2741,6 @@ function refreshDrawingZone(graph) {
       return prev + current;
     }, 0);
   });
-  console.log(shift.bottom);
   // Apply to top and bottom
   graph._applyToAxes(
     function (axis, position) {
@@ -3968,6 +3965,7 @@ Graph.ns = 'http://www.w3.org/2000/svg';
 Graph.nsxlink = 'http://www.w3.org/1999/xlink';
 
 
-GraphJSON( Graph );
+GraphJSON(Graph);
+EventMixin(Graph);
 
 export default Graph;

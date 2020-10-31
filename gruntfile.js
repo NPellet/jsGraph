@@ -298,9 +298,9 @@ module.exports = function (grunt) {
         <div id="graph"></div>
     </body>
     <script type="module">
-    console.log('a');
+   
         import Graph from '/src/graph.js'
-        const graph = Graph.fromJSON( ${fs.readFileSync(el.path)}, "graph" );
+        const graph = Graph.fromJSON( ${fs.readFileSync(el.path)}, "graph", ( eventName, ...params ) => { console.log( eventName, params ); } );
         graph.draw();
         graph.updateLegend();
         
@@ -317,7 +317,6 @@ module.exports = function (grunt) {
         <div id="graph"></div>
     </body>
     <script type="module">
-    console.log('a');
         import "${(`../../../${el.path.replace(/\\/g, "/")}`)}";
         </script>
 </html>`;

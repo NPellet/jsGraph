@@ -15,6 +15,11 @@ export default (Graph) => {
 
         graphFromJson(Graph, graph, json, wrapper);
         graph.setWrapper(wrapper);
+
+        graph.onAll(function (eventName, ...args) {
+            callback(eventName, ...args);
+        });
+
         return graph;
     }
 

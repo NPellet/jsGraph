@@ -1,5 +1,5 @@
 
-const mixin = {
+const EventMixin = {
 
     on(eventName, handler) {
 
@@ -8,11 +8,12 @@ const mixin = {
         }
 
         if (!this.__eventHandlers[eventName]) {
-            this.__eventHandlers[eventName] = {};
+            this.__eventHandlers[eventName] = [];
         }
 
         this.__eventHandlers[eventName].push(handler);
     },
+
 
     off(eventName, handler) {
         let handlers = this.__eventHandlers?.[eventName];
@@ -32,18 +33,33 @@ const mixin = {
         }
     },
 
-    trigger(eventName, ...params) {
 
+    onAll(handler) {
+        this.on('__all', handler);
+    },
+
+    ofAll(handler) {
+        this.off('__all', handler);
+    },
+
+    trigger(eventName, ...params) {
         if (this.__eventHandlers?.[eventName]) {
-            return;
+            this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
         }
 
-        this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
+        const allHandlers = this.__eventHandlers?.__all;
+        if (allHandlers) {
+            allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
+        }
     },
 
     emit(eventName, ...params) {
         return this.trigger(eventName, ...params);
     }
-};
+}
 
-export default mixin;
+export { EventMixin };
+
+export default (Obj) => {
+    Object.assign(Obj.prototype, EventMixin);
+};
