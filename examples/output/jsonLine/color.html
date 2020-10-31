@@ -1,48 +1,57 @@
-
 <!doctype html>
 <html>
-    <body>
-        <div id="graph"></div>
-    </body>
-    <script type="module">
-   
-        import Graph from '/src/graph.js'
-        const graph = Graph.fromJSON( {
-  "series": {
-    "type": "color",
-    "data": {
-      "x": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7
-      ],
-      "y": [
-        1,
-        2,
-        3,
-        2,
-        1,
-        2,
-        3
-      ],
-      "color": [
-        "red",
-        "green",
-        "blue",
-        "yellow",
-        "orange",
-        "black",
-        "grey"
-      ]
+
+<body>
+  <div id="graph"></div>
+</body>
+<script type="module">
+
+  import Graph from '/src/graph.js'
+  const graph = Graph.fromJSON({
+    "series": {
+      "type": "color",
+      "style": {
+        "line": {
+          "style": 3,
+          "width": 4,
+          "color": "green",
+        },
+      },
+      "data": {
+        "x": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "y": [
+          1,
+          2,
+          3,
+          2,
+          1,
+          2,
+          3
+        ],
+
+        "color": [
+          "red",
+          "green",
+          "blue",
+          "yellow",
+          "orange",
+          "black",
+          "grey"
+        ]
+      }
     }
-  }
-}, "graph", ( eventName, ...params ) => { console.log( eventName, params ); } );
-        graph.draw();
-        graph.updateLegend();
-        
-        </script>
+  }, "graph", (eventName, ...params) => { console.log(eventName, params); });
+  graph.draw();
+  graph.updateLegend();
+
+</script>
+
 </html>

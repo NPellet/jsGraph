@@ -1,11 +1,11 @@
-const setMarkerStyle = ( serie, style, styleName ) => {
+const setMarkerStyle = (serie, style, styleName) => {
   serie.showMarkers();
   let _default = {};
   let modifiers = [];
 
-  if ( style.default ) {
+  if (style.default) {
     _default = style.default;
-    if ( style.modifiers ) {
+    if (style.modifiers) {
       modifiers = style.modifiers;
     }
   } else {
@@ -13,60 +13,59 @@ const setMarkerStyle = ( serie, style, styleName ) => {
     modifiers = [];
   }
 
-  serie.setMarkerStyle( _default, modifiers, styleName );
+  serie.setMarkerStyle(_default, modifiers, styleName);
 };
 
-const setSerieStyle = ( Graph, serie, jsonSerie, type ) => {
+const setSerieStyle = (Graph, serie, jsonSerie, type) => {
   let styles = jsonSerie.style;
 
-  if ( !Array.isArray( styles ) ) {
-    styles = [ {
+  if (!Array.isArray(styles)) {
+    styles = [{
       name: 'unselected',
       style: styles
-    } ];
+    }];
   }
-
-  styles.map( ( {
+  styles.map(({
     name,
     style
-  }, index ) => {
-    if ( style.line && ( type == Graph.SERIE_LINE || type == Graph.SERIE_BAR ) ) {
-      if ( style.line.color ) {
-        serie.setLineColor( style.line.color, name );
+  }, index) => {
+    if (style.line && (type == Graph.SERIE_LINE || type == Graph.SERIE_BAR || type == Graph.SERIE_LINE_COLORED)) {
+      if (style.line.color && type != Graph.SERIE_LINE_COLORED) {
+        serie.setLineColor(style.line.color, name);
       }
 
-      if ( style.line.width ) {
-        serie.setLineWidth( style.line.width, name );
+      if (style.line.width) {
+        serie.setLineWidth(style.line.width, name);
       }
 
-      if ( style.line.dash ) {
-        serie.setLineStyle( style.line.dash, name );
+      if (style.line.dash) {
+        serie.setLineStyle(style.line.dash, name);
       }
 
-      if ( style.line.fill ) {
-        serie.setFillColor( style.line.fill, name );
+      if (style.line.fill) {
+        serie.setFillColor(style.line.fill, name);
       }
 
-      if ( style.line.fillOpacity && serie.setFillOpacity ) {
-        serie.setFillOpacity( style.line.fillOpacity, name );
+      if (style.line.fillOpacity && serie.setFillOpacity) {
+        serie.setFillOpacity(style.line.fillOpacity, name);
       }
     }
-    if ( style.errorBar ) {
-      serie.setErrorBarStyle( style.errorBar );
+    if (style.errorBar) {
+      serie.setErrorBarStyle(style.errorBar);
     }
 
-    if ( style.errorBox ) {
-      serie.setErrorBoxStyle( style.errorBox );
+    if (style.errorBox) {
+      serie.setErrorBoxStyle(style.errorBox);
     }
 
     if (
       style.marker &&
-      ( type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER )
+      (type == Graph.SERIE_LINE || type == Graph.SERIE_SCATTER)
     ) {
 
-      setMarkerStyle( serie, style.marker, name );
+      setMarkerStyle(serie, style.marker, name);
     }
-  } );
+  });
 };
 
 export default setSerieStyle;
