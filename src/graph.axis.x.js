@@ -24,7 +24,7 @@ class AxisX extends Axis {
     if (this.options.tickLabelOffset == 0) {
       // Normal mode, no offset
       size = this.options.tickPosition == 1 ? 8 : 20;
-      size += this.graph.options.fontSize1;
+      size += this.graph.options.fontSize;
     } else {
       // With an offset, and ticks inside, axis position is actually 0. Otherwise, it's the heights of the ticks
       size = this.options.tickPosition == 1 ? 0 : 12;
@@ -62,7 +62,7 @@ class AxisX extends Axis {
    */
   setShift(shift) {
     this.shift = shift;
-    if (this.getShift() === undefined || !this.graph.getDrawingHeight()) {
+    if (shift === undefined || isNaN(shift) || !this.graph.getDrawingHeight() || isNaN(this.graph.getDrawingHeight())) {
       return;
     }
 
