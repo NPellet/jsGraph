@@ -24,9 +24,8 @@ Download
 			The full-featured, compact version of jsGraph, shipped with all plugins, shapes and series available
 		</p>
 
-		<button class="btn btn-default">
-			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js">Download minified ({{ site.minifiedsize }}kb)</a>
-		</button>
+			`Download minified {{ site.minifiedsize }} kb<https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js>`_
+	
 
 	</div>
 

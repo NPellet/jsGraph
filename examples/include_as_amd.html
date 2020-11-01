@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="./requirejs/require.js"></script>
+
+</head>
+
+<body>
+    <div id="hello">
+
+    </div>
+    <script>
+
+        require(["../dist/jsGraph.min"], function (Graph) {
+            const graph = new Graph("hello");
+        });
+
+    </script>
+</body>
+
+
+</html>

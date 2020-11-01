@@ -1,152 +1,353 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installation &#8212; jsGraph  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; jsGraph  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Introduction to jsGraph" href="introduction.html" />
+    <link rel="prev" title="Introduction to jsGraph" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
    
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
           
 
-          <div class="body" role="main">
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> jsGraph
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to jsGraph</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-with-npm-recommended">Install with npm (recommended)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#default-file">Default file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-download">Manual Download</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#minfied-version">Minfied version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-code">Development code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#es-6-version">ES 6 version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bundle">Module bundle</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#github-repository">Github repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#including-in-your-webpage">Including in your webpage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#universal-module-definitions">Universal module definitions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#browser-global">Browser global</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#amd-definition">AMD definition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#commonjs-definition">CommonJS definition</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#es-6-module-definition">ES 6 module definition</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#in-a-browser">In a browser</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#from-another-module">From another module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jsGraph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="download">
-<h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>
-<p>jsGraph can be downloaded and installed manually or via the npm package manager. The project is hosted on Github and the distribution files can be found there. jsGraph has <strong>zero</strong> dependencies and does not rely on any CSS files.</p>
-<div class="section" id="minfied-version">
-<h3>Minfied version<a class="headerlink" href="#minfied-version" title="Permalink to this headline">¶</a></h3>
-<p>The full-featured, compact version of jsGraph, shipped with all plugins, shapes and series available
-<a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js">Download minified</a></p>
-</div>
-<div class="section" id="es-6-version">
-<h3>ES 6 version<a class="headerlink" href="#es-6-version" title="Permalink to this headline">¶</a></h3>
-<p>The source code without ES6 transpilation. Targets ES6-compatible browsers for specific applications
-<a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph-es6.min.js">Download ES6 minified</a></p>
-</div>
-<div class="section" id="module-bundle">
-<h3>Module bundle<a class="headerlink" href="#module-bundle" title="Permalink to this headline">¶</a></h3>
-<p>For browser with module scripts, you can directly include the bundled file
-<a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph-module.js">Download modules</a></p>
-</div>
-<div class="section" id="development-code">
-<h3>Development code<a class="headerlink" href="#development-code" title="Permalink to this headline">¶</a></h3>
-<p>The compiled but not uglified source code can be used for testing purposes and bug reporting
-<a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">Expanded version</a></p>
-</div>
-</div>
-<div class="section" id="github-repository">
-<h2>Github repository<a class="headerlink" href="#github-repository" title="Permalink to this headline">¶</a></h2>
-<p>The project is hosted on Github, for those who want to contribute to the project. Come check it out !
-<a class="reference external" href="https://github.com/NPellet/jsGraph">View on github</a></p>
-</div>
 <div class="section" id="install-with-npm-recommended">
 <h2>Install with npm (recommended)<a class="headerlink" href="#install-with-npm-recommended" title="Permalink to this headline">¶</a></h2>
 <p>Installing jsGraph from <a class="reference external" href="http://npmjs.org">npm</a> is an easy way to install jsGraph and keep it up to date</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>npm i node-jsgraph
 </pre></div>
 </div>
+<div class="section" id="default-file">
+<h3>Default file<a class="headerlink" href="#default-file" title="Permalink to this headline">¶</a></h3>
+<p>If you use a module resolver, then you should be aware that <code class="code javascript docutils literal notranslate"><span class="kr"><span class="pre">const</span></span> <span class="nx"><span class="pre">Graph</span></span> <span class="o"><span class="pre">=</span></span> <span class="nx"><span class="pre">require</span></span><span class="p"><span class="pre">(</span></span><span class="s2"><span class="pre">“jsGraph”</span></span><span class="p"><span class="pre">);</span></span></code> will load the minified UMD file <strong>with</strong> ES6 polyfills.</p>
+</div>
+</div>
+<div class="section" id="manual-download">
+<h2>Manual Download<a class="headerlink" href="#manual-download" title="Permalink to this headline">¶</a></h2>
+<p>jsGraph can be downloaded and installed manually or via the npm package manager. The project is hosted on Github and the distribution files can be found there. jsGraph has <strong>zero</strong> dependencies and does not rely on any CSS files.</p>
+<p>We use Universal Module Definitions to ship jsGraph. That means the library is compatible with AMD definition, CommonJS definition and defaults to Browser global when none exist.
+Select the version to include as a function of your needs:</p>
+<div class="section" id="minfied-version">
+<h3>Minfied version<a class="headerlink" href="#minfied-version" title="Permalink to this headline">¶</a></h3>
+<p>The full-featured, compact version of jsGraph, shipped with all plugins, shapes and series available.  This version ships with Universal Module Definition (see below).</p>
+<p><a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js">Download minified</a></p>
+</div>
+<div class="section" id="development-code">
+<h3>Development code<a class="headerlink" href="#development-code" title="Permalink to this headline">¶</a></h3>
+<p>The compiled but not uglified source code can be used for testing purposes and bug reporting. Similarly to the minified version, this file ships with Universal Module Definition.</p>
+<p><a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">Expanded version</a></p>
+</div>
+<div class="section" id="es-6-version">
+<h3>ES 6 version<a class="headerlink" href="#es-6-version" title="Permalink to this headline">¶</a></h3>
+<p>The source code without ES6 transpilation. Does not include any ES6 polyfills and therefore targets ES6-compatible browsers. This version ships with Universal Module Definition</p>
+<p><a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph-es6.min.js">Download ES6 minified</a></p>
+</div>
+<div class="section" id="module-bundle">
+<h3>Module bundle<a class="headerlink" href="#module-bundle" title="Permalink to this headline">¶</a></h3>
+<p>For browser that support ES6 modules (or if you want to use as such with your own packager), you can directly include the module file:</p>
+<p><a class="reference external" href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph-module.js">jsgraph-module.min.js</a></p>
+</div>
+</div>
+<div class="section" id="github-repository">
+<h2>Github repository<a class="headerlink" href="#github-repository" title="Permalink to this headline">¶</a></h2>
+<p>The project is hosted on Github, for those who want to contribute to the project. Come check it out !</p>
+<p><a class="reference external" href="https://github.com/NPellet/jsGraph">View on github</a></p>
+</div>
+<div class="section" id="including-in-your-webpage">
+<h2>Including in your webpage<a class="headerlink" href="#including-in-your-webpage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="universal-module-definitions">
+<h3>Universal module definitions<a class="headerlink" href="#universal-module-definitions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="browser-global">
+<h4>Browser global<a class="headerlink" href="#browser-global" title="Permalink to this headline">¶</a></h4>
+<p>Here is how to include jsGraph in your browser using the global object create. The following creates the <code class="docutils literal notranslate"><span class="pre">`Graph`</span></code> object on the <code class="docutils literal notranslate"><span class="pre">`window`</span></code> level of your browser:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;path/to/jsgraph/jsgraph.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="c">&lt;!-- Creates the public Graph object --&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Which allows you to use it as such:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+        <span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="cm">/* ..options.. */</span> <span class="p">);</span>
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="amd-definition">
+<h4>AMD definition<a class="headerlink" href="#amd-definition" title="Permalink to this headline">¶</a></h4>
+<p>If you are using an AMD loader such as RequireJS, you can still use jsGraph:</p>
+<p>The following versions are browser-ready and creates the <code class="docutils literal notranslate"><span class="pre">`Graph`</span></code> object on the <code class="docutils literal notranslate"><span class="pre">`window`</span></code> level of your browser:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;path/to/require/js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+        <span class="nx">require</span><span class="p">([</span><span class="s1">&#39;path/to/jsgraph.min&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">Graph</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="c">&lt;!--</span> <span class="nx">Creates</span> <span class="nx">the</span> <span class="nx">local</span> <span class="nx">Graph</span> <span class="nx">object</span> <span class="o">--&gt;</span>
+            <span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="cm">/* ..options.. */</span> <span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Obviously, in a real-life example, you would use <code class="docutils literal notranslate"><span class="pre">`define`</span></code> in your module and load jsGraph as a dependency.</p>
+</div>
+<div class="section" id="commonjs-definition">
+<h4>CommonJS definition<a class="headerlink" href="#commonjs-definition" title="Permalink to this headline">¶</a></h4>
+<p>If you create your own bundle using Webpack, Rollup, Gulp or other, then you can simply the CommonJS definition:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">Graph</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path/to/jsGraph&#39;</span><span class="p">);</span>
+<span class="c1">// Use Graph</span>
+<span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="cm">/* ..options.. */</span> <span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="es-6-module-definition">
+<h3>ES 6 module definition<a class="headerlink" href="#es-6-module-definition" title="Permalink to this headline">¶</a></h3>
+<p>If you’re working with ES6 modules you can use the module files as such:</p>
+<div class="section" id="in-a-browser">
+<h4>In a browser<a class="headerlink" href="#in-a-browser" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="c">&lt;!--Your page--&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;./path/to/jsGraph/jsgraph-module.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="from-another-module">
+<h4>From another module<a class="headerlink" href="#from-another-module" title="Permalink to this headline">¶</a></h4>
+<p>In this case, Graph is default export of the module:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="nx">Graph</span> <span class="nx">from</span> <span class="s1">&#39;path/to/jsGraph/jsgraph-module.min.js&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
 
+           </div>
+           
           </div>
-          
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">jsGraph</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to jsGraph</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#download">Download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#github-repository">Github repository</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#install-with-npm-recommended">Install with npm (recommended)</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="introduction.html" title="previous chapter">Introduction to jsGraph</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction to jsGraph" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  
 
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Norman Pellet
 
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-
-
-
+</footer>
 
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Norman Pellet.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/installation.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
+    </section>
 
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
     
-  </body>
+   
+
+</body>
 </html>
