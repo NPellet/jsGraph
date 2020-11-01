@@ -1,0 +1,482 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting started &mdash; jsGraph  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jsgraph.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> jsGraph
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to jsGraph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cosntructor-method">Cosntructor method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wrapper">Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#axis-definition">Axis definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-serie">Adding a serie</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-waveforms">Understanding waveforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-a-waveforms">Create a waveforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xy-waveforms">XY waveforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#y-waveforms">Y waveforms</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jsGraph</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Getting started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/getting_started.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>After you managed to install jsGraph and load into your browser, it’s time to display your first graph.</p>
+<div class="section" id="cosntructor-method">
+<h2>Cosntructor method<a class="headerlink" href="#cosntructor-method" title="Permalink to this headline">¶</a></h2>
+<p>The graph constructor takes the following possible forms</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">wrapper</span><span class="o">?</span><span class="p">,</span> <span class="nx">options</span><span class="o">?</span><span class="p">,</span> <span class="nx">axes</span><span class="o">?</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>where all three options are actually optional</p>
+<div class="section" id="wrapper">
+<h3>Wrapper<a class="headerlink" href="#wrapper" title="Permalink to this headline">¶</a></h3>
+<p>The Wrapper is the DOM element into which jsGraph will inject some SVG and HTML code. It can be the id of the container, or the html element itself:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;graph-container&quot;</span> <span class="p">/&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">&quot;graph-container&quot;</span> <span class="p">);</span>
+<span class="c1">// ...or</span>
+<span class="kr">const</span> <span class="nx">container</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="s1">&#39;graph-container&#39;</span> <span class="p">);</span>
+<span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">container</span> <span class="p">);</span>
+
+<span class="c1">// ...or, from jQuery</span>
+<span class="kr">const</span> <span class="nx">container</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#graph-container&quot;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">container</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>You can delay the use of the wrapper and call the <code class="docutils literal notranslate"><span class="pre">setWrapper</span></code> method later on:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">graph</span><span class="p">.</span><span class="nx">setWrapper</span><span class="p">(</span> <span class="nx">domWrapper</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>If no width / height options are passed in the constructor, jsGraph will attempt to find out the dimension of the container, using <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle">getComputedStyle</a>.</p>
+<p>If it doesn’t work out, you will need to call <code class="docutils literal notranslate"><span class="pre">graph.resize(</span> <span class="pre">widthInPx,</span> <span class="pre">heightInPx</span> <span class="pre">)</span></code> before you call the <code class="docutils literal notranslate"><span class="pre">draw()</span></code> method.</p>
+</div>
+<div class="section" id="options">
+<h3>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h3>
+<p>jsGraph receives a variety of options that can be set in the constructor. Most options occur with the axes or the series, but the graph itself takes a few of them.
+Here’s a full example of them with their default value:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">GraphOptionsDefault</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="c1">// The title of the graph</span>
+
+    <span class="nx">paddingTop</span><span class="o">:</span> <span class="mi">30</span><span class="p">,</span> <span class="c1">// Top padding, important if there&#39;s a title</span>
+    <span class="nx">paddingBottom</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="nx">paddingLeft</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="nx">paddingRight</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+
+    <span class="c1">// If you want to add dummy lines to make the graph appear as a rectangle</span>
+    <span class="nx">close</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">left</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">right</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">top</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">bottom</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Color of the closing lines</span>
+    <span class="nx">closeColor</span><span class="o">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Default font size and font used for the whole graph. Can be overridden for each component</span>
+    <span class="nx">fontSize</span><span class="o">:</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="nx">fontFamily</span><span class="o">:</span> <span class="s1">&#39;Myriad Pro, Helvetica, Arial&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Refer to the interaction documentation to understand those</span>
+    <span class="nx">plugins</span><span class="o">:</span> <span class="p">{},</span>
+    <span class="nx">mouseActions</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="nx">keyActions</span><span class="o">:</span> <span class="p">[],</span>
+
+    <span class="c1">// Where clicking somewhere on the graph unselects the shape</span>
+    <span class="nx">shapesUnselectOnClick</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+    <span class="c1">// Whether there can be only one shape selected at the same time</span>
+    <span class="nx">shapesUniqueSelection</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+    <span class="c1">// Axes. Continue reading to understand this syntax</span>
+    <span class="nx">axes</span><span class="o">:</span> <span class="p">{}</span>
+
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="axes">
+<h3>Axes<a class="headerlink" href="#axes" title="Permalink to this headline">¶</a></h3>
+<p>The axes settings can also be part of the constructor. Either use them as part of the options, under the key <code class="docutils literal notranslate"><span class="pre">axes</span></code> , or, for legacy reasons, as part of the third argument in the constructor.</p>
+<p>Here’s the syntax to use:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// Do not use const, read why</span>
+<span class="kd">let</span> <span class="nx">axes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">top</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="cm">/* axis definition */</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="cm">/* a second top axis definition */</span> <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nx">bottom</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="nx">left</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="cm">/* a right axis definition */</span> <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nx">right</span><span class="o">:</span> <span class="p">[]</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>jsGraph does <strong>not</strong> make a copy of this object. Also, options are pretty dynamic, so it may be that jsGraph fills those objects with internal values.
+This is useful when you want to dump the axis object, save it, and reload it some other time.</p>
+<div class="section" id="axis-definition">
+<h4>Axis definition<a class="headerlink" href="#axis-definition" title="Permalink to this headline">¶</a></h4>
+<p>Here are the default options that you may override for each axis:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">axisDefault</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">// Give it a unique name to retrieve it later</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+
+    <span class="c1">// Value of the axis label</span>
+    <span class="nx">labelValue</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+    <span class="c1">// You can put false here if you decide to use the axis but not to display it</span>
+    <span class="nx">display</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+    <span class="c1">// Flip the axis, where the high-end value is to the right or the bottom, and the low-end value to the left / top</span>
+    <span class="nx">flipped</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Use this to draw a vertical or horizontal line at that value. For example, for a straight line at 0, use lineAt: 0</span>
+    <span class="nx">lineAt</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Adds a certain percentage of padding to the axis, with respect to the min/max values provided by the series.</span>
+    <span class="nx">axisDataSpacing</span><span class="o">:</span> <span class="p">{</span> <span class="nx">min</span><span class="o">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mf">0.1</span> <span class="p">},</span>
+
+    <span class="c1">// This can be used to display the value differently. More on that later</span>
+    <span class="nx">unitModification</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Display the primary grid, corresponding to the primary ticks (the ones with labels)</span>
+    <span class="nx">primaryGrid</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+    <span class="c1">// Display the secondary grid, corresponding to the secondary ticks</span>
+    <span class="nx">secondaryGrid</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+
+    <span class="c1">// Self-exlanatory grid styling</span>
+    <span class="nx">primaryGridWidth</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nx">primaryGridColor</span><span class="o">:</span> <span class="s1">&#39;#f0f0f0&#39;</span><span class="p">,</span>
+    <span class="nx">primaryGridDasharray</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+    <span class="nx">primaryGridOpacity</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+    <span class="nx">primaryTicksColor</span><span class="o">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+
+    <span class="nx">secondaryGridWidth</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nx">secondaryGridColor</span><span class="o">:</span> <span class="s1">&#39;#f0f0f0&#39;</span><span class="p">,</span>
+    <span class="nx">secondaryGridDasharray</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+    <span class="nx">secondaryGridOpacity</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+    <span class="nx">secondaryTicksColor</span><span class="o">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Use true to hide the axis when all the series associated to it are hidden</span>
+    <span class="nx">hideWhenNoSeriesShown</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Offset the low-end value of the graph to 0</span>
+    <span class="nx">shiftToZero</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Tick positions with respect to the axis line: TICKS_INSIDE, TICKS_CENTERED, TICKS_OUTSIDE are possibilities</span>
+    <span class="nx">tickPosition</span><span class="o">:</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">TICKS_INSIDE</span><span class="p">,</span>
+
+    <span class="c1">// Approximate number of primary ticks to display on the whole axis. It is an indication that jsGraph works with, but when working with decimal values, variations can occur</span>
+    <span class="nx">nbTicksPrimary</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+
+    <span class="c1">// Approximate number of secondary ticks to display between each primary tick</span>
+    <span class="nx">nbTicksSecondary</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+
+    <span class="c1">// Use scientific scaling, where values of the ticks are displayed in the scientific notation</span>
+    <span class="nx">scientificScale</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Use a value to force the scientific exponent, rather than letting jsGraph determine the best one</span>
+    <span class="nx">scientificScaleExponent</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Engineering scale is similar to scientific scale, but only with exponents in multiples of 3. (ug, mg, g, kg, ...)</span>
+    <span class="nx">engineeringScale</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// The following three options scale the value of the ticks, when scientific scaling is off</span>
+
+    <span class="c1">// Scale the value of the tick by that factor. Useful for unit conversion</span>
+    <span class="nx">ticklabelratio</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="c1">// Multiplies the tick values by 10^x, where x is the exponential factor</span>
+    <span class="nx">exponentialFactor</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="c1">// Same as the exponentialFactor, but also applied to the label itself, when using scientific scaling</span>
+    <span class="nx">exponentialLabelFactor</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="c1">// Display the axis as a log scale</span>
+    <span class="nx">logScale</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Force the min and the max value. Zooming is still possible, but the min/max values provided by the series become irrelevant</span>
+    <span class="nx">forcedMin</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">forcedMax</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// You can use this setting to not display the axis over the full width / height of the graph. Value in normalized percentage (0 = 0%, 1 = 100%)</span>
+    <span class="nx">span</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+
+    <span class="c1">// Set the unit of the axis</span>
+    <span class="nx">unit</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Wrap it in the following string</span>
+    <span class="nx">unitWrapperBefore</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="nx">unitWrapperAfter</span><span class="o">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+
+    <span class="c1">// Add the unit in each tick</span>
+    <span class="nx">unitInTicks</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Adjust the offset between the tick and its label</span>
+    <span class="nx">tickLabelOffset</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+
+    <span class="c1">// You can display a katex formula as the label, more on this later</span>
+    <span class="nx">useKatexForLabel</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+
+    <span class="c1">// Sets the upper bond that the axis can reach and disregards the value given by the series if their are higher/lower</span>
+    <span class="nx">highestMax</span><span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+    <span class="nx">lowestMin</span><span class="o">:</span> <span class="kc">undefined</span>
+
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="adding-a-serie">
+<h2>Adding a serie<a class="headerlink" href="#adding-a-serie" title="Permalink to this headline">¶</a></h2>
+<p>Obviously the first thing we’ll want to do is to create a new serie. But before that, we need to understand the concept of waveforms</p>
+<div class="section" id="understanding-waveforms">
+<h3>Understanding waveforms<a class="headerlink" href="#understanding-waveforms" title="Permalink to this headline">¶</a></h3>
+<p>Waveforms are not much more than a suger coating over standard javascript arrays. In their more general sense they represent actual data to be plotted.
+However they provide a bunch of useful features which target handling the data, and therefore are independent of the serie itself, which aims to display that data.</p>
+<div class="section" id="create-a-waveforms">
+<h4>Create a waveforms<a class="headerlink" href="#create-a-waveforms" title="Permalink to this headline">¶</a></h4>
+<p>Nothing simpler than creating a waveform. The Graph object exposes a shortcut to the constructor using</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">waveform</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xy-waveforms">
+<h4>XY waveforms<a class="headerlink" href="#xy-waveforms" title="Permalink to this headline">¶</a></h4>
+<p>XY waveforms are perhaps the most obvious one. It’s a bunch of Y data corresponding to a bunch of X data.
+Whether they represent scattered data or should be linked with a line is irrelevant.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When used to display a line data and when it can be determined that the x values are monotoneously increasing, jsGraph decreased the rendering time by ignoring the data before the minimum bound of the x axis and the data above the maximum bound of that same axes.
+Obviously there are a lot more optimisation at play, but that’s just one of them…</p>
+</div>
+<p>To set the XY data to a waveform, use the <code class="docutils literal notranslate"><span class="pre">setData</span></code> method:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">waveform</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">yArray</span><span class="p">,</span> <span class="nx">xArray</span> <span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="y-waveforms">
+<h4>Y waveforms<a class="headerlink" href="#y-waveforms" title="Permalink to this headline">¶</a></h4>
+<p>Y waveforms occur when the interval between each data point is constant. The offset and scaling between the points can be set either in the constructor or using the <code class="docutils literal notranslate"><span class="pre">.rescaleX</span></code> method</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">wave1</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">(</span> <span class="nx">yDataAsArray</span><span class="p">,</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">scale</span> <span class="p">);</span>
+
+<span class="c1">// or</span>
+<span class="nx">wave1</span><span class="p">.</span><span class="nx">rescaleX</span><span class="p">(</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">scale</span> <span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Norman Pellet
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -77,7 +77,6 @@ const defaults = {
   unitWrapperBefore: '',
   unitWrapperAfter: '',
 
-  splitMarks: false,
 
   tickLabelOffset: 0,
 

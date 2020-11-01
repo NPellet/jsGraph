@@ -118,7 +118,7 @@ class Graph {
     // Options declaration must be placed before the doDom operation
 
     // doDom is a private method. We bind it to this thanks to ES6 features
-    doDom.bind(this)();
+    __createDOM.bind(this)();
 
     if (wrapper) {
       this.setWrapper(wrapper);
@@ -3067,7 +3067,7 @@ function checkKeyActions(graph, e, parameters, methodName) {
   return false;
 }
 
-function doDom() {
+function __createDOM() {
   // Create SVG element, set the NS
   this.dom = document.createElementNS(Graph.ns, 'svg');
   this.dom.setAttributeNS(

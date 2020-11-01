@@ -12,7 +12,7 @@ Welcome to jsGraph's documentation!
    
    introduction
    installation
-   first_graph
+   getting_started
 
 
 Indices and tables

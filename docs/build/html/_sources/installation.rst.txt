@@ -27,7 +27,7 @@ The project is hosted on Github and the source code is available open source and
 
 Releases
 *****************************
-We use github releases to ship the distribution package. Check out the `Release page<https://github.com/NPellet/jsGraph/releases>`_ to download the latest release.
+We use github releases to ship the distribution package. Check out the `Release page <https://github.com/NPellet/jsGraph/releases>`_ to download the latest release.
 
 
 Manual Download

@@ -15,7 +15,7 @@ Here are some highlights of the library:
 * **Various series** : jsGraph allows you to display line plots, scatter plots, category plots or box plots, or to combine them together.
 
 
-TL;DR Show me an example ?
+TL;DR Show me an example !
 ================================
 
 .. raw:: html
