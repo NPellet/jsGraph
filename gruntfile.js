@@ -70,6 +70,13 @@ module.exports = function (grunt) {
         }
       },
 
+      doc: {
+        files: {
+          'docs/source/_static/jsgraph.min.js':
+            'dist/jsgraph.min.js'
+        }
+      },
+
 
     },
 
@@ -227,7 +234,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-rollup');
 
-  grunt.registerTask('default', ['build', 'minify', 'copy:examples']);
+  grunt.registerTask('default', ['build', 'minify', 'copy:doc', 'copy:examples']);
 
   grunt.registerTask('minify', 'Minifying distribution file', [
     'uglify',
@@ -387,7 +394,8 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'webpack:dist',
     'webpack:dist_es6',
-    'rollup:distModule'
+    'rollup:distModule',
+    'copy:doc'
   ]);
   grunt.registerTask('visualizer', ['webpack:dist_es6', 'copy:visualizer']);
   grunt.registerTask('candlelight', ['webpack:dist_es6', 'copy:candlelight']);

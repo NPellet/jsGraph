@@ -14,3 +14,18 @@ Here are some highlights of the library:
 * **Multiple axes** : Series are referenced to axes, which can be placed at the top, bottom, left or right of the graph. You can even have multiple axes on the same side, master-slave axes (for unit conversion, for example) or floating axes, displayed in the middle of the graph.
 * **Various series** : jsGraph allows you to display line plots, scatter plots, category plots or box plots, or to combine them together.
 
+
+TL;DR Show me an example ?
+================================
+
+.. raw:: html
+
+    <div>
+        <div id="graph-example-1"></div>
+        <script type="module" src="_static/example_introduction.js"></script>
+    </div>
+
+Here is the exact source code that generated this example, with comments
+
+.. literalinclude:: _static/example_introduction.js
+    :language: javascript

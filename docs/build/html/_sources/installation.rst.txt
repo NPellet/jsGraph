@@ -16,8 +16,18 @@ Installing jsGraph from `npm <http://npmjs.org>`_ is an easy way to install jsGr
 
 Default file
 *****************************
-
 If you use a module resolver, then you should be aware that :javascript:`const Graph = require("jsGraph");` will load the minified UMD file **with** ES6 polyfills.
+
+Download from the Github repository
+###################################
+
+The project is hosted on Github and the source code is available open source and released under the MIT licence.
+
+`View on github <https://github.com/NPellet/jsGraph>`_ 
+
+Releases
+*****************************
+We use github releases to ship the distribution package. Check out the `Release page<https://github.com/NPellet/jsGraph/releases>`_ to download the latest release.
 
 
 Manual Download
@@ -55,19 +65,9 @@ For browser that support ES6 modules (or if you want to use as such with your ow
 	
 
 
-Github repository
-##################
 
-The project is hosted on Github, for those who want to contribute to the project. Come check it out !
-
-`View on github <https://github.com/NPellet/jsGraph>`_ 
-
-
-
-
-
-Including in your webpage
-##########################
+Include jsGraph in your projects
+##################################
 
 Universal module definitions
 *****************************
@@ -152,7 +152,7 @@ In a browser
 
   
 From another module
-==============
+=====================
 
 In this case, Graph is default export of the module:
 

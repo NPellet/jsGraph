@@ -10110,9 +10110,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
      */
     function Graph(wrapper, options) {
-      var _options;
-
-      var axes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
+      var axis = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : undefined;
 
       _classCallCheck(this, Graph);
 
@@ -10122,12 +10120,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         wrapper = undefined;
       }
 
-      if (!options) {
-        options = {};
-      }
-
-      if (!((_options = options) === null || _options === void 0 ? void 0 : _options.axes)) {
-        options.axes = axes;
+      if (!options.axes) {
+        options.axes = axis;
       }
       /*
         The unique ID of the graph
@@ -14294,10 +14288,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (this.options.forcedMin !== false && this.options.forcedMax == false || this.options.adaptTo.preference !== 'max') {
           if (this.options.forcedMin !== false) {
             this.options.currentAxisMin = this.options.forcedMin;
-          } else if (this._zoomed) {
-            this.options.currentAxisMin = this.getCurrentMin();
           } else {
-            this.options.currentAxisMin = this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
+            this.options.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
+          }
+
+          if (this.options.currentAxisMin == current) {
+            this.options.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
           }
 
           var use = this.options.forcedMin !== false ? this.options.forcedMin : this.options.currentAxisMin;
@@ -14305,10 +14301,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         } else {
           if (this.options.forcedMax !== false) {
             this.options.currentAxisMax = this.options.forcedMax;
-          } else if (this._zoomed) {
-            this.options.currentAxisMax = this.getCurrentMax();
           } else {
-            this.options.currentAxisMax = this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
+            this.options.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
           }
 
           if (this.options.currentAxisMax == current) {
@@ -14863,11 +14857,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           this.options.currentAxisMin = undefined;
         }
 
-        this._zoomed = false;
-        this.adapt(); // Let's cache the current min and max. This has to be done after the last possibility to change the min max, otherwise the cached value will be invalid during rendering.
-        // Most notably, it has to occur after the adapt() method, which again, can change the min/max value of the current axis
-
         this.cache();
+        this._zoomed = false;
+        this.adapt();
 
         if (!noNotify) {
           this.graph._axisHasChanged(this);
@@ -15021,15 +15013,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
       /*
         setMinMaxFlipped() {
-      
-          var interval = this.maxPx - this.minPx;
+            var interval = this.maxPx - this.minPx;
           var maxPx = this.maxPx - interval * this.options.span[ 0 ];
           var minPx = this.maxPx - interval * this.options.span[ 1 ];
-      
-          this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+            this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
           this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-      
-          // this.minPx = minPx;
+            // this.minPx = minPx;
           //this.maxPx = maxPx;
         }
       */
@@ -15061,7 +15050,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         var widthPx = Math.abs(this.getMaxPx() - this.getMinPx());
         var valrange = this.getCurrentInterval();
-        console.log(valrange);
         /* Number of px per unit */
 
         /* Example: width: 1000px

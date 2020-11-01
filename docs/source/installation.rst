@@ -152,7 +152,7 @@ In a browser
 
   
 From another module
-==============
+=====================
 
 In this case, Graph is default export of the module:
 
