@@ -1,6 +1,14 @@
 {
   "series": {
     "type": "color",
+    "style": {
+      "line": {
+        "style": 3,
+        "width": 4,
+        "color": "green",
+        "autoPeakPickingNb": 4
+      }
+    },
     "data": {
       "x": [
         1,

@@ -241,7 +241,7 @@ class Legend {
       case 'bottom':
         this.position.y = `${this.graph.getHeight()}px`;
         // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
-        this.position.x = `${(this.graph.drawingSpaceWidth - this.width) / 2 +
+        this.position.x = `${( this.graph.drawingSpaceWidth - this.width ) / 2 +
           this.graph.drawingSpaceMinX}px`;
         this.alignToY = 'bottom';
         this.alignToX = false;
@@ -249,20 +249,20 @@ class Legend {
 
       case 'left':
         this.position.x = '6px';
-        this.position.y = `${(this.graph.getHeight() - this.height) / 2}px`;
+        this.position.y = `${( this.graph.getHeight() - this.height ) / 2}px`;
         this.alignToX = 'left';
         this.alignToY = false;
         break;
 
       case 'right':
         this.position.x = `${this.graph.getWidth()}px`;
-        this.position.y = `${(this.graph.getHeight() - this.height) / 2}px`;
+        this.position.y = `${( this.graph.getHeight() - this.height ) / 2}px`;
         this.alignToX = 'right';
         this.alignToY = false;
         break;
 
       case 'top':
-        this.position.x = `${(this.graph.drawingSpaceWidth - this.width) / 2 +
+        this.position.x = `${( this.graph.drawingSpaceWidth - this.width ) / 2 +
           this.graph.drawingSpaceMinX}px`;
         this.position.y = '10px';
         this.alignToY = 'top';

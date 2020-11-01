@@ -2677,15 +2677,15 @@ class Axis {
 
 }
 
-/**
- *  @alias Axis#getVal
- */
-Axis.prototype.getValue = Axis.prototype.getVal;
+  /**
+   *  @alias Axis#getVal
+   */
+  Axis.prototype.getValue = Axis.prototype.getVal;
 
-/**
- *  @alias Axis#getRelPx
- */
-Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
+  /**
+   *  @alias Axis#getRelPx
+   */
+  Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 
 EventMixin(Axis, "axis");
 

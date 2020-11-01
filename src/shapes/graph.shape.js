@@ -1333,7 +1333,7 @@ class Shape {
     /** Sets the size */
     this._labels[ labelIndex ].setAttribute(
       'font-size',
-      `${this.getProp('labelSize', labelIndex)}px` || '12px'
+      `${this.getProp( 'labelSize', labelIndex )}px` || '12px'
     );
 
     /** Sets the anchor */
@@ -2125,10 +2125,10 @@ class Shape {
 
     util.setCSS( shapeLabel, {
       position: 'absolute',
-      marginTop: `${parseInt(e.target.getAttribute('y').replace('px', '')) +
+      marginTop: `${parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) +
         this.graph.getPaddingTop() -
         10}px`,
-      marginLeft: `${parseInt(e.target.getAttribute('x').replace('px', '')) +
+      marginLeft: `${parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) +
         this.graph.getPaddingLeft() -
         50}px`,
       textAlign: 'center',

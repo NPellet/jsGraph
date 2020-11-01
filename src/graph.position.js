@@ -201,7 +201,7 @@ class Position {
     if ( ( v = _parsePx( value ) ) !== false ) {
       return `${v}px`;
     } else {
-      return `${axis.getRelPx(value)}px`;
+      return `${axis.getRelPx( value )}px`;
     }
   }
 
@@ -217,7 +217,7 @@ class Position {
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
           this[ mode ] = `${refPx + deltaPx}px`;
         } else {
-          this[ mode ] = `${refPx + axis.getRelPx(delta)}px`;
+          this[ mode ] = `${refPx + axis.getRelPx( delta )}px`;
         }
       } else {
         ref = this.getValPosition( ref, axis );
@@ -239,7 +239,7 @@ class Position {
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
           this[ `d${mode}` ] = `${refPx + deltaPx}px`;
         } else {
-          this[ `d${mode}` ] = `${refPx + axis.getRelPx(delta)}px`;
+          this[ `d${mode}` ] = `${refPx + axis.getRelPx( delta )}px`;
         }
       } else {
         refd = this.getValPosition( refd, axis );

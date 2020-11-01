@@ -2640,8 +2640,8 @@ class Graph {
   }
 }
 
-// Adds getConstructor to the prototype. Cannot do that in ES6 classes
-Graph.prototype.getConstructor = Graph.getConstructor;
+  // Adds getConstructor to the prototype. Cannot do that in ES6 classes
+  Graph.prototype.getConstructor = Graph.getConstructor;
 
 function makeSerie(graph, name, options, type) {
   var constructor = graph.getConstructor(type, true);

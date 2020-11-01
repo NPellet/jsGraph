@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+<<<<<<< HEAD
 
 <body>
   <div id="graph"></div>
@@ -46,6 +47,53 @@
           "grey"
         ]
       }
+=======
+    <body>
+        <div id="graph"></div>
+    </body>
+    <script type="module">
+    console.log('a');
+        import Graph from '/src/graph.js'
+        const graph = Graph.fromJSON( {
+  "series": {
+    "type": "color",
+    "style": {
+      "line": {
+        "style": 3,
+        "width": 4,
+        "color": "green",
+        "autoPeakPickingNb": 4
+      }
+    },
+    "data": {
+      "x": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "y": [
+        1,
+        2,
+        3,
+        2,
+        1,
+        2,
+        3
+      ],
+      "color": [
+        "red",
+        "green",
+        "blue",
+        "yellow",
+        "orange",
+        "black",
+        "grey"
+      ]
+>>>>>>> e76f86102c25460639ab922ad349b594010fe242
     }
   }, "graph", (eventName, ...params) => { console.log(eventName, params); });
   graph.draw();

@@ -167,7 +167,7 @@ class SerieZone extends Serie {
               continue;
             }
 
-            line += `L ${xpx}, ${this.getY(waveform.getMinY())}`;
+            line += `L ${xpx}, ${this.getY( waveform.getMinY() )}`;
             move = true;
             continue;
           }
@@ -181,7 +181,7 @@ class SerieZone extends Serie {
           }
 
           if ( move ) {
-            line += ` M ${xpx}, ${this.getY(waveform.getMinY())} `;
+            line += ` M ${xpx}, ${this.getY( waveform.getMinY() )} `;
             move = false;
           }
 
