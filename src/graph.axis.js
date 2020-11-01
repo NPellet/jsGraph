@@ -890,7 +890,6 @@ class Axis {
       //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
 
     } else {
-
       this.setCurrentMin(this.getMinValue());
       this.setCurrentMax(this.getMaxValue());
 
@@ -1092,7 +1091,6 @@ class Axis {
     //var widthPx = this.maxPx - this.minPx;
     var widthPx = Math.abs(this.getMaxPx() - this.getMinPx());
     var valrange = this.getCurrentInterval();
-    console.log(valrange);
     /* Number of px per unit */
     /* Example: width: 1000px
       /* 			10 - 100 => 11.11

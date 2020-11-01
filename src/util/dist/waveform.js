@@ -1,6 +1,6 @@
 'use strict';
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+function _interopDefault(ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var extend = _interopDefault(require('extend'));
 
@@ -324,12 +324,12 @@ class LM {
     }
 
     for (var k = 0; k < this.nadj; k++) // get curvature matrix alpha
-    for (var j = 0; j < this.nadj; j++) {
-      this.alpha[j][k] = 0.0;
-      for (var i = 0; i < this.npts; i++) {
-        this.alpha[j][k] += this.myH.getJacobianElement(i, j) * this.myH.getJacobianElement(i, k);
+      for (var j = 0; j < this.nadj; j++) {
+        this.alpha[j][k] = 0.0;
+        for (var i = 0; i < this.npts; i++) {
+          this.alpha[j][k] += this.myH.getJacobianElement(i, j) * this.myH.getJacobianElement(i, k);
+        }
       }
-    }
     var rrise = 0;
     do // inner damping loop searches for one downhill step
     {
@@ -354,10 +354,10 @@ class LM {
       }
       rrise = (this.sos - this.sosprev) / (1 + this.sos);
       if (rrise <= 0.0) // good step!
-        {
-          this.lambda *= this.LMSHRINK; // shrink lambda
-          break; // leave lmInner.
-        }
+      {
+        this.lambda *= this.LMSHRINK; // shrink lambda
+        break; // leave lmInner.
+      }
       for (var q = 0; q < this.nadj; q++) {
         // reverse course!
         this.delta[q] *= -1.0;
@@ -377,8 +377,8 @@ class LM {
     // M.Lampton UCB SSL (c)2003, 2005
 
     var det = 1.0,
-        big,
-        save;
+      big,
+      save;
     var i, j, k, L;
     var ik = new Array(100);
     var jk = new Array(100);
@@ -386,11 +386,11 @@ class LM {
     for (k = 0; k < N; k++) {
       big = 0.0;
       for (i = k; i < N; i++) for (j = k; j < N; j++) // find biggest element
-      if (Math.abs(big) <= Math.abs(a[i][j])) {
-        big = a[i][j];
-        ik[k] = i;
-        jk[k] = j;
-      }
+        if (Math.abs(big) <= Math.abs(a[i][j])) {
+          big = a[i][j];
+          ik[k] = i;
+          jk[k] = j;
+        }
       if (big == 0.0) return 0.0;
       i = ik[k];
       if (i > k) for (j = 0; j < N; j++) // exchange rows
@@ -406,7 +406,7 @@ class LM {
         a[i][j] = -save;
       }
       for (i = 0; i < N; i++) // build the inverse
-      if (i != k) a[i][k] = -a[i][k] / big;
+        if (i != k) a[i][k] = -a[i][k] / big;
       for (i = 0; i < N; i++) for (j = 0; j < N; j++) if (i != k && j != k) a[i][j] += a[i][k] * a[k][j];
       for (j = 0; j < N; j++) if (j != k) a[k][j] /= big;
       a[k][k] = 1.0 / big;
@@ -502,7 +502,7 @@ class Waveform {
     }
 
     let newData = this._makeArray(data.length),
-        warnNaN = false;
+      warnNaN = false;
 
     const nanable = this.isNaNAllowed();
 
@@ -717,9 +717,9 @@ class Waveform {
   _setData(dataY) {
     const l = dataY.length;
     let i = 1,
-        monoDir = dataY[1] > dataY[0],
-        minY = dataY[0],
-        maxY = dataY[0];
+      monoDir = dataY[1] > dataY[0],
+      minY = dataY[0],
+      maxY = dataY[0];
 
     this._monotoneous = true;
 
@@ -778,7 +778,7 @@ class Waveform {
     } else {
 
       const b1 = this.xOffset + this.xScale * this.getLength(),
-            b2 = this.xOffset;
+        b2 = this.xOffset;
 
       this.minX = Math.min(b1, b2);
       this.maxX = Math.max(b1, b2);
@@ -1166,7 +1166,7 @@ class Waveform {
   checkMonotonicity() {
 
     let i = 1,
-        data = this.getData();
+      data = this.getData();
     const l = this.data.length;
     let dir = data[1] > data[0];
 
@@ -1224,22 +1224,22 @@ class Waveform {
     this.requireXMonotonicity();
 
     let inverting = false,
-        dataY = this.getDataY(),
-        data = {
-      x: [],
-      y: []
-    },
-        dataMinMax = [],
-        resampleSum,
-        resampleMin,
-        resampleMax,
-        resampleNum,
-        resample_x_start,
-        resample_x_px_start,
-        x_px,
-        doing_mean = false,
-        firstPointIndex = 0,
-        xval;
+      dataY = this.getDataY(),
+      data = {
+        x: [],
+        y: []
+      },
+      dataMinMax = [],
+      resampleSum,
+      resampleMin,
+      resampleMax,
+      resampleNum,
+      resample_x_start,
+      resample_x_px_start,
+      x_px,
+      doing_mean = false,
+      firstPointIndex = 0,
+      xval;
 
     const l = this.getLength();
 
@@ -1459,7 +1459,7 @@ class Waveform {
   _numberArithmetic(num, operation) {
 
     let i = 0,
-        l = this.getLength();
+      l = this.getLength();
 
     if (operation == MULTIPLY) {
 
@@ -1501,7 +1501,7 @@ class Waveform {
   _waveArithmetic(wave, operation) {
 
     let yDataThis = this.getDataY(),
-        i = 0;
+      i = 0;
     const l = this.getLength();
     this.requireXMonotonicity();
     wave.requireXMonotonicity();
@@ -1625,7 +1625,7 @@ class Waveform {
       // We can select the new range from there
 
       let fromP = this.getIndexFromX(fromX),
-          toP = this.getIndexFromX(toP);
+        toP = this.getIndexFromX(toP);
 
       return new Waveform().setData(this.data.slice(fromP, toP)).rescaleX(this.xOffset, this.xScale);
     } else {
@@ -1647,8 +1647,8 @@ class Waveform {
   findLocalMinMax(xRef, xWithin, type) {
 
     let index = this.getIndexFromX(xRef),
-        indexPlus = this.getIndexFromX(xRef + xWithin),
-        indexMinus = this.getIndexFromX(xRef - xWithin);
+      indexPlus = this.getIndexFromX(xRef + xWithin),
+      indexMinus = this.getIndexFromX(xRef - xWithin);
 
     return this.findLocalMinMaxIndex(indexMinus, indexPlus, type);
   }
@@ -1798,7 +1798,7 @@ class Waveform {
       i = options.rangeP[0], l = options.rangeP[1], increment = +1;
     }
 
-    for (;; i += increment) {
+    for (; ; i += increment) {
 
       if (options.direction == "descending") {
         if (i < l) {
@@ -2242,7 +2242,7 @@ function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexA
 function euclidianSearch(targetX, targetY, haystackX, haystackY, scaleX = 1, scaleY = 1) {
 
   let distance = Number.MAX_VALUE,
-      distance_i;
+    distance_i;
 
   let index = -1;
 
@@ -2263,11 +2263,11 @@ function euclidianSearch(targetX, targetY, haystackX, haystackY, scaleX = 1, sca
 function binarySearch(target, haystack, reverse = haystack[haystack.length - 1] < haystack[0]) {
 
   let seedA = 0,
-      length = haystack.length,
-      seedB = length - 1,
-      seedInt,
-      i = 0,
-      nanDirection = 1;
+    length = haystack.length,
+    seedB = length - 1,
+    seedInt,
+    i = 0,
+    nanDirection = 1;
 
   if (!reverse && (haystack[0] > target || haystack[seedB] < target) || reverse && (haystack[0] < target || haystack[seedB] > target)) {
     throw new Error(`Target ${target} is not in the stack`);

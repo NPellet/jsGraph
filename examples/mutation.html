@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <div id="hello">
+
+    </div>
+
+    <script type="module">
+        import Graph from '../src/graph.js'
+        const graph = new Graph("hello");
+        graph.resize(400, 300);
+
+        let x = [1, 2];
+        let y = [1, 2];
+        let w = Graph.newWaveform();
+        w.setData(y, x);
+
+        let s = graph.newSerie('s').setWaveform(w).autoAxis();
+        graph.draw();
+
+        let i = 2;
+        setInterval(function () {
+
+            if (i % 100 < 100) {
+                x.pop();
+                y.pop();
+            } else {
+                x.push(i);
+                y.push(i);
+            }
+            i++;
+            w.mutated();
+            s.dataHasChanged();
+            graph.updateDataMinMaxAxes();
+            graph.autoscaleAxes();
+            graph.draw();
+
+        }, 1000);
+
+    </script>
+
+</body>
+
+
+</html>

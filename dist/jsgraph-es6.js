@@ -3283,14 +3283,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         if (waveform.isXMonotoneousAscending()) {
           try {
             i = waveform.getIndexFromX(xMin, true) || 0;
-            l = waveform.getIndexFromX(xMax, true) || waveform.getLength();
+            l = waveform.getIndexFromX(xMax, true);
+
+            if (l == false) {
+              l = waveform.getLength();
+            }
           } catch (e) {
             l = waveform.getLength();
           }
         } else {
           try {
             i = waveform.getIndexFromX(xMax, true) || 0;
-            l = waveform.getIndexFromX(xMin, true) || waveform.getLength();
+            l = waveform.getIndexFromX(xMin, true);
+
+            if (l == false) {
+              l = waveform.getLength();
+            }
           } catch (e) {
             l = waveform.getLength();
           }
@@ -3382,30 +3390,42 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
               xBottomCrossingRatio = (y - yMax) / (y - lastY);
               xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
 
-              if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin) {
+              if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing <= yMax && yLeftCrossing >= yMin) {
                 pointOnAxis.push([xMin, yLeftCrossing]);
               }
 
-              if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin) {
+              if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing <= yMax && yRightCrossing >= yMin) {
                 pointOnAxis.push([xMax, yRightCrossing]);
               }
 
-              if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin) {
+              if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing <= xMax && xTopCrossing >= xMin) {
                 pointOnAxis.push([xTopCrossing, yMin]);
               }
 
-              if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin) {
+              if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing <= xMax && xBottomCrossing >= xMin) {
                 pointOnAxis.push([xBottomCrossing, yMax]);
               }
 
               if (pointOnAxis.length > 0) {
                 if (!pointOutside) {
                   // We were outside and now go inside
-                  if (pointOnAxis.length > 1) {
-                    console.error('Programmation error. Please e-mail me.');
-                    console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
-                  }
+                  // Actually this is possible if we hit the corner pretty perfectly
 
+                  /*
+                                  if (pointOnAxis.length > 1) {
+                                    console.error('Programmation error. Please e-mail me.');
+                                    console.log(
+                                      pointOnAxis,
+                                      xBottomCrossing,
+                                      xTopCrossing,
+                                      yRightCrossing,
+                                      yLeftCrossing,
+                                      y,
+                                      yMin,
+                                      yMax,
+                                      lastY
+                                    );
+                                  }*/
                   this._createLine();
 
                   this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
@@ -3413,11 +3433,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
                   this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
                 } else if (!lastPointOutside) {
                   // We were inside and now go outside
-                  if (pointOnAxis.length > 1) {
-                    console.error('Programmation error. Please e-mail me.');
-                    console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
-                  }
 
+                  /*
+                                  if (pointOnAxis.length > 1) {
+                                    console.error('Programmation error. Please e-mail me.');
+                                    console.log(
+                                      pointOnAxis,
+                                      xBottomCrossing,
+                                      xTopCrossing,
+                                      yRightCrossing,
+                                      yLeftCrossing,
+                                      y,
+                                      yMin,
+                                      yMax,
+                                      lastY
+                                    );
+                                  }*/
                   this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
                 } else {
                   // No crossing: do nothing
@@ -4534,39 +4565,74 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
     setData(data, dataX = null) {
+      this._originalData = data;
+      this._originalDataX = dataX;
+      this.xdata = null;
+      this.mutated();
+      return this;
+    }
+
+    mutated() {
       /* First, we must treat the case of the array of array for backward compatibility */
-      if (Array.isArray(data[0])) {
+      let data;
+
+      if (Array.isArray(this._originalData[0])) {
         let x = [];
         let y = [];
-        data.forEach(el => {
+
+        this._originalData.forEach(el => {
           x.push(el[0]);
           y.push(el[1]);
-        });
+        }); // This case has no mutation for the x variable, it's a brand new object
+
+
         this.setXWaveform(x);
         data = y;
-      }
+      } else {
+        data = this._originalData;
+      } // Using typed array, we need to make a copy of the data
 
-      let newData = this._makeArray(data.length),
-          warnNaN = false;
 
       const nanable = this.isNaNAllowed();
-      data.map((el, index) => {
-        if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
-          warnNaN = true;
+      let warnNaN = false;
+      let newData; // Using typed arrays ?
+
+      if (this.getTypedArrayClass()) {
+        // Create the typed array
+        newData = this._makeArray(data.length);
+        data.forEach((el, index) => {
+          if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+            warnNaN = true;
+          } // Copy all the data in it
+
+
+          newData[index] = el;
+        });
+
+        if (warnNaN) {
+          this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
+        }
+      } else {
+        if (!nanable) {
+          data.forEach((el, index) => {
+            if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+              warnNaN = true;
+            }
+          });
         }
 
-        newData[index] = el;
-      });
+        newData = data;
+      }
 
-      if (warnNaN) {
-        this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
+      if (this._originalDataX) {
+        if (this.xdata) {
+          this.xdata.mutated();
+        } else {
+          this.setXWaveform(this._originalDataX);
+        }
       }
 
       this._setData(newData);
-
-      if (dataX) {
-        this.setXWaveform(dataX);
-      }
 
       return this;
     }
@@ -4806,6 +4872,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.maxY = maxY;
       this.checkMinMaxErrorBars();
       this.computeXMinMax();
+      console.log(this.minY, this.maxY, this.minX, this.maxX);
     }
 
     checkMinMaxErrorBars() {
@@ -7203,12 +7270,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       this.waveform = waveform;
-      this.minX = this.waveform.getXMin();
-      this.maxX = this.waveform.getXMax();
-      this.minY = this.waveform.getMin();
-      this.maxY = this.waveform.getMax();
-      this.graph.updateDataMinMaxAxes();
       this.dataHasChanged();
+      this.graph.updateDataMinMaxAxes();
       return this;
     }
     /**
@@ -7420,6 +7483,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     dataHasChanged(arg) {
       this._dataHasChanged = arg === undefined || arg;
+      this.minX = this.waveform.getXMin();
+      this.maxX = this.waveform.getXMax();
+      this.minY = this.waveform.getMin();
+      this.maxY = this.waveform.getMax();
+      console.log(this.minX, this.maxX, this.minY, this.maxY);
       return this;
     }
     /**
@@ -7698,8 +7766,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
      */
     constructor(wrapper, options, axes = undefined) {
-      var _options;
-
       if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
         // Wrapper is options
         options = wrapper;
@@ -7710,7 +7776,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         options = {};
       }
 
-      if (!((_options = options) === null || _options === void 0 ? void 0 : _options.axes)) {
+      if (!options.axes) {
         options.axes = axes;
       }
       /*
@@ -7735,7 +7801,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       this.options = util.extend({}, GraphOptionsDefault, options); // Options declaration must be placed before the doDom operation
       // doDom is a private method. We bind it to this thanks to ES6 features
 
-      doDom.bind(this)();
+      __createDOM.bind(this)();
 
       if (wrapper) {
         this.setWrapper(wrapper);
@@ -10520,7 +10586,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return false;
   }
 
-  function doDom() {
+  function __createDOM() {
     // Create SVG element, set the NS
     this.dom = document.createElementNS(Graph.ns, 'svg');
     this.dom.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink'); //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
@@ -11376,7 +11442,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     unit: false,
     unitWrapperBefore: '',
     unitWrapperAfter: '',
-    splitMarks: false,
     tickLabelOffset: 0,
     useKatexForLabel: false,
     highestMax: undefined,
@@ -12361,7 +12426,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
       var widthPx = Math.abs(this.getMaxPx() - this.getMinPx());
       var valrange = this.getCurrentInterval();
-      console.log(valrange);
       /* Number of px per unit */
 
       /* Example: width: 1000px

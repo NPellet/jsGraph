@@ -87,8 +87,8 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction to jsGraph</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#cosntructor-method">Cosntructor method</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#wrapper">Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graph-constructor-method">Graph Constructor method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dom-wrapper">DOM Wrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#options">Options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#axes">Axes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#axis-definition">Axis definition</a></li>
@@ -101,6 +101,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#create-a-waveforms">Create a waveforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xy-waveforms">XY waveforms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#y-waveforms">Y waveforms</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-new-serie">Creating a new serie</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#assigning-axes-to-the-serie">Assigning axes to the serie</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#drawing-the-graph">Drawing the graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#boilerplate-example">Boilerplate example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redrawing-methods">Redrawing methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#demonstration">Demonstration</a></li>
 </ul>
 </li>
 </ul>
@@ -174,16 +184,26 @@
             
   <div class="section" id="getting-started">
 <h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>TL,DR</p>
+<div class="last highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">htmlDivID</span><span class="p">,</span> <span class="nx">someOptions</span> <span class="p">);</span>
+<span class="kd">let</span> <span class="nx">wave1</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">yDataAsArray</span><span class="p">,</span> <span class="nx">xDataAsArray</span> <span class="p">);</span>
+<span class="kd">let</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">&#39;someSerieName&#39;</span><span class="p">).</span><span class="nx">setWaveform</span><span class="p">(</span> <span class="nx">wave1</span> <span class="p">).</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
 <p>After you managed to install jsGraph and load into your browser, it’s time to display your first graph.</p>
-<div class="section" id="cosntructor-method">
-<h2>Cosntructor method<a class="headerlink" href="#cosntructor-method" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="graph-constructor-method">
+<h2>Graph Constructor method<a class="headerlink" href="#graph-constructor-method" title="Permalink to this headline">¶</a></h2>
 <p>The graph constructor takes the following possible forms</p>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">wrapper</span><span class="o">?</span><span class="p">,</span> <span class="nx">options</span><span class="o">?</span><span class="p">,</span> <span class="nx">axes</span><span class="o">?</span> <span class="p">);</span>
 </pre></div>
 </div>
 <p>where all three options are actually optional</p>
-<div class="section" id="wrapper">
-<h3>Wrapper<a class="headerlink" href="#wrapper" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="dom-wrapper">
+<h3>DOM Wrapper<a class="headerlink" href="#dom-wrapper" title="Permalink to this headline">¶</a></h3>
 <p>The Wrapper is the DOM element into which jsGraph will inject some SVG and HTML code. It can be the id of the container, or the html element itself:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;graph-container&quot;</span> <span class="p">/&gt;</span>
 </pre></div>
@@ -410,6 +430,18 @@ Obviously there are a lot more optimisation at play, but that’s just one of th
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">waveform</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">yArray</span><span class="p">,</span> <span class="nx">xArray</span> <span class="p">);</span>
 </pre></div>
 </div>
+<div class="section" id="x-as-a-waveform">
+<h5>X as a waveform<a class="headerlink" href="#x-as-a-waveform" title="Permalink to this headline">¶</a></h5>
+<p>In this format, jsGraph actually maintains two waveforms, the main one for the y data set, and one for the x dataset.
+It therefore also allows you to do the following</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// given xWaveform, yWaveform</span>
+<span class="nx">xWaveform</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">xArray</span> <span class="p">);</span>
+<span class="nx">yWaveform</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">yArray</span> <span class="p">);</span>
+<span class="nx">yWaveform</span><span class="p">.</span><span class="nx">setXWaveform</span><span class="p">(</span> <span class="nx">xWaveform</span> <span class="p">);</span>
+<span class="nx">xWaveform</span><span class="p">.</span><span class="nx">math</span><span class="p">(</span> <span class="cm">/*...*/</span> <span class="p">)</span> <span class="c1">// to apply math of the x data set</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="y-waveforms">
 <h4>Y waveforms<a class="headerlink" href="#y-waveforms" title="Permalink to this headline">¶</a></h4>
@@ -420,7 +452,158 @@ Obviously there are a lot more optimisation at play, but that’s just one of th
 <span class="nx">wave1</span><span class="p">.</span><span class="nx">rescaleX</span><span class="p">(</span> <span class="nx">offset</span><span class="p">,</span> <span class="nx">scale</span> <span class="p">);</span>
 </pre></div>
 </div>
+<p>The first <code class="docutils literal notranslate"><span class="pre">y</span></code> value will be at <code class="docutils literal notranslate"><span class="pre">offset</span></code>, the second at <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">+</span> <span class="pre">scale</span></code>, the third at <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">+</span> <span class="pre">scale</span> <span class="pre">*</span> <span class="pre">2</span></code>, etc.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>A third waveform type exists: Hash waveforms. They are used to represent series that go in a bar chart (or category plot). As its name indicates, it doesn’t take <code class="docutils literal notranslate"><span class="pre">(x,y)</span></code> values, but a hashmap, or more generally a javascript object:</p>
+<div class="last highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">wave</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveformHash</span><span class="p">();</span> <span class="c1">// Create the waveform</span>
+<span class="nx">wave</span><span class="p">.</span><span class="nx">setData</span><span class="p">({</span> <span class="nx">categoryA</span><span class="o">:</span> <span class="nx">yVal</span><span class="p">,</span> <span class="nx">categoryB</span><span class="o">:</span> <span class="nx">yVal2</span> <span class="p">});</span> <span class="c1">// Setting the data</span>
+</pre></div>
 </div>
+</div>
+</div>
+</div>
+<div class="section" id="creating-a-new-serie">
+<h3>Creating a new serie<a class="headerlink" href="#creating-a-new-serie" title="Permalink to this headline">¶</a></h3>
+<p>To create a new serie, simply use the <code class="docutils literal notranslate"><span class="pre">graph.newSerie</span></code> method:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="nx">serieName</span><span class="p">,</span> <span class="nx">serieOptions</span><span class="p">,</span> <span class="nx">serieType</span> <span class="p">);</span>
+</pre></div>
+</div>
+<p>The first argument is required, while the other two are optional and default to <code class="docutils literal notranslate"><span class="pre">serieOptions:</span> <span class="pre">{}</span></code> and <code class="docutils literal notranslate"><span class="pre">serieType:</span> <span class="pre">Graph.SERIE_LINE</span></code>.</p>
+<ul class="simple">
+<li>The serie name <strong>must be unique</strong>. If you try to use the name of an existing serie, <code class="docutils literal notranslate"><span class="pre">newSerie</span></code> will simply return the existing serie, and you may override it</li>
+<li><dl class="first docutils">
+<dt>The <code class="docutils literal notranslate"><span class="pre">serieType</span></code> describes which type of serie you’re trying to add. Valid values are:</dt>
+<dd>** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_LINE</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;line&quot;</span></code>
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_SCATTER</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;scatter&quot;</span></code>
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_CONTOUR</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;contour&quot;</span></code>: To create contour lines
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_BAR</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;bar&quot;</span></code>: To use with bar charts
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_BOX</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;box&quot;</span></code>: Box plots
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_LINE_COLORED</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;color&quot;</span></code>: Colored line where each segment can have a different color (lower performance than <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_LINE</span></code>)
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_ZONE</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;zone&quot;</span></code>: Typically used to display min/max values as a greyed area
+** <code class="docutils literal notranslate"><span class="pre">Graph.SERIE_DENSITYMAP</span></code>: A density map (see the tutorial about how to use density maps)</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition hint">
+<p class="first admonition-title">Hint</p>
+<p>Most methods that apply to the series return the serie itself, allowing API calls to be chained:</p>
+<div class="last highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">serie</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;line&#39;</span><span class="p">).</span><span class="nx">methodA</span><span class="p">().</span><span class="nx">methodB</span><span class="p">().</span><span class="nx">methodC</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="assigning-axes-to-the-serie">
+<h4>Assigning axes to the serie<a class="headerlink" href="#assigning-axes-to-the-serie" title="Permalink to this headline">¶</a></h4>
+<p>A serie needs to have an x and a y axis. They might not be displayed, but they must exist. Most jsGraph axis getters create axes if they don’t exist, so don’t worry too much about that.
+If you would like to use the default axes, use</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="c1">// or:</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">autoAxes</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">The default axes are the <code class="docutils literal notranslate"><span class="pre">left</span></code> axis at index <code class="docutils literal notranslate"><span class="pre">0</span></code> and the <code class="docutils literal notranslate"><span class="pre">bottom</span></code> at index <code class="docutils literal notranslate"><span class="pre">0</span></code>. They will be created automatically if they don’t exist.</p>
+</div>
+<p>You may of course use other axes. For that, the <code class="docutils literal notranslate"><span class="pre">setXAxis(</span> <span class="pre">axis</span> <span class="pre">)</span></code> and <code class="docutils literal notranslate"><span class="pre">setYAxis(</span> <span class="pre">axis</span> <span class="pre">)</span></code> exist:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">serie</span><span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// Get the second bottom axis</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">()</span> <span class="p">);</span> <span class="c1">// Get the first right axisDataSpacing</span>
+
+<span class="c1">// Don&#39;t do that:</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">()</span> <span class="p">);</span> <span class="c1">// Error ! Assigning an y axis while the serie expects and x axis</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="drawing-the-graph">
+<h3>Drawing the graph<a class="headerlink" href="#drawing-the-graph" title="Permalink to this headline">¶</a></h3>
+<p>So far you haven’t asked the graph to draw anything. You merely created object and told jsGraph how you wanted to render them.
+For the final rendering use:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="boilerplate-example">
+<h3>Boilerplate example<a class="headerlink" href="#boilerplate-example" title="Permalink to this headline">¶</a></h3>
+<p>Summing up everything we’ve done, it all boils down to a few lines code. Consider the following complete example:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">&quot;graph-example-gettingstarted-1&quot;</span><span class="p">,</span> <span class="p">{});</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">).</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">&#39;serieName&#39;</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>This code would display the following basic graph:</p>
+<div>
+    <div id="graph-example-gettingstarted-1"></div>
+    <script type="module" src="_static/example_boilerplate.js"></script>
+</div></div>
+<div class="section" id="redrawing-methods">
+<h3>Redrawing methods<a class="headerlink" href="#redrawing-methods" title="Permalink to this headline">¶</a></h3>
+<p>To redraw the method, you can rebind the data to the waveform, and the waveform to the serie:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">waveform</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataY</span><span class="p">,</span> <span class="nx">dataY</span> <span class="p">);</span> <span class="c1">// Rebinding arrays</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setWaveform</span><span class="p">(</span> <span class="nx">waveform</span> <span class="p">);</span>  <span class="c1">// Rebinding waveform</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">autoscaleAxes</span><span class="p">();</span> <span class="c1">// Optional, but rescales the axes to fit the new (?) min/max values</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Rebinding the data is not an computationnally expensive data. However, sometimes you may loose track of <code class="docutils literal notranslate"><span class="pre">dataY</span></code> and <code class="docutils literal notranslate"><span class="pre">dataX</span></code>.</p>
+<p>In this case, you can also directly <strong>mutate</strong> the arrays and not rebind them to the serie. It may be useful if you lose track of where the arrays are.
+That’s not a problem for jsGraph, but it becomes your responsability to tell the waveform, the serie and the graph that the data has changed.</p>
+<p>If you’re not sure whether the min / max values have changed:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">waveform</span><span class="p">.</span><span class="nx">mutated</span><span class="p">();</span> <span class="c1">// Tell the waveform to recompute the min/max</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">dataHasChanged</span><span class="p">();</span> <span class="c1">// Tell the serie that the data has changed</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">updateDataMinMaxAxes</span><span class="p">();</span> <span class="c1">// Tell the graph that there may be new min max values</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">autoscaleAxes</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>If you are sure that the min/max values haven’t changed:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">s</span><span class="p">.</span><span class="nx">dataHasChanged</span><span class="p">();</span> <span class="c1">// Flag the serie for a redraw</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Even if you do not wish to do call <code class="docutils literal notranslate"><span class="pre">autoscaleAxes</span></code>, and in the case where the min/max of the data may have changed, you <strong>need</strong> to call the <code class="docutils literal notranslate"><span class="pre">mutated</span></code> method on the waveform and the <code class="docutils literal notranslate"><span class="pre">updateDataMinMaxAxes</span></code> on the graph object.</p>
+</div>
+<div class="section" id="demonstration">
+<h4>Demonstration<a class="headerlink" href="#demonstration" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">&quot;graph-example-gettingstarted-2&quot;</span><span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">);</span>
+
+<span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span>
+<span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span>
+<span class="kd">let</span> <span class="nx">w</span> <span class="o">=</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">newWaveform</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">).</span><span class="nx">setWaveform</span><span class="p">(</span><span class="nx">w</span><span class="p">).</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+
+<span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">x</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
+        <span class="nx">y</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">i</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">x</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+        <span class="nx">y</span><span class="p">.</span><span class="nx">pop</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+
+    <span class="nx">w</span><span class="p">.</span><span class="nx">mutated</span><span class="p">();</span>
+    <span class="nx">s</span><span class="p">.</span><span class="nx">dataHasChanged</span><span class="p">();</span>
+    <span class="nx">graph</span><span class="p">.</span><span class="nx">updateDataMinMaxAxes</span><span class="p">();</span>
+    <span class="nx">graph</span><span class="p">.</span><span class="nx">autoscaleAxes</span><span class="p">();</span>
+    <span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+
+<span class="p">},</span> <span class="mi">200</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This code would display the following basic graph:</p>
+<div>
+    <div id="graph-example-gettingstarted-2"></div>
+    <script type="module" src="_static/example_mutation.js"></script>
+</div></div>
 </div>
 </div>
 </div>

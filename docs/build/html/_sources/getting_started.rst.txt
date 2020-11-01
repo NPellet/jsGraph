@@ -2,10 +2,20 @@
 Getting started
 **************************
 
+.. note:: TL,DR
+
+    .. code-block:: javascript
+        
+        let graph = new Graph( htmlDivID, someOptions );
+        let wave1 = graph.newWaveform().setData( yDataAsArray, xDataAsArray );
+        let serie = graph.newSerie('someSerieName').setWaveform( wave1 ).autoAxis();
+        graph.draw();
+        
+
 After you managed to install jsGraph and load into your browser, it's time to display your first graph.
 
-Cosntructor method
-###################
+Graph Constructor method
+##########################
 
 The graph constructor takes the following possible forms
 
@@ -15,8 +25,8 @@ The graph constructor takes the following possible forms
 
 where all three options are actually optional
 
-Wrapper
-==========
+DOM Wrapper
+=============
 
 The Wrapper is the DOM element into which jsGraph will inject some SVG and HTML code. It can be the id of the container, or the html element itself:
 
@@ -276,6 +286,21 @@ To set the XY data to a waveform, use the ``setData`` method:
 
     Note how the first parameter is the y array, and the second parameter is the x array. This is for historical reasons and because the second parameter is optional (more on that in the next paragraph)
 
+X as a waveform 
+_________________
+
+In this format, jsGraph actually maintains two waveforms, the main one for the y data set, and one for the x dataset.
+It therefore also allows you to do the following
+
+
+.. code-block:: javascript
+
+    // given xWaveform, yWaveform
+    xWaveform.setData( xArray );
+    yWaveform.setData( yArray );
+    yWaveform.setXWaveform( xWaveform );
+    xWaveform.math( /*...*/ ) // to apply math of the x data set
+
 Y waveforms
 ++++++++++++++++
 
@@ -288,4 +313,160 @@ Y waveforms occur when the interval between each data point is constant. The off
     // or
     wave1.rescaleX( offset, scale );
 
+The first ``y`` value will be at ``offset``, the second at ``offset + scale``, the third at ``offset + scale * 2``, etc.
+
+.. note::
+
+    A third waveform type exists: Hash waveforms. They are used to represent series that go in a bar chart (or category plot). As its name indicates, it doesn't take ``(x,y)`` values, but a hashmap, or more generally a javascript object:
     
+    .. code-block:: javascript
+
+        const wave = Graph.newWaveformHash(); // Create the waveform
+        wave.setData({ categoryA: yVal, categoryB: yVal2 }); // Setting the data
+
+
+Creating a new serie
+==========================
+
+To create a new serie, simply use the ``graph.newSerie`` method:
+
+.. code-block:: javascript
+
+    let serie = graph.newSerie( serieName, serieOptions, serieType );
+
+The first argument is required, while the other two are optional and default to ``serieOptions: {}`` and ``serieType: Graph.SERIE_LINE``.
+
+* The serie name **must be unique**. If you try to use the name of an existing serie, ``newSerie`` will simply return the existing serie, and you may override it
+* The ``serieType`` describes which type of serie you're trying to add. Valid values are:
+    ** ``Graph.SERIE_LINE`` or ``"line"``
+    ** ``Graph.SERIE_SCATTER`` or ``"scatter"``
+    ** ``Graph.SERIE_CONTOUR`` or ``"contour"``: To create contour lines
+    ** ``Graph.SERIE_BAR`` or ``"bar"``: To use with bar charts
+    ** ``Graph.SERIE_BOX`` or ``"box"``: Box plots
+    ** ``Graph.SERIE_LINE_COLORED`` or ``"color"``: Colored line where each segment can have a different color (lower performance than ``Graph.SERIE_LINE``)
+    ** ``Graph.SERIE_ZONE`` or ``"zone"``: Typically used to display min/max values as a greyed area
+    ** ``Graph.SERIE_DENSITYMAP``: A density map (see the tutorial about how to use density maps)
+
+.. hint::
+
+    Most methods that apply to the series return the serie itself, allowing API calls to be chained:
+
+    .. code-block:: javascript
+
+        let serie = graph.newSerie('name', {}, 'line').methodA().methodB().methodC();
+
+        
+
+Assigning axes to the serie
+++++++++++++++++++++++++++++++
+
+A serie needs to have an x and a y axis. They might not be displayed, but they must exist. Most jsGraph axis getters create axes if they don't exist, so don't worry too much about that.
+If you would like to use the default axes, use
+
+
+.. code-block:: javascript
+
+    serie.autoAxis();
+    // or:
+    serie.autoAxes();
+
+.. important::
+
+    The default axes are the ``left`` axis at index ``0`` and the ``bottom`` at index ``0``. They will be created automatically if they don't exist.
+
+You may of course use other axes. For that, the ``setXAxis( axis )`` and ``setYAxis( axis )`` exist:
+
+
+.. code-block:: javascript
+
+    serie.setXAxis( graph.getBottomAxis( 1 ) ); // Get the second bottom axis
+    serie.setYAxis( graph.getRightAxis() ); // Get the first right axisDataSpacing
+
+    // Don't do that:
+    serie.setXAxis( graph.getLeftAxis() ); // Error ! Assigning an y axis while the serie expects and x axis
+
+
+Drawing the graph
+=====================
+
+So far you haven't asked the graph to draw anything. You merely created object and told jsGraph how you wanted to render them.
+For the final rendering use:
+
+.. code-block:: javascript
+
+   graph.draw();
+
+Boilerplate example
+=====================
+
+Summing up everything we've done, it all boils down to a few lines code. Consider the following complete example:
+
+.. literalinclude:: _static/example_boilerplate.js
+    :language: javascript
+
+This code would display the following basic graph:
+
+
+.. raw:: html
+
+    <div>
+        <div id="graph-example-gettingstarted-1"></div>
+        <script type="module" src="_static/example_boilerplate.js"></script>
+    </div>
+
+
+
+Redrawing methods
+=====================
+
+To redraw the method, you can rebind the data to the waveform, and the waveform to the serie:
+
+.. code-block:: javascript
+
+   waveform.setData( dataY, dataY ); // Rebinding arrays
+   serie.setWaveform( waveform );  // Rebinding waveform
+   graph.autoscaleAxes(); // Optional, but rescales the axes to fit the new (?) min/max values
+   graph.draw();
+
+Rebinding the data is not an computationnally expensive data. However, sometimes you may loose track of ``dataY`` and ``dataX``.
+
+In this case, you can also directly **mutate** the arrays and not rebind them to the serie. It may be useful if you lose track of where the arrays are.
+That's not a problem for jsGraph, but it becomes your responsability to tell the waveform, the serie and the graph that the data has changed.
+
+If you're not sure whether the min / max values have changed:
+
+.. code-block:: javascript
+
+    waveform.mutated(); // Tell the waveform to recompute the min/max
+    serie.dataHasChanged(); // Tell the serie that the data has changed
+    graph.updateDataMinMaxAxes(); // Tell the graph that there may be new min max values
+    graph.autoscaleAxes();
+    graph.draw();
+
+If you are sure that the min/max values haven't changed:
+
+.. code-block:: javascript
+
+    s.dataHasChanged(); // Flag the serie for a redraw
+    graph.draw();
+
+.. warning::
+    
+    Even if you do not wish to do call ``autoscaleAxes``, and in the case where the min/max of the data may have changed, you **need** to call the ``mutated`` method on the waveform and the ``updateDataMinMaxAxes`` on the graph object.
+
+Demonstration
++++++++++++++++
+
+.. literalinclude:: _static/example_mutation.js
+    :language: javascript
+
+This code would display the following basic graph:
+
+
+.. raw:: html
+
+    <div>
+        <div id="graph-example-gettingstarted-2"></div>
+        <script type="module" src="_static/example_mutation.js"></script>
+    </div>
+
