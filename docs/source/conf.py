@@ -177,5 +177,5 @@ epub_exclude_files = ['search.html']
 
 # Include the jsGraph distribution
 html_js_files = [
-    'jsGraph.min.js',
+    'jsgraph.min.js',
 ]
