@@ -4334,13 +4334,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     overflowX: false,
     overflowY: false
   };
-
   /**
    * Serie line
    * @example graph.newSerie( name, options, "line" );
    * @see Graph#newSerie
    * @extends Serie
    */
+
   var SerieLine =
   /*#__PURE__*/
   function (_SerieScatter) {
@@ -13228,7 +13228,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.0"
+        'data-jsgraph-version': "v2.3.1"
       });
     } catch (e) {// ignore
     }
