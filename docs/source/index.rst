@@ -15,6 +15,17 @@ Welcome to jsGraph's documentation!
    getting_started
 
 
+
+Axes
+===================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Axes handling:
+   
+   axes/spanning
+
+
 Indices and tables
 ==================
 

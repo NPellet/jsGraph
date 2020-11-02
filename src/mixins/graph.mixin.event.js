@@ -1,3 +1,15 @@
+const trigger = function (eventName, ...params) {
+
+  if (this.__eventHandlers?.[eventName]) {
+    this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
+  }
+
+  const allHandlers = this.__eventHandlers?.__all;
+  if (allHandlers) {
+    allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
+  }
+};
+
 const EventMixin = {
 
   on(eventName, handler) {
@@ -11,6 +23,7 @@ const EventMixin = {
     }
 
     this.__eventHandlers[eventName].push(handler);
+    return this;
   },
 
   off(eventName, handler) {
@@ -29,25 +42,20 @@ const EventMixin = {
         }
       }
     }
+    return this;
   },
 
   onAll(handler) {
-    this.on('__all', handler);
+    return this.on('__all', handler);
   },
 
   ofAll(handler) {
-    this.off('__all', handler);
+    return this.off('__all', handler);
   },
 
-  trigger(eventName, ...params) {
-    if (this.__eventHandlers?.[eventName]) {
-      this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
-    }
-
-    const allHandlers = this.__eventHandlers?.__all;
-    if (allHandlers) {
-      allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
-    }
+  trigger(...args) {
+    trigger.apply(this, args);
+    return this;
   },
 
   emit(eventName, ...params) {
@@ -56,6 +64,7 @@ const EventMixin = {
 }
 
 export {
+  trigger,
   EventMixin
 };
 
