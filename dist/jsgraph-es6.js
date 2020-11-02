@@ -10600,7 +10600,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.1"
+        'data-jsgraph-version': "v2.3.2"
       });
     } catch (e) {// ignore
     }
@@ -14002,6 +14002,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
   (0, _graphMixinEvent_graph.default)(Axis, "axis");
+  console.log(Axis.prototype);
   var _default = Axis;
   _exports.default = _default;
   module.exports = exports.default;
@@ -14035,22 +14036,22 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   _exports.default = void 0;
 
   let ExtendedEventMixin = manglingName => {
-    return {
-      __proto__: _graphMixinEvent.EventMixin,
-
+    return Object.assign({}, _graphMixinEvent.EventMixin, {
       trigger(eventName, ...args) {
-        super.trigger(eventName, ...args);
+        _graphMixinEvent.trigger.call(this, eventName, ...args);
 
         if (this.graph) {
           this.graph.trigger(manglingName + "." + eventName, ...args);
         }
+
+        return this;
       },
 
       emit(eventName, ...args) {
-        this.trigger(eventName, ...args);
+        return this.trigger(eventName, ...args);
       }
 
-    };
+    });
   };
 
   var _default = (Obj, manglingName = "__") => {
@@ -15427,7 +15428,23 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports.default = _exports.EventMixin = void 0;
+  _exports.default = _exports.EventMixin = _exports.trigger = void 0;
+
+  const trigger = function (eventName, ...params) {
+    var _this$__eventHandlers, _this$__eventHandlers2;
+
+    if ((_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName]) {
+      this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
+    }
+
+    const allHandlers = (_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2.__all;
+
+    if (allHandlers) {
+      allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
+    }
+  };
+
+  _exports.trigger = trigger;
   const EventMixin = {
     on(eventName, handler) {
       if (!this.__eventHandlers) {
@@ -15439,12 +15456,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       this.__eventHandlers[eventName].push(handler);
+
+      return this;
     },
 
     off(eventName, handler) {
-      var _this$__eventHandlers;
+      var _this$__eventHandlers3;
 
-      let handlers = (_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName];
+      let handlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3[eventName];
 
       if (!handlers) {
         return;
@@ -15459,28 +15478,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         }
       }
+
+      return this;
     },
 
     onAll(handler) {
-      this.on('__all', handler);
+      return this.on('__all', handler);
     },
 
     ofAll(handler) {
-      this.off('__all', handler);
+      return this.off('__all', handler);
     },
 
-    trigger(eventName, ...params) {
-      var _this$__eventHandlers2, _this$__eventHandlers3;
-
-      if ((_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2[eventName]) {
-        this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
-      }
-
-      const allHandlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3.__all;
-
-      if (allHandlers) {
-        allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
-      }
+    trigger(...args) {
+      trigger.apply(this, args);
+      return this;
     },
 
     emit(eventName, ...params) {
@@ -17496,9 +17508,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       const graph = new Graph(undefined, options);
       (0, _main.default)(Graph, graph, json, wrapper);
       graph.setWrapper(wrapper);
-      graph.onAll(function (eventName, ...args) {
-        callback(eventName, ...args);
-      });
+
+      if (callback) {
+        graph.onAll(function (eventName, ...args) {
+          callback(eventName, ...args);
+        });
+      }
+
       return graph;
     };
 

@@ -1058,9 +1058,13 @@ var GraphJSON = (Graph => {
     const graph = new Graph(undefined, options);
     makeGraph(Graph, graph, json, wrapper);
     graph.setWrapper(wrapper);
-    graph.onAll(function (eventName, ...args) {
-      callback(eventName, ...args);
-    });
+
+    if (callback) {
+      graph.onAll(function (eventName, ...args) {
+        callback(eventName, ...args);
+      });
+    }
+
     return graph;
   };
 
@@ -1101,6 +1105,20 @@ var GraphJSON = (Graph => {
   };
 });
 
+const trigger = function (eventName, ...params) {
+  var _this$__eventHandlers, _this$__eventHandlers2;
+
+  if ((_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName]) {
+    this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
+  }
+
+  const allHandlers = (_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2.__all;
+
+  if (allHandlers) {
+    allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
+  }
+};
+
 const EventMixin = {
   on(eventName, handler) {
     if (!this.__eventHandlers) {
@@ -1112,12 +1130,14 @@ const EventMixin = {
     }
 
     this.__eventHandlers[eventName].push(handler);
+
+    return this;
   },
 
   off(eventName, handler) {
-    var _this$__eventHandlers;
+    var _this$__eventHandlers3;
 
-    let handlers = (_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName];
+    let handlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3[eventName];
 
     if (!handlers) {
       return;
@@ -1132,28 +1152,21 @@ const EventMixin = {
         }
       }
     }
+
+    return this;
   },
 
   onAll(handler) {
-    this.on('__all', handler);
+    return this.on('__all', handler);
   },
 
   ofAll(handler) {
-    this.off('__all', handler);
+    return this.off('__all', handler);
   },
 
-  trigger(eventName, ...params) {
-    var _this$__eventHandlers2, _this$__eventHandlers3;
-
-    if ((_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2[eventName]) {
-      this.__eventHandlers[eventName].forEach(handler => handler.apply(this, params));
-    }
-
-    const allHandlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3.__all;
-
-    if (allHandlers) {
-      allHandlers.forEach(handler => handler.apply(this, [eventName, ...params]));
-    }
+  trigger(...args) {
+    trigger.apply(this, args);
+    return this;
   },
 
   emit(eventName, ...params) {
@@ -8344,22 +8357,22 @@ function getBBox(svgElement) {
 }
 
 let ExtendedEventMixin = manglingName => {
-  return {
-    __proto__: EventMixin,
-
+  return Object.assign({}, EventMixin, {
     trigger(eventName, ...args) {
-      super.trigger(eventName, ...args);
+      trigger.call(this, eventName, ...args);
 
       if (this.graph) {
         this.graph.trigger(manglingName + "." + eventName, ...args);
       }
+
+      return this;
     },
 
     emit(eventName, ...args) {
-      this.trigger(eventName, ...args);
+      return this.trigger(eventName, ...args);
     }
 
-  };
+  });
 };
 
 var EventMixin$2 = ((Obj, manglingName = "__") => {
@@ -10993,6 +11006,7 @@ Axis.prototype.getValue = Axis.prototype.getVal;
 
 Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 EventMixin$2(Axis, "axis");
+console.log(Axis.prototype);
 
 /**
  * Generic constructor of a y axis

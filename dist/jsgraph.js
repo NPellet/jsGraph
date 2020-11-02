@@ -13228,7 +13228,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.1"
+        'data-jsgraph-version': "v2.3.2"
       });
     } catch (e) {// ignore
     }
@@ -16822,6 +16822,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
   (0, _graphMixinEvent_graph.default)(Axis, "axis");
+  console.log(Axis.prototype);
   var _default = Axis;
   _exports.default = _default;
   module.exports = exports.default;
@@ -16854,40 +16855,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   });
   _exports.default = void 0;
 
-  function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
-
-  function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-
-  function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
   var ExtendedEventMixin = function ExtendedEventMixin(manglingName) {
-    var _obj;
-
-    return _obj = {
-      __proto__: _graphMixinEvent.EventMixin,
+    return Object.assign({}, _graphMixinEvent.EventMixin, {
       trigger: function trigger(eventName) {
-        var _get2;
-
         for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
           args[_key - 1] = arguments[_key];
         }
 
-        (_get2 = _get(_getPrototypeOf(_obj), "trigger", this)).call.apply(_get2, [this, eventName].concat(args));
+        _graphMixinEvent.trigger.call.apply(_graphMixinEvent.trigger, [this, eventName].concat(args));
 
         if (this.graph) {
           var _this$graph;
 
           (_this$graph = this.graph).trigger.apply(_this$graph, [manglingName + "." + eventName].concat(args));
         }
+
+        return this;
       },
       emit: function emit(eventName) {
         for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
           args[_key2 - 1] = arguments[_key2];
         }
 
-        this.trigger.apply(this, [eventName].concat(args));
+        return this.trigger.apply(this, [eventName].concat(args));
       }
-    };
+    });
   };
 
   var _default = function _default(Obj) {
@@ -20381,7 +20373,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
-  _exports.default = _exports.EventMixin = void 0;
+  _exports.default = _exports.EventMixin = _exports.trigger = void 0;
+
+  var _trigger = function trigger(eventName) {
+    var _this$__eventHandlers,
+        _this = this,
+        _this$__eventHandlers2;
+
+    for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      params[_key - 1] = arguments[_key];
+    }
+
+    if ((_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName]) {
+      this.__eventHandlers[eventName].forEach(function (handler) {
+        return handler.apply(_this, params);
+      });
+    }
+
+    var allHandlers = (_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2.__all;
+
+    if (allHandlers) {
+      allHandlers.forEach(function (handler) {
+        return handler.apply(_this, [eventName].concat(params));
+      });
+    }
+  };
+
+  _exports.trigger = _trigger;
   var EventMixin = {
     on: function on(eventName, handler) {
       if (!this.__eventHandlers) {
@@ -20393,11 +20411,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       }
 
       this.__eventHandlers[eventName].push(handler);
+
+      return this;
     },
     off: function off(eventName, handler) {
-      var _this$__eventHandlers;
+      var _this$__eventHandlers3;
 
-      var handlers = (_this$__eventHandlers = this.__eventHandlers) === null || _this$__eventHandlers === void 0 ? void 0 : _this$__eventHandlers[eventName];
+      var handlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3[eventName];
 
       if (!handlers) {
         return;
@@ -20412,39 +20432,27 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
         }
       }
+
+      return this;
     },
     onAll: function onAll(handler) {
-      this.on('__all', handler);
+      return this.on('__all', handler);
     },
     ofAll: function ofAll(handler) {
-      this.off('__all', handler);
+      return this.off('__all', handler);
     },
-    trigger: function trigger(eventName) {
-      var _this$__eventHandlers2,
-          _this = this,
-          _this$__eventHandlers3;
-
-      for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        params[_key - 1] = arguments[_key];
+    trigger: function trigger() {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
       }
 
-      if ((_this$__eventHandlers2 = this.__eventHandlers) === null || _this$__eventHandlers2 === void 0 ? void 0 : _this$__eventHandlers2[eventName]) {
-        this.__eventHandlers[eventName].forEach(function (handler) {
-          return handler.apply(_this, params);
-        });
-      }
+      _trigger.apply(this, args);
 
-      var allHandlers = (_this$__eventHandlers3 = this.__eventHandlers) === null || _this$__eventHandlers3 === void 0 ? void 0 : _this$__eventHandlers3.__all;
-
-      if (allHandlers) {
-        allHandlers.forEach(function (handler) {
-          return handler.apply(_this, [eventName].concat(params));
-        });
-      }
+      return this;
     },
     emit: function emit(eventName) {
-      for (var _len2 = arguments.length, params = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        params[_key2 - 1] = arguments[_key2];
+      for (var _len3 = arguments.length, params = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+        params[_key3 - 1] = arguments[_key3];
       }
 
       return this.trigger.apply(this, [eventName].concat(params));
@@ -27296,13 +27304,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var graph = new Graph(undefined, options);
       (0, _main.default)(Graph, graph, json, wrapper);
       graph.setWrapper(wrapper);
-      graph.onAll(function (eventName) {
-        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
-        }
 
-        callback.apply(void 0, [eventName].concat(args));
-      });
+      if (callback) {
+        graph.onAll(function (eventName) {
+          for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+          }
+
+          callback.apply(void 0, [eventName].concat(args));
+        });
+      }
+
       return graph;
     };
 
