@@ -10217,19 +10217,30 @@ class Axis {
     return text;
   }
 
+  setExponentialFactor(value) {
+    this.options.exponentialFactor = value;
+    return this;
+  }
+
   getExponentialFactor() {
     return this.options.exponentialFactor;
   }
 
-  setExponentialFactor(value) {
-    this.options.exponentialFactor = value;
-  }
-
   setExponentialLabelFactor(value) {
     this.options.exponentialLabelFactor = value;
+    return this;
   }
 
   getExponentialLabelFactor() {
+    return this.options.exponentialLabelFactor;
+  }
+
+  setLabelExponentialFactor(value) {
+    this.options.exponentialLabelFactor = value;
+    return this;
+  }
+
+  getLabelExponentialFactor() {
     return this.options.exponentialLabelFactor;
   }
 
@@ -10909,7 +10920,7 @@ class Axis {
    */
 
 
-  setScientific(on) {
+  setScientific(on = true) {
     this.options.scientificScale = on;
     return this;
   }
@@ -11006,7 +11017,6 @@ Axis.prototype.getValue = Axis.prototype.getVal;
 
 Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 EventMixin$2(Axis, "axis");
-console.log(Axis.prototype);
 
 /**
  * Generic constructor of a y axis

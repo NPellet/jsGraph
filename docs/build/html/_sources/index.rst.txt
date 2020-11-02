@@ -24,6 +24,7 @@ Axes
    :caption: Axes handling:
    
    axes/spanning
+   axes/scientific
 
 
 Indices and tables

@@ -13228,7 +13228,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.2"
+        'data-jsgraph-version': "v2.3.3"
       });
     } catch (e) {// ignore
     }
@@ -15951,23 +15951,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return text;
       }
     }, {
+      key: "setExponentialFactor",
+      value: function setExponentialFactor(value) {
+        this.options.exponentialFactor = value;
+        return this;
+      }
+    }, {
       key: "getExponentialFactor",
       value: function getExponentialFactor() {
         return this.options.exponentialFactor;
       }
     }, {
-      key: "setExponentialFactor",
-      value: function setExponentialFactor(value) {
-        this.options.exponentialFactor = value;
-      }
-    }, {
       key: "setExponentialLabelFactor",
       value: function setExponentialLabelFactor(value) {
         this.options.exponentialLabelFactor = value;
+        return this;
       }
     }, {
       key: "getExponentialLabelFactor",
       value: function getExponentialLabelFactor() {
+        return this.options.exponentialLabelFactor;
+      }
+    }, {
+      key: "setLabelExponentialFactor",
+      value: function setLabelExponentialFactor(value) {
+        this.options.exponentialLabelFactor = value;
+        return this;
+      }
+    }, {
+      key: "getLabelExponentialFactor",
+      value: function getLabelExponentialFactor() {
         return this.options.exponentialLabelFactor;
       }
     }, {
@@ -16706,7 +16719,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     }, {
       key: "setScientific",
-      value: function setScientific(on) {
+      value: function setScientific() {
+        var on = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
         this.options.scientificScale = on;
         return this;
       }
@@ -16822,7 +16836,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
   (0, _graphMixinEvent_graph.default)(Axis, "axis");
-  console.log(Axis.prototype);
   var _default = Axis;
   _exports.default = _default;
   module.exports = exports.default;

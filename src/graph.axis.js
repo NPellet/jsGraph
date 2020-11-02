@@ -1950,19 +1950,29 @@ class Axis {
     return text;
   }
 
+  setExponentialFactor(value) {
+    this.options.exponentialFactor = value;
+    return this;
+  }
+
   getExponentialFactor() {
     return this.options.exponentialFactor;
   }
 
-  setExponentialFactor(value) {
-    this.options.exponentialFactor = value;
-  }
-
   setExponentialLabelFactor(value) {
     this.options.exponentialLabelFactor = value;
+    return this;
   }
 
   getExponentialLabelFactor() {
+    return this.options.exponentialLabelFactor;
+  }
+  setLabelExponentialFactor(value) {
+    this.options.exponentialLabelFactor = value;
+    return this;
+  }
+
+  getLabelExponentialFactor() {
     return this.options.exponentialLabelFactor;
   }
 
@@ -2595,7 +2605,7 @@ class Axis {
    * @memberof Axis
    * @since 1.13.3
    */
-  setScientific(on) {
+  setScientific(on = true) {
     this.options.scientificScale = on;
     return this;
   }
@@ -2677,16 +2687,15 @@ class Axis {
 
 }
 
-/**
- *  @alias Axis#getVal
- */
-Axis.prototype.getValue = Axis.prototype.getVal;
+  /**
+   *  @alias Axis#getVal
+   */
+  Axis.prototype.getValue = Axis.prototype.getVal;
 
-/**
- *  @alias Axis#getRelPx
- */
-Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
+  /**
+   *  @alias Axis#getRelPx
+   */
+  Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 
 EventMixin(Axis, "axis");
-console.log(Axis.prototype);
 export default Axis;

@@ -39,7 +39,7 @@ In general, jsGraph will try to place as many axis in the first level, and perfo
 For example, if you have `axisA.setSpan( 0, 55 )`, `axisB.setSpan( 50, 100 )` and `axisC.setSpan( 60, 80 )`, then axisC will be placed together with axisA because they don't overlap. 
 It will not appear on a third level.
 
-To make it clear, here is how this example would turn out:
+In this particular example, it wouldn't make much sense, but for the sake of it, here is how this example would turn out:
 
 .. literalinclude:: ../_static/examples/axes/spanning/example3.js
     :language: javascript

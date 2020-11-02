@@ -10600,7 +10600,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.2"
+        'data-jsgraph-version': "v2.3.3"
       });
     } catch (e) {// ignore
     }
@@ -13213,19 +13213,30 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return text;
     }
 
+    setExponentialFactor(value) {
+      this.options.exponentialFactor = value;
+      return this;
+    }
+
     getExponentialFactor() {
       return this.options.exponentialFactor;
     }
 
-    setExponentialFactor(value) {
-      this.options.exponentialFactor = value;
-    }
-
     setExponentialLabelFactor(value) {
       this.options.exponentialLabelFactor = value;
+      return this;
     }
 
     getExponentialLabelFactor() {
+      return this.options.exponentialLabelFactor;
+    }
+
+    setLabelExponentialFactor(value) {
+      this.options.exponentialLabelFactor = value;
+      return this;
+    }
+
+    getLabelExponentialFactor() {
       return this.options.exponentialLabelFactor;
     }
 
@@ -13905,7 +13916,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
      */
 
 
-    setScientific(on) {
+    setScientific(on = true) {
       this.options.scientificScale = on;
       return this;
     }
@@ -14002,7 +14013,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
   (0, _graphMixinEvent_graph.default)(Axis, "axis");
-  console.log(Axis.prototype);
   var _default = Axis;
   _exports.default = _default;
   module.exports = exports.default;
