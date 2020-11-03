@@ -13529,10 +13529,14 @@ class Serie {
 
   dataHasChanged(arg) {
     this._dataHasChanged = arg === undefined || arg;
-    this.minX = this.waveform.getXMin();
-    this.maxX = this.waveform.getXMax();
-    this.minY = this.waveform.getMin();
-    this.maxY = this.waveform.getMax();
+
+    if (this.waveform) {
+      this.minX = this.waveform.getXMin();
+      this.maxX = this.waveform.getXMax();
+      this.minY = this.waveform.getMin();
+      this.maxY = this.waveform.getMax();
+    }
+
     return this;
   }
   /**
@@ -16587,7 +16591,6 @@ class SerieLineColor extends SerieLine {
       lastY = y;
     }
 
-    console.log(this.lines);
     this.latchLines();
 
     if (this._tracker) {

@@ -7446,10 +7446,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
     dataHasChanged(arg) {
       this._dataHasChanged = arg === undefined || arg;
-      this.minX = this.waveform.getXMin();
-      this.maxX = this.waveform.getXMax();
-      this.minY = this.waveform.getMin();
-      this.maxY = this.waveform.getMax();
+
+      if (this.waveform) {
+        this.minX = this.waveform.getXMin();
+        this.maxX = this.waveform.getXMax();
+        this.minY = this.waveform.getMin();
+        this.maxY = this.waveform.getMax();
+      }
+
       return this;
     }
     /**
@@ -10562,7 +10566,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.4"
+        'data-jsgraph-version': "v2.3.5"
       });
     } catch (e) {// ignore
     }
@@ -21243,7 +21247,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         lastY = y;
       }
 
-      console.log(this.lines);
       this.latchLines();
 
       if (this._tracker) {
