@@ -4743,60 +4743,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         data = waveform.getData(true); // Y crossing
 
-        var yLeftCrossingRatio,
-            yLeftCrossing,
-            yRightCrossingRatio,
-            yRightCrossing,
-            xTopCrossingRatio,
-            xTopCrossing,
-            xBottomCrossingRatio,
-            xBottomCrossing,
-
         /*xshift = waveform.getXShift(),
         xscale = wave.getXScale(),*/
-        yshift = waveform.getShift(),
-            yscale = waveform.getScale();
+
+        yshift = waveform.getShift(), yscale = waveform.getScale();
         var pointOutside = false;
         var lastPointOutside = false;
         var pointOnAxis;
 
         var _monotoneous = this.isMonotoneous();
 
-        var i = 0,
-            l = waveform.getLength();
         this.currentLine = '';
 
-        if (waveform.isXMonotoneous()) {
-          if (waveform.isXMonotoneousAscending()) {
-            try {
-              i = waveform.getIndexFromX(xMin, true) || 0;
-              l = waveform.getIndexFromX(xMax, true);
-
-              if (l == false) {
-                l = waveform.getLength();
-              }
-            } catch (e) {
-              l = waveform.getLength();
-            }
-          } else {
-            try {
-              i = waveform.getIndexFromX(xMax, true) || 0;
-              l = waveform.getIndexFromX(xMin, true);
-
-              if (l == false) {
-                l = waveform.getLength();
-              }
-            } catch (e) {
-              l = waveform.getLength();
-            }
-          }
-
-          l += 2;
-
-          if (l > data.length) {
-            l = data.length;
-          }
-        }
+        var _this$_getIterativeBo = this._getIterativeBounds(waveform, xMin, xMax),
+            i = _this$_getIterativeBo.i,
+            l = _this$_getIterativeBo.l;
 
         for (; i < l; i += 1) {
           x = waveform.getX(i, true);
@@ -4845,135 +4806,55 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             continue;
           }
 
-          if (!_monotoneous) {
-            pointOutside = !this.options.overflowX && (x < xMin || x > xMax) || !this.options.overflowY && (y < yMin || y > yMax);
-          } else {
-            pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
-          }
+          var _pointOutside = this.isPointOutside(x, y, xMin, xMax);
 
           if (this.options.lineToZero) {
-            pointOutside = x < xMin || x > xMax;
+            _pointOutside = x < xMin || x > xMax;
 
-            if (pointOutside) {
+            if (_pointOutside) {
               continue;
             }
           } else {
-            if (pointOutside || lastPointOutside) {
+            if (_pointOutside || lastPointOutside) {
               if ((lastX === false || lastY === false) && !lastPointOutside) {
                 xpx = xpx2;
                 ypx = ypx2;
                 lastX = x;
                 lastY = y;
               } else {
-                pointOnAxis = []; // Y crossing
+                var _pointOnAxis = this.calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax);
 
-                yLeftCrossingRatio = (x - xMin) / (x - lastX);
-                yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
-                yRightCrossingRatio = (x - xMax) / (x - lastX);
-                yRightCrossing = y - yRightCrossingRatio * (y - lastY); // X crossing
-
-                xTopCrossingRatio = (y - yMin) / (y - lastY);
-                xTopCrossing = x - xTopCrossingRatio * (x - lastX);
-                xBottomCrossingRatio = (y - yMax) / (y - lastY);
-                xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
-
-                if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing <= yMax && yLeftCrossing >= yMin) {
-                  pointOnAxis.push([xMin, yLeftCrossing]);
-                }
-
-                if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing <= yMax && yRightCrossing >= yMin) {
-                  pointOnAxis.push([xMax, yRightCrossing]);
-                }
-
-                if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing <= xMax && xTopCrossing >= xMin) {
-                  pointOnAxis.push([xTopCrossing, yMin]);
-                }
-
-                if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing <= xMax && xBottomCrossing >= xMin) {
-                  pointOnAxis.push([xBottomCrossing, yMax]);
-                }
-
-                if (pointOnAxis.length > 0) {
-                  if (!pointOutside) {
+                if (_pointOnAxis.length > 0) {
+                  if (!_pointOutside) {
                     // We were outside and now go inside
-                    // Actually this is possible if we hit the corner pretty perfectly
-
-                    /*
-                                    if (pointOnAxis.length > 1) {
-                                      console.error('Programmation error. Please e-mail me.');
-                                      console.log(
-                                        pointOnAxis,
-                                        xBottomCrossing,
-                                        xTopCrossing,
-                                        yRightCrossing,
-                                        yLeftCrossing,
-                                        y,
-                                        yMin,
-                                        yMax,
-                                        lastY
-                                      );
-                                    }*/
                     this._createLine();
 
-                    this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                    this._addPoint(this.getX(_pointOnAxis[0][0]), this.getY(_pointOnAxis[0][1]), _pointOnAxis[0][0], _pointOnAxis[0][1], false, false, false);
 
                     this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
                   } else if (!lastPointOutside) {
                     // We were inside and now go outside
-
-                    /*
-                                    if (pointOnAxis.length > 1) {
-                                      console.error('Programmation error. Please e-mail me.');
-                                      console.log(
-                                        pointOnAxis,
-                                        xBottomCrossing,
-                                        xTopCrossing,
-                                        yRightCrossing,
-                                        yLeftCrossing,
-                                        y,
-                                        yMin,
-                                        yMax,
-                                        lastY
-                                      );
-                                    }*/
-                    this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                    this._addPoint(this.getX(_pointOnAxis[0][0]), this.getY(_pointOnAxis[0][1]), _pointOnAxis[0][0], _pointOnAxis[0][1], false, false, false);
                   } else {
                     // No crossing: do nothing
-                    if (pointOnAxis.length == 2) {
+                    if (_pointOnAxis.length == 2) {
                       this._createLine();
 
-                      this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                      this._addPoint(this.getX(_pointOnAxis[0][0]), this.getY(_pointOnAxis[0][1]), _pointOnAxis[0][0], _pointOnAxis[0][1], false, false, false);
 
-                      this._addPoint(this.getX(pointOnAxis[1][0]), this.getY(pointOnAxis[1][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
+                      this._addPoint(this.getX(_pointOnAxis[1][0]), this.getY(_pointOnAxis[1][1]), _pointOnAxis[0][0], _pointOnAxis[0][1], false, false, false);
                     }
                   }
-                } else if (!pointOutside) {
+                } else if (!_pointOutside) {
                   this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
-                } // else {
-                // Norman:
-                // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
-                // However, there's no need to draw anything because the point is on the axis and will already be covered.
-                // 28 Aug 2015
-
-                /*
-                  if ( lastPointOutside !== pointOutside ) {
-                    console.error( "Programmation error. A crossing should have been found" );
-                    console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
-                    console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
-                    console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
-                    console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
-                    console.log( pointOutside, lastPointOutside )
-                    }
-                  */
-                // }
-
+                }
               }
 
               xpx = xpx2;
               ypx = ypx2;
               lastX = x;
               lastY = y;
-              lastPointOutside = pointOutside;
+              lastPointOutside = _pointOutside;
               continue;
             }
           }
@@ -5018,9 +4899,87 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return this;
       }
     }, {
+      key: "_getIterativeBounds",
+      value: function _getIterativeBounds(waveform, xMin, xMax) {
+        var i = 0,
+            l = waveform.getLength(),
+            wL = l;
+
+        if (waveform.isXMonotoneous()) {
+          if (waveform.isXMonotoneousAscending()) {
+            i = waveform.getIndexFromX(xMin, true);
+            l = waveform.getIndexFromX(xMax, true);
+          } else {
+            i = waveform.getIndexFromX(xMax, true);
+            l = waveform.getIndexFromX(xMin, true);
+          }
+
+          console.log(i, l);
+
+          if (i == false) {
+            i = 0;
+          } else if (i > 0) {
+            i--;
+          }
+
+          if (l == false) {
+            l = wL;
+          } else if (l < wL) {
+            l++;
+          }
+        }
+
+        return {
+          i: i,
+          l: l
+        };
+      }
+    }, {
       key: "kill",
       value: function kill() {
         _get(_getPrototypeOf(SerieLine.prototype), "kill", this).call(this);
+      }
+    }, {
+      key: "isPointOutside",
+      value: function isPointOutside(x, y, xMin, xMax, yMin, yMax) {
+        if (!this.isMonotoneous()) {
+          return !this.options.overflowX && (x < xMin || x > xMax) || !this.options.overflowY && (y < yMin || y > yMax);
+        } else {
+          return !this.options.overflowY && (y < yMin || y > yMax);
+        }
+      }
+    }, {
+      key: "calculateAxisCrossing",
+      value: function calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax) {
+        var pointOnAxis = []; // Y crossing
+
+        var yLeftCrossingRatio = (x - xMin) / (x - lastX);
+        var yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
+        var yRightCrossingRatio = (x - xMax) / (x - lastX);
+        var yRightCrossing = y - yRightCrossingRatio * (y - lastY); // X crossing
+
+        var xTopCrossingRatio = (y - yMin) / (y - lastY);
+        var xTopCrossing = x - xTopCrossingRatio * (x - lastX);
+        var xBottomCrossingRatio = (y - yMax) / (y - lastY);
+        var xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
+
+        if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing <= yMax && yLeftCrossing >= yMin) {
+          pointOnAxis.push([xMin, yLeftCrossing]);
+        }
+
+        if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing <= yMax && yRightCrossing >= yMin) {
+          pointOnAxis.push([xMax, yRightCrossing]);
+        }
+
+        if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing <= xMax && xTopCrossing >= xMin) {
+          pointOnAxis.push([xTopCrossing, yMin]);
+        }
+
+        if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing <= xMax && xBottomCrossing >= xMin) {
+          pointOnAxis.push([xBottomCrossing, yMax]);
+        }
+
+        return pointOnAxis;
       }
     }, {
       key: "_addPoint",
@@ -5195,24 +5154,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
        */
 
       /*
-        Let's deprecate this
-        searchIndexByPxXY( x, y ) {
+      
+      Let's deprecate this
+      
+      searchIndexByPxXY( x, y ) {
         var oldDist = false,
           xyindex = false,
           dist;
-          var xData = this._xDataToUse,
+      
+        var xData = this._xDataToUse,
           p_x,
           p_y;
-          for ( var k = 0, m = this.waveform.getLength(); k < m; k += 1 ) {
+      
+        for ( var k = 0, m = this.waveform.getLength(); k < m; k += 1 ) {
           p_x = this.waveform.getX( k );
           p_y = this.waveform.getY( k );
-            dist = Math.pow( this.getX( p_x ) - x, 2 ) + Math.pow( this.getY( p_y ) - y, 2 );
-            if ( !oldDist || dist < oldDist ) {
+      
+          dist = Math.pow( this.getX( p_x ) - x, 2 ) + Math.pow( this.getY( p_y ) - y, 2 );
+      
+          if ( !oldDist || dist < oldDist ) {
             oldDist = dist;
             xyindex = k;
           }
         }
-          return xyindex;
+      
+        return xyindex;
       }
       */
 
@@ -5589,7 +5555,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           return false;
         }
         /*
-              if (
+                if (
               ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
                 Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
                 withinPxX ) ||
@@ -6544,7 +6510,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.maxY = maxY;
         this.checkMinMaxErrorBars();
         this.computeXMinMax();
-        console.log(this.minY, this.maxY, this.minX, this.maxX);
       }
     }, {
       key: "checkMinMaxErrorBars",
@@ -9446,7 +9411,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         this.maxX = this.waveform.getXMax();
         this.minY = this.waveform.getMin();
         this.maxY = this.waveform.getMax();
-        console.log(this.minX, this.maxX, this.minY, this.maxY);
         return this;
       }
       /**
@@ -13228,7 +13192,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.3.3"
+        'data-jsgraph-version': "v2.3.4"
       });
     } catch (e) {// ignore
     }
@@ -31363,14 +31327,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var self = this,
             data = this._dataToUse,
             toBreak,
-            i = 0,
-            j,
-            k,
-            m,
+            waveform = this.getWaveform(),
             x,
             y,
-            k,
-            o,
             lastX = false,
             lastY = false,
             xpx,
@@ -31382,14 +31341,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             xMin = xAxis.getCurrentMin(),
             yMin = yAxis.getCurrentMin(),
             xMax = xAxis.getCurrentMax(),
-            yMax = yAxis.getCurrentMax(); // Y crossing
-
-        var yLeftCrossingRatio, yLeftCrossing, yRightCrossingRatio, yRightCrossing, xTopCrossingRatio, xTopCrossing, xBottomCrossingRatio, xBottomCrossing;
+            yMax = yAxis.getCurrentMax();
         var incrXFlip = 0;
         var incrYFlip = 1;
         var pointOutside = false;
         var lastPointOutside = false;
-        var pointOnAxis;
         this.eraseLines();
 
         if (this.isFlipped()) {
@@ -31398,11 +31354,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
 
         this.currentLine = '';
-        m = this.waveform.getLength();
 
-        for (j = 0; j < m; j += 1) {
-          x = this.waveform.getX(j);
-          y = this.waveform.getY(j);
+        var _this$_getIterativeBo = this._getIterativeBounds(waveform, xMin, xMax),
+            i = _this$_getIterativeBo.i,
+            l = _this$_getIterativeBo.l;
+
+        for (; i < l; i += 1) {
+          x = this.waveform.getX(i);
+          y = this.waveform.getY(i);
 
           if (x < xMin && lastX < xMin || x > xMax && lastX > xMax || (y < yMin && lastY < yMin || y > yMax && lastY > yMax) && !this.options.lineToZero) {
             lastX = x;
@@ -31411,7 +31370,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             continue;
           }
 
-          this.counter2 = j; //if ( this.markersShown() ) {
+          this.counter2 = i; //if ( this.markersShown() ) {
           //this.getMarkerCurrentFamily( this.counter2 );
           //}
 
@@ -31422,8 +31381,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             continue;
           }
 
-          pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
-
           if (isNaN(xpx2) || isNaN(ypx2)) {
             if (this.counter > 0) {//      this._createLine();
             }
@@ -31431,9 +31388,56 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             continue;
           }
 
-          var color = this.colors[j];
+          var color = this.colors[i];
 
-          this._addPoint(xpx2, ypx2, x, y, xpx, ypx, lastX, lastY, j, color, false, true);
+          var _pointOutside = this.isPointOutside(x, y, xMin, xMax, yMin, yMax);
+
+          if (this.options.lineToZero) {
+            _pointOutside = x < xMin || x > xMax;
+
+            if (_pointOutside) {
+              continue;
+            }
+          } else {
+            if (_pointOutside || lastPointOutside) {
+              if ((lastX === false || lastY === false) && !lastPointOutside) {
+                xpx = xpx2;
+                ypx = ypx2;
+                lastX = x;
+                lastY = y;
+              } else {
+                var pointOnAxis = this.calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax);
+
+                if (pointOnAxis.length > 0) {
+                  if (!_pointOutside) {
+                    // We were outside and now go inside
+                    //      this._createLine();
+                    this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], xpx2, ypx2, lastX, lastY, i - 1, color, false, false, false); //this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
+
+                  } else if (!lastPointOutside) {
+                    // We were inside and now go outside
+                    this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], xpx, ypx, lastX, lastY, i - 1, color, false, false, false);
+                  } else {
+                    // No crossing: do nothing
+                    if (pointOnAxis.length == 2) {
+                      //    this._createLine();
+                      this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], this.getX(pointOnAxis[1][0]), this.getY(pointOnAxis[1][1]), pointOnAxis[1][0], pointOnAxis[1][1], i - 1, color, false, false, false);
+                    }
+                  }
+                } else if (!_pointOutside) {// this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
+                }
+              }
+
+              xpx = xpx2;
+              ypx = ypx2;
+              lastX = x;
+              lastY = y;
+              lastPointOutside = _pointOutside;
+              continue;
+            }
+          }
+
+          this._addPoint(xpx2, ypx2, x, y, xpx, ypx, lastX, lastY, i, color, false, true);
 
           xpx = xpx2;
           ypx = ypx2;
@@ -31441,6 +31445,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           lastY = y;
         }
 
+        console.log(this.lines);
         this.latchLines();
 
         if (this._tracker) {
@@ -31451,7 +31456,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           var cloned = this.groupLines.cloneNode(true);
           this.groupMain.appendChild(cloned);
 
-          for (var i = 0, l = cloned.children.length; i < l; i++) {
+          for (i = 0, l = cloned.children.length; i < l; i++) {
             cloned.children[i].setAttribute('stroke', 'transparent');
             cloned.children[i].setAttribute('stroke-width', '25px');
             cloned.children[i].setAttribute('pointer-events', 'stroke');

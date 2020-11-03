@@ -422,17 +422,10 @@ class SerieLine extends SerieScatter {
 
     data = waveform.getData(true);
     // Y crossing
-    let yLeftCrossingRatio,
-      yLeftCrossing,
-      yRightCrossingRatio,
-      yRightCrossing,
-      xTopCrossingRatio,
-      xTopCrossing,
-      xBottomCrossingRatio,
-      xBottomCrossing,
-      /*xshift = waveform.getXShift(),
-      xscale = wave.getXScale(),*/
-      yshift = waveform.getShift(),
+
+    /*xshift = waveform.getXShift(),
+    xscale = wave.getXScale(),*/
+    yshift = waveform.getShift(),
       yscale = waveform.getScale();
 
     let pointOutside = false;
@@ -441,41 +434,10 @@ class SerieLine extends SerieScatter {
 
     let _monotoneous = this.isMonotoneous();
 
-    let i = 0,
-      l = waveform.getLength();
-
     this.currentLine = '';
 
-    if (waveform.isXMonotoneous()) {
-      if (waveform.isXMonotoneousAscending()) {
-        try {
-          i = waveform.getIndexFromX(xMin, true) || 0;
-          l = waveform.getIndexFromX(xMax, true);
-          if (l == false) {
-            l = waveform.getLength();
-          }
-        } catch (e) {
-          l = waveform.getLength();
-        }
-      } else {
-        try {
-          i = waveform.getIndexFromX(xMax, true) || 0;
-          l = waveform.getIndexFromX(xMin, true);
 
-          if (l == false) {
-            l = waveform.getLength();
-          }
-
-        } catch (e) {
-          l = waveform.getLength();
-        }
-      }
-
-      l += 2;
-      if (l > data.length) {
-        l = data.length;
-      }
-    }
+    let { i, l } = this._getIterativeBounds(waveform, xMin, xMax);
 
     for (; i < l; i += 1) {
       x = waveform.getX(i, true);
@@ -527,13 +489,7 @@ class SerieLine extends SerieScatter {
         continue;
       }
 
-      if (!_monotoneous) {
-        pointOutside =
-          (!this.options.overflowX && (x < xMin || x > xMax)) ||
-          (!this.options.overflowY && (y < yMin || y > yMax));
-      } else {
-        pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
-      }
+      let pointOutside = this.isPointOutside(x, y, xMin, xMax);
 
       if (this.options.lineToZero) {
         pointOutside = x < xMin || x > xMax;
@@ -549,79 +505,12 @@ class SerieLine extends SerieScatter {
             lastX = x;
             lastY = y;
           } else {
-            pointOnAxis = [];
-            // Y crossing
-            yLeftCrossingRatio = (x - xMin) / (x - lastX);
-            yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
-            yRightCrossingRatio = (x - xMax) / (x - lastX);
-            yRightCrossing = y - yRightCrossingRatio * (y - lastY);
 
-            // X crossing
-            xTopCrossingRatio = (y - yMin) / (y - lastY);
-            xTopCrossing = x - xTopCrossingRatio * (x - lastX);
-            xBottomCrossingRatio = (y - yMax) / (y - lastY);
-            xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
-
-            if (
-              yLeftCrossingRatio < 1 &&
-              yLeftCrossingRatio > 0 &&
-              yLeftCrossing !== false &&
-              yLeftCrossing <= yMax &&
-              yLeftCrossing >= yMin
-            ) {
-              pointOnAxis.push([xMin, yLeftCrossing]);
-            }
-
-            if (
-              yRightCrossingRatio < 1 &&
-              yRightCrossingRatio > 0 &&
-              yRightCrossing !== false &&
-              yRightCrossing <= yMax &&
-              yRightCrossing >= yMin
-            ) {
-              pointOnAxis.push([xMax, yRightCrossing]);
-            }
-
-            if (
-              xTopCrossingRatio < 1 &&
-              xTopCrossingRatio > 0 &&
-              xTopCrossing !== false &&
-              xTopCrossing <= xMax &&
-              xTopCrossing >= xMin
-            ) {
-              pointOnAxis.push([xTopCrossing, yMin]);
-            }
-
-            if (
-              xBottomCrossingRatio < 1 &&
-              xBottomCrossingRatio > 0 &&
-              xBottomCrossing !== false &&
-              xBottomCrossing <= xMax &&
-              xBottomCrossing >= xMin
-            ) {
-              pointOnAxis.push([xBottomCrossing, yMax]);
-            }
+            let pointOnAxis = this.calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax);
 
             if (pointOnAxis.length > 0) {
               if (!pointOutside) {
                 // We were outside and now go inside
-                // Actually this is possible if we hit the corner pretty perfectly
-                /*
-                                if (pointOnAxis.length > 1) {
-                                  console.error('Programmation error. Please e-mail me.');
-                                  console.log(
-                                    pointOnAxis,
-                                    xBottomCrossing,
-                                    xTopCrossing,
-                                    yRightCrossing,
-                                    yLeftCrossing,
-                                    y,
-                                    yMin,
-                                    yMax,
-                                    lastY
-                                  );
-                                }*/
-
                 this._createLine();
                 this._addPoint(
                   this.getX(pointOnAxis[0][0]),
@@ -635,22 +524,6 @@ class SerieLine extends SerieScatter {
                 this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
               } else if (!lastPointOutside) {
                 // We were inside and now go outside
-                /*
-                                if (pointOnAxis.length > 1) {
-                                  console.error('Programmation error. Please e-mail me.');
-                                  console.log(
-                                    pointOnAxis,
-                                    xBottomCrossing,
-                                    xTopCrossing,
-                                    yRightCrossing,
-                                    yLeftCrossing,
-                                    y,
-                                    yMin,
-                                    yMax,
-                                    lastY
-                                  );
-                                }*/
-
                 this._addPoint(
                   this.getX(pointOnAxis[0][0]),
                   this.getY(pointOnAxis[0][1]),
@@ -687,24 +560,7 @@ class SerieLine extends SerieScatter {
               }
             } else if (!pointOutside) {
               this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
-            } // else {
-            // Norman:
-            // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
-            // However, there's no need to draw anything because the point is on the axis and will already be covered.
-            // 28 Aug 2015
-
-            /*
-              if ( lastPointOutside !== pointOutside ) {
-                console.error( "Programmation error. A crossing should have been found" );
-                console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
-                console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
-                console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
-                console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
-                console.log( pointOutside, lastPointOutside )
-
-              }
-              */
-            // }
+            }
           }
 
           xpx = xpx2;
@@ -762,15 +618,115 @@ class SerieLine extends SerieScatter {
     return this;
   }
 
+  _getIterativeBounds(waveform, xMin, xMax) {
+
+    let i = 0,
+      l = waveform.getLength(),
+      wL = l;
+
+    if (waveform.isXMonotoneous()) {
+      if (waveform.isXMonotoneousAscending()) {
+        i = waveform.getIndexFromX(xMin, true);
+        l = waveform.getIndexFromX(xMax, true);
+      } else {
+        i = waveform.getIndexFromX(xMax, true);
+        l = waveform.getIndexFromX(xMin, true);
+      }
+      console.log(i, l);
+
+      if (i == false) {
+        i = 0;
+      } else if (i > 0) {
+        i--;
+      }
+
+      if (l == false) {
+        l = wL;
+      } else if (l < wL) {
+        l++;
+      }
+    }
+    return { i, l };
+  }
+
+
   kill() {
     super.kill();
   }
+
+  isPointOutside(x, y, xMin, xMax, yMin, yMax) {
+    if (!this.isMonotoneous()) {
+      return (!this.options.overflowX && (x < xMin || x > xMax)) || (!this.options.overflowY && (y < yMin || y > yMax));
+    } else {
+      return !this.options.overflowY && (y < yMin || y > yMax);
+    }
+  }
+
+
+  calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax) {
+    let pointOnAxis = [];
+
+
+    // Y crossing
+    let yLeftCrossingRatio = (x - xMin) / (x - lastX);
+    let yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
+    let yRightCrossingRatio = (x - xMax) / (x - lastX);
+    let yRightCrossing = y - yRightCrossingRatio * (y - lastY);
+
+    // X crossing
+    let xTopCrossingRatio = (y - yMin) / (y - lastY);
+    let xTopCrossing = x - xTopCrossingRatio * (x - lastX);
+    let xBottomCrossingRatio = (y - yMax) / (y - lastY);
+    let xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
+
+    if (
+      yLeftCrossingRatio < 1 &&
+      yLeftCrossingRatio > 0 &&
+      yLeftCrossing !== false &&
+      yLeftCrossing <= yMax &&
+      yLeftCrossing >= yMin
+    ) {
+      pointOnAxis.push([xMin, yLeftCrossing]);
+    }
+
+    if (
+      yRightCrossingRatio < 1 &&
+      yRightCrossingRatio > 0 &&
+      yRightCrossing !== false &&
+      yRightCrossing <= yMax &&
+      yRightCrossing >= yMin
+    ) {
+      pointOnAxis.push([xMax, yRightCrossing]);
+    }
+
+    if (
+      xTopCrossingRatio < 1 &&
+      xTopCrossingRatio > 0 &&
+      xTopCrossing !== false &&
+      xTopCrossing <= xMax &&
+      xTopCrossing >= xMin
+    ) {
+      pointOnAxis.push([xTopCrossing, yMin]);
+    }
+
+    if (
+      xBottomCrossingRatio < 1 &&
+      xBottomCrossingRatio > 0 &&
+      xBottomCrossing !== false &&
+      xBottomCrossing <= xMax &&
+      xBottomCrossing >= xMin
+    ) {
+      pointOnAxis.push([xBottomCrossing, yMax]);
+    }
+    return pointOnAxis;
+  }
+
 
   _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
     /*if( ! this.currentLineId ) {
         throw "No current line"
       }* @memberof SerieLine
-*/
+  */
 
     if (xpx !== xpx || ypx !== ypx) {
       return;
@@ -933,33 +889,33 @@ class SerieLine extends SerieScatter {
    * @memberof SerieLine
    */
   /*
-
+  
   Let's deprecate this
-
+  
   searchIndexByPxXY( x, y ) {
     var oldDist = false,
       xyindex = false,
       dist;
-
+  
     var xData = this._xDataToUse,
       p_x,
       p_y;
-
+  
     for ( var k = 0, m = this.waveform.getLength(); k < m; k += 1 ) {
       p_x = this.waveform.getX( k );
       p_y = this.waveform.getY( k );
-
+  
       dist = Math.pow( this.getX( p_x ) - x, 2 ) + Math.pow( this.getY( p_y ) - y, 2 );
-
+  
       if ( !oldDist || dist < oldDist ) {
         oldDist = dist;
         xyindex = k;
       }
     }
-
+  
     return xyindex;
   }
-*/
+  */
   handleMouseMove(xValue, doMarker, yValue) {
     var valX = xValue || this.getXAxis().getMouseVal(),
       valY = yValue || this.getYAxis().getMouseVal();
@@ -1299,7 +1255,7 @@ class SerieLine extends SerieScatter {
       return false;
     }
     /*
-
+  
         if (
           ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
             Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&

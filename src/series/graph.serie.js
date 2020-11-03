@@ -671,8 +671,6 @@ class Serie {
     this.minY = this.waveform.getMin();
     this.maxY = this.waveform.getMax();
 
-    console.log(this.minX, this.maxX, this.minY, this.maxY);
-
     return this;
   }
 

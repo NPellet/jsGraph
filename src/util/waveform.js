@@ -399,7 +399,6 @@ class Waveform {
     this.maxY = maxY;
     this.checkMinMaxErrorBars();
     this.computeXMinMax();
-    console.log(this.minY, this.maxY, this.minX, this.maxX);
   }
 
   checkMinMaxErrorBars() {
