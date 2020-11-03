@@ -185,7 +185,6 @@ class SerieLineColor extends SerieLine {
       lastX = x;
       lastY = y;
     }
-    console.log(this.lines);
     this.latchLines();
 
     if (this._tracker) {
