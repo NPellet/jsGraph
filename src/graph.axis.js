@@ -880,8 +880,6 @@ class Axis {
    */
   setMinMaxToFitSeries(noNotify) {
 
-    var interval = this.getInterval();
-
     if (this.options.logScale) {
 
       this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
@@ -890,21 +888,16 @@ class Axis {
       //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
 
     } else {
-      this.setCurrentMin(this.getMinValue());
       this.setCurrentMax(this.getMaxValue());
 
+      const minValue = this.getMinValue();
+      const maxValue = this.getMaxValue();
       //this.options.currentAxisMin = this.getMinValue();
       //this.options.currentAxisMax = this.getMaxValue();
 
-      if (this.getForcedMin() === false) {
+      this.setCurrentMin(this.getDefaultMin());
+      this.setCurrentMax(this.getDefaultMax());
 
-        this.setCurrentMin(this.getCurrentMin() - (this.options.axisDataSpacing.min * interval));
-      }
-
-      if (this.getForcedMax() === false) {
-
-        this.setCurrentMax(this.getCurrentMax() + (this.options.axisDataSpacing.max * interval));
-      }
     }
 
     if (isNaN(this.options.currentAxisMin) || isNaN(this.options.currentAxisMax)) {
@@ -930,6 +923,34 @@ class Axis {
     return this;
   }
 
+  getDefaultMin() {
+    var interval = this.getInterval();
+
+
+    const minValue = this.getMinValue();
+    //this.options.currentAxisMin = this.getMinValue();
+    //this.options.currentAxisMax = this.getMaxValue();
+
+    if (this.getForcedMin() === false) {
+      return minValue - (this.options.axisDataSpacing.min * interval);
+    } else {
+      return minValue;
+    }
+  }
+
+  getDefaultMax() {
+    var interval = this.getInterval();
+
+
+    const maxValue = this.getMaxValue();
+
+    if (this.getForcedMax() === false) {
+
+      return maxValue + (this.options.axisDataSpacing.max * interval);
+    } else {
+      return maxValue
+    }
+  }
   /**
    * @memberof Axis
    * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
@@ -2687,15 +2708,15 @@ class Axis {
 
 }
 
-  /**
-   *  @alias Axis#getVal
-   */
-  Axis.prototype.getValue = Axis.prototype.getVal;
+/**
+ *  @alias Axis#getVal
+ */
+Axis.prototype.getValue = Axis.prototype.getVal;
 
-  /**
-   *  @alias Axis#getRelPx
-   */
-  Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
+/**
+ *  @alias Axis#getRelPx
+ */
+Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 
 EventMixin(Axis, "axis");
 export default Axis;
