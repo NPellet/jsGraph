@@ -1,21 +1,22 @@
-
 <!doctype html>
 <html>
-    <body>
-        <div id="graph"></div>
-    </body>
-    <script type="module">
-   
-        import Graph from '/src/graph.js'
-        const graph = Graph.fromJSON( {
+
+<body>
+  <div id="graph"></div>
+</body>
+<script type="module">
+
+  import Graph from '/src/graph.js'
+  const graph = Graph.fromJSON({
     "axes": {
       "x": {
+        "type": "time",
         "label": "Wavelength",
         "unit": "nm",
         "unitWrapperBefore": "[",
         "unitWrapperAfter": "]",
-        
-                
+
+
         "primaryGridWidth": 3,
         "primaryGridColor": "purple",
         "primaryGridDasharray": "2 1",
@@ -48,9 +49,10 @@
       }
     ]
   }
-  , "graph", ( eventName, ...params ) => { console.log( eventName, params ); } );
-        graph.draw();
-        graph.updateLegend();
-        
-        </script>
+    , "graph", (eventName, ...params) => { console.log(eventName, params); });
+  graph.draw();
+  graph.updateLegend();
+
+</script>
+
 </html>
