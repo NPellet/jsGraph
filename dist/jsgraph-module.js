@@ -741,6 +741,8 @@ const processAxes = (Graph, graph, type, axisOptions, allAxes) => {
 
       if (options.type == 'category') {
         constructorName += '.bar';
+      } else if (options.type == 'time') {
+        constructorName += '.time';
       }
     } else {
       constructorName = 'graph.axis.y';

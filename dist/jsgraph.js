@@ -8019,7 +8019,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.4.0"
+        'data-jsgraph-version': "v2.4.1"
       });
     } catch (e) {// ignore
     }
@@ -15205,6 +15205,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
         if (options.type == 'category') {
           constructorName += '.bar';
+        } else if (options.type == 'time') {
+          constructorName += '.time';
         }
       } else {
         constructorName = 'graph.axis.y';
