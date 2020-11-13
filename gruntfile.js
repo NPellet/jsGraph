@@ -30,20 +30,6 @@ module.exports = function (grunt) {
       }
     },
 
-    uglify: {
-      dist: {
-        files: {
-          'dist/jsgraph.min.js': 'dist/jsgraph.js'
-        },
-        options: {
-          banner: '/*! jsGraph (c) 2014-2020 Norman Pellet, MIT license, v@<%= pkg.version %>, Date: @DATE */\n'.replace(
-            /@DATE/g,
-            new Date().toISOString().replace(/:\d+\.\d+Z$/, 'Z')
-          )
-        }
-      }
-    },
-
     copy: {
 
       examples: {
@@ -99,6 +85,15 @@ module.exports = function (grunt) {
           plugins: [
             babel({
               babelrc: false,
+
+
+              presets: [
+                [
+                  '@babel/preset-env', { targets: { chrome: 80 } }
+                ]
+              ],
+
+
               plugins: [
                 '@babel/plugin-proposal-optional-chaining',
                 '@babel/transform-exponentiation-operator',
@@ -128,13 +123,17 @@ module.exports = function (grunt) {
           libraryTarget: 'umd'
         },
 
+        optimization: {
+          minimize: false,
+        },
+
         module: {
-          loaders: [
+          rules: [
             {
               test: /\.js$/,
               exclude: /node_modules/,
               loader: 'babel-loader',
-              query: {
+              options: {
                 presets: ['@babel/preset-env'].map(require.resolve),
 
                 plugins: [
@@ -165,15 +164,22 @@ module.exports = function (grunt) {
           libraryTarget: 'umd'
         },
 
-        plugins: [new WebpackBeautifier({ jsdoc: true })],
+        //  plugins: [new WebpackBeautifier({ jsdoc: true })],
 
         module: {
-          loaders: [
+          rules: [
             {
               test: /\.js$/,
               exclude: /node_modules/,
               loader: 'babel-loader',
-              query: {
+              options: {
+
+                presets: [
+                  [
+                    '@babel/preset-env', { targets: { chrome: 80 } }
+                  ]
+                ],
+
                 plugins: [
                   'add-module-exports',
                   '@babel/plugin-proposal-optional-chaining',
@@ -212,6 +218,7 @@ module.exports = function (grunt) {
           babelrc: false
         },
         files: {
+          'dist/jsgraph.min.js': 'dist/jsgraph.js',
           'dist/jsgraph-es6.min.js': 'dist/jsgraph-es6.js',
           'dist/jsgraph-module.min.js': 'dist/jsgraph-module.js'
         }
@@ -226,7 +233,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-sloc');
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-exec');
@@ -237,7 +243,6 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['build', 'minify', 'copy:doc', 'copy:examples']);
 
   grunt.registerTask('minify', 'Minifying distribution file', [
-    'uglify',
     'babel:minify'
   ]);
 

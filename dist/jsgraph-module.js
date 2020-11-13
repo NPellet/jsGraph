@@ -121,7 +121,6 @@ class Position {
         if (i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined) {
           if (!serie) {
             throw new Error('Error. No serie exists. Cannot find y value');
-            return;
           }
 
           var closest = serie.getClosestPointToXY(relativeTo.x);
@@ -396,7 +395,6 @@ function guid() {
 function throwError(message) {
   console.error(message);
 }
-
 /**
  * Checks if a variable is a numeric or not
  * @return {Boolean} <code>true</code> for a numeric value, false otherwise
@@ -519,8 +517,6 @@ function SVGParser(svgString) {
 
   return doc;
 } // http://stackoverflow.com/questions/5276953/what-is-the-most-efficient-way-to-reverse-an-array-in-javascript
-
- // jQuery.fn.offset
 
 function getOffset(el) {
   var rect = el.getBoundingClientRect();
@@ -1004,8 +1000,6 @@ const makeGraph = (Graph, graph, json) => {
           }
 
           break;
-
-        default:
       }
 
       serie.autoAxis();
@@ -1056,7 +1050,7 @@ var GraphJSON = (Graph => {
   Graph.fromJSON = (json, wrapper, callback) => {
     const options = json.options || {};
     const graph = new Graph(undefined, options);
-    makeGraph(Graph, graph, json, wrapper);
+    makeGraph(Graph, graph, json);
     graph.setWrapper(wrapper);
 
     if (callback) {
@@ -1828,7 +1822,6 @@ class LM {
   }
 
 }
-
  //module.export = FitHost
 
 class Waveform {
@@ -2252,7 +2245,7 @@ class Waveform {
 
   getIndexFromX(xval, useDataToUse = false, roundingMethod = Math.round) {
     let xdata;
-    let data, position;
+    let position;
     xval -= this.getXShift();
     xval /= this.getXScale();
 
@@ -2290,7 +2283,7 @@ class Waveform {
 
   getIndexFromY(yval, useDataToUse = false, roundingMethod = Math.round) {
     let ydata;
-    let data, position;
+    let position;
     yval -= this.getShift();
     yval /= this.getScale();
 
@@ -3434,15 +3427,12 @@ class Waveform {
               switch (options.rounding) {
                 case 'before':
                   return j - 1;
-                  break;
 
                 case 'after':
                   return j;
-                  break;
 
                 case 'interpolate':
                   return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
-                  break;
               }
             }
           }
@@ -3457,15 +3447,12 @@ class Waveform {
               switch (options.rounding) {
                 case 'before':
                   return j - 1;
-                  break;
 
                 case 'after':
                   return j;
-                  break;
 
                 case 'interpolate':
                   return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
-                  break;
               }
             }
           }
@@ -4151,7 +4138,7 @@ var _constructors = new Map();
  */
 
 
-class Graph {
+class Graph$1 {
   /**
    * Graph constructor
    * @param {(HTMLElement|String)} [wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
@@ -4232,8 +4219,8 @@ class Graph {
     }
 
     this.currentAction = false;
-    this.ns = Graph.ns;
-    this.nsxlink = Graph.nsxlink; // Load all axes
+    this.ns = Graph$1.ns;
+    this.nsxlink = Graph$1.nsxlink; // Load all axes
 
     if (options.axes) {
       for (var i in options.axes) {
@@ -4253,10 +4240,6 @@ class Graph {
 
             case 'bottom':
               this.getBottomAxis(j, options.axes[i][j]);
-              break;
-
-            default:
-              // Do not do anything
               break;
           }
         }
@@ -5200,8 +5183,7 @@ class Graph {
         // The data can be displayed while the axis is hidden
         // I assume this was added to cover another bug, but another approach must be chosen
 
-        if (!axis.isShown()) {//          continue;
-        }
+        if (!axis.isShown()) ;
 
         let min = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues);
         let max = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues);
@@ -5300,7 +5282,7 @@ class Graph {
     }
 
     if (!type) {
-      type = Graph.SERIE_LINE;
+      type = Graph$1.SERIE_LINE;
     }
 
     if (serie = this.getSerie(name)) {
@@ -5883,10 +5865,10 @@ class Graph {
   getLayer(layer, mode) {
     if (!this.layers[layer]) {
       this.layers[layer] = [];
-      this.layers[layer][0] = document.createElementNS(Graph.ns, 'g');
+      this.layers[layer][0] = document.createElementNS(Graph$1.ns, 'g');
       this.layers[layer][0].setAttribute('data-layer', layer);
-      this.layers[layer][1] = document.createElementNS(Graph.ns, 'g');
-      this.layers[layer][2] = document.createElementNS(Graph.ns, 'g');
+      this.layers[layer][1] = document.createElementNS(Graph$1.ns, 'g');
+      this.layers[layer][2] = document.createElementNS(Graph$1.ns, 'g');
       this.layers[layer][0].appendChild(this.layers[layer][1]);
       this.layers[layer][0].appendChild(this.layers[layer][2]);
       var i = 1,
@@ -5931,7 +5913,7 @@ class Graph {
         l = 4;
 
     for (; i < l; i++) {
-      var line = document.createElementNS(Graph.ns, 'line');
+      var line = document.createElementNS(Graph$1.ns, 'line');
       line.setAttribute('stroke', this.options.closeColor);
       line.setAttribute('shape-rendering', 'crispEdges');
       line.setAttribute('stroke-linecap', 'square');
@@ -6155,8 +6137,8 @@ class Graph {
   orthogonalProjectionUpdate() {
     if (!this.zAxis) {
       this.zAxis = {
-        g: document.createElementNS(Graph.ns, 'g'),
-        l: document.createElementNS(Graph.ns, 'line')
+        g: document.createElementNS(Graph$1.ns, 'g'),
+        l: document.createElementNS(Graph$1.ns, 'line')
       };
       this.zAxis.g.appendChild(this.zAxis.l);
       this.groupGrids.appendChild(this.zAxis.g);
@@ -6324,6 +6306,7 @@ class Graph {
     options.enable = options.enable === undefined ? true : !!options.enable; // Treat the series
 
     const seriesSet = new Set();
+
     if (Array.isArray(options.series)) {
       options.series.forEach(serie => {
         seriesSet.add(this.getSerie(serie));
@@ -6470,7 +6453,7 @@ class Graph {
       if (katexElement) {
         katexElement.removeChild(katexElement.firstChild);
       } else {
-        katexElement = document.createElementNS(Graph.ns, 'foreignObject');
+        katexElement = document.createElementNS(Graph$1.ns, 'foreignObject');
       }
 
       let div = document.createElement('div');
@@ -6522,17 +6505,17 @@ class Graph {
 
     let toType = type => {
       switch (type) {
-        case Graph.SERIE_BAR:
+        case Graph$1.SERIE_BAR:
           return 'bar';
 
-        case Graph.SERIE_LINE_COLORED:
+        case Graph$1.SERIE_LINE_COLORED:
           return 'color';
 
-        case Graph.SERIE_SCATTER:
+        case Graph$1.SERIE_SCATTER:
           return 'scatter';
 
         default:
-        case Graph.SERIE_LINE:
+        case Graph$1.SERIE_LINE:
           return 'line';
       }
     };
@@ -6541,7 +6524,7 @@ class Graph {
       let data = [];
 
       switch (serie.getType()) {
-        case Graph.SERIE_LINE:
+        case Graph$1.SERIE_LINE:
           for (var i = 0; i < serie.data.length; i++) {
             for (var j = 0; j < serie.data[i].length - 1; j += 2) {
               data.push(serie.data[i][j + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
@@ -6550,7 +6533,7 @@ class Graph {
 
           break;
 
-        case Graph.SERIE_SCATTER:
+        case Graph$1.SERIE_SCATTER:
           for (var j = 0; j < serie.data.length - 1; j += 2) {
             data.push(serie.data[i + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
           }
@@ -6565,7 +6548,7 @@ class Graph {
       let style = [];
       let linestyle = [];
 
-      if (serie.getType() == Graph.SERIE_LINE) {
+      if (serie.getType() == Graph$1.SERIE_LINE) {
         for (var stylename in serie.styles) {
           linestyle.push({
             styleName: stylename,
@@ -6660,10 +6643,30 @@ class Graph {
     return new WaveformHash(...arguments);
   }
 
+  static saveStyle(styleName, json) {
+    if (!Graph$1._styles) {
+      Graph$1._styles = {};
+    }
+
+    if (!json) {
+      return Graph$1._styles[styleName];
+    }
+
+    Graph$1._styles[styleName] = json;
+  }
+
+  static getStyle(styleName) {
+    if (!Graph$1._styles) {
+      Graph$1._styles = {};
+    }
+
+    return Graph$1._styles[styleName] || {};
+  }
+
 } // Adds getConstructor to the prototype. Cannot do that in ES6 classes
 
 
-Graph.prototype.getConstructor = Graph.getConstructor;
+Graph$1.prototype.getConstructor = Graph$1.getConstructor;
 
 function makeSerie(graph, name, options, type) {
   var constructor = graph.getConstructor(type, true);
@@ -6832,8 +6835,7 @@ function refreshDrawingZone(graph) {
 
 
   graph._applyToAxes(function (axis, position) {
-    if (!axis.isShown()) {//      return;
-    }
+    if (!axis.isShown()) ;
 
     axis.setMinPx(shiftLeft);
     axis.setMaxPx(graph.getDrawingWidth(true) - shiftRight);
@@ -6908,6 +6910,7 @@ function refreshDrawingZone(graph) {
 }
 
 function _handleKey(graph, event, type) {
+
   if (graph.forcedPlugin) {
     graph.activePlugin = graph.forcedPlugin;
 
@@ -6983,11 +6986,11 @@ function checkKeyActions(graph, e, parameters, methodName) {
 
 function __createDOM() {
   // Create SVG element, set the NS
-  this.dom = document.createElementNS(Graph.ns, 'svg');
+  this.dom = document.createElementNS(Graph$1.ns, 'svg');
   this.dom.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xlink', 'http://www.w3.org/1999/xlink'); //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
 
   setAttributeTo(this.dom, {
-    xmlns: Graph.ns,
+    xmlns: Graph$1.ns,
     'font-family': this.options.fontFamily,
     'font-size': this.options.fontSize
   });
@@ -7000,10 +7003,10 @@ function __createDOM() {
   } catch (e) {// ignore
   }
 
-  this.defs = document.createElementNS(Graph.ns, 'defs');
+  this.defs = document.createElementNS(Graph$1.ns, 'defs');
   this.dom.appendChild(this.defs);
-  this.groupEvent = document.createElementNS(Graph.ns, 'g');
-  this.rectEvent = document.createElementNS(Graph.ns, 'rect');
+  this.groupEvent = document.createElementNS(Graph$1.ns, 'g');
+  this.rectEvent = document.createElementNS(Graph$1.ns, 'rect');
   setAttributeTo(this.rectEvent, {
     'pointer-events': 'fill',
     fill: 'transparent'
@@ -7011,7 +7014,7 @@ function __createDOM() {
   this.groupEvent.appendChild(this.rectEvent);
   this.dom.appendChild(this.groupEvent); // Handling graph title
 
-  this.domTitle = document.createElementNS(Graph.ns, 'text');
+  this.domTitle = document.createElementNS(Graph$1.ns, 'text');
   this.setTitle(this.options.title);
 
   if (this.options.titleFontSize) {
@@ -7032,7 +7035,7 @@ function __createDOM() {
   });
   this.groupEvent.appendChild(this.domTitle); //
 
-  this.graphingZone = document.createElementNS(Graph.ns, 'g');
+  this.graphingZone = document.createElementNS(Graph$1.ns, 'g');
   this.updateGraphingZone();
   this.groupEvent.appendChild(this.graphingZone);
   /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
@@ -7041,17 +7044,17 @@ function __createDOM() {
   this.shapeZone.appendChild(this.shapeZoneRect);
   */
 
-  this.axisGroup = document.createElementNS(Graph.ns, 'g');
+  this.axisGroup = document.createElementNS(Graph$1.ns, 'g');
   this.graphingZone.appendChild(this.axisGroup);
-  this.groupGrids = document.createElementNS(Graph.ns, 'g'); // With the z stacking, this should probably be removed
+  this.groupGrids = document.createElementNS(Graph$1.ns, 'g'); // With the z stacking, this should probably be removed
   //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
-  this.groupPrimaryGrids = document.createElementNS(Graph.ns, 'g');
-  this.groupSecondaryGrids = document.createElementNS(Graph.ns, 'g');
+  this.groupPrimaryGrids = document.createElementNS(Graph$1.ns, 'g');
+  this.groupSecondaryGrids = document.createElementNS(Graph$1.ns, 'g');
   this.axisGroup.appendChild(this.groupGrids);
   this.groupGrids.appendChild(this.groupSecondaryGrids);
   this.groupGrids.appendChild(this.groupPrimaryGrids);
-  this.plotGroup = document.createElementNS(Graph.ns, 'g');
+  this.plotGroup = document.createElementNS(Graph$1.ns, 'g');
   this.graphingZone.appendChild(this.plotGroup); // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
 
   /*this.shapeZone = document.createElementNS( this.ns, 'g' );
@@ -7062,10 +7065,10 @@ function __createDOM() {
 
   this._makeClosingLines();
 
-  this.clip = document.createElementNS(Graph.ns, 'clipPath');
+  this.clip = document.createElementNS(Graph$1.ns, 'clipPath');
   this.clip.setAttribute('id', `_clipplot${this._creation}`);
   this.defs.appendChild(this.clip);
-  this.clipRect = document.createElementNS(Graph.ns, 'rect');
+  this.clipRect = document.createElementNS(Graph$1.ns, 'rect');
   this.clip.appendChild(this.clipRect);
   this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
   this.markerArrow = document.createElementNS(this.ns, 'marker');
@@ -7079,13 +7082,13 @@ function __createDOM() {
   this.markerArrow.setAttribute('orient', 'auto'); //this.markerArrow.setAttribute('fill', 'context-stroke');
   //this.markerArrow.setAttribute('stroke', 'context-stroke');
 
-  var pathArrow = document.createElementNS(Graph.ns, 'path');
+  var pathArrow = document.createElementNS(Graph$1.ns, 'path');
   pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z'); //pathArrow.setAttribute( 'fill', 'context-stroke' );
 
   this.markerArrow.appendChild(pathArrow);
   this.defs.appendChild(this.markerArrow); // Horionzal split marker for axis
 
-  this.markerHorizontalSplit = document.createElementNS(Graph.ns, 'marker');
+  this.markerHorizontalSplit = document.createElementNS(Graph$1.ns, 'marker');
   this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
   this.markerHorizontalSplit.setAttribute('id', `horionzalsplit_${this.getId()}`);
   this.markerHorizontalSplit.setAttribute('refX', '3');
@@ -7093,7 +7096,7 @@ function __createDOM() {
   this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
   this.markerHorizontalSplit.setAttribute('markerWidth', '6');
   this.markerHorizontalSplit.setAttribute('markerHeight', '8');
-  var path = document.createElementNS(Graph.ns, 'line');
+  var path = document.createElementNS(Graph$1.ns, 'line');
   path.setAttribute('x1', '0');
   path.setAttribute('y1', '8');
   path.setAttribute('x2', '6');
@@ -7102,7 +7105,7 @@ function __createDOM() {
   this.markerHorizontalSplit.appendChild(path);
   this.defs.appendChild(this.markerHorizontalSplit); // Vertical split marker for axis
 
-  this.markerVerticalSplit = document.createElementNS(Graph.ns, 'marker');
+  this.markerVerticalSplit = document.createElementNS(Graph$1.ns, 'marker');
   this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
   this.markerVerticalSplit.setAttribute('id', `verticalsplit_${this.getId()}`);
   this.markerVerticalSplit.setAttribute('refX', '4');
@@ -7110,7 +7113,7 @@ function __createDOM() {
   this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
   this.markerVerticalSplit.setAttribute('markerWidth', '8');
   this.markerVerticalSplit.setAttribute('markerHeight', '6');
-  var path = document.createElementNS(Graph.ns, 'line');
+  var path = document.createElementNS(Graph$1.ns, 'line');
   path.setAttribute('x1', '0');
   path.setAttribute('y1', '0');
   path.setAttribute('x2', '8');
@@ -7118,7 +7121,7 @@ function __createDOM() {
   path.setAttribute('stroke', 'black');
   this.markerVerticalSplit.appendChild(path);
   this.defs.appendChild(this.markerVerticalSplit);
-  this.vertLineArrow = document.createElementNS(Graph.ns, 'marker');
+  this.vertLineArrow = document.createElementNS(Graph$1.ns, 'marker');
   this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
   this.vertLineArrow.setAttribute('id', `verticalline${this._creation}`);
   this.vertLineArrow.setAttribute('refX', '0');
@@ -7130,7 +7133,7 @@ function __createDOM() {
   //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
 
   this.vertLineArrow.setAttribute('stroke-width', '1px');
-  var pathVertLine = document.createElementNS(Graph.ns, 'path');
+  var pathVertLine = document.createElementNS(Graph$1.ns, 'path');
   pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
   pathVertLine.setAttribute('stroke', 'black');
   this.vertLineArrow.appendChild(pathVertLine);
@@ -7141,6 +7144,7 @@ function __createDOM() {
 }
 
 function _registerEvents(graph) {
+
   if (!graph.wrapper) {
     throw 'No wrapper exists. Cannot register the events.';
   }
@@ -7230,6 +7234,7 @@ function _registerEvents(graph) {
 }
 
 function _handleMouseDown(graph, x, y, e) {
+
   if (graph.forcedPlugin) {
     graph.activePlugin = graph.forcedPlugin;
 
@@ -7305,7 +7310,7 @@ function _handleMouseMove(graph, x, y, e) {
           return;
         }
 
-        graph._trackingLegend = _trackingLegendSerie(graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod, xRef);
+        graph._trackingLegend = _trackingLegendSerie(graph, series, xOverwritePx, y, graph._trackingLegend, graph.options.trackingLine.textMethod ? graph.options.trackingLine.textMethod : trackingLineDefaultTextMethod);
       } else if (graph.options.trackingLine.mode == 'individual') {
         // Series looping
         const output = [];
@@ -7710,24 +7715,24 @@ function hasSizeChanged(graph) {
 } // Constants
 
 
-Graph.SERIE_LINE = Symbol();
-Graph.SERIE_SCATTER = Symbol();
-Graph.SERIE_CONTOUR = Symbol();
-Graph.SERIE_BAR = Symbol();
-Graph.SERIE_BOX = Symbol();
-Graph.SERIE_ZONE = Symbol();
-Graph.SERIE_LINE_COLORED = Symbol();
-Graph.SERIE_ZONE = Symbol();
-Graph.SERIE_DENSITYMAP = Symbol();
-Graph.SERIE_LINE_3D = Symbol();
-Graph.SERIE_ZONE_3D = Symbol();
-Graph.TICKS_OUTSIDE = Symbol();
-Graph.TICKS_INSIDE = Symbol();
-Graph.TICKS_CENTERED = Symbol();
-Graph.ns = 'http://www.w3.org/2000/svg';
-Graph.nsxlink = 'http://www.w3.org/1999/xlink';
-GraphJSON(Graph);
-EventMixin$1(Graph);
+Graph$1.SERIE_LINE = Symbol();
+Graph$1.SERIE_SCATTER = Symbol();
+Graph$1.SERIE_CONTOUR = Symbol();
+Graph$1.SERIE_BAR = Symbol();
+Graph$1.SERIE_BOX = Symbol();
+Graph$1.SERIE_ZONE = Symbol();
+Graph$1.SERIE_LINE_COLORED = Symbol();
+Graph$1.SERIE_ZONE = Symbol();
+Graph$1.SERIE_DENSITYMAP = Symbol();
+Graph$1.SERIE_LINE_3D = Symbol();
+Graph$1.SERIE_ZONE_3D = Symbol();
+Graph$1.TICKS_OUTSIDE = Symbol();
+Graph$1.TICKS_INSIDE = Symbol();
+Graph$1.TICKS_CENTERED = Symbol();
+Graph$1.ns = 'http://www.w3.org/2000/svg';
+Graph$1.nsxlink = 'http://www.w3.org/1999/xlink';
+GraphJSON(Graph$1);
+EventMixin$1(Graph$1);
 
 /**
  * Default legend configuration
@@ -7792,6 +7797,7 @@ class Legend {
     this.groups = [];
     this.rect = document.createElementNS(this.graph.ns, 'rect');
     this.rectBottom = document.createElementNS(this.graph.ns, 'rect');
+    this.autoPosition = undefined;
     this.rect.setAttribute('x', 0);
     this.rect.setAttribute('y', 0);
     this.rectBottom.setAttribute('x', 0);
@@ -7961,6 +7967,9 @@ class Legend {
         this.alignToX = false;
         break;
 
+      case undefined:
+        return;
+
       default:
         console.error('Position is not supported');
         return;
@@ -8010,10 +8019,9 @@ class Legend {
     } // I don't think this is correct... y=max already is axis-relative.
 
 
-    if (pos.y == 'max') {//    poscoords.y += this.graph.getPaddingTop();
-    }
+    if (pos.y == 'max') ;
 
-    if (pos.x == 'max') {} // todo
+    if (pos.x == 'max') ; // todo
     // This was making the autoPosition fail. But I can totally see how this will cause problems in other case scenarios...
     // poscoords.y += this.graph.getPaddingTop();
     // poscoords.x += this.graph.getPaddingLeft();
@@ -8021,13 +8029,11 @@ class Legend {
 
     if (this.alignToX == 'right') {
       poscoords.x -= this.width; //poscoords.x -= this.bbox.x;
-    } else {//poscoords.x -= this.bbox.x;
-      }
+    }
 
     if (this.alignToY == 'bottom') {
       poscoords.y -= this.height; //    poscoords.y -= this.bbox.y;
-    } else {//     poscoords.y -= this.bbox.y;
-      }
+    }
 
     this.pos.transformX = poscoords.x;
     this.pos.transformY = poscoords.y;
@@ -8875,18 +8881,14 @@ class Axis {
   setMinValueData(min) {
     this.dataMin = min; // 25.10.2017. This is to help in the case there's no autoscaling
 
-    if (isNaN(this.getCurrentMin())) {//this.setCurrentMin( this.getMinValue() );
-      //this.cache();
-    }
+    if (isNaN(this.getCurrentMin())) ;
   }
 
   setMaxValueData(max) {
     this.dataMax = max; // 25.10.2017. This is to help in the case there's no autoscaling
     // 02.02.2018. Don't agree with this. Next time, put a link to show the use of this piece of code
 
-    if (isNaN(this.getCurrentMax())) {//     this.setCurrentMax( this.getMaxValue() );
-      //this.cache();
-    }
+    if (isNaN(this.getCurrentMax())) ;
   }
   /**
    * Retrieves the maximum possible value of the axis based only on the data. Does not take into account the possible axis forcing
@@ -10208,9 +10210,6 @@ class Axis {
         s = s.length == 1 ? `0${s}` : s;
         text = `${valueRounded}.${s}`;
         break;
-
-      default:
-        break;
     }
 
     return text;
@@ -10311,7 +10310,7 @@ class Axis {
     switch (pos) {
       case 3:
       case 'outside':
-      case Graph.TICKS_OUTSIDE:
+      case Graph$1.TICKS_OUTSIDE:
         {
           pos = 3;
           break;
@@ -10319,7 +10318,7 @@ class Axis {
 
       case 2:
       case 'centered':
-      case Graph.TICKS_CENTERED:
+      case Graph$1.TICKS_CENTERED:
         {
           pos = 2;
           break;
@@ -10327,7 +10326,7 @@ class Axis {
 
       case 1:
       case 'inside':
-      case Graph.TICKS_INSIDE:
+      case Graph$1.TICKS_INSIDE:
       default:
         {
           pos = 1;
@@ -12774,6 +12773,7 @@ var ErrorBarMixin = {
   },
 
   errorDrawInit: function () {
+
     if (this.errorboxStyle) {
       this.errorboxStyle.paths = {
         top: '',
@@ -12882,6 +12882,9 @@ class Serie {
     this.graph = graph;
     this.name = name;
     this.groupMain = document.createElementNS(this.graph.ns, 'g');
+    this._activeStyle = 'unselected'; // Creates an empty style variable
+
+    this.styles = {};
     this._symbolLegendContainer = document.createElementNS(this.graph.ns, 'g');
   }
 
@@ -13301,6 +13304,10 @@ class Serie {
   }
 
   getWaveform() {
+    if (!this.waveform) {
+      this.waveform = Graph.newWaveform();
+    }
+
     return this.waveform;
   }
 
@@ -13345,6 +13352,85 @@ class Serie {
   _getSymbolForLegendContainer() {
     return this._symbolLegendContainer;
   }
+
+  setStyle(json, styleName = 'unselected', baseStyleName = 'unselected') {
+    if (styleName == 'unselected') {
+      baseStyleName = null;
+    }
+
+    this.styles[styleName] = {
+      base: baseStyleName,
+      data: json
+    };
+    this.styleHasChanged(styleName);
+  }
+
+  getStyle(styleName) {
+    if (!this.styles[styleName]) {
+      return this.graph.constructor.getStyle(styleName);
+    }
+
+    return this._buildStyle(this.styles[styleName]);
+  }
+
+  getRawStyle(styleName) {
+    this.styles[styleName] = this.styles[styleName] || {
+      data: {}
+    };
+    return this.styles[styleName].data;
+  }
+
+  activateStyle(styleName) {
+    this._activeStyle = styleName;
+    this.computeActiveStyle();
+    this.styleHasChanged(styleName);
+  }
+
+  setActiveStyle(styleName) {
+    return this.activateStyle(styleName);
+  }
+
+  getActiveStyle() {
+    return this._activeStyle;
+  }
+
+  getActiveStyleName() {
+    return this.getActiveStyle();
+  }
+
+  computeStyles() {
+    for (let i in this.styles) {
+      this.computeStyle(i);
+    }
+  }
+
+  computeStyle(styleName) {
+    this.computedStyle = this.computedStyle || {};
+    this.computedStyle[styleName] = this.getStyle(styleName);
+  }
+
+  computeActiveStyle() {
+    this.computedStyle = this.computedStyle || {};
+    this.computedStyle[this.getActiveStyle()] = this.getStyle(this.getActiveStyle());
+  }
+
+  getComputedStyle(style = this.getActiveStyle()) {
+    return this.computedStyle[style];
+  }
+
+  getComputedStyles() {
+    return this.computedStyle;
+  }
+
+  _buildStyle(s) {
+    let base = s.base;
+
+    if (!base) {
+      return extend(true, {}, s.data);
+    } else {
+      return extend(true, {}, this.getStyle(base), s.data);
+    }
+  }
   /**
    * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
    * @see Serie#getSymbolForLegend
@@ -13357,7 +13443,7 @@ class Serie {
     this.applyLineStyle(this.getSymbolForLegend());
   }
   /**
-   * @alias Serie#setLegendSymbolStyle
+   * @alias Serie#setLegendSymbolStyle 
    * @memberof Serie
    */
 
@@ -13480,11 +13566,6 @@ class Serie {
   getLayer() {
     return this.options.layer || 1;
   }
-
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
-  }
   /**
    * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
    * @param {String} selectionType - The selection for which the style may have changed
@@ -13516,9 +13597,25 @@ class Serie {
    */
 
 
-  hasStyleChanged(selectionType) {
+  hasStyleChanged(selectionType = 'unselected') {
+    let s;
     this._changedStyles = this._changedStyles || {};
-    return this._changedStyles[selectionType || 'unselected'];
+
+    do {
+      if (this._changedStyles[selectionType]) {
+        return true;
+      }
+
+      s = this.styles[selectionType];
+
+      if (!s) {
+        break;
+      }
+
+      selectionType = s.base;
+    } while (true);
+
+    return false;
   }
   /**
    * Notifies jsGraph that the data of the serie has changed
@@ -13742,11 +13839,20 @@ class SerieScatter extends Serie {
     this.shapes = []; // Stores all shapes
 
     this.shapesDetails = [];
-    this.shapes = [];
     this.keys = [];
+    this.styleAttributes = [];
+    this.stylesNames = undefined;
     this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
     this.groupMain.appendChild(this.groupMarkers); //    this.selectedStyleGeneral = {};
     //    this.selectedStyleModifiers = {};
+
+    if (this.options.markerStyles) {
+      for (let i in this.options.markerStyles) {
+        this.setStyle({
+          markers: this.options.markerStyles[i]
+        }, i, "unselected");
+      }
+    }
 
     this.groupMarkers.addEventListener('mouseenter', e => {
       var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
@@ -13782,6 +13888,7 @@ class SerieScatter extends Serie {
 
 
   setDataCategory(data) {
+
     for (let dataCategory of data) {
       this._checkY(dataCategory.y.getMaxY());
 
@@ -13806,33 +13913,36 @@ class SerieScatter extends Serie {
   }
 
   getSymbolForLegend() {
-    if (!this.markers) {
+    if (!this.options.markers) {
       return;
     }
 
     const container = super._getSymbolForLegendContainer();
 
+    var style = this.getMarkerStyle(-1, true)["-1"];
+
+    if (!style || !style.shape) {
+      return;
+    }
+
     if (!this.shapeLegend) {
-      this.shapeLegend = this._makeMarker(container, this.options.markerStyles.unselected.default);
+      this.shapeLegend = this._makeMarker(container, style);
       container.appendChild(this.shapeLegend);
     }
 
-    var style = this.getMarkerStyle('unselected', -1, true);
-
-    for (var i in style[-1]) {
+    for (var i in style) {
       if (i == 'shape') {
         continue;
       }
 
-      this.shapeLegend.setAttribute(i, style[-1][i]);
+      this.shapeLegend.setAttribute(i, style[i]);
     }
 
     return container;
-  }
+  } // setStyle( style, styleName = 'unselected' ) {
+  //   return this.setMarkerStyle( style, undefined, styleName );
+  //}
 
-  setStyle(style, styleName = 'unselected') {
-    return this.setMarkerStyle(style, undefined, styleName);
-  }
   /**
    * Sets style to the scatter points
    * First argument is the style applied by default to all points
@@ -13851,17 +13961,25 @@ class SerieScatter extends Serie {
    */
 
 
-  setMarkerStyle(all, modifiers, mode = 'unselected') {
+  setMarkerStyle(all, modifiers, mode = 'unselected', modeInherit = 'unselected') {
     if (typeof modifiers == 'string') {
       mode = modifiers;
       modifiers = false;
     }
 
-    this.options.markerStyles[mode] = this.options.markerStyles[mode] || {};
-    this.options.markerStyles[mode].all = all;
-    this.options.markerStyles[mode].modifiers = modifiers;
+    let o = {
+      markers: {
+        all,
+        modifiers
+      }
+    };
+    this.setStyle(o, mode, modeInherit);
     this.styleHasChanged(mode);
     return this;
+  }
+
+  setIndividualStyleNames(p) {
+    this.stylesNames = p;
   }
   /**
    * Redraws the serie
@@ -13877,6 +13995,11 @@ class SerieScatter extends Serie {
     }
 
     let xpx, ypx, j;
+
+    if (!this.isCategory && !this.waveform) {
+      return;
+    }
+
     const isCategory = this.getXAxis().getType() == 'category';
     const keys = [];
     this.dataHasChanged(false);
@@ -13884,6 +14007,7 @@ class SerieScatter extends Serie {
 
     this.groupMain.removeChild(this.groupMarkers);
     j = 0;
+
     if (this.hasErrors()) {
       this.errorDrawInit();
     }
@@ -13896,8 +14020,7 @@ class SerieScatter extends Serie {
           continue;
         }
 
-        if (this.error) {//   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
-        }
+        if (this.error) ;
 
         for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
           //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
@@ -13944,7 +14067,7 @@ class SerieScatter extends Serie {
     } // This will automatically create the shapes
 
 
-    this.applyMarkerStyle(this.selectionType || 'unselected', keys);
+    this.applyMarkerStyle(keys);
     this.keys = keys;
     this.groupMain.appendChild(this.groupMarkers);
   }
@@ -13955,68 +14078,96 @@ class SerieScatter extends Serie {
     return el;
   }
 
-  getMarkerStyle(selection, index, noSetPosition) {
-    var selection = selection || 'unselected';
+  getMarkerStyle(indices, noSetPosition) {
+    this.computeStyles();
+    const stylesNames = this.stylesNames;
+    const isStylesNamesF = typeof stylesNames == "function";
+    const computedStyles = this.getComputedStyles();
     var indices;
     var styles = {};
 
-    if (typeof index == 'number') {
-      indices = [index];
-    } else if (Array.isArray(index)) {
-      indices = index;
+    let _indices;
+
+    if (!Array.isArray(indices)) {
+      _indices = [indices];
+    } else {
+      _indices = indices;
     }
 
-    var shape, index, modifier, style; // loop variables
+    let styleAll = [],
+        shape,
+        index,
+        style;
+ // loop variables
 
-    if (!this.options.markerStyles[selection]) {
-      selection = 'unselected';
+    for (let i in computedStyles) {
+      if (!computedStyles[i].markers) {
+        continue;
+      }
+
+      if (typeof computedStyles[i].markers.all == 'function') {
+        styleAll[i] = computedStyles[i].markers.all();
+      } else {
+        styleAll[i] = { ...computedStyles[i].markers.all
+        };
+      }
+
+      if (computedStyles[i].markers.default) {
+        styleAll[i] = { ...styleAll[i],
+          ...computedStyles[i].markers.default
+        };
+      }
     }
 
-    var styleAll = this.options.markerStyles[selection].all;
+    for (let i = 0, l = _indices.length; i < l; i++) {
+      var _this$getRawStyle$mar;
 
-    if (!styleAll) {
-      styleAll = this.options.markerStyles[selection].default;
-    }
+      let sName;
 
-    if (typeof styleAll == 'function') {
-      styleAll = styleAll();
-    }
+      if (stylesNames) {
+        if (isStylesNamesF) {
+          sName = stylesNames(this, i);
+        } else if (Array.isArray(stylesNames)) {
+          sName = stylesNames[i];
+        } else {
+          sName = this.getActiveStyleName();
+        }
+      } else {
+        sName = this.getActiveStyleName();
+      }
 
-    const defaultStyle = this.options.markerStyles[selection].default ? this.options.markerStyles[selection].default : this.options.markerStyles.unselected.default;
-    styleAll = Object.assign({}, defaultStyle, styleAll);
-    var i = 0,
-        l = indices.length;
+      if (!styleAll[sName]) {
+        continue;
+      }
 
-    for (; i < l; i++) {
-      index = indices[i];
+      let modifier = (_this$getRawStyle$mar = this.getRawStyle(sName).markers) === null || _this$getRawStyle$mar === void 0 ? void 0 : _this$getRawStyle$mar.modifiers;
+      let modifierIsFunc = typeof modifier == 'function';
+      index = _indices[i];
       shape = this.shapes[index];
 
-      if ((modifier = this.options.markerStyles[selection].modifiers) && (typeof modifier == 'function' || modifier[index])) {
-        if (typeof modifier == 'function') {
-          style = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
+      if (modifier && (modifierIsFunc || modifier[index])) {
+        let modifiedStyle;
 
-          if (style === false) {
+        if (modifierIsFunc) {
+          modifiedStyle = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
+
+          if (modifiedStyle === false) {
             continue;
           }
         } else if (modifier[index]) {
-          style = modifier[index];
+          modifiedStyle = modifier[index];
         }
 
-        styles[index] = Object.assign({}, styleAll, style);
-      } else if (styleAll !== undefined) {
-        styles[index] = styleAll;
+        styles[index] = { ...styleAll[sName],
+          ...modifiedStyle
+        };
       } else {
-        styles[index] = this.options.markerStyles[selection].default;
-      }
-
-      if (!styles[index]) {
-        styles[index] = styleAll;
+        styles[index] = styleAll[sName];
       }
 
       if (!shape) {
         // Shape doesn't exist, let's create it
         if (!styles[index].shape) {
-          console.error(style);
           throw `No shape was defined with the style "${style}".`;
         }
 
@@ -14035,20 +14186,27 @@ class SerieScatter extends Serie {
     return styles;
   }
 
-  applyMarkerStyle(selection, index, noSetPosition) {
+  applyMarkerStyle(indices, noSetPosition) {
     var i, j;
-    var styles = this.getMarkerStyle(selection, index, noSetPosition);
+    var styles = this.getMarkerStyle(indices, noSetPosition);
+    this.styleAttributes[i] = this.styleAttributes[i] || [];
 
     for (i in styles) {
+      if (this.styleAttributes[i]) {
+        for (j in this.styleAttributes[i]) {
+          this.shapes[i].removeAttribute(j);
+        }
+      }
+
       for (j in styles[i]) {
         if (j !== 'shape' && this.shapes[i]) {
           if (styles[i][j]) {
             this.shapes[i].setAttribute(j, styles[i][j]);
-          } else {
-            this.shapes[i].removeAttribute(j);
           }
         }
       }
+
+      this.styleAttributes[i] = styles[i];
     }
   }
 
@@ -14073,31 +14231,31 @@ class SerieScatter extends Serie {
     if (this.shapes[index] && this.shapesDetails[index]) {
       if ((this.shapesDetails[index][2] || setOn === false) && setOn !== true) {
         var selectionStyle = this.shapesDetails[index][2];
-        this.shapesDetails[index][2] = false;
-        var allStyles = this.getMarkerStyle(selectionStyle, index, true);
+        var allStyles = this.getMarkerStyle(index, true);
 
         for (var i in allStyles[index]) {
           this.shapes[index].removeAttribute(i);
         }
 
-        this.applyMarkerStyle('unselected', index, true);
+        this.shapesDetails[index][2] = false;
+        this.applyMarkerStyle(index, true);
       } else {
         selectionType = selectionType || 'selected';
         this.shapesDetails[index][2] = selectionType;
-        this.applyMarkerStyle(selectionType, index, true);
+        this.applyMarkerStyle(index, true);
       }
     }
   }
 
   select(selectionType) {
-    this.selectionType = selectionType;
-    this.applyMarkerStyle(this.selectionType || 'selected', this.keys);
+    this.setActiveStyle('selected');
+    this.applyMarkerStyle(this.keys);
     super.select(selectionType);
   }
 
   unselect() {
-    this.selectionType = 'unselected';
-    this.applyMarkerStyle(this.selectionType || 'unselected', this.keys);
+    this.setActiveStyle('unselected');
+    this.applyMarkerStyle(this.keys);
     super.unselect();
   }
 
@@ -14207,22 +14365,26 @@ const defaultOptions$2 = {
 
 class SerieLine extends SerieScatter {
   constructor(graph, name, options, defaultInherited) {
-    super(graph, name, options, extend(true, {}, defaultOptions$2, defaultInherited));
-    this.selectionType = 'unselected';
+    super(graph, name, options, extend(true, {}, defaultOptions$2, defaultInherited)); //  this.selectionType = 'unselected';
+
     this._type = type$1;
     mapEventEmission(this.options, this); // Register events
-    // Creates an empty style variable
+    // Unselected style
 
-    this.styles = {}; // Unselected style
-
-    this.styles.unselected = {
-      lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle,
-      lineWidth: this.options.lineWidth
-    };
-    this.styles.selected = {
-      lineWidth: 3
-    };
+    this.setStyle({
+      line: {
+        color: this.options.lineColor,
+        style: this.options.lineStyle,
+        width: this.options.lineWidth
+      }
+    }, "unselected", null);
+    this.setStyle({
+      line: {
+        width: 3
+      }
+    }, "selected", "unselected");
+    this.activateStyle('unselected');
+    this.computeActiveStyle();
     this.shown = true;
     this.data = [];
     this._isMinOrMax = {
@@ -14286,9 +14448,7 @@ class SerieLine extends SerieScatter {
     });
   }
 
-  postInit() {
-    this.extendStyles();
-  }
+  postInit() {}
   /**
    * Sets the options of the serie
    * @see SerieLineDefaultOptions
@@ -14307,7 +14467,7 @@ class SerieLine extends SerieScatter {
       lineStyle: this.options.lineStyle
     };
     */
-    this.applyLineStyles();
+    //    this.applyLineStyles();
     return this;
   }
 
@@ -14337,8 +14497,10 @@ class SerieLine extends SerieScatter {
 
 
   select(selectionType = 'selected') {
-    this.selected = selectionType !== 'unselected';
-    this.selectionType = selectionType;
+    this.selected = selectionType !== 'unselected'; //  this.selectionType = selectionType;
+
+    this.setActiveStyle(selectionType);
+    this.computeActiveStyle();
     this.applyLineStyles();
     this.applyLineStyle(this.getSymbolForLegend());
     super.select(selectionType);
@@ -14401,6 +14563,7 @@ class SerieLine extends SerieScatter {
   }
 
   drawInit(force) {
+
     try {
       this.axisCheck();
     } catch (e) {
@@ -14521,11 +14684,11 @@ class SerieLine extends SerieScatter {
 
     for (var i in this.domMarkerSelect) {
       this.toggleMarker(i.split(','), false, false);
-    }
+    } //this.applyLineStyle(this.getSymbolForLegend());
 
-    this.applyLineStyle(this.getSymbolForLegend());
 
-    if (this.hasStyleChanged(this.selectionType)) {
+    if (this.hasStyleChanged(this.getActiveStyle())) {
+      this.computeActiveStyle();
       this.updateStyle();
     }
 
@@ -14560,8 +14723,10 @@ class SerieLine extends SerieScatter {
     /*xshift = waveform.getXShift(),
     xscale = wave.getXScale(),*/
 
-    yshift = waveform.getShift(), yscale = waveform.getScale();
+    let yshift = waveform.getShift(),
+        yscale = waveform.getScale();
     let lastPointOutside = false;
+
     let _monotoneous = this.isMonotoneous();
 
     this.currentLine = '';
@@ -14724,8 +14889,6 @@ class SerieLine extends SerieScatter {
         i = waveform.getIndexFromX(xMax, true);
         l = waveform.getIndexFromX(xMin, true);
       }
-
-      console.log(i, l);
 
       if (i == false) {
         i = 0;
@@ -14994,12 +15157,10 @@ class SerieLine extends SerieScatter {
       return;
     }
 
-    var ratio, intY;
+    var intY;
 
     if (value.xMax == value.xMin) {
       intY = value.yMin;
-    } else {//ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-      //intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
     }
 
     if (doMarker && this.options.trackMouse) {
@@ -15110,18 +15271,24 @@ class SerieLine extends SerieScatter {
 
     return min;
   }
-  /* LINE STYLE * @memberof SerieLine
+
+  getRawLineStyle(styleName) {
+    let s = this.getRawStyle(styleName);
+
+    if (!s.line) {
+      s.line = {};
+    }
+
+    return s.line;
+  }
+  /* 
+    LINE STYLE * @memberof SerieLine
    */
 
 
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
-  }
-
   setLineStyle(number, selectionType = 'unselected', applyToSelected) {
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineStyle = number;
+    let s = this.getRawLineStyle(selectionType);
+    s.style = number;
 
     if (applyToSelected) {
       this.setLineStyle(number, 'selected');
@@ -15132,95 +15299,64 @@ class SerieLine extends SerieScatter {
   }
 
   getLineStyle(selectionType) {
-    return this.getStyle(selectionType).lineStyle;
+    var _this$getComputedStyl;
+
+    return (_this$getComputedStyl = this.getComputedStyle(selectionType).line) === null || _this$getComputedStyl === void 0 ? void 0 : _this$getComputedStyl.style;
   }
 
-  getLineDashArray(selectionType = this.selectionType || 'unselected') {
-    switch (this.getStyle(selectionType).lineStyle) {
+  getLineDashArray(styleName = this.getActiveStyleName()) {
+    let s = this.getLineStyle(styleName);
+
+    switch (s) {
       case 2:
         return '1, 1';
-        break;
 
       case 3:
         return '2, 2';
-        break;
 
       case 4:
         return '3, 3';
-        break;
 
       case 5:
         return '4, 4';
-        break;
 
       case 6:
         return '5, 5';
-        break;
 
       case 7:
         return '5 2';
-        break;
 
       case 8:
         return '2 5';
-        break;
 
       case 9:
         return '4 2 4 4';
-        break;
 
       case 10:
         return '1,3,1';
-        break;
 
       case 11:
         return '9 2';
-        break;
 
       case 12:
         return '2 9';
-        break;
 
+      case 0:
       case 1:
       case false:
         return false;
-        break;
 
       default:
-        return this.styles[selectionType].lineStyle;
-        break;
+        return s;
     }
-
-    this.styleHasChanged(selectionType);
-  }
-
-  getStyle(selectionType = this.selectionType || 'unselected') {
-    return this.styles[selectionType] || this.styles.unselected;
-  }
-
-  extendStyles() {
-    for (var i in this.styles) {
-      var s = this.styles[i];
-
-      if (s) {
-        this.styles[i] = extend(true, {}, this.styles.unselected, s);
-      }
-    }
-  }
-
-  extendStyle(styleTarget, styleOrigin) {
-    var s = this.styles[styleTarget];
-    this.styles[styleTarget] = extend(true, {}, this.styles[styleOrigin || 'unselected'], s || {});
-    this.styleHasChanged(styleTarget);
   }
   /** @memberof SerieLine
    */
 
 
   setLineWidth(width, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineWidth = width;
+    let s = this.getRawLineStyle(selectionType);
+    s.width = width;
 
     if (applyToSelected) {
       this.setLineWidth(width, 'selected');
@@ -15230,17 +15366,18 @@ class SerieLine extends SerieScatter {
     return this;
   }
 
-  getLineWidth(selectionType) {
-    return this.getStyle(selectionType).lineWidth || 1;
+  getLineWidth() {
+    var _this$getComputedStyl2;
+
+    return (_this$getComputedStyl2 = this.getComputedStyle().line) === null || _this$getComputedStyl2 === void 0 ? void 0 : _this$getComputedStyl2.width;
   }
   /* LINE COLOR * @memberof SerieLine
    */
 
 
   setLineColor(color, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineColor = color;
+    let s = this.getRawLineStyle(selectionType);
+    s.color = color;
 
     if (applyToSelected) {
       this.setLineColor(color, 'selected');
@@ -15249,14 +15386,19 @@ class SerieLine extends SerieScatter {
     this.styleHasChanged(selectionType);
     return this;
   }
+
+  getLineColor() {
+    var _this$getComputedStyl3;
+
+    return (_this$getComputedStyl3 = this.getComputedStyle().line) === null || _this$getComputedStyl3 === void 0 ? void 0 : _this$getComputedStyl3.color;
+  }
   /* FILL COLOR * @memberof SerieLine
    */
 
 
   setFillColor(color, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].fillColor = color;
+    let s = this.getRawLineStyle(selectionType);
+    s.fillColor = color;
 
     if (applyToSelected) {
       this.setFillColor(color, 'selected');
@@ -15266,12 +15408,10 @@ class SerieLine extends SerieScatter {
     return this;
   }
 
-  getLineColor(selectionType) {
-    return this.getStyle(selectionType).lineColor || 'black';
-  }
+  getFillColor() {
+    var _this$getComputedStyl4;
 
-  getFillColor(selectionType) {
-    return this.getStyle(selectionType).fillColor || undefined;
+    return (_this$getComputedStyl4 = this.getComputedStyle().line) === null || _this$getComputedStyl4 === void 0 ? void 0 : _this$getComputedStyl4.fillColor;
   }
   /** @memberof SerieLine
    */
@@ -15621,6 +15761,7 @@ class SerieBar extends SerieLine {
 
   draw() {
     var path = '';
+
     if (this.hasErrors()) {
       this.errorDrawInit();
     }
@@ -16198,13 +16339,11 @@ class SerieBox extends Serie {
     let axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
     let axis2 = this.options.orientation == 'y' ? this.getXAxis() : this.getYAxis();
     let boxOtherDimension; // width or height of the box
-
     let mean, boxAbove, boxBelow, barAbove, barBelow, outliers;
     emptyDom(this.groupMain);
 
     if (axis2.getType() == 'category') {
       boxOtherDimension = axis2.getRelPx(0.8 / this.nbCategories);
-      
     } else {
       // Get all the spacing and determine the smallest one
       boxOtherDimension = this.options.maxBoxWidth;
@@ -16476,7 +16615,6 @@ class SerieLineColor extends SerieLine {
   _draw() {
     var self = this,
         data = this._dataToUse,
-        toBreak,
         waveform = this.getWaveform(),
         x,
         y,
@@ -16495,9 +16633,7 @@ class SerieLineColor extends SerieLine {
     var lastPointOutside = false;
     this.eraseLines();
 
-    if (this.isFlipped()) {
-      
-    }
+    if (this.isFlipped()) ;
 
     this.currentLine = '';
 
@@ -16529,8 +16665,7 @@ class SerieLineColor extends SerieLine {
       }
 
       if (isNaN(xpx2) || isNaN(ypx2)) {
-        if (this.counter > 0) {//      this._createLine();
-        }
+        if (this.counter > 0) ;
 
         continue;
       }
@@ -16570,7 +16705,6 @@ class SerieLineColor extends SerieLine {
                   this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], this.getX(pointOnAxis[1][0]), this.getY(pointOnAxis[1][1]), pointOnAxis[1][0], pointOnAxis[1][1], i - 1, color, false, false, false);
                 }
               }
-            } else if (!pointOutside) {// this._addPoint(xpx2, ypx2, lastX, lastY, i, false, false);
             }
           }
 
@@ -17023,7 +17157,6 @@ class SerieZone extends Serie {
 }
 
 // import Graph from '../graph.core.js';
-// import { Waveform } from '../util/waveform.js';
 /**
  * Serie line with 3D projection
  * @example graph.newSerie( name, options, "line" );
@@ -17716,10 +17849,7 @@ class SerieContour extends SerieLine {
 
 
   setData(data, arg, type) {
-    var x,
-        dx,
-        arg = arg || '2D',
-        type = type || 'float',
+    var type = type || 'float',
         i,
         l = data.length,
         j,
@@ -17775,18 +17905,14 @@ class SerieContour extends SerieLine {
   draw(force) {
     if (force || this.hasDataChanged()) {
       this.currentLine = 0;
-      var x,
-          y,
-          xpx,
+      var xpx,
           ypx,
           xpx2,
           ypx2,
           i = 0,
           l = this.data.length,
           j = 0,
-          k,
           m,
-          currentLine,
           domLine,
           arr;
       this.minZ = Infinity;
@@ -17812,7 +17938,9 @@ class SerieContour extends SerieLine {
       for (; i < l; i++) {
         this.currentLine = '';
         j = 0;
+
         for (arr = this.data[i].lines, m = arr.length; j < m; j += 4) {
+
           if (arr[j + incrXFlip] < minX && arr[j + 2 + incrXFlip] < minX || arr[j + incrYFlip] < minY && arr[j + 2 + incrYFlip] < minY || arr[j + incrYFlip] > maxY && arr[j + 2 + incrYFlip] > maxY || arr[j + incrXFlip] > maxX && arr[j + 2 + incrXFlip] > maxX) {
             continue;
           }
@@ -17842,7 +17970,6 @@ class SerieContour extends SerieLine {
           this.currentLine += ' ';
           this.currentLine += ypx;
           this.counter++;
-          
         }
 
         this.currentLine += ' z';
@@ -19255,8 +19382,7 @@ class Shape {
         });
       }
 
-      if (!Array.isArray(this.getProp('labelText', i))) {//   break;
-      }
+      if (!Array.isArray(this.getProp('labelText', i))) ;
 
       i++;
     }
@@ -19426,19 +19552,15 @@ class Shape {
       case 'start':
       case 'end':
         return anchor;
-        break;
 
       case 'right':
         return 'end';
-        break;
 
       case 'left':
         return 'start';
-        break;
 
       default:
         return 'start';
-        break;
     }
   }
   /**
@@ -20115,32 +20237,6 @@ class Shape {
 
   updateMask() {
     return;
-
-    if (!this.maskDom) {
-      return; // eslint-disable-line no-useless-return
-    }
-
-    var position = {
-      x: 'min',
-      y: 'min'
-    };
-    var position2 = {
-      x: 'max',
-      y: 'max'
-    };
-    position = this._getPosition(position);
-    position2 = this._getPosition(position2);
-    this.maskDomWrapper.setAttribute('x', Math.min(position.x, position2.x));
-    this.maskDomWrapper.setAttribute('y', Math.min(position.y, position2.y));
-    this.maskDomWrapper.setAttribute('width', Math.abs(position2.x - position.x));
-    this.maskDomWrapper.setAttribute('height', Math.abs(position2.y - position.y));
-
-    for (var i = 0; i < this._dom.attributes.length; i++) {
-      this.maskDom.setAttribute(this._dom.attributes[i].name, this._dom.attributes[i].value);
-    }
-
-    this.maskDom.setAttribute('fill', 'black');
-    return this;
   }
 
   labelDblClickListener(e) {
@@ -20332,9 +20428,6 @@ class ShapeSurfaceUnderCurve extends Shape {
         k,
         x,
         y,
-        firstX,
-        firstY,
-        currentLine,
         maxY = 0,
         minY = Number.MAX_VALUE;
 
@@ -20831,7 +20924,7 @@ class ShapePolyline extends Shape {
  * @see Graph#newShape
  */
 
-class ShapePolyline$2 extends Shape {
+class ShapePolyline$1 extends Shape {
   constructor(graph, options) {
     super(graph, options);
   }
@@ -21033,12 +21126,11 @@ class ShapeNMRIntegral extends Shape {
       flipped = true;
     }
 
-    let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
+    let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastYVal;
     let data = waveform.getDataInUse();
     let condition, incrementation;
-    if (waveform.getReductionType() == 'aggregate') {
-      
-    }
+
+    if (waveform.getReductionType() == 'aggregate') ;
 
     if (waveform.getXMonotoneousAscending() && // Ascending
     1 == 1 || !waveform.getXMonotoneousAscending() && // Ascending
@@ -21081,6 +21173,7 @@ class ShapeNMRIntegral extends Shape {
       }
 
       lastX = x;
+
       points.push([x, y, sum]);
       lastXVal = xVal;
     }
@@ -21088,6 +21181,7 @@ class ShapeNMRIntegral extends Shape {
     lastXVal = false;
     lastYVal = false;
     lastX = false;
+
     if (sum == 0) {
       sum = 1;
     }
@@ -23140,8 +23234,8 @@ class PluginZoom extends Plugin {
 
 }
 
-var memory = {};
-var memoryHead = {};
+var memory = {},
+    memoryHead = {};
 
 function getFromMemory(store, index) {
   var obj, head;
@@ -23157,8 +23251,6 @@ function getFromMemory(store, index) {
     return obj.data;
   }
 }
-
-
 function get(store, index) {
   var result;
 
@@ -23243,7 +23335,7 @@ class PluginTimeSerieManager extends Plugin {
     s.setInfo('timeSerieManagerDBElements', dbElements);
 
     if (!noZoneSerie) {
-      s._zoneSerie = this.graph.newSerie(`${serieName}_zone`, {}, Graph.SERIE_ZONE);
+      s._zoneSerie = this.graph.newSerie(`${serieName}_zone`, {}, Graph$1.SERIE_ZONE);
     }
 
     this.series.push(s);
@@ -23716,6 +23808,7 @@ class PluginSerieLineDifference extends Plugin {
     };
 
     newChunk(true);
+
     for (var i = 0; i < wFinal.getLength(); i++) {
       if (isNaN(wFinal.getY(i)) || isNaN(wFinal2.getY(i))) {
         newChunk();
@@ -24034,12 +24127,12 @@ class PluginAxisSplitting extends Plugin {
 
       while (serie.subSeries.length < splits) {
         const name = `${serie.getName()}_${serie.subSeries.length}`;
-        const s = this.graph.newSerie(name, {}, serie.getType() || Graph.SERIE_LINE);
+        const s = this.graph.newSerie(name, {}, serie.getType() || Graph$1.SERIE_LINE);
         s.excludedFromLegend = true;
         s.styles = serie.styles;
         s.waveform = serie.waveform; // Copy data
 
-        if (serie.getType() == Graph.SERIE_LINE) {
+        if (serie.getType() == Graph$1.SERIE_LINE) {
           s.markerPoints = serie.markerPoints;
           s.markerFamilies = serie.markerFamilies;
         }
@@ -24104,11 +24197,9 @@ class PluginAxisSplitting extends Plugin {
     switch (type) {
       case 'line':
         return this.newLineSerie(name, options);
-        break;
 
       case 'scatter':
         return this.newScatterSerie(name, options);
-        break;
     }
 
     throw `Cannot create a split serie of type ${type}`;
@@ -24982,65 +25073,63 @@ class PluginPeakPicking extends Plugin {
 
 }
 
-Graph.registerConstructor('graph.position', Position);
-Graph.registerConstructor('graph.axis.x', AxisX);
-Graph.registerConstructor('graph.axis.y', AxisY);
-Graph.registerConstructor('graph.axis.x.bar', AxisXBar);
-Graph.registerConstructor('graph.axis.x.time', GraphTimeAxis);
-Graph.registerConstructor('graph.serie.line', SerieLine);
-Graph.registerConstructor('graph.serie.line.3d', SerieLine3D);
-Graph.registerConstructor('graph.serie.line.color', SerieLineColor);
-Graph.registerConstructor('graph.serie.contour', SerieContour);
-Graph.registerConstructor('graph.serie.bar', SerieBar);
-Graph.registerConstructor('graph.serie.box', SerieBox);
-Graph.registerConstructor('graph.serie.scatter', SerieScatter);
-Graph.registerConstructor('graph.serie.zone', SerieZone);
-Graph.registerConstructor('graph.serie.zone.3d', SerieZone3D);
-Graph.registerConstructor('graph.serie.densitymap', SerieDensityMap);
-Graph.registerConstructor(Graph.SERIE_LINE, SerieLine);
-Graph.registerConstructor(Graph.SERIE_LINE_3D, SerieLine3D);
-Graph.registerConstructor(Graph.SERIE_LINE_COLORED, SerieLineColor);
-Graph.registerConstructor(Graph.SERIE_CONTOUR, SerieContour);
-Graph.registerConstructor(Graph.SERIE_BAR, SerieBar);
-Graph.registerConstructor(Graph.SERIE_BOX, SerieBox);
-Graph.registerConstructor(Graph.SERIE_SCATTER, SerieScatter);
-Graph.registerConstructor(Graph.SERIE_ZONE, SerieZone);
-Graph.registerConstructor(Graph.SERIE_ZONE_3D, SerieZone3D);
-Graph.registerConstructor(Graph.SERIE_DENSITYMAP, SerieDensityMap); //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
+Graph$1.registerConstructor('graph.position', Position);
+Graph$1.registerConstructor('graph.axis.x', AxisX);
+Graph$1.registerConstructor('graph.axis.y', AxisY);
+Graph$1.registerConstructor('graph.axis.x.bar', AxisXBar);
+Graph$1.registerConstructor('graph.axis.x.time', GraphTimeAxis);
+Graph$1.registerConstructor('graph.serie.line', SerieLine);
+Graph$1.registerConstructor('graph.serie.line.3d', SerieLine3D);
+Graph$1.registerConstructor('graph.serie.line.color', SerieLineColor);
+Graph$1.registerConstructor('graph.serie.contour', SerieContour);
+Graph$1.registerConstructor('graph.serie.bar', SerieBar);
+Graph$1.registerConstructor('graph.serie.box', SerieBox);
+Graph$1.registerConstructor('graph.serie.scatter', SerieScatter);
+Graph$1.registerConstructor('graph.serie.zone', SerieZone);
+Graph$1.registerConstructor('graph.serie.zone.3d', SerieZone3D);
+Graph$1.registerConstructor('graph.serie.densitymap', SerieDensityMap);
+Graph$1.registerConstructor(Graph$1.SERIE_LINE, SerieLine);
+Graph$1.registerConstructor(Graph$1.SERIE_LINE_3D, SerieLine3D);
+Graph$1.registerConstructor(Graph$1.SERIE_LINE_COLORED, SerieLineColor);
+Graph$1.registerConstructor(Graph$1.SERIE_CONTOUR, SerieContour);
+Graph$1.registerConstructor(Graph$1.SERIE_BAR, SerieBar);
+Graph$1.registerConstructor(Graph$1.SERIE_BOX, SerieBox);
+Graph$1.registerConstructor(Graph$1.SERIE_SCATTER, SerieScatter);
+Graph$1.registerConstructor(Graph$1.SERIE_ZONE, SerieZone);
+Graph$1.registerConstructor(Graph$1.SERIE_ZONE_3D, SerieZone3D);
+Graph$1.registerConstructor(Graph$1.SERIE_DENSITYMAP, SerieDensityMap); //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
-Graph.registerConstructor('graph.plugin.shape', PluginShape);
-Graph.registerConstructor('graph.plugin.drag', PluginDrag);
-Graph.registerConstructor('graph.plugin.zoom', PluginZoom);
-Graph.registerConstructor('graph.plugin.selectScatter', PluginSelectScatter);
-Graph.registerConstructor('graph.plugin.timeSerieManager', PluginTimeSerieManager);
-Graph.registerConstructor('graph.plugin.serielinedifference', PluginSerieLineDifference);
-Graph.registerConstructor('graph.plugin.serieLineDifference', PluginSerieLineDifference);
-Graph.registerConstructor('graph.plugin.axissplitting', PluginAxisSplitting);
-Graph.registerConstructor('graph.plugin.makeTracesDifferent', PluginMakeTracesDifferent);
-Graph.registerConstructor('graph.plugin.peakPicking', PluginPeakPicking);
-Graph.registerConstructor('graph.shape', Shape);
-Graph.registerConstructor('graph.shape.areaundercurve', ShapeSurfaceUnderCurve);
-Graph.registerConstructor('graph.shape.arrow', ShapeArrow);
-Graph.registerConstructor('graph.shape.ellipse', ShapeEllipse);
-Graph.registerConstructor('graph.shape.polygon', ShapePolyline$2);
-Graph.registerConstructor('graph.shape.label', ShapeLabel);
-Graph.registerConstructor('graph.shape.polyline', ShapePolyline);
-Graph.registerConstructor('graph.shape.line', ShapeLine);
-Graph.registerConstructor('graph.shape.nmrintegral', ShapeNMRIntegral);
-Graph.registerConstructor('graph.shape.html', ShapeHTML);
-Graph.registerConstructor('graph.shape.peakintegration2d', ShapePeakIntegration2D); //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
+Graph$1.registerConstructor('graph.plugin.shape', PluginShape);
+Graph$1.registerConstructor('graph.plugin.drag', PluginDrag);
+Graph$1.registerConstructor('graph.plugin.zoom', PluginZoom);
+Graph$1.registerConstructor('graph.plugin.selectScatter', PluginSelectScatter);
+Graph$1.registerConstructor('graph.plugin.timeSerieManager', PluginTimeSerieManager);
+Graph$1.registerConstructor('graph.plugin.serielinedifference', PluginSerieLineDifference);
+Graph$1.registerConstructor('graph.plugin.serieLineDifference', PluginSerieLineDifference);
+Graph$1.registerConstructor('graph.plugin.axissplitting', PluginAxisSplitting);
+Graph$1.registerConstructor('graph.plugin.makeTracesDifferent', PluginMakeTracesDifferent);
+Graph$1.registerConstructor('graph.plugin.peakPicking', PluginPeakPicking);
+Graph$1.registerConstructor('graph.shape', Shape);
+Graph$1.registerConstructor('graph.shape.areaundercurve', ShapeSurfaceUnderCurve);
+Graph$1.registerConstructor('graph.shape.arrow', ShapeArrow);
+Graph$1.registerConstructor('graph.shape.ellipse', ShapeEllipse);
+Graph$1.registerConstructor('graph.shape.polygon', ShapePolyline$1);
+Graph$1.registerConstructor('graph.shape.label', ShapeLabel);
+Graph$1.registerConstructor('graph.shape.polyline', ShapePolyline);
+Graph$1.registerConstructor('graph.shape.line', ShapeLine);
+Graph$1.registerConstructor('graph.shape.nmrintegral', ShapeNMRIntegral);
+Graph$1.registerConstructor('graph.shape.html', ShapeHTML);
+Graph$1.registerConstructor('graph.shape.peakintegration2d', ShapePeakIntegration2D); //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
 //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
 //  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
 
-Graph.registerConstructor('graph.shape.rect', ShapeRectangle);
-Graph.registerConstructor('graph.shape.rectangle', ShapeRectangle);
-Graph.registerConstructor('graph.shape.cross', ShapeCross); //Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
+Graph$1.registerConstructor('graph.shape.rect', ShapeRectangle);
+Graph$1.registerConstructor('graph.shape.rectangle', ShapeRectangle);
+Graph$1.registerConstructor('graph.shape.cross', ShapeCross); //Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
 
-Graph.registerConstructor('graph.shape.peakboundariescenter', ShapePeakBoundaries); //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
+Graph$1.registerConstructor('graph.shape.peakboundariescenter', ShapePeakBoundaries); //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
 
-Graph.registerConstructor('graph.legend', Legend);
-Graph.registerConstructor('graph.waveform', Waveform);
+Graph$1.registerConstructor('graph.legend', Legend);
+Graph$1.registerConstructor('graph.waveform', Waveform);
 
-export default Graph;
-
-//# sourceMappingURL=jsgraph-module.js.map
+export default Graph$1;

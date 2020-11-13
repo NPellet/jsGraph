@@ -25,6 +25,10 @@ class Serie {
     this.name = name;
     this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
+    this._activeStyle = 'unselected';
+    // Creates an empty style variable
+    this.styles = {};
+
     this._symbolLegendContainer = document.createElementNS(this.graph.ns, 'g');
   }
 
@@ -443,6 +447,9 @@ class Serie {
   }
 
   getWaveform() {
+    if (!this.waveform) {
+      this.waveform = Graph.newWaveform();
+    }
     return this.waveform;
   }
 
@@ -494,6 +501,85 @@ class Serie {
     return this._symbolLegendContainer;
   }
 
+
+  setStyle(json, styleName = 'unselected', baseStyleName = 'unselected') {
+    if (styleName == 'unselected') {
+      baseStyleName = null;
+    }
+
+    this.styles[styleName] = {
+      base: baseStyleName,
+      data: json
+    };
+
+    this.styleHasChanged(styleName);
+  };
+
+  getStyle(styleName) {
+    if (!this.styles[styleName]) {
+      return this.graph.constructor.getStyle(styleName);
+    }
+    return this._buildStyle(this.styles[styleName]);
+  }
+
+  getRawStyle(styleName) {
+    this.styles[styleName] = this.styles[styleName] || { data: {} };
+    return this.styles[styleName].data;
+  }
+
+  activateStyle(styleName) {
+    this._activeStyle = styleName;
+    this.computeActiveStyle();
+    this.styleHasChanged(styleName);
+  }
+
+  setActiveStyle(styleName) {
+    return this.activateStyle(styleName);
+  }
+
+  getActiveStyle() {
+    return this._activeStyle;
+  }
+
+  getActiveStyleName() {
+    return this.getActiveStyle();
+  }
+
+  computeStyles() {
+    for (let i in this.styles) {
+      this.computeStyle(i);
+    }
+  }
+
+  computeStyle(styleName) {
+    this.computedStyle = this.computedStyle || {};
+    this.computedStyle[styleName] = this.getStyle(styleName);
+  }
+
+  computeActiveStyle() {
+    this.computedStyle = this.computedStyle || {};
+    this.computedStyle[this.getActiveStyle()] = this.getStyle(this.getActiveStyle());
+  }
+
+  getComputedStyle(style = this.getActiveStyle()) {
+    return this.computedStyle[style];
+  }
+
+  getComputedStyles() {
+    return this.computedStyle;
+  }
+
+  _buildStyle(s) {
+    let base = s.base;
+    if (!base) {
+      return util.extend(true, {}, s.data);
+    } else {
+      return util.extend(true, {}, this.getStyle(base), s.data);
+    }
+  }
+
+
+
   /**
    * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
    * @see Serie#getSymbolForLegend
@@ -505,7 +591,7 @@ class Serie {
   }
 
   /**
-   * @alias Serie#setLegendSymbolStyle
+   * @alias Serie#setLegendSymbolStyle 
    * @memberof Serie
    */
   updateStyle() {
@@ -619,10 +705,7 @@ class Serie {
     return this.options.layer || 1;
   }
 
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
-  }
+
 
   /**
    * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
@@ -652,9 +735,23 @@ class Serie {
    * @private
    * @memberof Serie
    */
-  hasStyleChanged(selectionType) {
+  hasStyleChanged(selectionType = 'unselected') {
+
+    let s;
     this._changedStyles = this._changedStyles || {};
-    return this._changedStyles[selectionType || 'unselected'];
+    do {
+      if (this._changedStyles[selectionType]) {
+        return true;
+      }
+
+      s = this.styles[selectionType];
+
+      if (!s) {
+        break;
+      }
+      selectionType = s.base;
+    } while (true);
+    return false;
   }
 
   /**

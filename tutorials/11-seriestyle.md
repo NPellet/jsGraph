@@ -1,33 +1,69 @@
-Serie classes apply to line series and scatter. They allow the user to pre-program the style of the series and activate them in a single instruction. There are two default classes which are :
+************************
+Styling series
+************************
 
-- `unselected`. It is the default style that is programmed when the API is called without specification, and it is the style that will be displayed when not expressively chosen otherwise
-- `selected`. It is the style applied the serie when it (for the line serie) or one of its points (for the scatter serie) is selected.
+The default line serie appears pretty dull: a black line without much feature. This might be ok for a simple plot or a quick test, but try having multiple series, and you won't understand anything.
 
-### <a id="doc-line-series"></a> Line series
+Luckily, the style of each serie can be programmed using the API. Here we will cover the styling of line and scatter series.
+
+Style classes
+************************
+
+A serie can support several styles that you may pre-program. There is no limit to how many styles you may give to a serie. There are however two default style names that are reserved:
+
+* ``unselected``. The style by default. Until you call ``.switchStyle`` or ``.select``, the style ``unselected`` will be displayed.
+* ``selected``. The style that is select when a serie is selected. There are various ways to select a serie, including by clicking on it, but also through the ``serie.select()`` API call.
+
+.. note:: Any style-setting API you make without specifying the style name affects the ``unselected`` style
+
+Switching between styles
+===========================
+
+There is a simple API call that you need to remember:
+
+.. code-block:: javascript
+
+	serie.switchStyle( newStyleName );
+
+
+Using the style API
+*****************************
 
 The methods that can set styles are the following:
 
-- `setLineColor( String serieColor [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
-- `setLineWidth( Number strokeWidth [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
+* Line styling
+	* `setLineColor( String serieColor [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
+	* `setLineWidth( Number strokeWidth [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
+	* `setLineStyle( Number serieStyle [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
 
-- `setLineStyle( Number serieStyle [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
-- `setMarkers( Object markerFamilies [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
-- `showMarkers( [, String selectionName = "undefined" ] )`
-- `hideMarkers( [, String selectionName = "undefined" ] )`
-- `markersShown( [, String selectionName = "undefined" ] )`
-- `setMarkersPoints( String familyName, mixed Points [, String selectionName = "undefined" ] )`
+* Marker styling
+	* `setMarkers( Object markerFamilies [, String selectionName = "undefined" ] [, bool applyToSelected ] )`
+	* `showMarkers( [, String selectionName = "undefined" ] )`
+	* `hideMarkers( [, String selectionName = "undefined" ] )`
+	* `markersShown( [, String selectionName = "undefined" ] )`
+	* `setMarkersPoints( String familyName, mixed Points [, String selectionName = "undefined" ] )`
 
-Each of these methods take the parameter `selectionName` (which defaults with "undefined", the standard style) that you can specify. In addition to that, some parameters take the boolean `applyToSelected` which applies the command not only to the style you are working on, but also to the "selected" style. This is quite useful because it shrinks the number of API calls:
+The line styling refers only to line series, while the markers apply to both ``scatter`` and ``line`` series.
 
-```javascript
-serie.setLineColor('red');
-serie.setLineColor('red', 'selected');
 
-// Has similar effect as
-serie.setLineColor('red', false, true);
-```
+Each of these methods take the parameter ``selectionName``, which defaults with "undefined", the standard style.
 
-It should be noted that when styles are used in the constructor, they will apply to the "unselected" _and_ to the "selected" styles.
+In addition to that, some parameters take the boolean `applyToSelected` which applies the command not only to the style you are selected with ``selectionName``, but also to the ``selected`` style. This is quite useful because it shrinks the number of API calls:
+
+
+.. code-block:: javascript
+
+	serie.setLineColor('red');
+	serie.setLineColor('red', 'selected');
+
+	// Has similar effect as
+	serie.setLineColor('red', undefined, true);
+
+** warning:: When styles are used in the options passed to the constructor, they will apply to the ``unselected`` **and** to the ``selected`` styles.
+
+
+Line serie
+************************
 
 #### <a id="extend-style"></a> Extending style
 

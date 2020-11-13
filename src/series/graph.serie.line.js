@@ -43,24 +43,27 @@ class SerieLine extends SerieScatter {
       util.extend(true, {}, defaultOptions, defaultInherited)
     );
 
-    this.selectionType = 'unselected';
+    //  this.selectionType = 'unselected';
     this._type = type;
     util.mapEventEmission(this.options, this); // Register events
 
-    // Creates an empty style variable
-    this.styles = {};
-
     // Unselected style
-    this.styles.unselected = {
-      lineColor: this.options.lineColor,
-      lineStyle: this.options.lineStyle,
-      lineWidth: this.options.lineWidth
-    };
+    this.setStyle({
+      line: {
+        color: this.options.lineColor,
+        style: this.options.lineStyle,
+        width: this.options.lineWidth
+      }
+    }, "unselected", null);
 
-    this.styles.selected = {
-      lineWidth: 3
-    };
+    this.setStyle({
+      line: {
+        width: 3
+      }
+    }, "selected", "unselected");
 
+    this.activateStyle('unselected');
+    this.computeActiveStyle();
     this.shown = true;
 
     this.data = [];
@@ -136,7 +139,6 @@ class SerieLine extends SerieScatter {
   }
 
   postInit() {
-    this.extendStyles();
   }
 
   /**
@@ -154,7 +156,7 @@ class SerieLine extends SerieScatter {
       lineStyle: this.options.lineStyle
     };
 */
-    this.applyLineStyles();
+    //    this.applyLineStyles();
     return this;
   }
 
@@ -183,7 +185,10 @@ class SerieLine extends SerieScatter {
    */
   select(selectionType = 'selected') {
     this.selected = selectionType !== 'unselected';
-    this.selectionType = selectionType;
+    //  this.selectionType = selectionType;
+
+    this.setActiveStyle(selectionType);
+    this.computeActiveStyle();
 
     this.applyLineStyles();
     this.applyLineStyle(this.getSymbolForLegend());
@@ -374,7 +379,6 @@ class SerieLine extends SerieScatter {
       }
 
       this.removeExtraLines();
-
       this.insertLinesGroup();
     }
 
@@ -387,10 +391,9 @@ class SerieLine extends SerieScatter {
     for (var i in this.domMarkerSelect) {
       this.toggleMarker(i.split(','), false, false);
     }
-
-    this.applyLineStyle(this.getSymbolForLegend());
-
-    if (this.hasStyleChanged(this.selectionType)) {
+    //this.applyLineStyle(this.getSymbolForLegend());
+    if (this.hasStyleChanged(this.getActiveStyle())) {
+      this.computeActiveStyle();
       this.updateStyle();
     }
 
@@ -425,7 +428,7 @@ class SerieLine extends SerieScatter {
 
     /*xshift = waveform.getXShift(),
     xscale = wave.getXScale(),*/
-    yshift = waveform.getShift(),
+    let yshift = waveform.getShift(),
       yscale = waveform.getScale();
 
     let pointOutside = false;
@@ -632,7 +635,6 @@ class SerieLine extends SerieScatter {
         i = waveform.getIndexFromX(xMax, true);
         l = waveform.getIndexFromX(xMin, true);
       }
-      console.log(i, l);
 
       if (i == false) {
         i = 0;
@@ -804,6 +806,7 @@ class SerieLine extends SerieScatter {
    * @memberof SerieLine
    */
   applyLineStyle(line) {
+
     line.setAttribute('stroke', this.getLineColor());
     line.setAttribute('stroke-width', this.getLineWidth());
     if (this.getLineDashArray()) {
@@ -1042,33 +1045,36 @@ class SerieLine extends SerieScatter {
     return min;
   }
 
-  /* LINE STYLE * @memberof SerieLine
-   */
-
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = style;
-    this.styleHasChanged(selectionType);
+  getRawLineStyle(styleName) {
+    let s = this.getRawStyle(styleName);
+    if (!s.line) {
+      s.line = {};
+    }
+    return s.line;
   }
-
+  /* 
+    LINE STYLE * @memberof SerieLine
+   */
   setLineStyle(number, selectionType = 'unselected', applyToSelected) {
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineStyle = number;
+
+    let s = this.getRawLineStyle(selectionType);
+    s.style = number;
 
     if (applyToSelected) {
       this.setLineStyle(number, 'selected');
     }
 
     this.styleHasChanged(selectionType);
-
     return this;
   }
 
   getLineStyle(selectionType) {
-    return this.getStyle(selectionType).lineStyle;
+    return this.getComputedStyle(selectionType).line?.style;
   }
 
-  getLineDashArray(selectionType = this.selectionType || 'unselected') {
-    switch (this.getStyle(selectionType).lineStyle) {
+  getLineDashArray(styleName = this.getActiveStyleName()) {
+    let s = this.getLineStyle(styleName);
+    switch (s) {
       case 2:
         return '1, 1';
         break;
@@ -1105,101 +1111,73 @@ class SerieLine extends SerieScatter {
         return '2 9';
         break;
 
+      case 0:
       case 1:
       case false:
         return false;
         break;
 
       default:
-        return this.styles[selectionType].lineStyle;
+        return s;
         break;
     }
-
-    this.styleHasChanged(selectionType);
-  }
-
-  getStyle(selectionType = this.selectionType || 'unselected') {
-    return this.styles[selectionType] || this.styles.unselected;
-  }
-
-  extendStyles() {
-    for (var i in this.styles) {
-      var s = this.styles[i];
-      if (s) {
-        this.styles[i] = util.extend(true, {}, this.styles.unselected, s);
-      }
-    }
-  }
-
-  extendStyle(styleTarget, styleOrigin) {
-    var s = this.styles[styleTarget];
-    this.styles[styleTarget] = util.extend(
-      true, {},
-      this.styles[styleOrigin || 'unselected'],
-      s || {}
-    );
-    this.styleHasChanged(styleTarget);
   }
 
   /** @memberof SerieLine
    */
 
   setLineWidth(width, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineWidth = width;
 
+    let s = this.getRawLineStyle(selectionType);
+    s.width = width;
     if (applyToSelected) {
       this.setLineWidth(width, 'selected');
     }
 
     this.styleHasChanged(selectionType);
-
     return this;
   }
 
-  getLineWidth(selectionType) {
-    return this.getStyle(selectionType).lineWidth || 1;
+  getLineWidth() {
+    return this.getComputedStyle().line?.width;
   }
 
   /* LINE COLOR * @memberof SerieLine
    */
   setLineColor(color, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].lineColor = color;
 
+    let s = this.getRawLineStyle(selectionType);
+    s.color = color;
     if (applyToSelected) {
       this.setLineColor(color, 'selected');
     }
 
     this.styleHasChanged(selectionType);
-
     return this;
+  }
+
+  getLineColor() {
+    return this.getComputedStyle().line?.color;
   }
 
   /* FILL COLOR * @memberof SerieLine
    */
   setFillColor(color, selectionType, applyToSelected) {
-    selectionType = selectionType || 'unselected';
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType].fillColor = color;
 
+    let s = this.getRawLineStyle(selectionType);
+    s.fillColor = color;
     if (applyToSelected) {
       this.setFillColor(color, 'selected');
     }
 
     this.styleHasChanged(selectionType);
-
     return this;
   }
 
-  getLineColor(selectionType) {
-    return this.getStyle(selectionType).lineColor || 'black';
-  }
 
-  getFillColor(selectionType) {
-    return this.getStyle(selectionType).fillColor || undefined;
+
+  getFillColor() {
+    return this.getComputedStyle().line?.fillColor;
   }
 
   /** @memberof SerieLine

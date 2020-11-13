@@ -12,18 +12,18 @@
 			"./src/series/graph.serie.line.js",
 			"./src/graph.position.js",
 			"./src/util/waveform.js",
-			"./src/series/graph.serie.js",
 			"./src/graph.core.js",
 			"./src/graph.axis.js",
 			"./src/mixins/graph.mixin.event_graph.js",
-			"./src/mixins/graph.mixin.errorbars.js",
 			"./src/graph.axis.x.js",
-			"./src/series/graph.serie.scatter.js",
+			"./src/series/graph.serie.js",
 			"./src/shapes/graph.shape.line.js",
 			"./src/mixins/graph.mixin.event.js",
 			"./src/util/fit_lm.js",
 			"./src/graph.axis.y.js",
 			"./src/mixins/graph.mixin.serie3d.js",
+			"./src/mixins/graph.mixin.errorbars.js",
+			"./src/series/graph.serie.scatter.js",
 			"./src/series/graph.serie.zone.js",
 			"./src/shapes/graph.shape.rect.js",
 			"./src/graph.js",
@@ -46,6 +46,7 @@
 			"./src/shapes/graph.shape.areaundercurve.js",
 			"./src/shapes/graph.shape.arrow.js",
 			"./src/shapes/graph.shape.ellipse.js",
+			"./src/shapes/graph.shape.label.js",
 			"./src/shapes/graph.shape.polyline.js",
 			"./src/shapes/graph.shape.polygon.js",
 			"./src/shapes/graph.shape.nmrintegral.js",
@@ -62,8 +63,7 @@
 			"./src/plugins/graph.plugin.serielinedifference.js",
 			"./src/plugins/graph.plugin.axissplitting.js",
 			"./src/plugins/graph.plugin.makeTracesDifferent.js",
-			"./src/plugins/graph.plugin.peakpicking.js",
-			"./src/shapes/graph.shape.label.js"
+			"./src/plugins/graph.plugin.peakpicking.js"
 		]
 	}
 }

@@ -1408,6 +1408,8 @@ class Graph {
 
     return shapes;
   }
+
+
   makeToolbar(toolbarData) {
     var constructor = this.getConstructor('graph.toolbar');
     if (constructor) {
@@ -2638,10 +2640,31 @@ class Graph {
   static waveformHash() {
     return new WaveformHash(...arguments);
   }
+
+  static saveStyle(styleName, json) {
+    if (!Graph._styles) {
+      Graph._styles = {};
+    }
+
+    if (!json) {
+      return Graph._styles[styleName];
+    }
+
+    Graph._styles[styleName] = json;
+  }
+
+  static getStyle(styleName) {
+    if (!Graph._styles) {
+      Graph._styles = {};
+    }
+
+    return Graph._styles[styleName] || {};
+  }
+
 }
 
-  // Adds getConstructor to the prototype. Cannot do that in ES6 classes
-  Graph.prototype.getConstructor = Graph.getConstructor;
+// Adds getConstructor to the prototype. Cannot do that in ES6 classes
+Graph.prototype.getConstructor = Graph.getConstructor;
 
 function makeSerie(graph, name, options, type) {
   var constructor = graph.getConstructor(type, true);

@@ -16,6 +16,16 @@ Welcome to jsGraph's documentation!
 
 
 
+Series
+===================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Axes handling:
+   
+   series/styling
+   
+
 Axes
 ===================================
 
