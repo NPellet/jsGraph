@@ -9223,24 +9223,18 @@ class Axis {
 
 
   setMinMaxToFitSeries(noNotify) {
-    var interval = this.getInterval();
-
     if (this.options.logScale) {
       this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
       this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1)); //this.options.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
       //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
     } else {
-      this.setCurrentMin(this.getMinValue());
-      this.setCurrentMax(this.getMaxValue()); //this.options.currentAxisMin = this.getMinValue();
+      this.setCurrentMax(this.getMaxValue());
+      const minValue = this.getMinValue();
+      const maxValue = this.getMaxValue(); //this.options.currentAxisMin = this.getMinValue();
       //this.options.currentAxisMax = this.getMaxValue();
 
-      if (this.getForcedMin() === false) {
-        this.setCurrentMin(this.getCurrentMin() - this.options.axisDataSpacing.min * interval);
-      }
-
-      if (this.getForcedMax() === false) {
-        this.setCurrentMax(this.getCurrentMax() + this.options.axisDataSpacing.max * interval);
-      }
+      this.setCurrentMin(this.getDefaultMin());
+      this.setCurrentMax(this.getDefaultMax());
     }
 
     if (isNaN(this.options.currentAxisMin) || isNaN(this.options.currentAxisMax)) {
@@ -9260,6 +9254,29 @@ class Axis {
 
     this.emit('zoomOutFull', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
     return this;
+  }
+
+  getDefaultMin() {
+    var interval = this.getInterval();
+    const minValue = this.getMinValue(); //this.options.currentAxisMin = this.getMinValue();
+    //this.options.currentAxisMax = this.getMaxValue();
+
+    if (this.getForcedMin() === false) {
+      return minValue - this.options.axisDataSpacing.min * interval;
+    } else {
+      return minValue;
+    }
+  }
+
+  getDefaultMax() {
+    var interval = this.getInterval();
+    const maxValue = this.getMaxValue();
+
+    if (this.getForcedMax() === false) {
+      return maxValue + this.options.axisDataSpacing.max * interval;
+    } else {
+      return maxValue;
+    }
   }
   /**
    * @memberof Axis
@@ -18673,9 +18690,16 @@ class Shape {
 
 
   setProp(prop, val, index) {
+    console.log(this.properties);
     this.properties = this.properties || {};
-    this.properties[prop] = this.properties[prop] || [];
-    this.properties[prop][index || 0] = val;
+
+    if (index !== undefined) {
+      this.properties[prop] = this.properties[prop] || [];
+      this.properties[prop][index || 0] = val;
+    } else {
+      this.properties[prop] = val;
+    }
+
     this.emit('propertyChanged', prop);
     return this;
   }
@@ -18687,7 +18711,7 @@ class Shape {
 
 
   getProp(prop, index) {
-    if (!Array.isArray(this.properties[prop])) {
+    if (index == undefined) {
       return this.properties[prop];
     }
 
@@ -22998,8 +23022,8 @@ class PluginZoom extends Plugin {
         this.toAxes(function (axis) {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
-          axis._pluginZoomMinFinal = axis.getMinValue() - axis.options.axisDataSpacing.min * axis.getInterval();
-          axis._pluginZoomMaxFinal = axis.getMaxValue() + axis.options.axisDataSpacing.max * axis.getInterval();
+          axis._pluginZoomMinFinal = axis.getDefaultMin();
+          axis._pluginZoomMaxFinal = axis.getDefaultMax();
         }, false, true, false);
         modeX = true;
       }
@@ -23008,8 +23032,8 @@ class PluginZoom extends Plugin {
         this.toAxes(function (axis) {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
-          axis._pluginZoomMinFinal = axis.getMinValue() - axis.options.axisDataSpacing.min * axis.getInterval();
-          axis._pluginZoomMaxFinal = axis.getMaxValue() + axis.options.axisDataSpacing.max * axis.getInterval();
+          axis._pluginZoomMinFinal = axis.getDefaultMin();
+          axis._pluginZoomMaxFinal = axis.getDefaultMax();
         }, false, false, true);
         modeY = true;
       }
