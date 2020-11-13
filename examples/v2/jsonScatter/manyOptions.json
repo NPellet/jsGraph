@@ -1,0 +1,246 @@
+{
+  "axes": {
+    "x": {
+      "label": "Date",
+      "flipped": false,
+      "display": true,
+      "unitModification": "time"
+    },
+    "y": {
+      "label": "Composition",
+      "unit": "%",
+      "currentAxisMin": -5,
+      "currentAxisMax": 105
+    }
+  },
+  "series": [
+    {
+      "type": "scatter",
+      "name": "C",
+      "data": {
+        "x": [
+          1605008943236,
+          1605088943236
+        ],
+        "y": [
+          52,
+          10
+        ]
+      },
+      "style": {
+        "line": {
+          "color": "blue",
+          "width": 0.00001
+        },
+        "marker": {
+          "shape": "rect",
+          "x": -1,
+          "y": -1,
+          "width": 2,
+          "height": 2,
+          "fill": "#000",
+          "fill-opacity": 1,
+          "stroke": "#000",
+          "stroke-opacity": 1
+        }
+      }
+    },
+    {
+      "type": "scatter",
+      "name": "N",
+      "data": {
+        "x": [
+          1605008943236,
+          1605088943236
+        ],
+        "y": [
+          0,
+          30
+        ]
+      },
+      "style": {
+        "line": {
+          "color": "blue",
+          "width": 0.00001
+        },
+        "marker": {
+          "shape": "rect",
+          "x": -1,
+          "y": -1,
+          "width": 2,
+          "height": 2,
+          "fill": "#00F",
+          "fill-opacity": 1,
+          "stroke": "#00F",
+          "stroke-opacity": 1
+        }
+      }
+    },
+    {
+      "type": "scatter",
+      "name": "H",
+      "data": {
+        "x": [
+          1605008943236,
+          1605088943236
+        ],
+        "y": [
+          4.3,
+          20
+        ]
+      },
+      "style": {
+        "line": {
+          "color": "blue",
+          "width": 0.00001
+        },
+        "marker": {
+          "shape": "rect",
+          "x": -1,
+          "y": -1,
+          "width": 2,
+          "height": 2,
+          "fill": "#777",
+          "fill-opacity": 1,
+          "stroke": "#777",
+          "stroke-opacity": 1
+        }
+      }
+    },
+    {
+      "type": "scatter",
+      "name": "O",
+      "data": {
+        "x": [
+          1605008943236,
+          1605088943236
+        ],
+        "y": [
+          0,
+          0
+        ]
+      },
+      "style": {
+        "line": {
+          "color": "blue",
+          "width": 0.00001
+        },
+        "marker": {
+          "shape": "rect",
+          "x": -1,
+          "y": -1,
+          "width": 2,
+          "height": 2,
+          "fill": "#F00",
+          "fill-opacity": 1,
+          "stroke": "#F00",
+          "stroke-opacity": 1
+        }
+      }
+    },
+    {
+      "type": "scatter",
+      "name": "S",
+      "data": {
+        "x": [
+          1605008943236,
+          1605088943236
+        ],
+        "y": [
+          0,
+          0
+        ]
+      },
+      "style": {
+        "line": {
+          "color": "blue",
+          "width": 0.00001
+        },
+        "marker": {
+          "shape": "rect",
+          "x": -1,
+          "y": -1,
+          "width": 2,
+          "height": 2,
+          "fill": "#FA0",
+          "fill-opacity": 1,
+          "stroke": "#FA0",
+          "stroke-opacity": 1
+        }
+      }
+    }
+  ],
+  "options": {
+    "plugins": {
+      "zoom": {
+        "zoomMode": "xy"
+      }
+    },
+    "mouseActions": [
+      {
+        "plugin": "zoom",
+        "shift": false,
+        "ctrl": false
+      },
+      {
+        "plugin": "zoom",
+        "type": "mousewheel",
+        "options": {
+          "direction": "y"
+        }
+      },
+      {
+        "plugin": "zoom",
+        "type": "dblclick",
+        "options": {
+          "mode": "total"
+        }
+      }
+    ]
+  },
+  "annotations": [
+    {
+      "type": "rectangle",
+      "properties": {
+        "strokeColor": "#000",
+        "fillColor": "#000",
+        "fillOpacity": 0.2,
+        "strokeWidth": 0,
+        "position": [
+          {
+            "x": "0px",
+            "y": 90.10592986373838
+          },
+          {
+            "x": "1000px",
+            "y": 90.90592986373838
+          }
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "properties": {
+        "strokeColor": "#777",
+        "fillColor": "#777",
+        "fillOpacity": 0.2,
+        "strokeWidth": 0,
+        "position": [
+          {
+            "x": "0px",
+            "y": 9.094070136261632
+          },
+          {
+            "x": "1000px",
+            "y": 9.894070136261632
+          }
+        ]
+      }
+    }
+  ],
+  "legend": {
+    "position": "bottom",
+    "seriesHideable": true,
+    "seriesSelectable": true
+  }
+}
