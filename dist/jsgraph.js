@@ -21224,6 +21224,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           _indices = indices;
         }
 
+        console.log(computedStyles);
         var styleAll = [],
             shape,
             index,
@@ -21243,7 +21244,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           }
 
           if (computedStyles[i].markers.default) {
-            styleAll[i] = _objectSpread2(_objectSpread2({}, styleAll[i]), computedStyles[i].markers.default);
+            styleAll[i] = _objectSpread2(_objectSpread2({}, computedStyles[i].markers.default), styleAll[i]);
           }
         }
 

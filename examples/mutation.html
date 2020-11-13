@@ -15,34 +15,19 @@
         const graph = new Graph("hello");
         graph.resize(400, 300);
 
-        let x = [1, 2, 3, 4];
-        let y = [1, 2, 1, 2];
-
+        let x = new Array(200).fill(0).map((x, index) => index / 20);
+        let y = [...x].map(x => Math.sin(x));
         let w = Graph.newWaveform().setData(y, x);
         let s = graph.newSerie('s', {}, 'scatter').setWaveform(w).autoAxis();
 
-        const unselected = {
-            line: {
-                width: 3,
-            }
-        }
-        const red = {
-            line: {
-                color: 'red'
-            }
-        };
+        let neg = { shape: 'circle', r: 3, fill: 'red' }
+        let pos = { shape: 'rect', width: 4, height: 4, x: -2, y: -2, fill: 'green' };
 
-        //   s.setStyle(unselected);
-        s.setStyle(red, "red", "unselected");
-        s.activateStyle("red");
-        s.setMarkers(true);
+        s.setMarkerStyle(neg, "negative");
+        s.setMarkerStyle(pos, "positive");
 
-        graph.makeLegend();
-        graph.draw(); // You won't see this, but at this stage, the serie is not dashed
-
-        //   s.setLineStyle("4,4", "unselected");
-        graph.draw(); // Now it will be dashed
-
+        s.setIndividualStyleNames((s, i) => s.getWaveform().getY(i) > 0 ? 'positive' : 'negative');
+        graph.draw();
     </script>
 
 </body>

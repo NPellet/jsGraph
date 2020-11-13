@@ -14113,6 +14113,7 @@ class SerieScatter extends Serie {
       _indices = indices;
     }
 
+    console.log(computedStyles);
     let styleAll = [],
         shape,
         index,
@@ -14132,8 +14133,8 @@ class SerieScatter extends Serie {
       }
 
       if (computedStyles[i].markers.default) {
-        styleAll[i] = { ...styleAll[i],
-          ...computedStyles[i].markers.default
+        styleAll[i] = { ...computedStyles[i].markers.default,
+          ...styleAll[i]
         };
       }
     }

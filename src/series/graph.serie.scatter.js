@@ -351,7 +351,7 @@ class SerieScatter extends Serie {
       _indices = indices;
     }
 
-
+    console.log(computedStyles);
     let styleAll = [], shape, index, modifier, style, j; // loop variables
     for (let i in computedStyles) {
 
@@ -366,9 +366,10 @@ class SerieScatter extends Serie {
       }
 
       if (computedStyles[i].markers.default) {
-        styleAll[i] = { ...styleAll[i], ...computedStyles[i].markers.default };
+        styleAll[i] = { ...computedStyles[i].markers.default, ...styleAll[i] };
       }
     }
+
     for (let i = 0, l = _indices.length; i < l; i++) {
 
       let sName;
