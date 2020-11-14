@@ -522,6 +522,10 @@ class Serie {
     return this._buildStyle(this.styles[styleName]);
   }
 
+  getRawStyles() {
+    return this.styles;
+  }
+
   getRawStyle(styleName) {
     this.styles[styleName] = this.styles[styleName] || { data: {} };
     return this.styles[styleName].data;

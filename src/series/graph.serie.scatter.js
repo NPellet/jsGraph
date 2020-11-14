@@ -351,7 +351,6 @@ class SerieScatter extends Serie {
       _indices = indices;
     }
 
-    console.log(computedStyles);
     let styleAll = [], shape, index, modifier, style, j; // loop variables
     for (let i in computedStyles) {
 

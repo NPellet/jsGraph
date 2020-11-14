@@ -13392,6 +13392,10 @@ class Serie {
     return this._buildStyle(this.styles[styleName]);
   }
 
+  getRawStyles() {
+    return this.styles;
+  }
+
   getRawStyle(styleName) {
     this.styles[styleName] = this.styles[styleName] || {
       data: {}
@@ -14113,7 +14117,6 @@ class SerieScatter extends Serie {
       _indices = indices;
     }
 
-    console.log(computedStyles);
     let styleAll = [],
         shape,
         index,
@@ -14398,6 +14401,17 @@ class SerieLine extends SerieScatter {
         width: this.options.lineWidth
       }
     }, "unselected", null);
+
+    if (this.options.markerStyles) {
+      let s = this.getRawStyles();
+
+      for (let i in s) {
+        if (this.options.markerStyles[i]) {
+          s[i].data.markers = this.options.markerStyles[i];
+        }
+      }
+    }
+
     this.setStyle({
       line: {
         width: 3
@@ -14803,7 +14817,7 @@ class SerieLine extends SerieScatter {
         continue;
       }
 
-      let pointOutside = this.isPointOutside(x, y, xMin, xMax);
+      let pointOutside = this.isPointOutside(x, y, xMin, xMax, yMin, yMax);
 
       if (this.options.lineToZero) {
         pointOutside = x < xMin || x > xMax;

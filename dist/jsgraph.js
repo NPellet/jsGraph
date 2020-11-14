@@ -8038,7 +8038,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': "v2.4.1"
+        'data-jsgraph-version': "v2.4.2"
       });
     } catch (e) {// ignore
     }
@@ -18594,6 +18594,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return this._buildStyle(this.styles[styleName]);
       }
     }, {
+      key: "getRawStyles",
+      value: function getRawStyles() {
+        return this.styles;
+      }
+    }, {
       key: "getRawStyle",
       value: function getRawStyle(styleName) {
         this.styles[styleName] = this.styles[styleName] || {
@@ -19588,6 +19593,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         }
       }, "unselected", null);
 
+      if (_this.options.markerStyles) {
+        var s = _this.getRawStyles();
+
+        for (var i in s) {
+          if (_this.options.markerStyles[i]) {
+            s[i].data.markers = _this.options.markerStyles[i];
+          }
+        }
+      }
+
       _this.setStyle({
         line: {
           width: 3
@@ -20038,7 +20053,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
             continue;
           }
 
-          var _pointOutside = this.isPointOutside(x, y, xMin, xMax);
+          var _pointOutside = this.isPointOutside(x, y, xMin, xMax, yMin, yMax);
 
           if (this.options.lineToZero) {
             _pointOutside = x < xMin || x > xMax;
@@ -21224,7 +21239,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           _indices = indices;
         }
 
-        console.log(computedStyles);
         var styleAll = [],
             shape,
             index,

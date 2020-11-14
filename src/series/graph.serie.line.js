@@ -53,15 +53,26 @@ class SerieLine extends SerieScatter {
         color: this.options.lineColor,
         style: this.options.lineStyle,
         width: this.options.lineWidth
-      }
+      },
+
     }, "unselected", null);
+
+    if (this.options.markerStyles) {
+      let s = this.getRawStyles();
+      for (let i in s) {
+
+        if (this.options.markerStyles[i]) {
+          s[i].data.markers = this.options.markerStyles[i];
+        }
+      }
+
+    }
 
     this.setStyle({
       line: {
         width: 3
       }
     }, "selected", "unselected");
-
     this.activateStyle('unselected');
     this.computeActiveStyle();
     this.shown = true;
@@ -492,8 +503,7 @@ class SerieLine extends SerieScatter {
         continue;
       }
 
-      let pointOutside = this.isPointOutside(x, y, xMin, xMax);
-
+      let pointOutside = this.isPointOutside(x, y, xMin, xMax, yMin, yMax);
       if (this.options.lineToZero) {
         pointOutside = x < xMin || x > xMax;
 
