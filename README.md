@@ -12,7 +12,7 @@ jsGraph works in most modern browsers (Chrome, Firefox, Safari, IE >= v10). It u
 
 The documentation is available in /docs/build or directly hosted on ReadTheDocs.
 
-<span style="font-size: 4em; align: center;">[>> Documentation <<](https://jsgraph.readthedocs.io/en/latest/index.html)</span>
+<font size="+3">[>> Documentation <<](https://jsgraph.readthedocs.io/en/latest/index.html)</font>
 
 
 ## Demonstration
