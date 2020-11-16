@@ -15,23 +15,17 @@ Welcome to jsGraph's documentation!
    getting_started
 
 
-
-Series
-===================================
-
 .. toctree::
    :maxdepth: 2
-   :caption: Axes handling:
-   
+   :caption: Series
+
    series/styling
    
 
-Axes
-===================================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Axes handling:
+   :caption: Axes
    
    axes/spanning
    axes/scientific

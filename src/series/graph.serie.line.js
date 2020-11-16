@@ -1055,7 +1055,7 @@ class SerieLine extends SerieScatter {
     return min;
   }
 
-  getRawLineStyle(styleName) {
+  getRawLineStyle(styleName = "unselected") {
     let s = this.getRawStyle(styleName);
     if (!s.line) {
       s.line = {};
