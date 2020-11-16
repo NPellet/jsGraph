@@ -515,20 +515,26 @@ class SerieScatter extends Serie {
       }
     }
   }
+  /*
+    select(selectionType) {
+  
+      this.setActiveStyle('selected');
+  
+      this.applyMarkerStyle(this.keys);
+      super.select(selectionType);
+    }
+  
+    unselect() {
+      this.setActiveStyle('unselected');
+      this.applyMarkerStyle(this.keys);
+  
+      super.unselect();
+    }
+  */
 
-  select(selectionType) {
-
-    this.setActiveStyle('selected');
-
+  applyStyle() {
     this.applyMarkerStyle(this.keys);
-    super.select(selectionType);
-  }
-
-  unselect() {
-    this.setActiveStyle('unselected');
-    this.applyMarkerStyle(this.keys);
-
-    super.unselect();
+    super.applyStyle();
   }
 
   setMarkers(bln = true) {

@@ -149,6 +149,13 @@ class SerieLine extends SerieScatter {
     });
   }
 
+
+  applyStyle() {
+    this.applyLineStyles();
+    this.applyLineStyle(this.getSymbolForLegend());
+    super.applyStyle();
+  }
+
   postInit() {
   }
 
@@ -186,28 +193,28 @@ class SerieLine extends SerieScatter {
 
     return this;
   }
-
-  /**
-   * Applies a selection to the serie
-   * @param {String} [ selectionType = "selected" ] - The selection name
-   * @returns {SerieLine} The current serie
-   * @see SerieLine#unselect
-   * @memberof SerieLine
-   */
-  select(selectionType = 'selected') {
-    this.selected = selectionType !== 'unselected';
-    //  this.selectionType = selectionType;
-
-    this.setActiveStyle(selectionType);
-    this.computeActiveStyle();
-
-    this.applyLineStyles();
-    this.applyLineStyle(this.getSymbolForLegend());
-
-    super.select(selectionType);
-
-    return this;
-  }
+  /*
+    /**
+     * Applies a selection to the serie
+     * @param {String} [ selectionType = "selected" ] - The selection name
+     * @returns {SerieLine} The current serie
+     * @see SerieLine#unselect
+     * @memberof SerieLine
+    
+    select(selectionType = 'selected') {
+      this.selected = selectionType !== 'unselected';
+      //  this.selectionType = selectionType;
+  
+      this.setActiveStyle(selectionType);
+      this.computeActiveStyle();
+  
+      this.applyLineStyles();
+      this.applyLineStyle(this.getSymbolForLegend());
+  
+      super.select(selectionType);
+  
+      return this;
+    }*/
 
   /**
    * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").

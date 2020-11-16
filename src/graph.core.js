@@ -1348,10 +1348,10 @@ class Graph {
    * @param {String} selectName="selected" - The name of the selection
    */
   selectSerie(serie, selectName) {
+
     if (!(typeof serie == 'object')) {
       serie = this.getSerie(serie);
     }
-
     if (
       this.selectedSerie == serie &&
       this.selectedSerie.selectionType == selectName
@@ -1361,11 +1361,12 @@ class Graph {
 
     if (this.selectedSerie !== serie && this.selectedSerie) {
       this.unselectSerie(this.selectedSerie);
+      return;
+
     }
 
     this.selectedSerie = serie;
     this.triggerEvent('onSelectSerie', serie);
-
     serie.select(selectName || 'selected');
   }
 
@@ -1382,10 +1383,6 @@ class Graph {
    * @param {Serie} serie - The serie to unselect
    */
   unselectSerie(serie) {
-    if (!serie.unselect) {
-      return;
-    }
-
     serie.unselect();
     this.selectedSerie = false;
     this.triggerEvent('onUnselectSerie', serie);
@@ -2663,8 +2660,8 @@ class Graph {
 
 }
 
-// Adds getConstructor to the prototype. Cannot do that in ES6 classes
-Graph.prototype.getConstructor = Graph.getConstructor;
+    // Adds getConstructor to the prototype. Cannot do that in ES6 classes
+    Graph.prototype.getConstructor = Graph.getConstructor;
 
 function makeSerie(graph, name, options, type) {
   var constructor = graph.getConstructor(type, true);

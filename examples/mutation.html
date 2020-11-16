@@ -28,13 +28,15 @@
 
         // You need to set the size if the container doesn't have one already
         g.resize(400, 300);
-
+        g.makeLegend({ isSerieSelectable: true });
         // Let us create a new serie, called "jV", with red thick line and markers
         var jV = g
             .newSerie("jV", {
                 lineColor: 'red',
                 lineWidth: 2,
+                selectableOnClick: true,
                 markers: true,
+                selectable: true,
                 // Setting the style of the markers
                 markerStyles: {
                     // For the default "unselected" style

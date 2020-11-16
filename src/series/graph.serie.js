@@ -286,7 +286,7 @@ class Serie {
    * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
    */
   isSelected() {
-    return this.selected || this.selectionType !== 'unselected';
+    return this._activeStyle == 'selected';
   }
 
   _checkX(val) {
@@ -533,6 +533,7 @@ class Serie {
 
   activateStyle(styleName) {
     this._activeStyle = styleName;
+    this._unselectedStyleName = styleName;
     this.computeActiveStyle();
     this.styleHasChanged(styleName);
   }
@@ -836,7 +837,11 @@ class Serie {
     if (selectName == 'unselected') {
       return this;
     }
+    this._unselectedStyleName = this._activeStyle;
+    this._activeStyle = 'selected';
     this.selected = true;
+
+    this.applyStyle();
     return this;
   }
 
@@ -847,9 +852,13 @@ class Serie {
    */
   unselect() {
     this.selected = false;
+    this.activateStyle(this._unselectedStyleName);
+
+    this.applyStyle();
     return this;
   }
 
+  applyStyle() { }
   /**
    * Allows mouse tracking of the serie
    * @memberof Serie
