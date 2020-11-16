@@ -6,8 +6,8 @@ import GraphShape from './graph.shape.js';
  * @see Graph#newShape
  */
 class ShapeLine extends GraphShape {
-  constructor( graph, options ) {
-    super( graph, options );
+  constructor(graph, options) {
+    super(graph, options);
   }
 
   /**
@@ -16,14 +16,14 @@ class ShapeLine extends GraphShape {
    * @return {Shape} The current shape
    */
   createDom() {
-    this._dom = document.createElementNS( this.graph.ns, 'line' );
+    this._dom = document.createElementNS(this.graph.ns, 'line');
 
-    if ( !this.getStrokeColor() ) {
-      this.setStrokeColor( 'black' );
+    if (!this.getStrokeColor()) {
+      this.setStrokeColor('black');
     }
 
-    if ( this.getStrokeWidth() === undefined ) {
-      this.setStrokeWidth( 1 );
+    if (this.getStrokeWidth() === undefined) {
+      this.setStrokeWidth(1);
     }
   }
 
@@ -33,14 +33,14 @@ class ShapeLine extends GraphShape {
    * @return {Shape} The current shape
    */
   createHandles() {
-    this._createHandles( 2, 'rect', {
+    this._createHandles(2, 'rect', {
       transform: 'translate(-3 -3)',
       width: 6,
       height: 6,
       stroke: 'black',
       fill: 'white',
       cursor: 'nwse-resize'
-    } );
+    });
   }
 
   /**
@@ -49,18 +49,18 @@ class ShapeLine extends GraphShape {
    * @return {Boolean} Whether the shape should be redrawn
    */
   applyPosition() {
-    var position = this.calculatePosition( 0 );
-    var position2 = this.calculatePosition( 1 );
+    var position = this.calculatePosition(0);
+    var position2 = this.calculatePosition(1);
 
-    if ( !position || !position.x || !position.y ) {
+    if (!position || !position.x || !position.y) {
       return;
     }
 
-    this.setDom( 'x2', position.x );
-    this.setDom( 'y2', position.y );
+    this.setDom('x2', position.x);
+    this.setDom('y2', position.y);
 
-    this.setDom( 'y1', position2.y );
-    this.setDom( 'x1', position2.x );
+    this.setDom('y1', position2.y);
+    this.setDom('x1', position2.x);
 
     this.currentPos2x = position2.x;
     this.currentPos2y = position2.y;
@@ -75,65 +75,65 @@ class ShapeLine extends GraphShape {
    * Handles mouse move events
    * @private
    */
-  handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
-    if ( this.isLocked() ) {
+  handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+    if (this.isLocked()) {
       return;
     }
 
-    var pos = this.getPosition( 0 );
-    var pos2 = this.getPosition( 1 );
+    var pos = this.getPosition(0);
+    var pos2 = this.getPosition(1);
 
     var posToChange;
-    if ( this.handleSelected == 1 ) {
+    if (this.handleSelected == 1) {
       posToChange = pos;
-    } else if ( this.handleSelected == 2 ) {
+    } else if (this.handleSelected == 2) {
       posToChange = pos2;
     }
 
-    if ( posToChange ) {
-      if ( !this._data.vertical ) {
-        posToChange.deltaPosition( 'x', deltaX, this.getXAxis() );
+    if (posToChange) {
+      if (!this._data.vertical) {
+        posToChange.deltaPosition('x', deltaX, this.getXAxis());
       }
 
-      if ( !this._data.horizontal ) {
-        posToChange.deltaPosition( 'y', deltaY, this.getYAxis() );
+      if (!this._data.horizontal) {
+        posToChange.deltaPosition('y', deltaY, this.getYAxis());
       }
     }
 
-    if ( this.moving ) {
-      console.log( this._data );
+    if (this.moving) {
+      console.log(this._data);
       // If the pos2 is defined by a delta, no need to move them
-      if ( pos.x && !this._data.noX ) {
-        pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+      if (pos.x && !this._data.noX) {
+        pos.deltaPosition('x', deltaX, this.getXAxis());
       }
-      if ( pos.y && !this._data.noY ) {
-        pos.deltaPosition( 'y', deltaY, this.getYAxis() );
+      if (pos.y && !this._data.noY) {
+        pos.deltaPosition('y', deltaY, this.getYAxis());
       }
 
       // If the pos2 is defined by a delta, no need to move them
-      if ( pos2.x && !this._data.noX ) {
-        pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
+      if (pos2.x && !this._data.noX) {
+        pos2.deltaPosition('x', deltaX, this.getXAxis());
       }
-      if ( pos2.y && !this._data.noY ) {
-        pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
+      if (pos2.y && !this._data.noY) {
+        pos2.deltaPosition('y', deltaY, this.getYAxis());
       }
     }
 
-    if ( this._data.forcedCoords ) {
+    if (this._data.forcedCoords) {
       var forced = this._data.forcedCoords;
 
-      if ( forced.y !== undefined ) {
-        if ( typeof forced.y == 'function' ) {
-          pos2.y = pos.y = forced.y( this );
+      if (forced.y !== undefined) {
+        if (typeof forced.y == 'function') {
+          pos2.y = pos.y = forced.y(this);
         } else {
           pos2.y = forced.y;
           pos.y = forced.y;
         }
       }
 
-      if ( forced.x !== undefined ) {
-        if ( typeof forced.x == 'function' ) {
-          pos2.x = pos.x = forced.x( this );
+      if (forced.x !== undefined) {
+        if (typeof forced.x == 'function') {
+          pos2.x = pos.x = forced.x(this);
         } else {
           pos2.x = forced.x;
           pos.x = forced.x;
@@ -141,7 +141,7 @@ class ShapeLine extends GraphShape {
       }
     }
 
-    if ( this.rectEvent ) {
+    if (this.rectEvent) {
       this.setEventReceptacle();
     }
 
@@ -157,19 +157,19 @@ class ShapeLine extends GraphShape {
    * @private
    */
   setHandles() {
-    if ( !this.areHandlesInDom() ) {
+    if (!this.areHandlesInDom()) {
       return;
     }
 
-    if ( isNaN( this.currentPos1x ) ) {
+    if (isNaN(this.currentPos1x)) {
       return;
     }
 
-    this.handles[ 1 ].setAttribute( 'x', this.currentPos1x );
-    this.handles[ 1 ].setAttribute( 'y', this.currentPos1y );
+    this.handles[1].setAttribute('x', this.currentPos1x);
+    this.handles[1].setAttribute('y', this.currentPos1y);
 
-    this.handles[ 2 ].setAttribute( 'x', this.currentPos2x );
-    this.handles[ 2 ].setAttribute( 'y', this.currentPos2y );
+    this.handles[2].setAttribute('x', this.currentPos2x);
+    this.handles[2].setAttribute('y', this.currentPos2y);
   }
 
   /**
@@ -177,25 +177,25 @@ class ShapeLine extends GraphShape {
    * @return {Shape} The current shape
    */
   setEventReceptacle() {
-    if ( !this.currentPos1x ) {
+    if (!this.currentPos1x) {
       return;
     }
 
-    if ( !this.rectEvent ) {
-      this.rectEvent = document.createElementNS( this.graph.ns, 'line' );
-      this.rectEvent.setAttribute( 'pointer-events', 'stroke' );
-      this.rectEvent.setAttribute( 'stroke', 'transparent' );
+    if (!this.rectEvent) {
+      this.rectEvent = document.createElementNS(this.graph.ns, 'line');
+      this.rectEvent.setAttribute('pointer-events', 'stroke');
+      this.rectEvent.setAttribute('stroke', 'none');
       this.rectEvent.jsGraphIsShape = this;
-      this.group.appendChild( this.rectEvent );
+      this.group.appendChild(this.rectEvent);
     }
 
-    this.rectEvent.setAttribute( 'x1', this.currentPos1x );
-    this.rectEvent.setAttribute( 'y1', this.currentPos1y );
-    this.rectEvent.setAttribute( 'x2', this.currentPos2x );
-    this.rectEvent.setAttribute( 'y2', this.currentPos2y );
+    this.rectEvent.setAttribute('x1', this.currentPos1x);
+    this.rectEvent.setAttribute('y1', this.currentPos1y);
+    this.rectEvent.setAttribute('x2', this.currentPos2x);
+    this.rectEvent.setAttribute('y2', this.currentPos2y);
     this.rectEvent.setAttribute(
       'stroke-width',
-      this.getProp( 'strokeWidth' ) + 2
+      this.getProp('strokeWidth') + 2
     );
   }
 }

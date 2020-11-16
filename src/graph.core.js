@@ -1584,7 +1584,7 @@ class Graph {
         shape.setLabelBaseline(shapeData.label[i].baseline || 'no-change', i);
         shape.setLabelAnchor(shapeData.label[i].anchor || 'start', i);
         shape.setLabelBackgroundColor(
-          shapeData.label[i].backgroundColor || 'transparent',
+          shapeData.label[i].backgroundColor || 'none',
           i
         );
         shape.setLabelBackgroundOpacity(
@@ -3119,7 +3119,7 @@ function __createDOM() {
   this.rectEvent = document.createElementNS(Graph.ns, 'rect');
   util.setAttributeTo(this.rectEvent, {
     'pointer-events': 'fill',
-    fill: 'transparent'
+    fill: 'none'
   });
   this.groupEvent.appendChild(this.rectEvent);
 

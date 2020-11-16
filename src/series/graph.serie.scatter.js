@@ -17,7 +17,7 @@ const defaultOptions = {
         cx: 0,
         cy: 0,
         r: 3,
-        stroke: 'transparent',
+        stroke: 'none',
         fill: 'black'
       }
     },

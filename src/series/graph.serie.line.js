@@ -616,7 +616,7 @@ class SerieLine extends SerieScatter {
       this.groupMain.appendChild(cloned);
 
       for (i = 0, l = cloned.children.length; i < l; i++) {
-        cloned.children[i].setAttribute('stroke', 'transparent');
+        cloned.children[i].setAttribute('stroke', 'none');
         cloned.children[i].setAttribute('stroke-width', '25px');
         cloned.children[i].setAttribute('pointer-events', 'stroke');
       }

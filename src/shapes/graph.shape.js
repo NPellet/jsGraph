@@ -261,7 +261,7 @@ class Shape {
     if (!this.rectEvent) {
       this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
       this.rectEvent.setAttribute('pointer-events', 'fill');
-      this.rectEvent.setAttribute('fill', 'transparent');
+      this.rectEvent.setAttribute('fill', 'none');
       this.group.appendChild(this.rectEvent);
       this.rectEvent.jsGraphIsShape = this;
     }
@@ -1371,7 +1371,7 @@ class Shape {
 
     this._labelsBackground[labelIndex].setAttribute(
       'fill',
-      this.getProp('labelBackgroundColor') || 'transparent'
+      this.getProp('labelBackgroundColor') || 'none'
     );
     this._labelsBackground[labelIndex].setAttribute(
       'fill-opacity',
@@ -2204,20 +2204,20 @@ class Shape {
   }
 }
 
-/**
- * @alias Shape#calculatePosition
- */
-Shape.prototype.computePosition = Shape.prototype.calculatePosition;
+  /**
+   * @alias Shape#calculatePosition
+   */
+  Shape.prototype.computePosition = Shape.prototype.calculatePosition;
 
-/**
- * @alias Shape#displayLabel
- */
-Shape.prototype.showLabel = Shape.prototype.displayLabel;
+  /**
+   * @alias Shape#displayLabel
+   */
+  Shape.prototype.showLabel = Shape.prototype.displayLabel;
 
-/**
- * @alias Shape#kill
- */
-Shape.prototype.remove = Shape.prototype.kill;
+  /**
+   * @alias Shape#kill
+   */
+  Shape.prototype.remove = Shape.prototype.kill;
 
 EventMixin(Shape, 'shape');
 

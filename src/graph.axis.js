@@ -119,7 +119,7 @@ class Axis {
 
     this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
     this.rectEvent.setAttribute('pointer-events', 'fill');
-    this.rectEvent.setAttribute('fill', 'transparent');
+    this.rectEvent.setAttribute('fill', 'none');
     this.group.appendChild(this.rectEvent);
 
     this.graph.axisGroup.appendChild(this.group); // Adds to the main axiszone
