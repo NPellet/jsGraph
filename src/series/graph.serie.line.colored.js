@@ -215,9 +215,11 @@ class SerieLineColor extends SerieLine {
         self._trackingOutCallback(self);
       });
     }
+
     return this;
 
   }
+
 
   _addPoint(xpx, ypx, x, y, xpxbefore, ypxbefore, xbefore, ybefore, j, color, move, allowMarker) {
 
@@ -281,6 +283,38 @@ class SerieLineColor extends SerieLine {
     }
   }
 
+  getSymbolForLegend() {
+    let l = super.getSymbolForLegend();
+    let g = this._getSymbolForLegendContainer();
+
+    if (!this.defined) {
+
+      let gradient = document.createElementNS(this.graph.ns, 'linearGradient');
+      gradient.setAttribute('id', "gradient_serie_" + this.getName());
+      gradient.setAttribute('x1', '0px');
+      gradient.setAttribute('x2', '30px');
+      gradient.setAttribute('y1', '-px');
+      gradient.setAttribute('y2', '1px');
+      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+
+      let stop1 = document.createElementNS(this.graph.ns, 'stop');
+      stop1.setAttribute('offset', '0');
+      stop1.setAttribute('stop-color', '#FF0000');
+
+      let stop2 = document.createElementNS(this.graph.ns, 'stop');
+      stop2.setAttribute('offset', '1');
+      stop2.setAttribute('stop-color', '#000000');
+      gradient.appendChild(stop1);
+      gradient.appendChild(stop2);
+
+      //this.defs.appendChild(gradient);
+      this.graph.defs.appendChild(gradient);
+      this.defined = true;
+      l.setAttribute('stroke', `url(#gradient_serie_${this.getName()})`);
+    }
+
+    return l;
+  }
   /**
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieLine

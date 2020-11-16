@@ -468,7 +468,6 @@ class Legend {
 
       text.setAttribute('transform', `translate(${dx}, 3)`);
       text.setAttribute('fill', this.options.color);
-
       if (line) {
         g.appendChild(line);
       }
