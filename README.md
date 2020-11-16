@@ -7,26 +7,13 @@ jsGraph is a javascript library that can be used to renders scientific data in y
 
 jsGraph works in most modern browsers (Chrome, Firefox, Safari, IE >= v10). It uses the SVG technology to render the graphs, so that the file can then be exported and readily used for scientific publications.
 
-## Installing
 
-```npm install node-jsgraph``` 
+## Documentation
 
-## Usage
+The documentation is available in /docs/build or directly hosted on ReadTheDocs.
 
-You can use AMD, CommonJS or Browser Global definition thanks to the UMD loader. Just use
+<font size="+3">[>> Documentation <<](https://jsgraph.readthedocs.io/en/latest/index.html)</font>
 
-```javascript 
-define(["path/to/jsgraph.min.js"], function(Graph) {
-
-});
-```
-or 
-
-```javascript 
-const Graph = require('jsGraph');
-```
-
-or, if you include the distribution directly, use the ```Graph``` variable exported at the ```window``` level.
 
 ## Demonstration
 ![](./example_output.svg)
@@ -135,9 +122,29 @@ g.autoScaleAxes();
 g.draw();
 ```
 
-## Documentation
 
-The documentation is available in /docs/build or directly hosted [here](https://jsgraph.readthedocs.io/en/latest/index.html)
+
+## Installing
+
+```npm install node-jsgraph``` 
+
+## Usage
+
+You can use AMD, CommonJS or Browser Global definition thanks to the UMD loader. Just use
+
+```javascript 
+define(["path/to/jsgraph.min.js"], function(Graph) {
+
+});
+```
+or 
+
+```javascript 
+const Graph = require('jsGraph');
+```
+
+or, if you include the distribution directly, use the ```Graph``` variable exported at the ```window``` level.
+
 
 ## How to contribute
 - Contributions to jsGraph are greatly encouraged. You are welcome to develop your own features and we'll do our best to integrate them through your pull requests.
