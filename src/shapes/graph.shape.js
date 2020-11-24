@@ -22,10 +22,11 @@ class Shape {
     this.properties = properties || {};
     this.handles = [];
     this.options = this.options || {};
-
     if (!simplified) {
       this.group = document.createElementNS(this.graph.ns, 'g');
-      this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
+      if (!this.getProp('noClip')) {
+        this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
+      }
       this.group.jsGraphIsShape = this;
     }
 
@@ -400,7 +401,6 @@ class Shape {
     }
 
     this.makeLabels();
-
     if (!preventRedraw) {
       this.redraw();
     }
@@ -1221,7 +1221,7 @@ class Shape {
     }
 
     this.updateLabels();
-
+    console.log(this._labels);
     return this;
   }
 
@@ -1337,10 +1337,12 @@ class Shape {
     );
 
     /** Sets the size */
-    this._labels[labelIndex].setAttribute(
-      'font-size',
-      `${this.getProp('labelSize', labelIndex)}px` || '12px'
-    );
+    if (this.getProp('labelSize', labelIndex)) {
+      this._labels[labelIndex].setAttribute(
+        'font-size',
+        `${this.getProp('labelSize', labelIndex) || 12}px`
+      );
+    }
 
     /** Sets the anchor */
     this._labels[labelIndex].setAttribute(

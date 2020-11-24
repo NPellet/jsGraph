@@ -55,6 +55,7 @@ const defaults = {
   hideWhenNoSeriesShown: false,
   shiftToZero: false,
   tickPosition: 1,
+  tickLabels: true,
   nbTicksPrimary: 3,
   nbTicksSecondary: 10,
   ticklabelratio: 1,
