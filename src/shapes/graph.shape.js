@@ -490,7 +490,6 @@ class Shape {
    * @return {Shape} The current shape
    */
   setProp(prop, val, index) {
-    console.log(this.properties);
     this.properties = this.properties || {};
 
     if (index !== undefined) {

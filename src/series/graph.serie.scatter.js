@@ -390,6 +390,17 @@ class SerieScatter extends Serie {
         continue;
       }
 
+      let visibleIndices = this.getRawStyle(sName).markers?.visibleIndices;
+      if (visibleIndices) {
+        if (!visibleIndices.call(this, i)) {
+          if (shape) {
+            shape.setAttribute('display', 'none');
+            continue;
+          }
+        }
+      }
+
+
       let modifier = this.getRawStyle(sName).markers?.modifiers;
       let modifierIsFunc = typeof modifier == 'function';
       index = _indices[i];
@@ -397,7 +408,8 @@ class SerieScatter extends Serie {
       if (modifier && (modifierIsFunc || modifier[index])) {
         let modifiedStyle;
         if (modifierIsFunc) {
-          modifiedStyle = modifier(
+          modifiedStyle = modifier.call(
+            this,
             this.waveform.getX(index),
             this.waveform.getY(index),
             index,
@@ -406,21 +418,24 @@ class SerieScatter extends Serie {
           );
 
           if (modifiedStyle === false) {
-            continue;
+            modifiedStyle = {};
           }
         } else if (modifier[index]) {
           modifiedStyle = modifier[index];
         }
+
 
         styles[index] = { ...styleAll[sName], ...modifiedStyle };
 
       } else {
         styles[index] = styleAll[sName];
       }
+
       if (!shape) {
         // Shape doesn't exist, let's create it
 
         if (!styles[index].shape) {
+          continue;
           throw `No shape was defined with the style "${style}".`;
         }
 
