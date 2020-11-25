@@ -513,6 +513,9 @@ class Serie {
     };
 
     this.styleHasChanged(styleName);
+
+    console.log(this.styles);
+    return this;
   };
 
   getStyle(styleName) {
