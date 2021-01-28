@@ -298,6 +298,17 @@ class SerieScatter extends Serie {
         xpx = this.getX(this.waveform.getX(j));
         ypx = this.getY(this.waveform.getY(j));
 
+        if (isNaN(xpx) || isNaN(ypx)) {
+          if (this.shapes[j]) {
+            this.shapes[j].setAttribute('display', 'none');
+            this.shapes[j]._hidden = true;
+          }
+          continue;
+        } else if (this.shapes[j] && this.shapes[j]._hidden) {
+          this.shapes[j].setAttribute('display', 'initial');
+          this.shapes[j]._hidden = false;
+        }
+
         if (this.hasErrors()) {
           this.errorAddPoint(
             j,
@@ -312,7 +323,6 @@ class SerieScatter extends Serie {
         this.shapesDetails[j][0] = xpx;
         this.shapesDetails[j][1] = ypx;
         keys.push(j);
-
         //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] || undefined;
       }
     }
@@ -368,7 +378,7 @@ class SerieScatter extends Serie {
         styleAll[i] = { ...computedStyles[i].markers.default, ...styleAll[i] };
       }
     }
-
+    // console.log(_indices);
     for (let i = 0, l = _indices.length; i < l; i++) {
 
       let sName;
@@ -390,16 +400,6 @@ class SerieScatter extends Serie {
         continue;
       }
 
-      let visibleIndices = this.getRawStyle(sName).markers?.visibleIndices;
-      if (visibleIndices) {
-        if (!visibleIndices.call(this, i)) {
-          if (shape) {
-            shape.setAttribute('display', 'none');
-            continue;
-          }
-        }
-      }
-
 
       let modifier = this.getRawStyle(sName).markers?.modifiers;
       let modifierIsFunc = typeof modifier == 'function';
@@ -419,6 +419,15 @@ class SerieScatter extends Serie {
 
           if (modifiedStyle === false) {
             modifiedStyle = {};
+
+            if (shape) {
+              shape.setAttribute('display', 'none');
+              //    console.log('n');
+              continue;
+            } else {
+            }
+          } else {
+            //     console.log(index, indices);
           }
         } else if (modifier[index]) {
           modifiedStyle = modifier[index];
@@ -441,7 +450,7 @@ class SerieScatter extends Serie {
 
         var g = document.createElementNS(this.graph.ns, 'g');
         g.setAttribute('data-shapeid', index);
-
+        console.log("make");
         this.shapes[index] = this._makeMarker(g, styles[index]);
         this.groupMarkers.appendChild(g);
         shape = this.shapes[index];
@@ -472,13 +481,18 @@ class SerieScatter extends Serie {
 
       if (this.styleAttributes[i]) {
         for (j in this.styleAttributes[i]) {
-          this.shapes[i].removeAttribute(j);
+
+          if (!styles[i] || styles[i][j] != this.styleAttributes[i][j]) {
+            this.shapes[i].removeAttribute(j);
+            delete (this.styleAttributes[i]);
+          }
         }
       }
 
       for (j in styles[i]) {
         if (j !== 'shape' && this.shapes[i]) {
-          if (styles[i][j]) {
+          if (styles[i][j] && (!this.styleAttributes[i] || styles[i][j] != this.styleAttributes[i][j])) {
+            // console.log(i, styles[i][j]);
             this.shapes[i].setAttribute(j, styles[i][j]);
           }
         }
@@ -532,17 +546,17 @@ class SerieScatter extends Serie {
   }
   /*
     select(selectionType) {
-  
+   
       this.setActiveStyle('selected');
-  
+   
       this.applyMarkerStyle(this.keys);
       super.select(selectionType);
     }
-  
+   
     unselect() {
       this.setActiveStyle('unselected');
       this.applyMarkerStyle(this.keys);
-  
+   
       super.unselect();
     }
   */
