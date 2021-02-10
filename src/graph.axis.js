@@ -1189,8 +1189,7 @@ class Axis {
       this.writeUnit();
 
     } else {
-
-      let string = this.getLabel();
+      let string = this.getLabel() ;
       /*,
               domEl;*/
 
@@ -1403,6 +1402,13 @@ class Axis {
 
   setTickLabelRatio(tickRatio) {
     this.options.ticklabelratio = tickRatio;
+    return this;
+  }
+
+  
+  setTickLabelRotation(angle) {
+    this.options.tickLabelRotation = angle;
+    return this;
   }
 
   doesHideWhenNoSeriesShown() {
@@ -1815,15 +1821,23 @@ class Axis {
     return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
   }
 
-  valueToText(value, forceDecimals) {
+  setFormatTickLabel( method ) {
+    this.options.formatTickLabel = method;
+    return this;
+  }
 
+  valueToText(value, forceDecimals) {
     if (this.scientificExponent) {
 
       value /= Math.pow(10, this.scientificExponent);
       return value.toFixed(1);
 
-    } else {
+    } else if( this.options.formatTickLabel ) {
 
+      return this.options.formatTickLabel( value );
+
+    } else {
+      
       value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
       if (this.options.shiftToZero) {
         value -= this.dataMin;

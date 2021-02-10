@@ -93,8 +93,8 @@ class AxisX extends Axis {
    *  @param {Number} forcedPos - Forces the position of the tick (for axis dependency)
    */
   drawTick(value, level, options, forcedPos) {
-    var self = this,
-      val;
+
+    var self = this, val;
 
     val = forcedPos || this.getPos(value);
 
@@ -124,23 +124,39 @@ class AxisX extends Axis {
     tick.setAttribute('x2', val);
     this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight());
 
+    const yCoord =  (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + this.options.tickLabelOffset;
+
     //  this.groupTicks.appendChild( tick );
     if (level == 1 && this.options.tickLabels) {
       var tickLabel = this.nextTickLabel((tickLabel) => {
         tickLabel.setAttribute(
           'y',
-          (self.top ? -1 : 1) *
-          ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) +
-          this.options.tickLabelOffset
+          yCoord
         );
         tickLabel.setAttribute('text-anchor', 'middle');
         if (self.getTicksLabelColor() !== 'black') {
           tickLabel.setAttribute('fill', self.getTicksLabelColor());
         }
-        tickLabel.style.dominantBaseline = 'hanging';
+
+     
       });
 
       tickLabel.setAttribute('x', val);
+
+      if( this.options.tickLabelRotation ) {
+
+        if( this.options.tickLabelRotation < 0 ) {
+          tickLabel.setAttribute('text-anchor', 'end');
+        } else {
+          tickLabel.setAttribute('text-anchor', 'start');
+        }
+        
+        tickLabel.setAttribute('dominant-baseline', 'middle');
+        tickLabel.setAttribute('transform', `translate( ${val}, ${yCoord} ) rotate(${this.options.tickLabelRotation}) translate( ${-val}, ${-yCoord} )`);
+      } else {
+        tickLabel.setAttribute('dominant-baseline', 'hanging');
+
+      }
       this.setTickContent(tickLabel, value, options);
     }
     //    this.ticks.push( tick );
