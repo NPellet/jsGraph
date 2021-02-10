@@ -1346,7 +1346,7 @@ if (typeof URL === 'undefined' || typeof URL.createObjectURL === 'undefined' || 
   /*
   if ( typeof URL == "undefined" ) {
     module.exports = function() {};
-    } else {
+   } else {
   */
 
   var workerUrl = URL.createObjectURL(new Blob([string], {
@@ -1852,20 +1852,20 @@ class Waveform {
 
   /*
   setDataXY( data ) {
-      let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
+     let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
       warnNaN = false;
     const nanable = this.isNaNAllowed();
-      data.map( ( el, index ) => {
-        if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
+     data.map( ( el, index ) => {
+       if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
         warnNaN = true;
       }
-        newData[ 0 ][ index ] = el[ 0 ];
+       newData[ 0 ][ index ] = el[ 0 ];
       newData[ 1 ][ index ] = el[ 1 ];
     } );
-      if ( warnNaN ) {
+     if ( warnNaN ) {
       this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
     }
-      this._setData( ...newData );
+     this._setData( ...newData );
     return this;
   }
   */
@@ -1957,7 +1957,7 @@ class Waveform {
       temp = this.data.x;
       this.data.x = this.data.y;
       this.data.y = temp;
-        this._setData( this.data.x, this.data.y );
+       this._setData( this.data.x, this.data.y );
     }*/
 
 
@@ -2317,9 +2317,9 @@ class Waveform {
       if ( this.getXMin() > xval || this.getXMax() < xval ) {
         return false;
       }
-        if ( this.hasXWaveform() ) {
+       if ( this.hasXWaveform() ) {
         // The x value HAS to be rescaled
-          position = this.xdata.getIndexFromMonotoneousData(
+         position = this.xdata.getIndexFromMonotoneousData(
           xval,
           xdata,
           this.xdata.getMonotoneousAscending(),
@@ -2334,7 +2334,7 @@ class Waveform {
           )
         );
       }
-        return position;
+       return position;
     }
   */
 
@@ -5462,6 +5462,7 @@ class Graph$1 {
 
     if (this.selectedSerie !== serie && this.selectedSerie) {
       this.unselectSerie(this.selectedSerie);
+      return;
     }
 
     this.selectedSerie = serie;
@@ -5484,10 +5485,6 @@ class Graph$1 {
 
 
   unselectSerie(serie) {
-    if (!serie.unselect) {
-      return;
-    }
-
     serie.unselect();
     this.selectedSerie = false;
     this.triggerEvent('onUnselectSerie', serie);
@@ -6387,51 +6384,51 @@ class Graph$1 {
     /*
       serie.serie.trackingShape.show();
       serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
-        if ( serieShape.magnet ) {
-          let magnetOptions = serieShape.magnet,
+       if ( serieShape.magnet ) {
+         let magnetOptions = serieShape.magnet,
           val = magnetOptions.within,
           minmaxpos;
-          if ( magnetOptions.withinPx ) {
+         if ( magnetOptions.withinPx ) {
           val = serie.serie.getXAxis().getRelVal( magnetOptions.withinPx );
         }
-          if ( ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) ) {
-            serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;
+         if ( ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) ) {
+           serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;
         }
       }
-        serie.serie.trackingShape.redraw();
+       serie.serie.trackingShape.redraw();
     */
 
     /*  serie.enableTracking( ( serie, index, x, y ) => {
-        if ( this.options.trackingLine.enable ) {
-          if ( index ) {
-            if ( this.trackingObject ) {
-              this.trackingObject.show();
+       if ( this.options.trackingLine.enable ) {
+         if ( index ) {
+           if ( this.trackingObject ) {
+             this.trackingObject.show();
             this.trackingObject.getPosition( 0 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
             this.trackingObject.getPosition( 1 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
             this.trackingObject.redraw();
           }
-            serie._trackingLegend = _trackingLegendSerie( this, {
+           serie._trackingLegend = _trackingLegendSerie( this, {
             serie: serie
           }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : trackingLineDefaultTextMethod, index.trueX );
-            if ( serie._trackingLegend ) {
+           if ( serie._trackingLegend ) {
             serie._trackingLegend.style.display = 'block';
           }
         }
       }
     }, ( serie ) => {
-        if ( this.trackingObject ) {
+       if ( this.trackingObject ) {
         this.trackingObject.hide();
       }
-        if ( serie.trackingShape ) {
+       if ( serie.trackingShape ) {
         serie.trackingShape.hide();
       }
-        if ( serie._trackingLegend ) {
+       if ( serie._trackingLegend ) {
         serie._trackingLegend.style.display = 'none';
       }
-        serie._trackingLegend = _trackingLegendSerie( this, {
+       serie._trackingLegend = _trackingLegendSerie( this, {
         serie: serie
       }, false, false, serie._trackingLegend, false, false );
-      } );
+     } );
     */
 
   }
@@ -6965,17 +6962,17 @@ function checkKeyActions(graph, e, parameters, methodName) {
       });
     }
     /* else if ( keyComb[ i ].series ) {
-        var series;
+       var series;
       if ( keyComb[ i ].series === 'all' ) {
         series = graph.series;
       }
-        if ( !Array.isArray( keyComb[ i ].series ) ) {
+       if ( !Array.isArray( keyComb[ i ].series ) ) {
         series = [ series ];
       }
-        if ( keyComb[ i ].options ) {
+       if ( keyComb[ i ].options ) {
         parameters.push( keyComb[ i ].options );
       }
-        for ( var j = 0; j < series.length; i++ ) {
+       for ( var j = 0; j < series.length; i++ ) {
         graph._serieExecute( series[ i ], methodName, parameters );
       }
       return true;
@@ -7572,13 +7569,13 @@ function _handleDblClick(graph, x, y, e) {
       if ( !pref || !pref.type ) {
         return;
       }
-        switch ( pref.type ) {
-          case 'plugin':
-            var plugin;
-            if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
-              plugin.onDblClick( graph, x, y, pref.options, e );
+       switch ( pref.type ) {
+         case 'plugin':
+           var plugin;
+           if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
+             plugin.onDblClick( graph, x, y, pref.options, e );
           }
-            break;
+           break;
       }*/
 }
 
@@ -7820,7 +7817,7 @@ class Legend {
     /* var eyeClosed = document.createElementNS( this.graph.ns, "symbol");
       eyeClosed.setAttribute('id', this.eyeId );
       eyeClosed.setAttribute("viewBox", '0 0 100 100');
-        var rect = document.createElementNS( this.graph.ns, "rect" );
+       var rect = document.createElementNS( this.graph.ns, "rect" );
       rect.setAttribute('width', 100 );
       rect.setAttribute('height', 100 );
       rect.setAttribute('x', 0 );
@@ -8435,6 +8432,7 @@ const defaults = {
   hideWhenNoSeriesShown: false,
   shiftToZero: false,
   tickPosition: 1,
+  tickLabels: true,
   nbTicksPrimary: 3,
   nbTicksSecondary: 10,
   ticklabelratio: 1,
@@ -9705,6 +9703,12 @@ class Axis {
 
   setTickLabelRatio(tickRatio) {
     this.options.ticklabelratio = tickRatio;
+    return this;
+  }
+
+  setTickLabelRotation(angle) {
+    this.options.tickLabelRotation = angle;
+    return this;
   }
 
   doesHideWhenNoSeriesShown() {
@@ -10088,10 +10092,17 @@ class Axis {
     return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
   }
 
+  setFormatTickLabel(method) {
+    this.options.formatTickLabel = method;
+    return this;
+  }
+
   valueToText(value, forceDecimals) {
     if (this.scientificExponent) {
       value /= Math.pow(10, this.scientificExponent);
       return value.toFixed(1);
+    } else if (this.options.formatTickLabel) {
+      return this.options.formatTickLabel(value);
     } else {
       value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
 
@@ -11149,20 +11160,33 @@ class AxisX extends Axis {
 
     tick.setAttribute('x1', val);
     tick.setAttribute('x2', val);
-    this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight()); //  this.groupTicks.appendChild( tick );
+    this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight());
+    const yCoord = (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + this.options.tickLabelOffset; //  this.groupTicks.appendChild( tick );
 
-    if (level == 1) {
+    if (level == 1 && this.options.tickLabels) {
       var tickLabel = this.nextTickLabel(tickLabel => {
-        tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + this.options.tickLabelOffset);
+        tickLabel.setAttribute('y', yCoord);
         tickLabel.setAttribute('text-anchor', 'middle');
 
         if (self.getTicksLabelColor() !== 'black') {
           tickLabel.setAttribute('fill', self.getTicksLabelColor());
         }
-
-        tickLabel.style.dominantBaseline = 'hanging';
       });
       tickLabel.setAttribute('x', val);
+
+      if (this.options.tickLabelRotation) {
+        if (this.options.tickLabelRotation < 0) {
+          tickLabel.setAttribute('text-anchor', 'end');
+        } else {
+          tickLabel.setAttribute('text-anchor', 'start');
+        }
+
+        tickLabel.setAttribute('dominant-baseline', 'middle');
+        tickLabel.setAttribute('transform', `translate( ${val}, ${yCoord} ) rotate(${this.options.tickLabelRotation}) translate( ${-val}, ${-yCoord} )`);
+      } else {
+        tickLabel.setAttribute('dominant-baseline', 'hanging');
+      }
+
       this.setTickContent(tickLabel, value, options);
     } //    this.ticks.push( tick );
 
@@ -11403,7 +11427,7 @@ class AxisY extends Axis {
     tick.setAttribute('y2', pos);
     this.nextGridLine(level == 1, 0, this.graph.getDrawingWidth(), pos, pos); //  this.groupTicks.appendChild( tick );
 
-    if (level == 1) {
+    if (level == 1 && this.options.tickLabel) {
       tickLabel = this.nextTickLabel(tickLabel => {
         tickLabel.setAttribute('x', this.tickMargin + this.options.tickLabelOffset);
 
@@ -11452,10 +11476,10 @@ class AxisY extends Axis {
 
     /*
     if ( !this.left ) {
-        this.labelTspan.style.dominantBaseline = 'hanging';
+       this.labelTspan.style.dominantBaseline = 'hanging';
       this.expTspan.style.dominantBaseline = 'hanging';
       this.expTspanExp.style.dominantBaseline = 'hanging';
-        this.unitTspan.style.dominantBaseline = 'hanging';
+       this.unitTspan.style.dominantBaseline = 'hanging';
       this.preunitTspan.style.dominantBaseline = 'hanging';
     }
     */
@@ -12617,26 +12641,26 @@ class GraphTimeAxis extends Axis {
 var ErrorBarMixin = {
   /*
     doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
-        if ( !( error instanceof Array ) ) {
+       if ( !( error instanceof Array ) ) {
         error = [ error ];
       }
-        var functionName = orientation == 'y' ? 'getY' : 'getX';
+       var functionName = orientation == 'y' ? 'getY' : 'getX';
       var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
       var j;
-        if ( isNaN( xpx ) || isNaN( ypx ) ) {
+       if ( isNaN( xpx ) || isNaN( ypx ) ) {
         return;
       }
-        for ( var i = 0, l = error.length; i < l; i++ ) {
-          if ( error[ i ] instanceof Array ) { // TOP
-            j = bars[ 0 ];
+       for ( var i = 0, l = error.length; i < l; i++ ) {
+         if ( error[ i ] instanceof Array ) { // TOP
+           j = bars[ 0 ];
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
           this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
-            j = bars[ 1 ];
+           j = bars[ 1 ];
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
           this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
-          } else {
-            j = bars[ 0 ];
-            this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+         } else {
+           j = bars[ 0 ];
+           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
           this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
           j = bars[ 1 ];
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
@@ -12648,17 +12672,17 @@ var ErrorBarMixin = {
 
   /*
     makeError: function( orientation, type, coord, origin, quadOrientation ) {
-        var method;
+       var method;
       switch ( this.errorstyles[ level ].type ) {
         case 'bar':
           method = "makeBar";
           break;
-          case 'box':
+         case 'box':
           method = "makeBox";
           break;
       }
-        return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
-      },*/
+       return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
+     },*/
   makeBarY: function (coordY, origin, style) {
     if (!coordY || style === undefined) {
       return;
@@ -12692,46 +12716,46 @@ var ErrorBarMixin = {
 
   /*
     check: function( index, valY, valX ) {
-        var dx, dy;
-        if ( ( this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER ) ) {
-          if ( !( dx = this.data[ index * 2 ] ) || !( dy = this.data[ index * 2 + 1 ] ) ) { //
+       var dx, dy;
+       if ( ( this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER ) ) {
+         if ( !( dx = this.data[ index * 2 ] ) || !( dy = this.data[ index * 2 + 1 ] ) ) { //
           return;
         }
       }
-        if ( dx === undefined ) {
+       if ( dx === undefined ) {
         return;
       }
-        for ( var i = 0, l = valY.length; i < l; i++ ) {
-          if ( Array.isArray( valY[ i ] ) ) {
-            if ( !isNaN( valY[ i ][ 0 ] ) ) {
+       for ( var i = 0, l = valY.length; i < l; i++ ) {
+         if ( Array.isArray( valY[ i ] ) ) {
+           if ( !isNaN( valY[ i ][ 0 ] ) ) {
             this._checkY( dy + valY[ i ][ 0 ] );
           }
-            if ( !isNaN( valY[ i ][ 1 ] ) ) {
+           if ( !isNaN( valY[ i ][ 1 ] ) ) {
             this._checkY( dy - valY[ i ][ 1 ] );
           }
-          } else {
-            if ( !isNaN( valY[ i ] ) ) {
+         } else {
+           if ( !isNaN( valY[ i ] ) ) {
             this._checkY( dy + valY[ i ] );
             this._checkY( dy - valY[ i ] );
           }
         }
       }
-        for ( var i = 0, l = valX.length; i < l; i++ ) {
-          if ( Array.isArray( valX[ i ] ) ) {
-            if ( !isNaN( valX[ i ][ 0 ] ) ) {
+       for ( var i = 0, l = valX.length; i < l; i++ ) {
+         if ( Array.isArray( valX[ i ] ) ) {
+           if ( !isNaN( valX[ i ][ 0 ] ) ) {
             this._checkX( dx - valX[ i ][ 0 ] );
           }
-            if ( !isNaN( valX[ i ][ 1 ] ) ) {
+           if ( !isNaN( valX[ i ][ 1 ] ) ) {
             this._checkX( dx + valX[ i ][ 1 ] );
           }
-          } else {
-            if ( !isNaN( valY[ i ] ) ) {
+         } else {
+           if ( !isNaN( valY[ i ] ) ) {
             this._checkX( dx - valX[ i ] );
             this._checkX( dx + valX[ i ] );
           }
         }
       }
-      },
+     },
   */
 
   /**
@@ -13158,7 +13182,7 @@ class Serie {
 
 
   isSelected() {
-    return this.selected || this.selectionType !== 'unselected';
+    return this._activeStyle == 'selected';
   }
 
   _checkX(val) {
@@ -13382,6 +13406,8 @@ class Serie {
       data: json
     };
     this.styleHasChanged(styleName);
+    console.log(this.styles);
+    return this;
   }
 
   getStyle(styleName) {
@@ -13405,6 +13431,7 @@ class Serie {
 
   activateStyle(styleName) {
     this._activeStyle = styleName;
+    this._unselectedStyleName = styleName;
     this.computeActiveStyle();
     this.styleHasChanged(styleName);
   }
@@ -13728,7 +13755,10 @@ class Serie {
       return this;
     }
 
+    this._unselectedStyleName = this._activeStyle;
+    this._activeStyle = 'selected';
     this.selected = true;
+    this.applyStyle();
     return this;
   }
   /**
@@ -13740,8 +13770,12 @@ class Serie {
 
   unselect() {
     this.selected = false;
+    this.activateStyle(this._unselectedStyleName);
+    this.applyStyle();
     return this;
   }
+
+  applyStyle() {}
   /**
    * Allows mouse tracking of the serie
    * @memberof Serie
@@ -14074,6 +14108,18 @@ class SerieScatter extends Serie {
         xpx = this.getX(this.waveform.getX(j));
         ypx = this.getY(this.waveform.getY(j));
 
+        if (isNaN(xpx) || isNaN(ypx)) {
+          if (this.shapes[j]) {
+            this.shapes[j].setAttribute('display', 'none');
+            this.shapes[j]._hidden = true;
+          }
+
+          continue;
+        } else if (this.shapes[j] && this.shapes[j]._hidden) {
+          this.shapes[j].setAttribute('display', 'initial');
+          this.shapes[j]._hidden = false;
+        }
+
         if (this.hasErrors()) {
           this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
         }
@@ -14119,8 +14165,7 @@ class SerieScatter extends Serie {
 
     let styleAll = [],
         shape,
-        index,
-        style;
+        index;
  // loop variables
 
     for (let i in computedStyles) {
@@ -14140,7 +14185,8 @@ class SerieScatter extends Serie {
           ...styleAll[i]
         };
       }
-    }
+    } // console.log(_indices);
+
 
     for (let i = 0, l = _indices.length; i < l; i++) {
       var _this$getRawStyle$mar;
@@ -14172,10 +14218,16 @@ class SerieScatter extends Serie {
         let modifiedStyle;
 
         if (modifierIsFunc) {
-          modifiedStyle = modifier(this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
+          modifiedStyle = modifier.call(this, this.waveform.getX(index), this.waveform.getY(index), index, shape, styleAll);
 
           if (modifiedStyle === false) {
-            continue;
+            modifiedStyle = {};
+
+            if (shape) {
+              shape.setAttribute('display', 'none'); //    console.log('n');
+
+              continue;
+            }
           }
         } else if (modifier[index]) {
           modifiedStyle = modifier[index];
@@ -14191,11 +14243,12 @@ class SerieScatter extends Serie {
       if (!shape) {
         // Shape doesn't exist, let's create it
         if (!styles[index].shape) {
-          throw `No shape was defined with the style "${style}".`;
+          continue;
         }
 
         var g = document.createElementNS(this.graph.ns, 'g');
         g.setAttribute('data-shapeid', index);
+        console.log("make");
         this.shapes[index] = this._makeMarker(g, styles[index]);
         this.groupMarkers.appendChild(g);
         shape = this.shapes[index];
@@ -14217,13 +14270,17 @@ class SerieScatter extends Serie {
     for (i in styles) {
       if (this.styleAttributes[i]) {
         for (j in this.styleAttributes[i]) {
-          this.shapes[i].removeAttribute(j);
+          if (!styles[i] || styles[i][j] != this.styleAttributes[i][j]) {
+            this.shapes[i].removeAttribute(j);
+            delete this.styleAttributes[i];
+          }
         }
       }
 
       for (j in styles[i]) {
         if (j !== 'shape' && this.shapes[i]) {
-          if (styles[i][j]) {
+          if (styles[i][j] && (!this.styleAttributes[i] || styles[i][j] != this.styleAttributes[i][j])) {
+            // console.log(i, styles[i][j]);
             this.shapes[i].setAttribute(j, styles[i][j]);
           }
         }
@@ -14269,17 +14326,27 @@ class SerieScatter extends Serie {
       }
     }
   }
+  /*
+    select(selectionType) {
+   
+      this.setActiveStyle('selected');
+   
+      this.applyMarkerStyle(this.keys);
+      super.select(selectionType);
+    }
+   
+    unselect() {
+      this.setActiveStyle('unselected');
+      this.applyMarkerStyle(this.keys);
+   
+      super.unselect();
+    }
+  */
 
-  select(selectionType) {
-    this.setActiveStyle('selected');
-    this.applyMarkerStyle(this.keys);
-    super.select(selectionType);
-  }
 
-  unselect() {
-    this.setActiveStyle('unselected');
+  applyStyle() {
     this.applyMarkerStyle(this.keys);
-    super.unselect();
+    super.applyStyle();
   }
 
   setMarkers(bln = true) {
@@ -14482,6 +14549,12 @@ class SerieLine extends SerieScatter {
     });
   }
 
+  applyStyle() {
+    this.applyLineStyles();
+    this.applyLineStyle(this.getSymbolForLegend());
+    super.applyStyle();
+  }
+
   postInit() {}
   /**
    * Sets the options of the serie
@@ -14521,25 +14594,29 @@ class SerieLine extends SerieScatter {
     this.lines = [];
     return this;
   }
-  /**
-   * Applies a selection to the serie
-   * @param {String} [ selectionType = "selected" ] - The selection name
-   * @returns {SerieLine} The current serie
-   * @see SerieLine#unselect
-   * @memberof SerieLine
-   */
+  /*
+    /**
+     * Applies a selection to the serie
+     * @param {String} [ selectionType = "selected" ] - The selection name
+     * @returns {SerieLine} The current serie
+     * @see SerieLine#unselect
+     * @memberof SerieLine
+    
+    select(selectionType = 'selected') {
+      this.selected = selectionType !== 'unselected';
+      //  this.selectionType = selectionType;
+  
+      this.setActiveStyle(selectionType);
+      this.computeActiveStyle();
+  
+      this.applyLineStyles();
+      this.applyLineStyle(this.getSymbolForLegend());
+  
+      super.select(selectionType);
+  
+      return this;
+    }*/
 
-
-  select(selectionType = 'selected') {
-    this.selected = selectionType !== 'unselected'; //  this.selectionType = selectionType;
-
-    this.setActiveStyle(selectionType);
-    this.computeActiveStyle();
-    this.applyLineStyles();
-    this.applyLineStyle(this.getSymbolForLegend());
-    super.select(selectionType);
-    return this;
-  }
   /**
    * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
    * @returns {SerieLine} The current serie
@@ -15306,7 +15383,7 @@ class SerieLine extends SerieScatter {
     return min;
   }
 
-  getRawLineStyle(styleName) {
+  getRawLineStyle(styleName = "unselected") {
     let s = this.getRawStyle(styleName);
 
     if (!s.line) {
@@ -15500,7 +15577,7 @@ class SerieLine extends SerieScatter {
       return false;
     }
     /*
-            if (
+           if (
           ( Math.abs( valX - this.waveform.getX( closestPointIndex ) ) >
             Math.abs( this.getXAxis().getRelVal( withinPxX ) ) &&
             withinPxX ) ||
@@ -16845,6 +16922,36 @@ class SerieLineColor extends SerieLine {
       this.lines[i].object.setAttribute('d', '');
     }
   }
+
+  getSymbolForLegend() {
+    let l = super.getSymbolForLegend();
+
+    let g = this._getSymbolForLegendContainer();
+
+    if (!this.defined) {
+      let gradient = document.createElementNS(this.graph.ns, 'linearGradient');
+      gradient.setAttribute('id', "gradient_serie_" + this.getName());
+      gradient.setAttribute('x1', '0px');
+      gradient.setAttribute('x2', '30px');
+      gradient.setAttribute('y1', '-px');
+      gradient.setAttribute('y2', '1px');
+      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+      let stop1 = document.createElementNS(this.graph.ns, 'stop');
+      stop1.setAttribute('offset', '0');
+      stop1.setAttribute('stop-color', '#FF0000');
+      let stop2 = document.createElementNS(this.graph.ns, 'stop');
+      stop2.setAttribute('offset', '1');
+      stop2.setAttribute('stop-color', '#000000');
+      gradient.appendChild(stop1);
+      gradient.appendChild(stop2); //this.defs.appendChild(gradient);
+
+      this.graph.defs.appendChild(gradient);
+      this.defined = true;
+      l.setAttribute('stroke', `url(#gradient_serie_${this.getName()})`);
+    }
+
+    return l;
+  }
   /**
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieLine
@@ -18106,17 +18213,15 @@ class SerieContour extends SerieLine {
    * @param {Number} colors.fromPositive.h
    * @param {Number} colors.fromPositive.s
    * @param {Number} colors.fromPositive.l
-     * @param {Object} colors.toPositive
+    * @param {Object} colors.toPositive
    * @param {Number} colors.toPositive.h
    * @param {Number} colors.toPositive.s
    * @param {Number} colors.toPositive.l
-  
-   * @param {Object} colors.fromNegative
+     * @param {Object} colors.fromNegative
    * @param {Number} colors.fromNegative.h
    * @param {Number} colors.fromNegative.s
    * @param {Number} colors.fromNegative.l
-  
-   * @param {Object} colors.toNegative
+     * @param {Object} colors.toNegative
    * @param {Number} colors.toNegative.h
    * @param {Number} colors.toNegative.s
    * @param {Number} colors.toNegative.l
@@ -18221,7 +18326,11 @@ class Shape {
 
     if (!simplified) {
       this.group = document.createElementNS(this.graph.ns, 'g');
-      this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
+
+      if (!this.getProp('noClip')) {
+        this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
+      }
+
       this.group.jsGraphIsShape = this;
     }
 
@@ -18705,7 +18814,6 @@ class Shape {
 
 
   setProp(prop, val, index) {
-    console.log(this.properties);
     this.properties = this.properties || {};
 
     if (index !== undefined) {
@@ -19429,6 +19537,7 @@ class Shape {
     }
 
     this.updateLabels();
+    console.log(this._labels);
     return this;
   }
   /**
@@ -19530,7 +19639,9 @@ class Shape {
     /** Sets the size */
 
 
-    this._labels[labelIndex].setAttribute('font-size', `${this.getProp('labelSize', labelIndex)}px` || '12px');
+    if (this.getProp('labelSize', labelIndex)) {
+      this._labels[labelIndex].setAttribute('font-size', `${this.getProp('labelSize', labelIndex) || 12}px`);
+    }
     /** Sets the anchor */
 
 
@@ -20436,7 +20547,7 @@ class ShapeSurfaceUnderCurve extends Shape {
       redrawImpl: function() {
         //var doDraw = this.setPosition();
         //	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
-          if ( this.position != this.doDraw ) {
+         if ( this.position != this.doDraw ) {
           this.group.setAttribute( "visibility", this.position ? "visible" : 'hidden' );
           this.doDraw = this.position;
         }
@@ -21122,7 +21233,7 @@ class ShapeNMRIntegral extends Shape {
         this.sortPositions( ( a, b ) => {
           return a.x - b.x;
         } );
-          */
+         */
 
 
     let pos1 = this.getPosition(0);
@@ -21192,8 +21303,8 @@ class ShapeNMRIntegral extends Shape {
       y = this.serie.getY(yVal);
       /*
             if ( ! normalSums && j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
-                sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
-              } else if( normalSums ) {
+               sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
+             } else if( normalSums ) {
       */
 
       sum += waveform.getY(j, true); // * ( waveform.getX( j, true ) - waveform.getX( j - 1, true ) ); // y * (out-in)
@@ -21281,7 +21392,7 @@ class ShapeNMRIntegral extends Shape {
           if ( this._selected ) {
             this.select();
           }
-            this.setHandles();*/
+           this.setHandles();*/
 
     this.serie.ratioLabel && this.updateIntegralValue(this.serie.ratioLabel) || this.updateLabels();
     this.changed();
@@ -22998,7 +23109,7 @@ class PluginZoom extends Plugin {
     }
     /*var serie;
     if ( ( serie = this.graph.getSelectedSerie() ) ) {
-        if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
+       if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
         return;
       }
     }*/
@@ -23097,8 +23208,8 @@ class PluginZoom extends Plugin {
       this.fullY = true; // Nothing to do here
 
       /*        this.graph._applyToAxes( function( axis ) {
-            axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
-          }, null, true, true );
+           axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
+         }, null, true, true );
       */
     } else {
       x -= this.graph.options.paddingLeft;
@@ -23156,7 +23267,7 @@ class PluginZoom extends Plugin {
           e: e,
           mute: mute
         } );
-          if ( this.options.onDblClick && !mute ) {
+         if ( this.options.onDblClick && !mute ) {
           this.options.onDblClick( graph, x, y, e, mute );
         }*/
   }
@@ -24625,7 +24736,7 @@ class SplitYAxis extends SplitAxis(AxisY) {
   }
   /*
     draw() {
-        if ( this.getLabel() ) {
+       if ( this.getLabel() ) {
         this.axes.map( ( axis ) => {
           axis.setAxisPosition( this.graph.options.fontSize );
         } ); // Extra shift allowed for the label
