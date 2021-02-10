@@ -11,3 +11,4 @@ examples/DD/
 .vscode
 
 docs/build
+web/**
