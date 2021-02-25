@@ -64,8 +64,5 @@
   },
   "repository": "NPellet/jsGraph",
   "license": "MIT",
-  "dependencies": {
-    "babel-minify": "^0.5.1",
-    "uglify-js": "^3.11.5"
-  }
+  "dependencies": {}
 }
