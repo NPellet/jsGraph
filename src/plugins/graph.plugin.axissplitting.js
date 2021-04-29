@@ -1,9 +1,9 @@
-import Graph from '../graph.core.js';
+import Graph from '../graph.core';
 import AxisX from '../graph.axis.x.js';
 import AxisY from '../graph.axis.y.js';
 import * as util from '../graph.util.js';
-import SerieLine from '../series/graph.serie.line.js';
-import SerieScatter from '../series/graph.serie.scatter.js';
+import SerieLine from '../series/graph.serie.line';
+import SerieScatter from '../series/graph.serie.scatter';
 import Axis from '../graph.axis.js';
 
 import Plugin from './graph.plugin.js';

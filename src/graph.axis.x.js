@@ -213,6 +213,10 @@ class AxisX extends Axis {
     this.line.setAttribute('stroke', this.getAxisColor());
 
     if (!this.top) {
+      this.labelTspan.style = this.labelTspan.style || {};
+      this.expTspan.style = this.expTspan.style || {};
+      this.expTspanExp.style = this.expTspanExp.style || {};
+      this.unitTspan.style = this.unitTspan.style || {};
       this.labelTspan.style.dominantBaseline = 'hanging';
       this.expTspan.style.dominantBaseline = 'hanging';
       this.expTspanExp.style.dominantBaseline = 'hanging';

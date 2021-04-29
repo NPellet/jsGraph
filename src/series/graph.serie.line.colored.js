@@ -1,7 +1,7 @@
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 
-import SerieLine from './graph.serie.line.js';
+import SerieLine from './graph.serie.line';
 
 /**
  * Colored serie line

@@ -1,4 +1,4 @@
-import Graph from './graph.core.js';
+import Graph from './graph.core';
 import * as util from './graph.util.js';
 import EventMixin from './mixins/graph.mixin.event_graph.js';
 
@@ -1374,11 +1374,11 @@ class Axis {
       } else if (this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit) {
         tickPrimaryUnit = this.options.minPrimaryTickUnit;
       }
-
     }
 
+    this._primaryTickIncrement = tickPrimaryUnit;
     // We need to get here the width of the ticks to display the axis properly, with the correct shift
-    return this.drawTicks(tickPrimaryUnit, this.secondaryTicks());
+    return this.drawTicks(this._primaryTickIncrement, this.secondaryTicks());
   }
 
   forcePrimaryTickUnit(primaryInterval) {
@@ -1437,8 +1437,12 @@ class Axis {
       secondaryIncr = unitPerTick / secondary;
     }
 
+    this._secondaryTickIncrement = secondaryIncr;
+
+
     incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil((this.dataMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
     this.incrTick = primary;
+    this.firstTick = incrTick;
 
     while (incrTick <= max) {
 
@@ -1479,6 +1483,9 @@ class Axis {
       this.drawTickWrapper(incrTick, true, 1);
       incrTick += primary;
     }
+
+    this.lastTick = incrTick;
+
 
     this.widthHeightTick = this.getMaxSizeTick();
     return this.widthHeightTick;

@@ -1,7 +1,7 @@
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 
-import Serie from './graph.serie.line.js';
+import Serie from './graph.serie.line';
 
 /**
  * Represents a bar serie.

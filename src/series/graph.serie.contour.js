@@ -1,6 +1,6 @@
 import * as util from '../graph.util.js';
 
-import SerieLine from './graph.serie.line.js';
+import SerieLine from './graph.serie.line';
 
 /**
  * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method

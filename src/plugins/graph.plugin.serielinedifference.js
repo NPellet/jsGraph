@@ -1,6 +1,6 @@
 import {
   Waveform
-} from '../util/waveform.js';
+} from '../util/waveform';
 
 import Plugin from './graph.plugin.js';
 

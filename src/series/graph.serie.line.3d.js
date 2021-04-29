@@ -1,7 +1,7 @@
 import Serie3DMixin from '../mixins/graph.mixin.serie3d.js';
 import * as util from '../graph.util.js';
 
-import Serie from './graph.serie.line.js';
+import Serie from './graph.serie.line';
 
 /**
  * Serie line with 3D projection

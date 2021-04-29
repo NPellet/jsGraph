@@ -6,7 +6,7 @@ import {
 }
 from '../graph.util.js';
 
-import Serie from './graph.serie.js';
+import Serie from './graph.serie';
 
 const defaultOptions = {
   orientation: 'y',

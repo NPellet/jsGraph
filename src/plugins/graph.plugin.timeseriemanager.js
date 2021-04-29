@@ -1,4 +1,4 @@
-import Graph from '../graph.core.js';
+import Graph from '../graph.core';
 import LRU from '../graph.lru.js';
 import * as util from '../graph.util.js';
 

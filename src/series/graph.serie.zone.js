@@ -1,12 +1,12 @@
 import {
   Waveform
-} from '../util/waveform.js';
+} from '../util/waveform';
 import {
   extend,
   guid
 } from '../graph.util.js';
 
-import Serie from './graph.serie.js';
+import Serie from './graph.serie';
 
 /**
  * @static
