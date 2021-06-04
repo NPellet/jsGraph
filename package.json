@@ -3,7 +3,7 @@
   "description": "library that can be used to render scientific data in the form of graphs and charts",
   "version": "2.4.5",
   "scripts": {
-    "build": "grunt",
+    "build": "npx webpack",
     "buildExamples": "grunt examples",
     "doc": "git subtree push --prefix doc origin gh-pages",
     "eslint": "eslint src gruntfile.js --cache",

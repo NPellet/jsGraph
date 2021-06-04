@@ -182,14 +182,14 @@ class SerieHistogram extends SerieLine implements SerieInterface {
   private _calculateHistogram( xMin: number, xMax: number, dX: number) {
     
     try {
-      console.log( dX );
+    
       this._histogramWaveform = this.waveform.calculateHistogram( xMin, xMax, dX );
 
       this.minX = this.waveform.getMinY();
       this.maxX = this.waveform.getMaxY();
       this.minY = 0;
       this.maxY = this._histogramWaveform.getMax();
-console.log( this.minX, this.maxX, this.maxY );
+
     } catch( e ) {
       console.warn("Could not calculate histogram");
       // TODO: Signal that the serie is invalid and but soft fails the drawing
@@ -200,7 +200,7 @@ console.log( this.minX, this.maxX, this.maxY );
     let xpx2 = this.getX( x + dx );
     let ypx = this.getY( y );
     let ypx0 = this.getY( 0 );
-console.log( ypx0);
+
     if( isNaN( ypx0 ) ) {
       return;
     }

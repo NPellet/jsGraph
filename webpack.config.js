@@ -30,13 +30,20 @@ const babel = {
 const clientConfig = {
   target: 'web', // <=== can be omitted as default is 'web'
   output: {
+      library: {
+          type: 'commonjs'
+      },
     path: path.resolve(__dirname, 'dist'),
-    filename: 'jsgraph.js',
-    libraryTarget: "commonjs",
-    scriptType: 'module'
+    filename: 'jsgraph.js'
   },
   optimization: {
-    minimize: false
+    minimize: true
+  },
+  output: {
+    module: true,
+  },
+  experiments: {
+    outputModule: true,
   },
   
   mode: 'production',
