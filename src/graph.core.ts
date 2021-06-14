@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // @ts-ignore
 import GraphPosition from './graph.position.js';
 // @ts-ignore
@@ -2567,8 +2569,8 @@ private _registerEvents() {
       return;
     }
 
-    this.getDrawingWidth();
-    this.getDrawingHeight();
+    this.getDrawingWidth( false );
+    this.getDrawingHeight( false );
 
     this.sizeSet = true;
     this.dom.setAttribute('width', this.width);
@@ -3106,6 +3108,7 @@ private refreshDrawingZone() {
     left: [],
     right: []
   };
+console.log( this.getDrawingWidth( true ) );
 
   // Apply to top and bottom
   this._applyToAxes(

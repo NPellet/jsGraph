@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { SerieOptions } from '../../types/series.js';
 import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';

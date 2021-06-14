@@ -12,11 +12,15 @@ declare class Serie {
     protected symbolLegendContainer: SVGElement;
     private _activeStyleName;
     private _unselectedStyleName;
+    protected minX: number;
+    protected maxX: number;
+    protected minY: number;
+    protected maxY: number;
     private styles;
     protected shown: boolean;
     protected selected: boolean;
     protected waveform: Waveform | undefined;
-    constructor(graph: any, name: any, options: any);
+    constructor(graph: any, name: any, options?: {});
     init(): void;
     extendOptions<T extends SerieOptions>(options: T): T;
     postInit(): void;
@@ -174,22 +178,22 @@ declare class Serie {
      * @returns {Number} Lowest x value of the serie's data
      * @memberof Serie
      */
-    getMinX(): any;
+    getMinX(): number;
     /**
      * @returns {Number} Highest x value of the serie's data
      * @memberof Serie
      */
-    getMaxX(): any;
+    getMaxX(): number;
     /**
      * @returns {Number} Lowest y value of the serie's data
      * @memberof Serie
      */
-    getMinY(): any;
+    getMinY(): number;
     /**
      * @returns {Number} Highest y value of the serie's data
      * @memberof Serie
      */
-    getMaxY(): any;
+    getMaxY(): number;
     getWaveform(): Waveform;
     getWaveforms(): Waveform[];
     setWaveform(waveform: any): this;

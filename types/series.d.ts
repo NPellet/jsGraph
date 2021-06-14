@@ -6,12 +6,6 @@ export declare const SERIE_DEFAULT_STYLE: {
         color: string;
     };
 };
-export interface SerieInterface {
-    getType(): SERIE_TYPE;
-}
-export declare type SerieOptions = {
-    redrawShapesAfterDraw?: boolean;
-};
 export declare enum SERIE_TYPE {
     LINE = "line",
     LINE_3D = "line3d",
@@ -25,3 +19,9 @@ export declare enum SERIE_TYPE {
     DENSITY_MAP = "densitymap",
     HISTOGRAM = "HISTOGRAM"
 }
+export interface SerieInterface {
+    getType(): SERIE_TYPE;
+}
+export declare type SerieOptions = {
+    redrawShapesAfterDraw?: boolean;
+};

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { SerieInterface } from '../../types/series';
 import { SERIE_TYPE } from '../graph';
 import Graph, { ns } from '../graph.core';

@@ -37,7 +37,7 @@ export interface SerieLineOptions extends SerieScatterOptions {
  * @extends Serie
  */
 declare class SerieLine extends SerieScatter implements SerieInterface {
-    private options;
+    options: SerieLineOptions;
     private _lineForLegend;
     private _degradationPx;
     protected currentLine: string;

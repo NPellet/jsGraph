@@ -1,5 +1,5 @@
+import { SerieInterface, SERIE_TYPE } from '../../types/series';
 import Graph from '../graph.core';
-import { SerieInterface } from './graph.serie';
 import SerieLine, { LineStyle, SerieLineOptions } from './graph.serie.line';
 export declare type HistogramStyle = {
     fillColor?: string;
@@ -16,10 +16,12 @@ export interface SerieHistogramOptions extends SerieLineOptions {
  * @extends Serie
  */
 declare class SerieHistogram extends SerieLine implements SerieInterface {
-    private options;
+    options: SerieHistogramOptions;
     private _histForLegend;
+    private _histogramWaveform;
     constructor(graph: Graph, name: string, options: SerieHistogramOptions);
-    getType(): any;
+    protected init(): void;
+    getType(): SERIE_TYPE;
     applyStyle(): void;
     applyHistogramStyles(): void;
     /**
@@ -39,6 +41,13 @@ declare class SerieHistogram extends SerieLine implements SerieInterface {
      * @memberof SerieLine
      */
     draw(force: any): void;
+    /**
+   * Notifies jsGraph that the data of the serie has changed
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+    dataHasChanged(arg: any): this;
+    private _calculateHistogram;
     _addHistogramPoint(x: number, y: number, dx: number): void;
     /**
      * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie

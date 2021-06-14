@@ -1,4 +1,5 @@
-import Serie, { SerieOptions } from './graph.serie';
+import { SerieOptions } from '../../types/series.js';
+import Serie from './graph.serie';
 export declare type MarkerShapeStyle = {
     shape?: string;
     [x: string]: number | string;
@@ -19,6 +20,7 @@ export interface SerieScatterOptions extends SerieOptions {
  * @see Graph#newSerie
  */
 declare class SerieScatter extends Serie {
+    options: SerieScatterOptions;
     constructor(graph: any, name: any, options: any);
     protected extendScatterOptions<T extends SerieScatterOptions>(options: T): T;
     init(): void;

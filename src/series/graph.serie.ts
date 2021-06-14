@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Graph, { ns } from '../graph.core';
 
 // @ts-ignore

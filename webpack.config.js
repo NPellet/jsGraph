@@ -31,20 +31,15 @@ const clientConfig = {
   target: 'web', // <=== can be omitted as default is 'web'
   output: {
       library: {
-          type: 'commonjs'
+          type: 'commonjs2'
       },
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'jsgraph.js'
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'jsGraph.js'
   },
   optimization: {
     minimize: true
   },
-  output: {
-    module: true,
-  },
-  experiments: {
-    outputModule: true,
-  },
+
   
   mode: 'production',
   entry: "./src/graph.ts",
@@ -60,4 +55,4 @@ const clientConfig = {
   }
 };
 
-module.exports = [clientConfig];
+module.exports = clientConfig;
