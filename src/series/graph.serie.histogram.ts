@@ -172,7 +172,14 @@ class SerieHistogram extends SerieLine implements SerieInterface {
     super.dataHasChanged(arg);
     if (this.waveform) {
       if (this.getXAxis()) {
-        this._calculateHistogram(this.waveform.getMinY(), this.waveform.getMaxY(), (this.waveform.getMaxY() - this.waveform.getMinY()) / 20);
+
+        let maxY = this.waveform.getMaxY(), minY = this.waveform.getMinY();
+
+        if (maxY == minY) {
+          return;
+        }
+
+        this._calculateHistogram(minY, maxY, (maxY - minY));
       }
     }
     return this;
