@@ -285,6 +285,11 @@ class Waveform {
 
   calculateHistogram( xMin: number, xMax: number, dX: number ) : Waveform {
 
+    if( xMin == xMax ) {
+      xMin -= dX;
+      xMax += dX;
+    }
+
     const numBins = Math.ceil( ( xMax - xMin ) / dX );
     if( xMax <= xMin || dX < 0 || isNaN( dX ) || dX == undefined ) {
 
