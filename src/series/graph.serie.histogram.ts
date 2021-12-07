@@ -174,7 +174,7 @@ class SerieHistogram extends SerieLine implements SerieInterface {
       if (this.getXAxis()) {
 
         let maxY = this.waveform.getMaxY(), minY = this.waveform.getMinY();
-
+        console.log(maxY, minY);
         if (maxY == minY) {
           return;
         }
@@ -188,7 +188,7 @@ class SerieHistogram extends SerieLine implements SerieInterface {
   private _calculateHistogram(xMin: number, xMax: number, dX: number) {
 
     try {
-
+      console.log(xMin, xMax, dX);
       this._histogramWaveform = this.waveform.calculateHistogram(xMin, xMax, dX);
 
       this.minX = this.waveform.getMinY();
