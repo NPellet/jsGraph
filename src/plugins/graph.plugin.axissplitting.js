@@ -1,6 +1,6 @@
 import Graph from '../graph.core';
-import AxisX from '../graph.axis.x.js';
-import AxisY from '../graph.axis.y.js';
+import AxisX from '../graph.axis.x';
+import AxisY from '../graph.axis.y';
 import * as util from '../graph.util.js';
 import SerieLine from '../series/graph.serie.line';
 import SerieScatter from '../series/graph.serie.scatter';

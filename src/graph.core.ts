@@ -7,7 +7,7 @@ import * as util from './graph.util.js';
 // @ts-ignore
 import GraphJSON from './renderer/mixin.js';
 // @ts-ignore
-import EventMixin from './mixins/graph.mixin.event.js';
+import EventMixin, { EventEmitter } from './mixins/graph.mixin.event.js';
 // @ts-ignore
 import { Waveform, WaveformHash } from './util/waveform';
 // @ts-ignore
@@ -94,7 +94,7 @@ type Axes<T> = Record<AxesPos, Array<T>>
  * Entry class of jsGraph that creates a new graph.
  * @tutorial basic
  */
-class Graph {
+class Graph extends EventEmitter {
 
   public ns: string
   public nsxlink: string;
@@ -187,6 +187,8 @@ class Graph {
   constructor(options: any);
   constructor(options: any, axes: Axes<any>);
   constructor(wrapper?: HTMLElement, options?: any, axes: Axes<any> = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: [] }) {
+
+    super();
 
     this.ns = ns;
     this.nsxlink = nsxlink;
@@ -1611,11 +1613,6 @@ class Graph {
     this.emit('newSerie', serie);
     return serie;
   }
-
-  emit(arg0: string, ...args: any[]) {
-    throw new Error('Method not implemented.');
-  }
-
   /**
    * Looks for an existing serie by name or by index and returns it.
    * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
@@ -3108,7 +3105,6 @@ class Graph {
       left: [],
       right: []
     };
-    console.log(this.getDrawingWidth(true));
 
     // Apply to top and bottom
     this._applyToAxes(
@@ -3145,7 +3141,7 @@ class Graph {
       return prev + curr;
     }, 0);
 
-    this.drawingSpaceHeight = this.getDrawingHeight() - shiftTop - shiftBottom;
+    this.drawingSpaceHeight = this.getDrawingHeight(false) - shiftTop - shiftBottom;
 
     [shift.top, shift.bottom].map(function (arr) {
       arr.reduce(function (prev, current, index) {
@@ -3153,6 +3149,7 @@ class Graph {
         return prev + current;
       }, 0);
     });
+
     // Apply to top and bottom
     this._applyToAxes(
       function (axis: any, position: AxisPosition) {
@@ -3179,7 +3176,6 @@ class Graph {
         }
         axis.setMinPx(shiftTop);
         axis.setMaxPx(this.getDrawingHeight(true) - shiftBottom);
-
         if (axis.floating) {
           return;
         }
@@ -4066,6 +4062,5 @@ function hasSizeChanged(graph: Graph) {
 }
 
 GraphJSON(Graph);
-EventMixin(Graph);
 
 export default Graph;

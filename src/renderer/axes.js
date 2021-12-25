@@ -1,5 +1,4 @@
 const processAxes = (Graph, graph, type, axisOptions, allAxes) => {
-
   if (!Array.isArray(axisOptions)) {
     axisOptions = [axisOptions];
   }

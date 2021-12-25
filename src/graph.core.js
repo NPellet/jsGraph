@@ -6,7 +6,7 @@ import * as util from './graph.util.js';
 // @ts-ignore
 import GraphJSON from './renderer/mixin.js';
 // @ts-ignore
-import EventMixin from './mixins/graph.mixin.event.js';
+import { EventEmitter } from './mixins/graph.mixin.event.js';
 // @ts-ignore
 import { Waveform, WaveformHash } from './util/waveform';
 // @ts-ignore
@@ -73,8 +73,9 @@ const GraphOptionsDefault = {
  * Entry class of jsGraph that creates a new graph.
  * @tutorial basic
  */
-class Graph {
+class Graph extends EventEmitter {
     constructor(wrapper, options, axes = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: [] }) {
+        super();
         this.uid = util.guid();
         this.prevented = false;
         this.shapesLocked = false;
@@ -1222,9 +1223,6 @@ class Graph {
         this.series.push(serie);
         this.emit('newSerie', serie);
         return serie;
-    }
-    emit(arg0, ...args) {
-        throw new Error('Method not implemented.');
     }
     /**
      * Looks for an existing serie by name or by index and returns it.
@@ -3063,5 +3061,4 @@ function hasSizeChanged(graph) {
     return temp;
 }
 GraphJSON(Graph);
-EventMixin(Graph);
 export default Graph;

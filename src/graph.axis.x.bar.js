@@ -1,4 +1,4 @@
-import AxisX from './graph.axis.x.js';
+import AxisX from './graph.axis.x';
 
 /**
  * Generic constructor of a y axis
@@ -6,8 +6,8 @@ import AxisX from './graph.axis.x.js';
  * @augments Axis
  */
 class AxisXBar extends AxisX {
-  constructor( graph, topbottom, options = {} ) {
-    super( graph, topbottom, options );
+  constructor(graph, topbottom, options = {}) {
+    super(graph, topbottom, options);
   }
 
   /**
@@ -16,7 +16,7 @@ class AxisXBar extends AxisX {
    * @param {(String|Number)} categories[].name - The name of the category (to indentify series)
    * @returns {AxisBar} The current axis instance
    */
-  set categories( categories ) {
+  set categories(categories) {
     this._barCategories = categories;
     return this;
   }
@@ -26,47 +26,47 @@ class AxisXBar extends AxisX {
       tickLabel,
       elements = this._barCategories;
 
-    if ( !this.series || this.series.length == 0 ) {
+    if (!this.series || this.series.length == 0) {
       this.autoSeries();
     }
 
-    this.forceMin( 0 );
-    this.forceMax( 1 );
+    this.forceMin(0);
+    this.forceMax(1);
 
     this.cacheCurrentMin();
     this.cacheCurrentMax();
     this.cacheInterval();
 
-    if ( !elements ) {
+    if (!elements) {
       return;
     }
 
-    if ( !Array.isArray( elements ) ) {
-      elements = [ elements ];
+    if (!Array.isArray(elements)) {
+      elements = [elements];
     }
 
     // this.drawInit();
 
     //var widthPerElement = width / elements.length;
-    for ( var i = 0; i <= elements.length; i++ ) {
-      this.drawTick( i / elements.length, 2 );
+    for (var i = 0; i <= elements.length; i++) {
+      this.drawTick(i / elements.length, 2);
 
-      if ( i < elements.length ) {
-        tickLabel = this.nextTickLabel( function( tickLabel ) {
+      if (i < elements.length) {
+        tickLabel = this.nextTickLabel(function (tickLabel) {
           tickLabel.setAttribute(
             'y',
-            ( self.top ? -1 : 1 ) *
-            ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) )
+            (self.top ? -1 : 1) *
+              ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)),
           );
-          tickLabel.setAttribute( 'text-anchor', 'middle' );
-          if ( self.getTicksLabelColor() !== 'black' ) {
-            tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+          tickLabel.setAttribute('text-anchor', 'middle');
+          if (self.getTicksLabelColor() !== 'black') {
+            tickLabel.setAttribute('fill', self.getTicksLabelColor());
           }
           tickLabel.style.dominantBaseline = 'hanging';
-        } );
+        });
 
-        tickLabel.setAttribute( 'x', this.getPos( ( i + 0.5 ) / elements.length ) );
-        tickLabel.textContent = elements[ i ].title;
+        tickLabel.setAttribute('x', this.getPos((i + 0.5) / elements.length));
+        tickLabel.textContent = elements[i].title;
       }
     }
 
@@ -80,12 +80,12 @@ class AxisXBar extends AxisX {
    */
   autoSeries() {
     let series = [];
-    for ( let serie of this.graph.series ) {
-      if ( serie.getXAxis() == this ) {
-        series.push( serie );
+    for (let serie of this.graph.series) {
+      if (serie.getXAxis() == this) {
+        series.push(serie);
       }
     }
-    this.setSeries( ...series );
+    this.setSeries(...series);
     return this;
   }
 
@@ -98,15 +98,15 @@ class AxisXBar extends AxisX {
     var self = this;
     this.series = arguments;
 
-    Array.prototype.map.call( this.series, function( serie, index ) {
-      if ( !( typeof serie == 'object' ) ) {
-        serie = self.graph.getSerie( serie );
+    Array.prototype.map.call(this.series, function (serie, index) {
+      if (!(typeof serie == 'object')) {
+        serie = self.graph.getSerie(serie);
       }
 
-      if ( serie.setCategoryConfig ) {
-        serie.setCategoryConfig( index, self._barCategories, self.series.length );
+      if (serie.setCategoryConfig) {
+        serie.setCategoryConfig(index, self._barCategories, self.series.length);
       }
-    } );
+    });
 
     this._getUsedCategories();
 
@@ -117,39 +117,39 @@ class AxisXBar extends AxisX {
     let categories = {},
       total = 0;
 
-    Array.prototype.map.call( this.series, ( serie ) => {
+    Array.prototype.map.call(this.series, (serie) => {
       let usedCategories = serie.getUsedCategories();
-      for ( let cat of usedCategories ) {
-        if ( !categories.hasOwnProperty( cat ) ) {
-          categories[ cat ] = 1;
+      for (let cat of usedCategories) {
+        if (!categories.hasOwnProperty(cat)) {
+          categories[cat] = 1;
           total += 1;
         }
 
-        categories[ cat ]++;
+        categories[cat]++;
         total++;
       }
-    } );
+    });
     let accumulator = 0;
-    for ( let i in categories ) {
-      let temp = categories[ i ];
-      categories[ i ] = accumulator;
+    for (let i in categories) {
+      let temp = categories[i];
+      categories[i] = accumulator;
       accumulator += temp;
     }
 
     let dispatchedCategories = {};
 
-    Array.prototype.map.call( this.series, ( serie ) => {
+    Array.prototype.map.call(this.series, (serie) => {
       let scategories = serie.getUsedCategories(),
         indices = {};
 
-      scategories.forEach( ( cat ) => {
-        dispatchedCategories[ cat ] = dispatchedCategories[ cat ] || 0.5;
-        indices[ cat ] = ( categories[ cat ] + dispatchedCategories[ cat ] ) / total;
-        dispatchedCategories[ cat ]++;
-      } );
+      scategories.forEach((cat) => {
+        dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
+        indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
+        dispatchedCategories[cat]++;
+      });
 
-      serie.setDataIndices( indices, total );
-    } );
+      serie.setDataIndices(indices, total);
+    });
   }
 
   getType() {

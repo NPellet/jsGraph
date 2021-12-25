@@ -3,10 +3,8 @@ import Graph from './graph.core';
 import GraphPosition from './graph.position.js';
 // @ts-ignore
 import GraphLegend from './graph.legend.js';
-// @ts-ignore
-import AxisX from './graph.axis.x.js';
-// @ts-ignore
-import AxisY from './graph.axis.y.js';
+import AxisX from './graph.axis.x';
+import AxisY from './graph.axis.y';
 // @ts-ignore
 import AxisXBar from './graph.axis.x.bar.js';
 // @ts-ignore

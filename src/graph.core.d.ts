@@ -1,3 +1,4 @@
+import { EventEmitter } from './mixins/graph.mixin.event.js';
 import { Waveform, WaveformHash } from './util/waveform';
 import { SerieStyle, SERIE_TYPE } from '../types/series';
 export declare const __VERSION__ = "0.0.1";
@@ -14,7 +15,7 @@ declare type Axes<T> = Record<AxesPos, Array<T>>;
  * Entry class of jsGraph that creates a new graph.
  * @tutorial basic
  */
-declare class Graph {
+declare class Graph extends EventEmitter {
     ns: string;
     nsxlink: string;
     uid: string;
@@ -497,7 +498,6 @@ declare class Graph {
      * @returns {Serie} The newly created serie
      */
     newSerie(name: string, options: any, type: SERIE_TYPE): any;
-    emit(arg0: string, ...args: any[]): void;
     /**
      * Looks for an existing serie by name or by index and returns it.
      * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)

@@ -3,7 +3,7 @@ import * as util from './graph.util.js';
 import { EventEmitter } from './mixins/graph.mixin.event.js';
 import { extend } from 'lodash'
 import Serie from './series/graph.serie'
-import assert from 'assert';
+//import assert from 'assert';
 
 export enum TickPosition {
   OUTSIDE = "outside",
@@ -90,7 +90,7 @@ type TickPosition_t = 1 | 2 | 3 | "centered" | "outside" | "inside" | TickPositi
  * @member ticksLabelColor: Color of the ticks label
    
  */
-type GraphAxisOptions = {
+export type GraphAxisOptions = {
 
   name: string,   // Name of the axis, can be referenced later
   label: string,  // Displayed label
@@ -173,8 +173,8 @@ type GraphAxisOptions = {
     preference: "min" | "max"
   };
 
-  currentAxisMin: number,
-  currentAxisMax: number,
+  currentAxisMin?: number,
+  currentAxisMax?: number,
 
   useKatexForLabel: boolean,
   unitDecade: boolean,
@@ -189,35 +189,12 @@ type GraphAxisOptions = {
   labelColor?: string,
   ticksLabelColor?: string
 }
-/**
- * Default graph parameters
- * @name AxisOptionsDefault
- * @object
- * @static
- * @memberof Axis
- * @prop {Boolean} display - Whether to display or not the axis
- * @prop {Boolean} flipped - Flips the axis (maximum and minimum will be inverted)
- * @prop {Numner} axisDataSpacing.min - The spacing of the at the bottom of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
- * @prop {Number} axisDataSpacing.max - The spacing of the at the top of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
- * @prop {String} unitModification - Used to change the units of the axis in a defined way. Currently, "time" and "time:min.sec" are supported. They will display the value in days, hours, minutes and seconds and the data should be expressed in seconds.
- * @prop {Boolean} primaryGrid - Whether or not to display the primary grid (on the main ticks)
- * @prop {Boolean} secondaryGrid - Whether or not to display the secondary grid (on the secondary ticks)
- * @prop {Number} tickPosition - Sets the position of the ticks with regards to the axis ( 1 = inside, 2 = centered, 3 = outside ).
- * @prop {Number} nbTicksPrimary - The number of primary ticks to use (approximately)
- * @prop {Number} nbTicksSecondary - The number of secondary ticks to use (approximately)
- * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
- * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
- * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
- * @prop {Boolean} logScale - Display the axis in log scale (base 10)
- * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
- * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
- */
+
+
 const defaults: GraphAxisOptions = {
   label: "",
   hideTicks: false,
   adaptTo: false,
-  currentAxisMax: 0,
-  currentAxisMin: 0,
   useKatexForLabel: false,
   unitDecade: false,
 
@@ -280,15 +257,6 @@ const defaults: GraphAxisOptions = {
   labelValue: ''
 };
 
-/**
- * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
- * @class Axis
- * @static
- * @example function myAxis() {};
- * myAxis.prototype = new Graph.getConstructor("axis");
- * graph.setBottomAxis( new myAxis( { } ) );
- */
-
 const unitModificationTimeTicks = [
   [1, [1, 2, 5, 10, 20, 30]],
   [60, [1, 2, 5, 10, 20, 30]],
@@ -296,7 +264,7 @@ const unitModificationTimeTicks = [
   [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]
 ];
 
-const tickScaling = {
+export const tickScaling = {
   1: 3,
   2: 2,
   3: 1,
@@ -310,26 +278,29 @@ type TickLevel<T> = {
 
 interface Axis {
   addLabel: (args: any) => SVGElement;
-  setMinMaxFlipped: () => void;
+  setMinMaxFlipped(): void;
 
 }
+
+
 abstract class Axis extends EventEmitter implements Axis {
 
-  private graph: Graph;
-  private options: GraphAxisOptions;
-  private group: SVGElement;
+  protected graph: Graph;
+  protected options: GraphAxisOptions;
+
+  protected group: SVGElement;
   private rectEvent: SVGElement;
   private _lines: Array<SVGElement>;
-  private line: SVGElement;
+  protected line: SVGElement;
   private groupTicks: SVGElement;
   private groupTickLabels: SVGElement
   private hasChanged: boolean;
-  private label: SVGElement;
-  private labelTspan: SVGElement;
+  protected label: SVGElement;
+  protected labelTspan: SVGElement;
   private preunit: string;
-  private unitTspan: SVGElement;
-  private expTspan: SVGElement;
-  private expTspanExp: SVGElement;
+  protected unitTspan: SVGElement;
+  protected expTspan: SVGElement;
+  protected expTspanExp: SVGElement;
 
   private gridLinePath: { primary: string, secondary: string };
   private gridPrimary: SVGElement;
@@ -349,24 +320,32 @@ abstract class Axis extends EventEmitter implements Axis {
   private ticksLabels: Array<SVGTextElement>
   private series: Array<Serie>;
   private _zoomed: any;
-  private floating: boolean;
+  protected floating: boolean;
   private floatingAxis: Axis;
   private floatingValue: number;
-  private minPx: number;
-  private maxPx: any;
-  private minPxFlipped: number;
-  private maxPxFlipped: number;
+  protected minPx: number;
+  protected maxPx: any;
+  protected minPxFlipped: number;
+  protected maxPxFlipped: number;
   private dataMin: number;
   private dataMax: number;
-  private mouseVal: number;
+  protected mouseVal: number;
   private _zoomLocked: any;
 
+
+  /**
+   * Axis constructor. 
+   * @class Axis
+   * @static
+   * @example function myAxis() {};
+   * myAxis.prototype = new Graph.getConstructor("axis");
+   * graph.setBottomAxis( new myAxis( { } ) );
+   */
   constructor() {
     super();
   }
 
   init(graph: Graph, options: Partial<GraphAxisOptions>) {
-
 
     this.graph = graph;
     this.options = extend(true, {}, defaults, options);
@@ -405,7 +384,6 @@ abstract class Axis extends EventEmitter implements Axis {
     this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the exponent value
 
     this.label.appendChild(this.labelTspan) as SVGElement;
-    //this.label.appendChild( this.preunitTspan );
     this.label.appendChild(this.unitTspan);
     this.label.appendChild(this.expTspan);
     this.label.appendChild(this.expTspanExp);
@@ -464,14 +442,7 @@ abstract class Axis extends EventEmitter implements Axis {
       this.addLabel(this.getVal(coords.x - this.graph.getPaddingLeft()));
     });
 
-    //this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
-    //this.clip.setAttribute( 'id', '_clip' + this.axisRand );
-    //this.graph.defs.appendChild( this.clip );
-    /*
-        this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
-        this.clip.appendChild( this.clipRect );
-        this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
-    */
+
     this.gridPrimary.setAttribute('clip-path', `url(#_clipplot${this.graph.uid})`);
     this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph.uid})`);
     this.graph._axisHasChanged(this);
@@ -488,6 +459,7 @@ abstract class Axis extends EventEmitter implements Axis {
    */
   hide() {
     this.options.display = false;
+    this.markChanged();
     return this;
   }
 
@@ -498,6 +470,7 @@ abstract class Axis extends EventEmitter implements Axis {
    */
   show() {
     this.options.display = true;
+    this.markChanged();
     return this;
   }
 
@@ -507,8 +480,9 @@ abstract class Axis extends EventEmitter implements Axis {
    * @param {Boolean} display - true to display the axis, false to hide it
    * @return {Axis} The current axis
    */
-  setDisplay(bool) {
-    this.options.display = !!bool;
+  setDisplay(display: boolean) {
+    this.options.display = !!display;
+    this.markChanged();
     return this;
   }
 
@@ -529,6 +503,10 @@ abstract class Axis extends EventEmitter implements Axis {
 
   isShown() {
     return this.isDisplayed();
+  }
+
+  private markChanged() {
+    this.graph._axisHasChanged(true);
   }
 
   hideGroup() {
@@ -1106,7 +1084,11 @@ abstract class Axis extends EventEmitter implements Axis {
               13'453 (4) (1.345) => 1
               0.0000341 (-5) (3.41) => 5
           */
-          assert(closest);
+          // assert(closest);
+
+          if (closest === false) {
+            throw new Error("");
+          }
           // Let's scale it back
           var unitPerTickCorrect = closest * Math.pow(10, decimals);
 
@@ -1131,7 +1113,6 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Axis} The current axis
    */
   setMinMaxToFitSeries(noNotify: boolean = false) {
-
     if (this.options.logScale) {
 
       this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
@@ -1140,10 +1121,9 @@ abstract class Axis extends EventEmitter implements Axis {
       //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
 
     } else {
+
       this.setCurrentMax(this.getMaxValue());
 
-      const minValue = this.getMinValue();
-      const maxValue = this.getMaxValue();
       //this.options.currentAxisMin = this.getMinValue();
       //this.options.currentAxisMax = this.getMaxValue();
 
@@ -1352,7 +1332,6 @@ abstract class Axis extends EventEmitter implements Axis {
 
     //    this.drawInit();
     let widthHeight: number = 0;
-
     if (this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined) {
       this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
     }
@@ -1371,7 +1350,6 @@ abstract class Axis extends EventEmitter implements Axis {
       /*			0 - 2 => 500
       /*			0 - 0.00005 => 20'000'000
       */
-
     if (!this.isShown()) {
       this.line.setAttribute('display', 'none');
       return 0;
@@ -1465,7 +1443,6 @@ abstract class Axis extends EventEmitter implements Axis {
 
       this.katexElement = this.graph.renderWithKatex(string, this.katexElement);
     }
-
     if (!this.options.hideTicks) {
 
       this.resetTicksLength();

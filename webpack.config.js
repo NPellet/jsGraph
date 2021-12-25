@@ -28,11 +28,16 @@ const clientConfig = {
   target: 'web', // <=== can be omitted as default is 'web'
   output: {
     library: {
-      type: 'commonjs',
+      type: 'module',
     },
     path: path.resolve(__dirname, 'dist'),
     filename: 'jsGraph.js',
   },
+  devtool: 'source-map',
+  experiments: {
+    outputModule: true,
+  },
+
   optimization: {
     minimize: true,
   },

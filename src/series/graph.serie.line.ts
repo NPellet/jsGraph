@@ -77,8 +77,8 @@ class SerieLine extends SerieScatter implements SerieInterface {
   protected counter: number = 0;
   protected lines: SVGPolylineElement[];
 
-  constructor(graph: Graph, name: string, options: SerieLineOptions ) {
-    super( graph, name, options);
+  constructor(graph: Graph, name: string, options: SerieLineOptions) {
+    super(graph, name, options);
 
     this.init();
     // Unselected style
@@ -100,7 +100,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
     this.activateStyle('unselected');
     this.computeActiveStyle();
 
-    
+
     this.data = [];
     this._isMinOrMax = {
       x: {
@@ -173,12 +173,12 @@ class SerieLine extends SerieScatter implements SerieInterface {
   }
 
   protected init() {
-    this.options = this.extendLineOptions( this.options );
+    this.options = this.extendLineOptions(this.options);
     util.mapEventEmission(this.options, this); // Register events
   }
 
-  protected extendLineOptions<T extends SerieLineOptions>( options: T ): T {
-    options = super.extendScatterOptions( util.extend( true, {}, defaultOptions, options ) )
+  protected extendLineOptions<T extends SerieLineOptions>(options: T): T {
+    options = super.extendScatterOptions(util.extend(true, {}, defaultOptions, options))
     return options;
   }
 
@@ -237,7 +237,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * @memberof SerieLine
    */
   unselect() {
-   
+
     super.unselect();
     return this.select('unselected');
   }
@@ -247,13 +247,13 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * @returns {SVGElement}
    * @memberof SerieLine
    */
-  getSymbolForLegend() : SVGElement {
+  getSymbolForLegend(): SVGElement {
     const container = this.symbolLegendContainer;
 
     if (!this._lineForLegend) {
       var line = document.createElementNS(ns, 'line');
       this.applyLineStyle(line);
-      
+
       line.setAttribute('x1', "5");
       line.setAttribute('x2', "25");
       line.setAttribute('y1', "0");
@@ -279,7 +279,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * @example serie.degrade( 0.5 ); // Will display 2 points per pixels
    * @memberof SerieLine
    */
-  degrade( pxPerP: number ) {
+  degrade(pxPerP: number) {
     this._degradationPx = pxPerP;
     return this;
   }
@@ -303,7 +303,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
     this._drawn = true;
     this.currentLine = '';
     // Degradation
-
     if (this.waveform) {
       if (this._degradationPx) {
         this.waveform.resampleForDisplay({
@@ -1106,9 +1105,9 @@ class SerieLine extends SerieScatter implements SerieInterface {
   getLineDashArray(styleName = this.getActiveStyleName()): string {
     let s = this.getLineStyle(styleName);
 
-    if( Array.isArray( s ) ) {
+    if (Array.isArray(s)) {
       return s.join(', ');
-    } else if( typeof s == "string" ) {
+    } else if (typeof s == "string") {
       return s;
     } else {
 
@@ -1132,7 +1131,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
           return '5 2';
           break;
         case Dasharray.DASHED_SM_INTV_LG:
-            return '2 5';
+          return '2 5';
           break;
         case Dasharray.DASHED_INTV_ALT:
           return '4 2 4 4';
@@ -1144,7 +1143,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
           return '9 2';
           break;
         case Dasharray.DASHED_SM_INTV_XL:
-            return '2 9';
+          return '2 9';
           break;
         default:
           return ""

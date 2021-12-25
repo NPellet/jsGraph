@@ -15,7 +15,7 @@
       "unitWrapperBefore": "(",
       "unitWrapperAfter": ")",
       "unitDecade": true,
-      "logScale": true
+      "logScale": false
     }
   },
   "legend": {
