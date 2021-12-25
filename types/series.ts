@@ -33,5 +33,7 @@ export type SerieOptions = {
     bindShapesToDisplayState: boolean,
     label: string,
     flip: boolean,
-    layer: number
+    layer: number,
+
+    tracking: any
 }

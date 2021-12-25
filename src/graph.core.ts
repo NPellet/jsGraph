@@ -578,7 +578,6 @@ class Graph extends EventEmitter {
     this.dom.addEventListener('mouseleave', (e) => {
       _handleMouseLeave(this);
     });
-    console.log(this.groupEvent);
     this.groupEvent.addEventListener('mousedown', (e) => {
       this.focus();
 
@@ -2654,7 +2653,6 @@ class Graph extends EventEmitter {
     if (options) {
       this.options.trackingLine = options;
     }
-
     // One can enable / disable the tracking
     options.enable = options.enable === undefined ? true : !!options.enable;
 
@@ -2671,7 +2669,6 @@ class Graph extends EventEmitter {
     }
 
     options.series = Array.from(seriesSet);
-
     // Individual tracking
     if (options.mode == 'individual') {
       seriesSet.forEach((serie: any) => {
@@ -2732,6 +2729,7 @@ class Graph extends EventEmitter {
     if (this.options.trackingLine.serieShape) {
       serieShape = this.options.trackingLine.serieShape;
     } else {
+
       serieShape = {
         shape: 'ellipse',
         properties: {
@@ -2740,12 +2738,12 @@ class Graph extends EventEmitter {
         }
       };
     }
-
     serie.options.tracking = Object.assign({}, options);
 
     if (!serie.trackingShape) {
       serie.trackingShape = this.newShape(
         serieShape.shape, {
+        ...serieShape,
         fillColor: serie.getLineColor(),
         strokeColor: 'White',
         strokeWidth: serie.getLineWidth()
@@ -2756,6 +2754,7 @@ class Graph extends EventEmitter {
         .setSerie(serie)
         .forceParentDom(serie.groupMain)
         .draw();
+
     }
     /*
       serie.serie.trackingShape.show();
@@ -3719,7 +3718,6 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
               serie._trackingLegend
             );
           }
-
           // What happens if there is no point ?
           if (!closestPoint) {
             if (serie.trackingShape) {

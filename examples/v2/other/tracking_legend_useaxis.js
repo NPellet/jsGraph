@@ -70,10 +70,11 @@ graph.tracking({
   serieOptions: {
     withinPx: 20,
   },
+  noLine: false,
 });
 
-graph.getSerie('Serie 1').options.tracking.useAxis = 'x';
-graph.getSerie('Serie 3').options.tracking.useAxis = 'y';
+//graph.getSerie('Serie 1').options.tracking.useAxis = 'x';
+//graph.getSerie('Serie 3').options.tracking.useAxis = 'y';
 
 graph.getSerie('Serie 1').on('track', (trackData) => {
   console.log(trackData);

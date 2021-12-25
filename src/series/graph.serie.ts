@@ -922,7 +922,7 @@ class Serie extends EventEmitter {
    */
   enableTracking(hoverCallback, outCallback) {
     this._tracker = true;
-
+    this.options.tracking = {};
     return this;
   }
 

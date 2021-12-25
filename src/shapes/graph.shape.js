@@ -28,10 +28,7 @@ class Shape extends EventEmitter {
     if (!simplified) {
       this.group = document.createElementNS(this.graph.ns, 'g');
       if (!this.getProp('noClip')) {
-        this.group.setAttribute(
-          'clip-path',
-          `url(#_clipplot${graph._creation})`,
-        );
+        this.group.setAttribute('clip-path', `url(#_clipplot${graph.uid})`);
       }
       this.group.jsGraphIsShape = this;
     }
