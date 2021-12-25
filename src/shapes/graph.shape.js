@@ -1,13 +1,16 @@
 import GraphPosition from '../graph.position.js';
 import * as util from '../graph.util.js';
+import { EventEmitter } from '../mixins/graph.mixin.event.js';
 import EventMixin from '../mixins/graph.mixin.event_graph.js';
 /**
  * Shape class that should be extended
  * @class Shape
  * @static
  */
-class Shape {
-  constructor() { }
+class Shape extends EventEmitter {
+  constructor() {
+    super();
+  }
 
   /**
    * Initializes the shape
@@ -25,7 +28,10 @@ class Shape {
     if (!simplified) {
       this.group = document.createElementNS(this.graph.ns, 'g');
       if (!this.getProp('noClip')) {
-        this.group.setAttribute('clip-path', `url(#_clipplot${graph._creation})`);
+        this.group.setAttribute(
+          'clip-path',
+          `url(#_clipplot${graph._creation})`,
+        );
       }
       this.group.jsGraphIsShape = this;
     }
@@ -107,7 +113,7 @@ class Shape {
   /**
    * Implentation of the init method. To be extended if necessary on extended Shape classes
    */
-  initImpl() { }
+  initImpl() {}
 
   /**
    * @return {Object} The shape's underlying data object
@@ -254,8 +260,7 @@ class Shape {
    * @return {Shape} The current shape
    */
   setEventReceptacle() {
-
-    if (this, simplified) {
+    if ((this, simplified)) {
       return;
     }
 
@@ -435,7 +440,7 @@ class Shape {
   /**
    * Implementation of the redraw method. Extended Shape classes should override this method
    */
-  redrawImpl() { }
+  redrawImpl() {}
 
   /**
    * Sets all dumpable properties of the shape
@@ -450,11 +455,12 @@ class Shape {
     }
     var self = this;
     for (var i = 0, l = this.properties.position.length; i < l; i++) {
-      var pos = GraphPosition.check(this.properties.position[i], function (
-        relativeTo
-      ) {
-        return self.getRelativePosition(relativeTo);
-      });
+      var pos = GraphPosition.check(
+        this.properties.position[i],
+        function (relativeTo) {
+          return self.getRelativePosition(relativeTo);
+        },
+      );
 
       this.properties.position[i] = pos;
     }
@@ -495,7 +501,6 @@ class Shape {
     if (index !== undefined) {
       this.properties[prop] = this.properties[prop] || [];
       this.properties[prop][index || 0] = val;
-
     } else {
       this.properties[prop] = val;
     }
@@ -509,9 +514,7 @@ class Shape {
    * @param [ index = 0 ] - The index of the property array
    */
   getProp(prop, index) {
-
     if (index == undefined) {
-
       return this.properties[prop];
     }
     return (this.properties[prop] || [])[index || 0];
@@ -547,7 +550,6 @@ class Shape {
    * Sets a DOM property to the shape
    */
   setDom(prop, val, noForce) {
-
     this._cachedDOM = this._cachedDOM || {};
 
     if (this._cachedDOM[prop] == val) {
@@ -566,7 +568,6 @@ class Shape {
    * Sets a DOM property to the shape group
    */
   setDomGroup(prop, val) {
-
     if (this.simplified) {
       this._dom.setAttribute(prop, val);
     } else if (this.group) {
@@ -697,7 +698,7 @@ class Shape {
   addTransform(type, args) {
     this.addProp('transforms', {
       type: type,
-      arguments: Array.isArray(args) ? args : [args]
+      arguments: Array.isArray(args) ? args : [args],
     });
     return this;
   }
@@ -716,11 +717,11 @@ class Shape {
       arguments: {
         center: {
           x: cx,
-          y: cy
+          y: cy,
         },
         angle: angle,
-        angleType: angleType
-      }
+        angleType: angleType,
+      },
     });
     return this;
   }
@@ -937,10 +938,10 @@ class Shape {
       for (var i in attributes[j]) {
         this.setDom(
           i,
-          typeof attributes[j][i] == 'function' ?
-            attributes[j][i].call(this, i) :
-            attributes[j][i],
-          true
+          typeof attributes[j][i] == 'function'
+            ? attributes[j][i].call(this, i)
+            : attributes[j][i],
+          true,
         );
       }
     }
@@ -968,9 +969,7 @@ class Shape {
     //   var position = this.getPosition( index );
     var position;
     if (!(index instanceof GraphPosition)) {
-
       position = this.getPosition(index);
-
     } else {
       position = index;
     }
@@ -984,7 +983,7 @@ class Shape {
         this.graph,
         this.getXAxis(),
         this.getYAxis(),
-        this.getSerie()
+        this.getSerie(),
       );
     }
 
@@ -1059,7 +1058,7 @@ class Shape {
               this.graph,
               this.getXAxis(),
               this.getYAxis(),
-              this.getSerie()
+              this.getSerie(),
             );
           } else {
             const value = GraphPosition.check(transforms[i].value);
@@ -1068,7 +1067,7 @@ class Shape {
               this.graph,
               this.getXAxis(),
               this.getYAxis(),
-              this.getSerie()
+              this.getSerie(),
             );
           }
 
@@ -1082,9 +1081,7 @@ class Shape {
           let angle;
 
           if (!transforms[i].arguments) {
-
             if (transforms[i].angleType == 'angleData') {
-
               let xAxis, yAxis;
 
               if (!this.serie) {
@@ -1095,7 +1092,14 @@ class Shape {
                 yAxis = this.serie.getYAxis();
               }
 
-              angle = Math.atan(Math.tan(transforms[i].angle * Math.PI / 180) * xAxis.getRelVal(1) / yAxis.getRelVal(1)) * 180 / Math.PI;
+              angle =
+                (Math.atan(
+                  (Math.tan((transforms[i].angle * Math.PI) / 180) *
+                    xAxis.getRelVal(1)) /
+                    yAxis.getRelVal(1),
+                ) *
+                  180) /
+                Math.PI;
             } else {
               angle = transforms[i].angle;
             }
@@ -1108,12 +1112,12 @@ class Shape {
               transformString += `, ${p.x}, ${p.y}`;
             } else {
               const posCenter = GraphPosition.check(
-                transforms[i].center
+                transforms[i].center,
               ).compute(
                 this.graph,
                 this.getXAxis(),
                 this.getYAxis(),
-                this.getSerie()
+                this.getSerie(),
               );
 
               if (posCenter.x === posCenter.x && posCenter.y === posCenter.y) {
@@ -1121,11 +1125,8 @@ class Shape {
                 transformString += posCenter.x;
                 transformString += ', ';
                 transformString += posCenter.y;
-
               }
-
             }
-
           } else {
             transformString += transforms[i].arguments[0];
             transformString += ', ';
@@ -1136,12 +1137,12 @@ class Shape {
             } else {
               transformString += GraphPosition.getDeltaPx(
                 transforms[i].arguments[1],
-                this.getXAxis()
+                this.getXAxis(),
               ).replace('px', '');
               transformString += ', ';
               transformString += GraphPosition.getDeltaPx(
                 transforms[i].arguments[2],
-                this.getYAxis()
+                this.getYAxis(),
               ).replace('px', '');
             }
           }
@@ -1162,7 +1163,6 @@ class Shape {
    * @returns {Shape} The current shape
    */
   makeLabels() {
-
     if (this.simplified) {
       return;
     }
@@ -1184,14 +1184,13 @@ class Shape {
     var i = 0;
     while (this.getProp('labelText', i) !== undefined) {
       if (!this._labels[i]) {
-
         this._labels[i] = document.createElementNS(this.graph.ns, 'text');
         this._labels[i].setAttribute('data-label-i', i);
         this._labels[i].jsGraphIsShape = this;
 
         this._labelsBackground[i] = document.createElementNS(
           this.graph.ns,
-          'rect'
+          'rect',
         );
         this._labelsBackground[i].setAttribute('data-label-i', i);
         this._labelsBackground[i].jsGraphIsShape = this;
@@ -1271,7 +1270,7 @@ class Shape {
     }
 
     var position = this.calculatePosition(
-      GraphPosition.check(this.getProp('labelPosition', labelIndex))
+      GraphPosition.check(this.getProp('labelPosition', labelIndex)),
     );
 
     if (
@@ -1305,7 +1304,7 @@ class Shape {
 
       this._labels[labelIndex].setAttribute(
         'transform',
-        `rotate(${currAngle} ${x} ${y})`
+        `rotate(${currAngle} ${x} ${y})`,
       );
       //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
     }
@@ -1320,45 +1319,45 @@ class Shape {
     /** Sets the baseline */
     this._labels[labelIndex].setAttribute(
       'dominant-baseline',
-      this.getProp('labelBaseline', labelIndex) || 'no-change'
+      this.getProp('labelBaseline', labelIndex) || 'no-change',
     );
 
     /** Sets the text */
     this._labels[labelIndex].textContent = this.getProp(
       'labelText',
-      labelIndex
+      labelIndex,
     );
 
     /** Sets the color */
     this._labels[labelIndex].setAttribute(
       'fill',
-      this.getProp('labelColor', labelIndex) || 'black'
+      this.getProp('labelColor', labelIndex) || 'black',
     );
 
     /** Sets the size */
     if (this.getProp('labelSize', labelIndex)) {
       this._labels[labelIndex].setAttribute(
         'font-size',
-        `${this.getProp('labelSize', labelIndex) || 12}px`
+        `${this.getProp('labelSize', labelIndex) || 12}px`,
       );
     }
 
     /** Sets the anchor */
     this._labels[labelIndex].setAttribute(
       'text-anchor',
-      this._getLabelAnchor(labelIndex)
+      this._getLabelAnchor(labelIndex),
     );
 
     /** Sets the stroke */
     this._labels[labelIndex].setAttribute(
       'stroke',
-      this.getProp('labelStrokeColor', labelIndex) || 'black'
+      this.getProp('labelStrokeColor', labelIndex) || 'black',
     );
 
     /** Sets the stroke */
     this._labels[labelIndex].setAttribute(
       'stroke-width',
-      this.getProp('labelStrokeWidth', labelIndex) || `${0}px`
+      this.getProp('labelStrokeWidth', labelIndex) || `${0}px`,
     );
 
     this._labels[labelIndex].setAttribute('stroke-location', 'outside');
@@ -1372,11 +1371,11 @@ class Shape {
 
     this._labelsBackground[labelIndex].setAttribute(
       'fill',
-      this.getProp('labelBackgroundColor') || 'transparent'
+      this.getProp('labelBackgroundColor') || 'transparent',
     );
     this._labelsBackground[labelIndex].setAttribute(
       'fill-opacity',
-      this.getProp('labelBackgroundOpacity') || 1
+      this.getProp('labelBackgroundOpacity') || 1,
     );
 
     return this;
@@ -1455,7 +1454,6 @@ class Shape {
    * @return {Shape} The current shape
    */
   addHandles() {
-
     if (this.simplified) {
       return;
     }
@@ -1692,28 +1690,28 @@ class Shape {
    * @private
    * @param {Event} e - The native event.prototype
    */
-  handleMouseDownImpl() { }
+  handleMouseDownImpl() {}
 
   /**
    * Handles the mouse move event
    * @private
    * @param {Event} e - The native event.prototype
    */
-  handleMouseMoveImpl() { }
+  handleMouseMoveImpl() {}
 
   /**
    * Handles mouse up event
    * @private
    * @param {Event} e - The native event.prototype
    */
-  handleMouseUpImpl() { }
+  handleMouseUpImpl() {}
 
   /**
    * Called when the shape is created
    * @private
    * @param {Event} e - The native event.prototype
    */
-  handleCreateImpl() { }
+  handleCreateImpl() {}
 
   /**
    * Handles mouse down events
@@ -1807,7 +1805,7 @@ class Shape {
       deltaX,
       deltaY,
       coords.x - this._mouseCoords.x,
-      coords.y - this._mouseCoords.y
+      coords.y - this._mouseCoords.y,
     );
 
     return ret;
@@ -1844,7 +1842,7 @@ class Shape {
    * @return The result of the {@link Shape#handleMouseDblClickImpl} method
    * @private
    */
-  handleDblClick(e) { }
+  handleDblClick(e) {}
 
   /**
    * Handles mouse over events
@@ -2014,8 +2012,8 @@ class Shape {
     return this;
   }
 
-  highlightImpl() { }
-  unHighlightImpl() { }
+  highlightImpl() {}
+  unHighlightImpl() {}
 
   /**
    * @returns {Object} The attributes taken by the shape when highlighted
@@ -2073,11 +2071,11 @@ class Shape {
 
     var position = {
       x: 'min',
-      y: 'min'
+      y: 'min',
     };
     var position2 = {
       x: 'max',
-      y: 'max'
+      y: 'max',
     };
 
     position = this._getPosition(position);
@@ -2088,17 +2086,17 @@ class Shape {
 
     this.maskDomWrapper.setAttribute(
       'width',
-      Math.abs(position2.x - position.x)
+      Math.abs(position2.x - position.x),
     );
     this.maskDomWrapper.setAttribute(
       'height',
-      Math.abs(position2.y - position.y)
+      Math.abs(position2.y - position.y),
     );
 
     for (var i = 0; i < this._dom.attributes.length; i++) {
       this.maskDom.setAttribute(
         this._dom.attributes[i].name,
-        this._dom.attributes[i].value
+        this._dom.attributes[i].value,
       );
     }
 
@@ -2132,14 +2130,18 @@ class Shape {
 
     util.setCSS(shapeLabel, {
       position: 'absolute',
-      marginTop: `${parseInt(e.target.getAttribute('y').replace('px', '')) +
+      marginTop: `${
+        parseInt(e.target.getAttribute('y').replace('px', '')) +
         this.graph.getPaddingTop() -
-        10}px`,
-      marginLeft: `${parseInt(e.target.getAttribute('x').replace('px', '')) +
+        10
+      }px`,
+      marginLeft: `${
+        parseInt(e.target.getAttribute('x').replace('px', '')) +
         this.graph.getPaddingLeft() -
-        50}px`,
+        50
+      }px`,
       textAlign: 'center',
-      width: '100px'
+      width: '100px',
     });
 
     const previousValue = self.getLabelText(i);
@@ -2156,7 +2158,7 @@ class Shape {
 
       self.changed('shapeLabelChanged', {
         previousValue: previousValue,
-        nextValue: nextValue
+        nextValue: nextValue,
       });
     };
 
@@ -2219,7 +2221,5 @@ Shape.prototype.showLabel = Shape.prototype.displayLabel;
  * @alias Shape#kill
  */
 Shape.prototype.remove = Shape.prototype.kill;
-
-EventMixin(Shape, 'shape');
 
 export default Shape;

@@ -148,6 +148,7 @@ class AxisX extends Axis {
       tickLabel.setAttribute('x', val);
 
       if (this.options.tickLabelRotation) {
+
         if (this.options.tickLabelRotation < 0) {
           tickLabel.setAttribute('text-anchor', 'end');
         } else {

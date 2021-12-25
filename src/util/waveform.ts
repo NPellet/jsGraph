@@ -44,11 +44,11 @@ class Waveform {
   private _monotoneousAscending: boolean = false;
   private dataInUseType: string = "";
 
-  private dataInUse: XYData = { x: [], y: []};
-  private _typedArrayClass:  undefined | Uint16ArrayConstructor | Uint8ArrayConstructor | ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor | Uint8ClampedArrayConstructor | Uint32ArrayConstructor;
+  private dataInUse: XYData = { x: [], y: [] };
+  private _typedArrayClass: undefined | Uint16ArrayConstructor | Uint8ArrayConstructor | ArrayConstructor | Float32ArrayConstructor | Float64ArrayConstructor | Uint8ClampedArrayConstructor | Uint32ArrayConstructor;
 
   private _dataAggregating: Promise<any> | undefined;
-  private _dataAggregated: { [ x:number ]: XYData } = {};
+  private _dataAggregated: { [x: number]: XYData } = {};
 
   private _dataAggregationDirection: string = "";
   unit: string;
@@ -64,10 +64,10 @@ class Waveform {
     this.errors = {
       nb: 0,
       bars: {
-       
+
       },
       boxes: {
-      
+
       }
     };
 
@@ -153,7 +153,7 @@ class Waveform {
     return this;
   }
 
-  getY(index: number , optimized: boolean = false) {
+  getY(index: number, optimized: boolean = false) {
     if (optimized && this.dataInUse) {
       return this.dataInUse.y[index] * this.getScale() + this.getShift();
     }
@@ -283,33 +283,33 @@ class Waveform {
     }
   }
 
-  calculateHistogram( xMin: number, xMax: number, dX: number ) : Waveform {
+  calculateHistogram(xMin: number, xMax: number, dX: number): Waveform {
 
-    if( xMin == xMax ) {
+    if (xMin == xMax) {
       xMin -= dX;
       xMax += dX;
     }
 
-    const numBins = Math.ceil( ( xMax - xMin ) / dX );
-    if( xMax <= xMin || dX < 0 || isNaN( dX ) || dX == undefined ) {
+    const numBins = Math.ceil((xMax - xMin) / dX);
+    if (xMax <= xMin || dX < 0 || isNaN(dX) || dX == undefined) {
 
       throw "xMin/xMax/dX is ill formed";
     }
-    const newY = new Array( numBins );
-    newY.fill( 0 );
-    const newX = new Array( numBins );
-    for( let i = 0; i < numBins; i ++ ) {
-      newX[ i ] = xMin + dX * i;
+    const newY = new Array(numBins);
+    newY.fill(0);
+    const newX = new Array(numBins);
+    for (let i = 0; i < numBins; i++) {
+      newX[i] = xMin + dX * i;
     }
 
-    for( let i = 0; i < this.getLength(); i ++ ) {
-      let y = this.getY( i, false );
-      const bin = Math.floor( ( y - xMin ) / dX );
-     
-      newY[ bin ]++;
+    for (let i = 0; i < this.getLength(); i++) {
+      let y = this.getY(i, false);
+      const bin = Math.floor((y - xMin) / dX);
+
+      newY[bin]++;
     }
     let w = new Waveform();
-    w.setData( newY, newX );
+    w.setData(newY, newX);
     return w;
   }
 
@@ -541,7 +541,7 @@ class Waveform {
     if (useDataToUse && this.dataInUse) {
       xdata = this.dataInUse.x;
     } else if (this._xdata) {
-      xdata = this._xdata.getData( useDataToUse );
+      xdata = this._xdata.getData(useDataToUse);
     }
 
     if (this.hasXWaveform()) {
@@ -593,7 +593,7 @@ class Waveform {
     if (useDataToUse && this.dataInUse) {
       ydata = this.dataInUse.y;
     } else {
-      ydata = this.getData( false );
+      ydata = this.getData(false);
     }
 
     position = euclidianSearch(undefined, yval, undefined, ydata, 1, undefined);
@@ -737,7 +737,6 @@ class Waveform {
   }
 
   findWithShortestDistance(options) {
-
     if (!options.axisRef) {
       const index = this.getIndexFromXY(
         options.x,
@@ -747,7 +746,6 @@ class Waveform {
         options.scaleX,
         options.scaleY
       );
-
       if (options.xMaxDistance && Math.abs(options.x - this.getX(index)) > Math.abs(options.xMaxDistance)) {
         return -1;
       }
@@ -1059,7 +1057,7 @@ class Waveform {
 
     let deltaTot = 0;
     let diff;
-    var arrY = this.getData( false );
+    var arrY = this.getData(false);
 
     for (; from <= to; from++) {
       if (arrY.length - 1 > from) {
@@ -1113,7 +1111,7 @@ class Waveform {
 
   checkMonotonicity() {
     let i = 1,
-      data = this.getData( false );
+      data = this.getData(false);
     const l = this._data.length;
     let dir = data[1] > data[0];
 
@@ -1515,7 +1513,7 @@ class Waveform {
   }
 
   aggregate(direction = 'x') {
-    
+
     this._dataAggregated = {};
     this._dataAggregationDirection = direction.toUpperCase();
 
@@ -2389,7 +2387,7 @@ class WaveformHash extends Waveform {
 
   setXWaveform(data: Waveform | Array<number>) {
 
-    if( Array.isArray( data ) ) {
+    if (Array.isArray(data)) {
       throw "Waveform must be of a pure Waveform instance (and not an array)";
     }
     this._xdata = data;
@@ -2421,7 +2419,7 @@ class WaveformHash extends Waveform {
     throw 'Not available in hash waveform';
   }
 
-  subrangeX( fromX: number, toX: number) {
+  subrangeX(fromX: number, toX: number) {
     this.errorNotImplemented();
   }
 

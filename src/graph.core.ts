@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 // @ts-ignore
 import GraphPosition from './graph.position.js';
@@ -12,6 +11,8 @@ import EventMixin, { EventEmitter } from './mixins/graph.mixin.event.js';
 import { Waveform, WaveformHash } from './util/waveform';
 // @ts-ignore
 import { SerieStyle, SERIE_DEFAULT_STYLE, SERIE_TYPE } from '../types/series';
+import Serie from './series/graph.serie.js';
+import { uniq } from 'lodash';
 
 export const __VERSION__ = "0.0.1"
 export const ns = 'http://www.w3.org/2000/svg';
@@ -27,6 +28,21 @@ enum AxisPositionE {
   LEFT = "left",
   RIGHT = "right"
 }
+
+
+export type trackingMode = {
+  mode: 'individual' | 'common',
+  series?: Array<string | Serie>,
+  legend?: boolean,
+  legendType?: 'independent' | 'common',
+  serieOptions?: {
+    withinPx: number
+  },
+  enable?: boolean,
+  noLine?: boolean,
+  trackingLineShapeOptions?: any
+}
+
 
 type AxisPosition = "top" | "bottom" | "left" | "right";
 
@@ -224,6 +240,8 @@ class Graph extends EventEmitter {
 
 
     this.dom = document.createElementNS(ns, 'svg');
+    this.groupEvent = document.createElementNS(ns, 'g');
+
 
     if (wrapper) {
       this.setWrapper(wrapper);
@@ -318,8 +336,6 @@ class Graph extends EventEmitter {
 
     this.defs = document.createElementNS(ns, 'defs');
     this.dom.appendChild(this.defs);
-
-    this.groupEvent = document.createElementNS(ns, 'g');
 
     this.rectEvent = document.createElementNS(ns, 'rect');
     util.setAttributeTo(this.rectEvent, {
@@ -562,7 +578,7 @@ class Graph extends EventEmitter {
     this.dom.addEventListener('mouseleave', (e) => {
       _handleMouseLeave(this);
     });
-
+    console.log(this.groupEvent);
     this.groupEvent.addEventListener('mousedown', (e) => {
       this.focus();
 
@@ -2616,7 +2632,7 @@ class Graph extends EventEmitter {
     return () => this.drawingSpaceMaxY;
   }
 
-  tracking(options: any) {
+  tracking(options: trackingMode) {
     // This is the new alias
     return this.trackingLine(options);
   }
@@ -2625,7 +2641,7 @@ class Graph extends EventEmitter {
    *  Enables the line tracking
    *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
    */
-  trackingLine(options: any) {
+  trackingLine(options: trackingMode) {
     var self = this;
 
     if (typeof options === 'boolean') {
@@ -2643,7 +2659,7 @@ class Graph extends EventEmitter {
     options.enable = options.enable === undefined ? true : !!options.enable;
 
     // Treat the series
-    const seriesSet = new Set();
+    const seriesSet = new Set<Serie>();
     let backupSeries = [];
     // If we defined an array, let's save it
     if (Array.isArray(options.series)) {
@@ -2654,7 +2670,7 @@ class Graph extends EventEmitter {
       this.allSeries().forEach((serie: any) => seriesSet.add(serie));
     }
 
-    options.series = seriesSet;
+    options.series = Array.from(seriesSet);
 
     // Individual tracking
     if (options.mode == 'individual') {
@@ -2708,8 +2724,9 @@ class Graph extends EventEmitter {
         mode: 'individual'
       });
     }
+    this.options.trackingLine.series.push(serie)
+    this.options.trackingLine.series = uniq(this.options.trackingLine.series);
 
-    this.options.trackingLine.series.add(serie);
 
     let serieShape;
     if (this.options.trackingLine.serieShape) {
