@@ -196,6 +196,10 @@ class Waveform {
         }
     }
     calculateHistogram(xMin, xMax, dX) {
+        if (xMin == xMax) {
+            xMin -= dX;
+            xMax += dX;
+        }
         const numBins = Math.ceil((xMax - xMin) / dX);
         if (xMax <= xMin || dX < 0 || isNaN(dX) || dX == undefined) {
             throw "xMin/xMax/dX is ill formed";

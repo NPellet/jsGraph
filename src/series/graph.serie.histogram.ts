@@ -15,7 +15,7 @@ export interface SerieHistogramOptions extends SerieLineOptions {
 }
 
 
-const defaultOptions: SerieHistogramOptions = {
+const defaultOptions: Partial<SerieHistogramOptions> = {
   markers: false,
 
   histogramStyle: {

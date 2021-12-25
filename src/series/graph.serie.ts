@@ -1,11 +1,11 @@
-// @ts-nocheck
+
 
 import Graph, { ns } from '../graph.core';
 
 // @ts-ignore
 import * as util from '../graph.util.js';
 // @ts-ignore
-import EventMixing from '../mixins/graph.mixin.event_graph.js';
+import { EventEmitter } from '../mixins/graph.mixin.event';
 // @ts-ignore
 import { SerieOptions, SerieStyle } from '../../types/series'
 
@@ -16,15 +16,11 @@ import {
 } from '../util/waveform';
 
 
-const defaultOptions: SerieOptions = {
+const defaultOptions: Partial<SerieOptions> = {
   redrawShapesAfterDraw: false
 };
 
-/**
- * Serie class to be extended
- * @static
- */
-class Serie {
+class Serie extends EventEmitter {
 
   public options: SerieOptions
   private graph: Graph
@@ -33,22 +29,29 @@ class Serie {
   protected symbolLegendContainer: SVGElement
   private _activeStyleName: string
   private _unselectedStyleName: string;
+  private _changedStyles: { [x: string]: boolean }
 
   protected minX: number;
   protected maxX: number;
   protected minY: number;
   protected maxY: number;
-  
-  private styles: { [x: string]: {
-    base: string,
-    data: SerieStyle 
-  } }
+
+
+  private styles: {
+    [x: string]: {
+      base?: string,
+      data: SerieStyle
+    }
+  }
 
   protected shown: boolean = true;
   protected selected: boolean = false;
   protected waveform: Waveform | undefined = undefined;
 
   constructor(graph, name, options = {}) {
+
+    super();
+
     this.options = util.extend(
       true, {},
       options
@@ -64,17 +67,19 @@ class Serie {
     this.styles = {};
   }
 
-  init() {}
+  init() { }
 
-  extendOptions<T extends SerieOptions>( options: T ) : T {
-    options = util.extend( true, {}, defaultOptions, options );
+  extendOptions<T extends SerieOptions>(options: T): T {
+    options = util.extend(true, {}, defaultOptions, options);
     return options;
   }
 
 
   postInit() { }
 
-  draw() { }
+  draw(force: boolean) {
+    throw new Error("Method draw must be implemented");
+  }
 
   beforeDraw() { }
 
@@ -94,12 +99,8 @@ class Serie {
    * @param {(Object|Array|Array[])} data - The data of the serie
    * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
    * @param{String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
-   * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
-   * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
-   * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
-   * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
-   */
-  setData(data, oneDimensional, type) {
+  */
+  setData(data: Waveform) {
     if (data instanceof Waveform) {
       return this.setWaveform(data);
     }
@@ -145,7 +146,7 @@ class Serie {
    * @memberof Serie
    * @example serie.setOption('selectableOnClick', true );
    */
-  setOption(name, value) {
+  setOption<T extends keyof SerieOptions>(name: T, value: SerieOptions[T]) {
     this.options[name] = value;
   }
 
@@ -154,7 +155,7 @@ class Serie {
    * @return {Serie} The current serie instance
    * @memberof Serie
    */
-  kill(noLegendUpdate) {
+  kill(noLegendUpdate: boolean) {
     this.graph.removeSerieFromDom(this);
     this.graph._removeSerie(this);
 
@@ -365,12 +366,15 @@ class Serie {
     }
 
     // After axes have been assigned, the graph axes should update their min/max
-    this.graph.updateDataMinMaxAxes();
+    this.graph.updateDataMinMaxAxes(false);
     return this;
   }
 
+  /**
+   * @alias autoAxis
+   */
   autoAxes() {
-    return this.autoAxis(...arguments);
+    return this.autoAxis();
   }
 
   /**
@@ -389,7 +393,7 @@ class Serie {
       this.xaxis = axis;
     }
 
-    this.graph.updateDataMinMaxAxes();
+    this.graph.updateDataMinMaxAxes(false);
 
     return this;
   }
@@ -410,7 +414,7 @@ class Serie {
       this.yaxis = axis;
     }
 
-    this.graph.updateDataMinMaxAxes();
+    this.graph.updateDataMinMaxAxes(false);
 
     return this;
   }
@@ -429,7 +433,7 @@ class Serie {
       }
     }
 
-    this.graph.updateDataMinMaxAxes();
+    this.graph.updateDataMinMaxAxes(false);
 
     return this;
   }
@@ -508,7 +512,7 @@ class Serie {
 
     this.waveform = waveform;
     this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
+    this.graph.updateDataMinMaxAxes(false);
 
 
     return this;
@@ -524,10 +528,10 @@ class Serie {
       var line = document.createElementNS(this.graph.ns, 'line');
       this.applyLineStyle(line);
 
-      line.setAttribute('x1', 5);
-      line.setAttribute('x2', 25);
-      line.setAttribute('y1', 0);
-      line.setAttribute('y2', 0);
+      line.setAttribute('x1', "5");
+      line.setAttribute('x2', "25");
+      line.setAttribute('y1', "0");
+      line.setAttribute('y2', "0");
 
       line.setAttribute('cursor', 'pointer');
 
@@ -537,17 +541,17 @@ class Serie {
     return this.lineForLegend;
   }
 
-  _getSymbolForLegendContainer() : SVGElement {
+  _getSymbolForLegendContainer(): SVGElement {
     return this.symbolLegendContainer;
   }
 
-  extendStyle( data: Object, styleName: string = 'unselected', baseStyleName: string = 'unselected' ) {
-    this.styles[ styleName ] = this.styles[ styleName ] || { base: baseStyleName, data: {}}
-    util.extend( this.styles[ styleName ].data, data );
+  extendStyle(data: Object, styleName: string = 'unselected', baseStyleName: string = 'unselected') {
+    this.styles[styleName] = this.styles[styleName] || { base: baseStyleName, data: {} }
+    util.extend(this.styles[styleName].data, data);
   }
 
   setStyle(json, styleName = 'unselected', baseStyleName = 'unselected') {
-   
+
     this.styles[styleName] = {
       base: baseStyleName,
       data: json
@@ -560,7 +564,7 @@ class Serie {
 
   getStyle(styleName) {
     if (!this.styles[styleName]) {
-      return this.graph.constructor.getStyle(styleName);
+      return Graph.getStyle(styleName);
     }
     return this._buildStyle(styleName);
   }
@@ -617,17 +621,17 @@ class Serie {
     return this.computedStyle;
   }
 
-  private _buildStyle( styleName: string ) {
-    let base = this.styles[ styleName ].base;
+  private _buildStyle(styleName: string) {
+    let base = this.styles[styleName].base;
 
-    if( base == styleName ) {
+    if (base == styleName) {
       base = null;
     }
 
     if (!base) {
-      return util.extend(true, {}, this.styles[ styleName ].data);
+      return util.extend(true, {}, this.styles[styleName].data);
     } else {
-      return util.extend(true, {}, this.getStyle(base), this.styles[ styleName ].data);
+      return util.extend(true, {}, this.getStyle(base), this.styles[styleName].data);
     }
   }
 
@@ -766,7 +770,7 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  styleHasChanged(selectionType: string | boolean = 'unselected') {
+  styleHasChanged(selectionType: string | false = 'unselected') {
     this._changedStyles = this._changedStyles || {};
 
     if (selectionType === false) {
@@ -774,7 +778,7 @@ class Serie {
         this._changedStyles[i] = false;
       }
     } else {
-      this._changedStyles[selectionType || 'unselected'] = true;
+      this._changedStyles[selectionType ? selectionType : 'unselected'] = true;
     }
 
     this.graph.requireLegendUpdate();
@@ -799,8 +803,8 @@ class Serie {
 
       s = this.styles[selectionType];
 
-      
-      if (!s || s.base == selectionType ) {
+
+      if (!s || s.base == selectionType) {
         break;
       }
       selectionType = s.base;
@@ -813,7 +817,7 @@ class Serie {
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  dataHasChanged(arg) {
+  dataHasChanged(arg?: any) {
     this._dataHasChanged = arg === undefined || arg;
 
     if (this.waveform) {
@@ -984,8 +988,6 @@ class Serie {
     return this.waveform.hasErrorBars();
   }
 }
-
-EventMixing(Serie, 'serie');
 
 export default Serie;
 

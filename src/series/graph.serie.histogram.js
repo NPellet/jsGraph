@@ -1,7 +1,7 @@
 import { SERIE_TYPE } from '../../types/series';
 import { ns } from '../graph.core';
-import SerieLine from './graph.serie.line';
 import * as util from '../graph.util.js';
+import SerieLine from './graph.serie.line';
 const defaultOptions = {
     markers: false,
     histogramStyle: {
@@ -76,7 +76,6 @@ class SerieHistogram extends SerieLine {
         return this._histForLegend;
     }
     drawInit(force) {
-        var data, xData;
         try {
             this.axisCheck();
         }
@@ -126,21 +125,28 @@ class SerieHistogram extends SerieLine {
         super.dataHasChanged(arg);
         if (this.waveform) {
             if (this.getXAxis()) {
-                this._calculateHistogram(this.waveform.getMinY(), this.waveform.getMaxY(), (this.waveform.getMaxY() - this.waveform.getMinY()) / 20);
+                let maxY = this.waveform.getMaxY(), minY = this.waveform.getMinY();
+                console.log(maxY, minY);
+                if (maxY == minY) {
+                    return;
+                }
+                this._calculateHistogram(minY, maxY, (maxY - minY));
             }
         }
         return this;
     }
     _calculateHistogram(xMin, xMax, dX) {
         try {
+            console.log(xMin, xMax, dX);
             this._histogramWaveform = this.waveform.calculateHistogram(xMin, xMax, dX);
             this.minX = this.waveform.getMinY();
             this.maxX = this.waveform.getMaxY();
             this.minY = 0;
             this.maxY = this._histogramWaveform.getMax();
+            //console.log( this.minX, this.maxX, this.minY, this.maxY );
         }
         catch (e) {
-            console.warn("Could not calculate histogram");
+            //console.warn("Could not calculate histogram");
             // TODO: Signal that the serie is invalid and but soft fails the drawing
         }
     }

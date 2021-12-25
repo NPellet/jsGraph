@@ -1,5 +1,5 @@
 export type SerieStyle = {
-    [ x: string ]: any
+    [x: string]: any
 }
 
 export const SERIE_DEFAULT_STYLE = {
@@ -21,14 +21,17 @@ export enum SERIE_TYPE {
     ZONE_3D = 'zone3d',
     DENSITY_MAP = 'densitymap',
     HISTOGRAM = "HISTOGRAM"
-  }
-    
+}
+
 
 export interface SerieInterface {
     getType(): SERIE_TYPE
 }
 
 export type SerieOptions = {
-    redrawShapesAfterDraw?: boolean
+    redrawShapesAfterDraw: boolean,
+    bindShapesToDisplayState: boolean,
+    label: string,
+    flip: boolean,
+    layer: number
 }
-  

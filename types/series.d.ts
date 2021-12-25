@@ -23,5 +23,9 @@ export interface SerieInterface {
     getType(): SERIE_TYPE;
 }
 export declare type SerieOptions = {
-    redrawShapesAfterDraw?: boolean;
+    redrawShapesAfterDraw: boolean;
+    bindShapesToDisplayState: boolean;
+    label: string;
+    flip: boolean;
+    layer: number;
 };

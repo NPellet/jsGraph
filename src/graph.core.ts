@@ -9,7 +9,7 @@ import GraphJSON from './renderer/mixin.js';
 // @ts-ignore
 import EventMixin from './mixins/graph.mixin.event.js';
 // @ts-ignore
-import { Waveform,  WaveformHash } from './util/waveform';
+import { Waveform, WaveformHash } from './util/waveform';
 // @ts-ignore
 import { SerieStyle, SERIE_DEFAULT_STYLE, SERIE_TYPE } from '../types/series';
 
@@ -17,11 +17,11 @@ export const __VERSION__ = "0.0.1"
 export const ns = 'http://www.w3.org/2000/svg';
 export const nsxlink = 'http://www.w3.org/1999/xlink';
 
-type _constructor = { new (...args: any ): any}
+type _constructor = { new(...args: any): any }
 type constructorKey_t = string | SERIE_TYPE
 
 
-enum AxisPositionE  {
+enum AxisPositionE {
   TOP = "top",
   BOTTOM = "bottom",
   LEFT = "left",
@@ -116,7 +116,7 @@ class Graph {
   dom: SVGElement;
   domTitle: any;
   sizeSet: any;
-  
+
   _lockUpdate: boolean = false;
   legend: any;
   innerHeight: any;
@@ -132,7 +132,7 @@ class Graph {
 
   clip: SVGClipPathElement;
   clipRect: SVGRectElement;
-  
+
   rectEvent: any;
   savedAxisState: any;
   selectedSerie: any;
@@ -168,7 +168,7 @@ class Graph {
   defs: SVGDefsElement;
   //shift: { top: any[]; bottom: any[]; left: any[]; right: any[]; };
   _trackingLegend: any;
-  
+
   /**
    * Graph constructor
    * @param {(HTMLElement|String)} [wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
@@ -182,12 +182,12 @@ class Graph {
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    */
 
-  
-    constructor();
-    constructor(options: any);
-    constructor(options: any, axes: Axes<any>);
-    constructor(wrapper?: HTMLElement, options?: any, axes: Axes<any> = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: []}) {
-    
+
+  constructor();
+  constructor(options: any);
+  constructor(options: any, axes: Axes<any>);
+  constructor(wrapper?: HTMLElement, options?: any, axes: Axes<any> = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: [] }) {
+
     this.ns = ns;
     this.nsxlink = nsxlink;
 
@@ -229,10 +229,10 @@ class Graph {
 
 
     this.axis = {
-      [ AxisPositionE.LEFT ]: [],
-      [ AxisPositionE.TOP ]: [],
-      [ AxisPositionE.BOTTOM ]: [],
-      [ AxisPositionE.RIGHT ]: []
+      [AxisPositionE.LEFT]: [],
+      [AxisPositionE.TOP]: [],
+      [AxisPositionE.BOTTOM]: [],
+      [AxisPositionE.RIGHT]: []
     };
 
     this.shapes = [];
@@ -291,200 +291,200 @@ class Graph {
 
 
 
-    
-     // Create SVG element, set the NS
-  this.dom.setAttributeNS(
-    'http://www.w3.org/2000/xmlns/',
-    'xmlns:xlink',
-    'http://www.w3.org/1999/xlink'
-  );
-  //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
-  util.setAttributeTo(this.dom, {
-    xmlns: ns,
-    'font-family': this.options.fontFamily,
-    'font-size': this.options.fontSize
-  });
 
-  try {
+    // Create SVG element, set the NS
+    this.dom.setAttributeNS(
+      'http://www.w3.org/2000/xmlns/',
+      'xmlns:xlink',
+      'http://www.w3.org/1999/xlink'
+    );
+    //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
     util.setAttributeTo(this.dom, {
-      // eslint-disable-next-line no-undef
-      'data-jsgraph-version': __VERSION__
+      xmlns: ns,
+      'font-family': this.options.fontFamily,
+      'font-size': this.options.fontSize
     });
-  } catch (e) {
-    // ignore
-  }
 
-  this.defs = document.createElementNS(ns, 'defs');
-  this.dom.appendChild(this.defs);
+    try {
+      util.setAttributeTo(this.dom, {
+        // eslint-disable-next-line no-undef
+        'data-jsgraph-version': __VERSION__
+      });
+    } catch (e) {
+      // ignore
+    }
 
-  this.groupEvent = document.createElementNS(ns, 'g');
+    this.defs = document.createElementNS(ns, 'defs');
+    this.dom.appendChild(this.defs);
 
-  this.rectEvent = document.createElementNS(ns, 'rect');
-  util.setAttributeTo(this.rectEvent, {
-    'pointer-events': 'fill',
-    fill: 'transparent'
-  });
-  this.groupEvent.appendChild(this.rectEvent);
+    this.groupEvent = document.createElementNS(ns, 'g');
 
-  this.dom.appendChild(this.groupEvent);
+    this.rectEvent = document.createElementNS(ns, 'rect');
+    util.setAttributeTo(this.rectEvent, {
+      'pointer-events': 'fill',
+      fill: 'transparent'
+    });
+    this.groupEvent.appendChild(this.rectEvent);
 
-  // Handling graph title
-  this.domTitle = document.createElementNS(ns, 'text');
-  this.setTitle(this.options.title);
-  if (this.options.titleFontSize) {
-    this.setTitleFontSize(this.options.titleFontSize);
-  }
-  if (this.options.titleFontColor) {
-    this.setTitleFontSize(this.options.titleFontColor);
-  }
-  if (this.options.titleFontFamily) {
-    this.setTitleFontFamily(this.options.titleFontFamily);
-  }
+    this.dom.appendChild(this.groupEvent);
 
-  util.setAttributeTo(this.domTitle, {
-    'text-anchor': 'middle',
-    y: 20
-  });
-  this.groupEvent.appendChild(this.domTitle);
-  //
+    // Handling graph title
+    this.domTitle = document.createElementNS(ns, 'text');
+    this.setTitle(this.options.title);
+    if (this.options.titleFontSize) {
+      this.setTitleFontSize(this.options.titleFontSize);
+    }
+    if (this.options.titleFontColor) {
+      this.setTitleFontSize(this.options.titleFontColor);
+    }
+    if (this.options.titleFontFamily) {
+      this.setTitleFontFamily(this.options.titleFontFamily);
+    }
 
-  this.graphingZone = document.createElementNS(ns, 'g');
-  this.updateGraphingZone();
+    util.setAttributeTo(this.domTitle, {
+      'text-anchor': 'middle',
+      y: 20
+    });
+    this.groupEvent.appendChild(this.domTitle);
+    //
 
-  this.groupEvent.appendChild(this.graphingZone);
+    this.graphingZone = document.createElementNS(ns, 'g');
+    this.updateGraphingZone();
 
-  /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
-  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
-  this.shapeZoneRect.setAttribute('fill', 'transparent');
-  this.shapeZone.appendChild(this.shapeZoneRect);
-*/
-  this.axisGroup = document.createElementNS(ns, 'g');
-  this.graphingZone.appendChild(this.axisGroup);
+    this.groupEvent.appendChild(this.graphingZone);
 
-  this.groupGrids = document.createElementNS(ns, 'g');
+    /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+    //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+    this.shapeZoneRect.setAttribute('fill', 'transparent');
+    this.shapeZone.appendChild(this.shapeZoneRect);
+  */
+    this.axisGroup = document.createElementNS(ns, 'g');
+    this.graphingZone.appendChild(this.axisGroup);
 
-  // With the z stacking, this should probably be removed
-  this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this.uid + ')' );
+    this.groupGrids = document.createElementNS(ns, 'g');
 
-  this.groupPrimaryGrids = document.createElementNS(ns, 'g');
-  this.groupSecondaryGrids = document.createElementNS(ns, 'g');
+    // With the z stacking, this should probably be removed
+    this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this.uid + ')');
 
-  this.axisGroup.appendChild(this.groupGrids);
+    this.groupPrimaryGrids = document.createElementNS(ns, 'g');
+    this.groupSecondaryGrids = document.createElementNS(ns, 'g');
 
-  this.groupGrids.appendChild(this.groupSecondaryGrids);
-  this.groupGrids.appendChild(this.groupPrimaryGrids);
+    this.axisGroup.appendChild(this.groupGrids);
 
-  this.plotGroup = document.createElementNS(ns, 'g');
-  this.graphingZone.appendChild(this.plotGroup);
+    this.groupGrids.appendChild(this.groupSecondaryGrids);
+    this.groupGrids.appendChild(this.groupPrimaryGrids);
 
-  // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-  /*this.shapeZone = document.createElementNS( this.ns, 'g' );
-  this.graphingZone.appendChild( this.shapeZone );
-*/
+    this.plotGroup = document.createElementNS(ns, 'g');
+    this.graphingZone.appendChild(this.plotGroup);
 
-  this.layers = [];
+    // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+    /*this.shapeZone = document.createElementNS( this.ns, 'g' );
+    this.graphingZone.appendChild( this.shapeZone );
+  */
 
-  this._makeClosingLines();
+    this.layers = [];
 
-  this.clip = document.createElementNS(ns, 'clipPath');
-  this.clip.setAttribute('id', `_clipplot${this.uid}`);
-  this.defs.appendChild(this.clip);
+    this._makeClosingLines();
 
-  this.clipRect = document.createElementNS(ns, 'rect');
-  this.clip.appendChild(this.clipRect);
-  this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+    this.clip = document.createElementNS(ns, 'clipPath');
+    this.clip.setAttribute('id', `_clipplot${this.uid}`);
+    this.defs.appendChild(this.clip);
 
-  this.markerArrow = document.createElementNS(ns, 'marker');
-  this.markerArrow.setAttribute('viewBox', '0 0 10 10');
-  this.markerArrow.setAttribute('id', `arrow${this.uid}`);
-  this.markerArrow.setAttribute('refX', '6');
-  this.markerArrow.setAttribute('refY', '5');
-  this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
-  this.markerArrow.setAttribute('markerWidth', '8');
-  this.markerArrow.setAttribute('markerHeight', '6');
-  this.markerArrow.setAttribute('orient', 'auto');
-  //this.markerArrow.setAttribute('fill', 'context-stroke');
-  //this.markerArrow.setAttribute('stroke', 'context-stroke');
+    this.clipRect = document.createElementNS(ns, 'rect');
+    this.clip.appendChild(this.clipRect);
+    this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
 
-  var pathArrow = document.createElementNS(ns, 'path');
-  pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-  //pathArrow.setAttribute( 'fill', 'context-stroke' );
-  this.markerArrow.appendChild(pathArrow);
+    this.markerArrow = document.createElementNS(ns, 'marker');
+    this.markerArrow.setAttribute('viewBox', '0 0 10 10');
+    this.markerArrow.setAttribute('id', `arrow${this.uid}`);
+    this.markerArrow.setAttribute('refX', '6');
+    this.markerArrow.setAttribute('refY', '5');
+    this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
+    this.markerArrow.setAttribute('markerWidth', '8');
+    this.markerArrow.setAttribute('markerHeight', '6');
+    this.markerArrow.setAttribute('orient', 'auto');
+    //this.markerArrow.setAttribute('fill', 'context-stroke');
+    //this.markerArrow.setAttribute('stroke', 'context-stroke');
 
-  this.defs.appendChild(this.markerArrow);
+    var pathArrow = document.createElementNS(ns, 'path');
+    pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+    //pathArrow.setAttribute( 'fill', 'context-stroke' );
+    this.markerArrow.appendChild(pathArrow);
 
-  // Horionzal split marker for axis
-  this.markerHorizontalSplit = document.createElementNS(ns, 'marker');
-  this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
-  this.markerHorizontalSplit.setAttribute(
-    'id',
-    `horionzalsplit_${this.getId()}`
-  );
-  this.markerHorizontalSplit.setAttribute('refX', '3');
-  this.markerHorizontalSplit.setAttribute('refY', '4');
-  this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
-  this.markerHorizontalSplit.setAttribute('markerWidth', '6');
-  this.markerHorizontalSplit.setAttribute('markerHeight', '8');
+    this.defs.appendChild(this.markerArrow);
 
-  var path = document.createElementNS(ns, 'line');
-  path.setAttribute('x1', '0');
-  path.setAttribute('y1', '8');
+    // Horionzal split marker for axis
+    this.markerHorizontalSplit = document.createElementNS(ns, 'marker');
+    this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
+    this.markerHorizontalSplit.setAttribute(
+      'id',
+      `horionzalsplit_${this.getId()}`
+    );
+    this.markerHorizontalSplit.setAttribute('refX', '3');
+    this.markerHorizontalSplit.setAttribute('refY', '4');
+    this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
+    this.markerHorizontalSplit.setAttribute('markerWidth', '6');
+    this.markerHorizontalSplit.setAttribute('markerHeight', '8');
 
-  path.setAttribute('x2', '6');
-  path.setAttribute('y2', '0');
+    var path = document.createElementNS(ns, 'line');
+    path.setAttribute('x1', '0');
+    path.setAttribute('y1', '8');
 
-  path.setAttribute('stroke', 'black');
-  this.markerHorizontalSplit.appendChild(path);
+    path.setAttribute('x2', '6');
+    path.setAttribute('y2', '0');
 
-  this.defs.appendChild(this.markerHorizontalSplit);
+    path.setAttribute('stroke', 'black');
+    this.markerHorizontalSplit.appendChild(path);
 
-  // Vertical split marker for axis
-  this.markerVerticalSplit = document.createElementNS(ns, 'marker');
-  this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
-  this.markerVerticalSplit.setAttribute('id', `verticalsplit_${this.getId()}`);
-  this.markerVerticalSplit.setAttribute('refX', '4');
-  this.markerVerticalSplit.setAttribute('refY', '3');
-  this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
-  this.markerVerticalSplit.setAttribute('markerWidth', '8');
-  this.markerVerticalSplit.setAttribute('markerHeight', '6');
+    this.defs.appendChild(this.markerHorizontalSplit);
 
-  var path = document.createElementNS(ns, 'line');
+    // Vertical split marker for axis
+    this.markerVerticalSplit = document.createElementNS(ns, 'marker');
+    this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
+    this.markerVerticalSplit.setAttribute('id', `verticalsplit_${this.getId()}`);
+    this.markerVerticalSplit.setAttribute('refX', '4');
+    this.markerVerticalSplit.setAttribute('refY', '3');
+    this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
+    this.markerVerticalSplit.setAttribute('markerWidth', '8');
+    this.markerVerticalSplit.setAttribute('markerHeight', '6');
 
-  path.setAttribute('x1', '0');
-  path.setAttribute('y1', '0');
+    var path = document.createElementNS(ns, 'line');
 
-  path.setAttribute('x2', '8');
-  path.setAttribute('y2', '6');
+    path.setAttribute('x1', '0');
+    path.setAttribute('y1', '0');
 
-  path.setAttribute('stroke', 'black');
-  this.markerVerticalSplit.appendChild(path);
-  this.defs.appendChild(this.markerVerticalSplit);
+    path.setAttribute('x2', '8');
+    path.setAttribute('y2', '6');
 
-  this.vertLineArrow = document.createElementNS(ns, 'marker');
-  this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
-  this.vertLineArrow.setAttribute('id', `verticalline${this.uid}`);
-  this.vertLineArrow.setAttribute('refX', '0');
-  this.vertLineArrow.setAttribute('refY', '5');
-  this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
-  this.vertLineArrow.setAttribute('markerWidth', '20');
-  this.vertLineArrow.setAttribute('markerHeight', '10');
-  this.vertLineArrow.setAttribute('orient', 'auto');
-  //this.vertLineArrow.setAttribute('fill', 'context-stroke');
-  //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-  this.vertLineArrow.setAttribute('stroke-width', '1px');
+    path.setAttribute('stroke', 'black');
+    this.markerVerticalSplit.appendChild(path);
+    this.defs.appendChild(this.markerVerticalSplit);
 
-  var pathVertLine = document.createElementNS(ns, 'path');
-  pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
-  pathVertLine.setAttribute('stroke', 'black');
+    this.vertLineArrow = document.createElementNS(ns, 'marker');
+    this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
+    this.vertLineArrow.setAttribute('id', `verticalline${this.uid}`);
+    this.vertLineArrow.setAttribute('refX', '0');
+    this.vertLineArrow.setAttribute('refY', '5');
+    this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
+    this.vertLineArrow.setAttribute('markerWidth', '20');
+    this.vertLineArrow.setAttribute('markerHeight', '10');
+    this.vertLineArrow.setAttribute('orient', 'auto');
+    //this.vertLineArrow.setAttribute('fill', 'context-stroke');
+    //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+    this.vertLineArrow.setAttribute('stroke-width', '1px');
 
-  this.vertLineArrow.appendChild(pathVertLine);
+    var pathVertLine = document.createElementNS(ns, 'path');
+    pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
+    pathVertLine.setAttribute('stroke', 'black');
 
-  this.defs.appendChild(this.vertLineArrow);
+    this.vertLineArrow.appendChild(pathVertLine);
 
-  // Removed with z stacking ?
-  this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this.uid + ')' );
+    this.defs.appendChild(this.vertLineArrow);
 
-  this.bypassHandleMouse = false;
+    // Removed with z stacking ?
+    this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this.uid + ')');
+
+    this.bypassHandleMouse = false;
 
 
   }
@@ -493,7 +493,7 @@ class Graph {
 
     if (typeof wrapper == 'string') {
       wrapper = document.getElementById(wrapper) as HTMLElement;
-    } 
+    }
 
     if (!wrapper) {
       throw new Error('The wrapper DOM element was not found.');
@@ -527,102 +527,102 @@ class Graph {
     this._registerEvents();
   }
 
-  
-private _registerEvents() {
 
-  if (!this.wrapper) {
-    throw 'No wrapper exists. Cannot register the events.';
+  private _registerEvents() {
+
+    if (!this.wrapper) {
+      throw 'No wrapper exists. Cannot register the events.';
+    }
+
+    this.dom.setAttribute('tabindex', "0");
+
+    this.dom.addEventListener('keydown', (e: KeyboardEvent) => {
+      _handleKey(this, e, 'keydown');
+    });
+
+    this.dom.addEventListener('keypress', (e: KeyboardEvent) => {
+      _handleKey(this, e, 'keypress');
+    });
+
+    this.dom.addEventListener('keyup', (e: KeyboardEvent) => {
+      _handleKey(this, e, 'keyup');
+    });
+    // Not sure this has to be prevented
+
+    // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
+    // intuitive. Let us see if it breaks another example...
+    this.dom.addEventListener('mousemove', (e: MouseEvent) => {
+      //e.preventDefault();
+      const coords = this._getXY(e);
+      _handleMouseMove(this, coords.x, coords.y, e);
+    });
+
+    this.dom.addEventListener('mouseleave', (e) => {
+      _handleMouseLeave(this);
+    });
+
+    this.groupEvent.addEventListener('mousedown', (e) => {
+      this.focus();
+
+      //   e.preventDefault();
+      if (e.which == 3 || e.ctrlKey) {
+        return;
+      }
+
+      var coords = this._getXY(e);
+      _handleMouseDown(this, coords.x, coords.y, e);
+    });
+
+    this.dom.addEventListener('mouseup', (e) => {
+      this.emit('mouseUp', e);
+      const coords = this._getXY(e);
+
+      _handleMouseUp(this, coords.x, coords.y, e);
+    });
+
+    this.wrapper.addEventListener('mouseup', (e: MouseEvent) => {
+      e.stopPropagation();
+    });
+
+    this.dom.addEventListener('dblclick', (e: MouseEvent) => {
+      this.emit('dblClick', e);
+      const coords = this._getXY(e);
+
+      _handleDblClick(this, coords.x, coords.y, e);
+    });
+
+    this.groupEvent.addEventListener('click', (e) => {
+      // Cancel right click or Command+Click
+      if (e.which == 3 || e.ctrlKey) {
+        return;
+      }
+
+      //   e.preventDefault();
+      var coords = this._getXY(e);
+
+      if (!this.prevent(false)) {
+        _handleClick(this, coords.x, coords.y, e);
+      }
+
+      //}, 200 );
+    });
+    /*
+      this.groupEvent.addEventListener('mousewheel', (e: WheelEvent) => {
+        var deltaY =  -e.deltaY;
+        var coords = this._getXY(e);
+        _handleMouseWheel(this, deltaY, coords.x, coords.y, e);
+    
+        return false;
+      });
+    */
+    this.groupEvent.addEventListener('wheel', (e: WheelEvent) => {
+      const coords = this._getXY(e);
+      const deltaY = -e.deltaY;
+      _handleMouseWheel(this, deltaY, coords.x, coords.y, e);
+
+      return false;
+    });
   }
-
-  this.dom.setAttribute('tabindex', "0");
-
-  this.dom.addEventListener('keydown', (e: KeyboardEvent) => {
-    _handleKey(this, e, 'keydown');
-  });
-
-  this.dom.addEventListener('keypress', (e: KeyboardEvent) => {
-    _handleKey(this, e, 'keypress');
-  });
-
-  this.dom.addEventListener('keyup', (e: KeyboardEvent) => {
-    _handleKey(this, e, 'keyup');
-  });
-  // Not sure this has to be prevented
-
-  // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
-  // intuitive. Let us see if it breaks another example...
-  this.dom.addEventListener('mousemove', (e: MouseEvent) => {
-    //e.preventDefault();
-    const coords = this._getXY(e);
-    _handleMouseMove(this, coords.x, coords.y, e);
-  });
-
-  this.dom.addEventListener('mouseleave', (e) => {
-    _handleMouseLeave(this);
-  });
-
-  this.groupEvent.addEventListener('mousedown', (e) => {
-    this.focus();
-
-    //   e.preventDefault();
-    if (e.which == 3 || e.ctrlKey) {
-      return;
-    }
-
-    var coords = this._getXY(e);
-    _handleMouseDown(this, coords.x, coords.y, e);
-  });
-
-  this.dom.addEventListener('mouseup', (e) => {
-    this.emit('mouseUp', e);
-    const coords = this._getXY(e);
-
-    _handleMouseUp(this, coords.x, coords.y, e);
-  });
-
-  this.wrapper.addEventListener('mouseup', (e: MouseEvent) => {
-    e.stopPropagation();
-  });
-
-  this.dom.addEventListener('dblclick', (e: MouseEvent) => {
-    this.emit('dblClick', e);
-    const coords = this._getXY(e);
-
-    _handleDblClick(this, coords.x, coords.y, e);
-  });
-
-  this.groupEvent.addEventListener('click', (e) => {
-    // Cancel right click or Command+Click
-    if (e.which == 3 || e.ctrlKey) {
-      return;
-    }
-
-    //   e.preventDefault();
-    var coords = this._getXY(e);
-
-    if (!this.prevent(false)) {
-      _handleClick(this, coords.x, coords.y, e);
-    }
-
-    //}, 200 );
-  });
-/*
-  this.groupEvent.addEventListener('mousewheel', (e: WheelEvent) => {
-    var deltaY =  -e.deltaY;
-    var coords = this._getXY(e);
-    _handleMouseWheel(this, deltaY, coords.x, coords.y, e);
-
-    return false;
-  });
-*/
-  this.groupEvent.addEventListener('wheel', (e: WheelEvent) => {
-    const coords = this._getXY(e);
-    const deltaY = -e.deltaY;
-    _handleMouseWheel(this, deltaY, coords.x, coords.y, e);
-
-    return false;
-  });
-}
 
   /**
    * Returns the graph SVG wrapper element
@@ -648,7 +648,7 @@ private _registerEvents() {
    * @return {HTMLElement} The DOM element wrapping the graph
    */
   getWrapper(): HTMLElement {
-    if( ! this.wrapper ) {
+    if (!this.wrapper) {
       throw "Wrapper does not exist";
     }
     return this.wrapper;
@@ -717,7 +717,7 @@ private _registerEvents() {
    * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
    * @return {Boolean} if the redraw has been successful
    */
-  redraw(onlyIfAxesHaveChanged: boolean, force: boolean) : boolean {
+  redraw(onlyIfAxesHaveChanged: boolean, force: boolean): boolean {
     if (!this.width || !this.height) {
       return false;
     }
@@ -934,7 +934,7 @@ private _registerEvents() {
    * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
    * @returns {Number} Width of the graph
    */
-  getDrawingWidth(useCache : boolean = true) {
+  getDrawingWidth(useCache: boolean = true) {
     if (useCache && this.innerWidth) {
       return this.innerWidth;
     }
@@ -971,7 +971,7 @@ private _registerEvents() {
    * @param {Object} [ options={} ] - The options to pass to the axis constructor
    */
   getXAxis(index: number = 0, options = {}) {
-    if (this.axis[ AxisPositionE.TOP ].length > 0 && this.axis[ AxisPositionE.BOTTOM ].length == 0) {
+    if (this.axis[AxisPositionE.TOP].length > 0 && this.axis[AxisPositionE.BOTTOM].length == 0) {
       return this.getTopAxis(index, options);
     }
 
@@ -985,7 +985,7 @@ private _registerEvents() {
    * @param {Object} [ options={} ] - The options to pass to the axis constructor
    */
   getYAxis(index: number = 0, options = {}) {
-    if (this.axis[ AxisPositionE.RIGHT].length > 0 && this.axis[ AxisPositionE.LEFT ].length == 0) {
+    if (this.axis[AxisPositionE.RIGHT].length > 0 && this.axis[AxisPositionE.LEFT].length == 0) {
       return this.getRightAxis(index, options);
     }
 
@@ -1059,10 +1059,10 @@ private _registerEvents() {
   setLeftAxis(axis: any, index: number) {
     index = index || 0;
 
-    if (this.axis[ AxisPositionE.LEFT ][index]) {
-      this.axis[ AxisPositionE.LEFT ][index].kill();
+    if (this.axis[AxisPositionE.LEFT][index]) {
+      this.axis[AxisPositionE.LEFT][index].kill();
     }
-    this.axis[ AxisPositionE.LEFT ][index] = axis;
+    this.axis[AxisPositionE.LEFT][index] = axis;
   }
 
   /**
@@ -1078,10 +1078,10 @@ private _registerEvents() {
   setRightAxis(axis: any, index: number) {
     index = index || 0;
 
-    if (this.axis[ AxisPositionE.RIGHT ][index]) {
-      this.axis[ AxisPositionE.RIGHT ][index].kill();
+    if (this.axis[AxisPositionE.RIGHT][index]) {
+      this.axis[AxisPositionE.RIGHT][index].kill();
     }
-    this.axis[ AxisPositionE.RIGHT ][index] = axis;
+    this.axis[AxisPositionE.RIGHT][index] = axis;
   }
 
   /**
@@ -1097,10 +1097,10 @@ private _registerEvents() {
   setTopAxis(axis: any, index: number) {
     index = index || 0;
 
-    if (this.axis[ AxisPositionE.TOP ][index]) {
-      this.axis[ AxisPositionE.TOP ][index].kill();
+    if (this.axis[AxisPositionE.TOP][index]) {
+      this.axis[AxisPositionE.TOP][index].kill();
     }
-    this.axis[ AxisPositionE.TOP ][index] = axis;
+    this.axis[AxisPositionE.TOP][index] = axis;
   }
 
   /**
@@ -1116,22 +1116,22 @@ private _registerEvents() {
   setBottomAxis(axis: any, index: number) {
     index = index || 0;
 
-    if (this.axis[ AxisPositionE.BOTTOM ][index]) {
-      this.axis[ AxisPositionE.BOTTOM ][index].kill();
+    if (this.axis[AxisPositionE.BOTTOM][index]) {
+      this.axis[AxisPositionE.BOTTOM][index].kill();
     }
-    this.axis[ AxisPositionE.BOTTOM ][index] = axis;
+    this.axis[AxisPositionE.BOTTOM][index] = axis;
   }
 
   killAxis(axis: any, noRedraw = false, noSerieKill = false) {
     var index;
 
     if (axis.isX()) {
-      if ((index = this.axis[ AxisPositionE.BOTTOM ].indexOf(axis)) > -1) {
-        this.axis[ AxisPositionE.BOTTOM ].splice(index, 1);
+      if ((index = this.axis[AxisPositionE.BOTTOM].indexOf(axis)) > -1) {
+        this.axis[AxisPositionE.BOTTOM].splice(index, 1);
       }
 
-      if ((index = this.axis[ AxisPositionE.TOP ].indexOf(axis)) > -1) {
-        this.axis[ AxisPositionE.TOP ].splice(index, 1);
+      if ((index = this.axis[AxisPositionE.TOP].indexOf(axis)) > -1) {
+        this.axis[AxisPositionE.TOP].splice(index, 1);
       }
 
       if (!noSerieKill) {
@@ -1144,12 +1144,12 @@ private _registerEvents() {
     }
 
     if (axis.isY()) {
-      if ((index = this.axis[ AxisPositionE.LEFT ].indexOf(axis)) > -1) {
-        this.axis[ AxisPositionE.LEFT ].splice(index, 1);
+      if ((index = this.axis[AxisPositionE.LEFT].indexOf(axis)) > -1) {
+        this.axis[AxisPositionE.LEFT].splice(index, 1);
       }
 
-      if ((index = this.axis[ AxisPositionE.RIGHT ].indexOf(axis)) > -1) {
-        this.axis[ AxisPositionE.RIGHT ].splice(index, 1);
+      if ((index = this.axis[AxisPositionE.RIGHT].indexOf(axis)) > -1) {
+        this.axis[AxisPositionE.RIGHT].splice(index, 1);
       }
 
       if (!noSerieKill) {
@@ -1191,7 +1191,7 @@ private _registerEvents() {
    * @param {Axis} axis - The axis instance to check
    */
   hasTopAxis(axis: any) {
-    return this.hasAxis(axis, this.axis[ AxisPositionE.TOP ]);
+    return this.hasAxis(axis, this.axis[AxisPositionE.TOP]);
   }
 
   /**
@@ -1199,7 +1199,7 @@ private _registerEvents() {
    * @param {Axis} axis - The axis instance to check
    */
   hasBottomAxis(axis: any) {
-    return this.hasAxis(axis, this.axis[ AxisPositionE.BOTTOM ]);
+    return this.hasAxis(axis, this.axis[AxisPositionE.BOTTOM]);
   }
 
   /**
@@ -1207,7 +1207,7 @@ private _registerEvents() {
    * @param {Axis} axis - The axis instance to check
    */
   hasLeftAxis(axis: any) {
-    return this.hasAxis(axis, this.axis[ AxisPositionE.LEFT ]);
+    return this.hasAxis(axis, this.axis[AxisPositionE.LEFT]);
   }
 
   /**
@@ -1215,7 +1215,7 @@ private _registerEvents() {
    * @param {Axis} axis - The axis instance to check
    */
   hasRightAxis(axis: any) {
-    return this.hasAxis(axis, this.axis[ AxisPositionE.RIGHT ]);
+    return this.hasAxis(axis, this.axis[AxisPositionE.RIGHT]);
   }
 
   /**
@@ -1323,24 +1323,24 @@ private _registerEvents() {
 
   getAxisState() {
 
-    var state: Axes<[number,number]> = { 
-      [ AxisPositionE.TOP ]: [],
-      [ AxisPositionE.BOTTOM ]: [],
-      [ AxisPositionE.LEFT ]: [],
-      [ AxisPositionE.RIGHT ]: []
+    var state: Axes<[number, number]> = {
+      [AxisPositionE.TOP]: [],
+      [AxisPositionE.BOTTOM]: [],
+      [AxisPositionE.LEFT]: [],
+      [AxisPositionE.RIGHT]: []
     };
 
     for (let key in AxisPositionE) {
 
       // @ts-ignore
-      const a = this.axis[ key ];
+      const a = this.axis[key];
       const out: Array<[number, number]> = a.map(function (axis: any) {
         return [axis.getCurrentMin(), axis.getCurrentMax()];
       });
 
-      
+
       // @ts-ignore
-      state[ key ] = out;
+      state[key] = out;
     }
     return state;
   }
@@ -1352,13 +1352,13 @@ private _registerEvents() {
       if (!this.axis[i]) {
         continue;
       }
-// @ts-ignore
-      for (j = 0, l = state[i].length; j < l; j++) {
       // @ts-ignore
+      for (j = 0, l = state[i].length; j < l; j++) {
+        // @ts-ignore
         if (!this.axis[i][j]) {
           continue;
         }
-// @ts-ignore
+        // @ts-ignore
         this.axis[i][j].setCurrentMin(state[i][j][0]);
         // @ts-ignore
         this.axis[i][j].setCurrentMax(state[i][j][1]);
@@ -1393,7 +1393,7 @@ private _registerEvents() {
         };
 
       case 'function':
-        return  (type: AxisPosition, func: any, params: any) => {
+        return (type: AxisPosition, func: any, params: any) => {
           for (var i = 0; i < this.axis[type].length; i++) {
             func.call(this, this.axis[type][i], type, params);
           }
@@ -1488,10 +1488,10 @@ private _registerEvents() {
       l,
       i;
 
-    for ( let j in this.axis) {
-      let j2 = j as  AxisPosition;
-      for (i = this.axis[j2 ].length - 1; i >= 0; i--) {
-        axis = this.axis[j2 ][i];
+    for (let j in this.axis) {
+      let j2 = j as AxisPosition;
+      for (i = this.axis[j2].length - 1; i >= 0; i--) {
+        axis = this.axis[j2][i];
 
 
         let min = this.getBoundaryAxis(
@@ -1574,7 +1574,7 @@ private _registerEvents() {
     return axes;
   }
 
-  _axisHasChanged() {
+  _axisHasChanged(axis: any) {
     this._axesHaveChanged = true;
   }
   /**
@@ -1607,7 +1607,7 @@ private _registerEvents() {
     serie = new _c(this, name, options);
     this.appendSerieToDom(serie);
     this.series.push(serie);
-    
+
     this.emit('newSerie', serie);
     return serie;
   }
@@ -1668,7 +1668,7 @@ private _registerEvents() {
    * @param {function} method - Sorting method (arguments: serieA, serieB)
    * @example graph.sortSeries( ( sA, sB ) => sA.label > sB.label ? 1 : -1 );
    */
-  sortSeries(method: ( a: any, b: any ) => number) {
+  sortSeries(method: (a: any, b: any) => number) {
     this.series.sort(method);
     return this;
   }
@@ -1830,7 +1830,7 @@ private _registerEvents() {
    * @returns {Shape} The created shape
    * @see Graph#getConstructor
    */
-  newShape(shapeType: string, shapeData: any, mute = false, shapeProperties: { simplified?: any} = {}) {
+  newShape(shapeType: string, shapeData: any, mute = false, shapeProperties: { simplified?: any } = {}) {
     this.prevent(false);
 
     if (!mute) {
@@ -2135,7 +2135,7 @@ private _registerEvents() {
 
   appendShapeToDom(shape: any) {
 
-    if( ! this.wrapper ) {
+    if (!this.wrapper) {
       return;
     }
     if (shape.isHTML()) {
@@ -2149,7 +2149,7 @@ private _registerEvents() {
 
   removeShapeFromDom(shape: any) {
 
-    if( ! this.wrapper ) {
+    if (!this.wrapper) {
       return;
     }
     if (shape.isHTML()) {
@@ -2205,7 +2205,7 @@ private _registerEvents() {
   }
 
   focus() {
-    if( ! this.wrapper ) {
+    if (!this.wrapper) {
       return;
     }
     this.wrapper.focus();
@@ -2277,7 +2277,7 @@ private _registerEvents() {
           right: 39
         };
 
-        if (Object.keys( keyCheck ).includes( action.key ) && keyCheck[action.key as keyof typeof keyCheck] !== e.keyCode) {
+        if (Object.keys(keyCheck).includes(action.key) && keyCheck[action.key as keyof typeof keyCheck] !== e.keyCode) {
           return;
         }
       }
@@ -2395,8 +2395,8 @@ private _registerEvents() {
     return !!this.plugins[pluginName];
   }
 
-  triggerEvent( func: string, ...args: any[]) {
-   
+  triggerEvent(func: string, ...args: any[]) {
+
     if (typeof this.options[func] == 'function') {
       return this.options[func].apply(this, args);
     }
@@ -2518,7 +2518,7 @@ private _registerEvents() {
    **/
   kill() {
 
-    if( this.wrapper ) {
+    if (this.wrapper) {
       this.wrapper.removeChild(this.dom);
     }
   }
@@ -2569,8 +2569,8 @@ private _registerEvents() {
       return;
     }
 
-    this.getDrawingWidth( false );
-    this.getDrawingHeight( false );
+    this.getDrawingWidth(false);
+    this.getDrawingHeight(false);
 
     this.sizeSet = true;
     this.dom.setAttribute('width', this.width);
@@ -2854,13 +2854,13 @@ private _registerEvents() {
 
     let axesPositions = ['top', 'bottom', 'left', 'right'];
     let axesExport: Array<any> = [];
-    let allaxes: {x: Array<any>, y: Array<any>} = {
+    let allaxes: { x: Array<any>, y: Array<any> } = {
       x: [],
       y: []
     };
 
-    for( let pos in this.axis ) {
-    
+    for (let pos in this.axis) {
+
       axesExport = axesExport.concat(
         this.axis[pos as AxisPosition].map((axis) => {
           return {
@@ -2874,7 +2874,7 @@ private _registerEvents() {
         })
       );
 
-    
+
       if (pos == 'top' || pos == 'bottom') {
         allaxes.x = allaxes.x.concat(this.axis[pos as AxisPosition]);
       } else {
@@ -2884,7 +2884,7 @@ private _registerEvents() {
 
     schema.axis = axesExport;
 
-    let seriesExport : Array<any> = [];
+    let seriesExport: Array<any> = [];
 
     let toType = (type: SERIE_TYPE | string) => {
       switch (type) {
@@ -2996,394 +2996,394 @@ private _registerEvents() {
 
 
 
-  
-private _getAxis(num: number, options: any, pos: AxisPosition) {
-  var options = options || {};
-  var inst;
 
-  var _availableAxes = {
-    def: {
-      x: this.getConstructor('graph.axis.x'),
-      y: this.getConstructor('graph.axis.y')
-    },
+  private _getAxis(num: number, options: any, pos: AxisPosition) {
+    var options = options || {};
+    var inst;
 
-    time: {
-      x: this.getConstructor('graph.axis.x.time'),
-      y: undefined
-    },
+    var _availableAxes = {
+      def: {
+        x: this.getConstructor('graph.axis.x'),
+        y: this.getConstructor('graph.axis.y')
+      },
 
-    bar: {
-      x: this.getConstructor('graph.axis.x.bar'),
-      y: undefined
+      time: {
+        x: this.getConstructor('graph.axis.x.time'),
+        y: undefined
+      },
+
+      bar: {
+        x: this.getConstructor('graph.axis.x.bar'),
+        y: undefined
+      }
+    };
+
+    let axisInstance;
+    switch (options.type) {
+      case 'time':
+        axisInstance = _availableAxes.time;
+        break;
+
+      case 'bar':
+        axisInstance = _availableAxes.bar;
+        break;
+
+
+      default:
+        axisInstance = _availableAxes.def;
+        break;
     }
-  };
 
-  let axisInstance;
-  switch (options.type) {
-    case 'time':
-      axisInstance = _availableAxes.time;
-      break;
+    switch (pos) {
+      case 'top':
+      case 'bottom':
+        inst = axisInstance.x;
+        break;
 
-    case 'bar':
-      axisInstance = _availableAxes.bar;
-      break;
+      case 'left':
+      case 'right':
 
-  
-    default:
-    axisInstance = _availableAxes.def;
-      break;
-  }
-
-  switch (pos) {
-    case 'top':
-    case 'bottom':
-      inst = axisInstance.x;
-      break;
-
-    case 'left':
-    case 'right':
-
-    if( ! axisInstance.hasOwnProperty('y') ) {
-      throw "Axis does not exist for axis y";
-    }
-      inst = axisInstance.y;
-      break;
-
-    default:
-      return;
-  }
-
-  num = num || 0;
-
-  if (typeof num == 'object') {
-    options = num;
-    num = 0;
-  }
-
-  if (!this.axis[pos as AxisPosition][num]) {
-    // @ts-ignore
-    this.axis[pos as AxisPosition][num] = new inst(this, pos, options);
-    this.axis[pos as AxisPosition][num]!.init(this, options);
-  }
-
-  return this.axis[pos][num];
-}
-
-private _closeLine(mode: AxisPosition, x1: number, x2: number, y1: number, y2: number) {
-  if (this.options.close === false) {
-    return;
-  }
-
-  var l = 0;
-
-  this.axis[mode].map(function (g) {
-    if (g.isDisplayed() && !g.floating) {
-      l++;
-    }
-  });
-
-  if ((this.options.close === true || this.options.close[mode]) && l == 0) {
-    this.closingLines[mode].setAttribute('display', 'block');
-    this.closingLines[mode].setAttribute('x1', x1);
-    this.closingLines[mode].setAttribute('x2', x2);
-    this.closingLines[mode].setAttribute('y1', y1);
-    this.closingLines[mode].setAttribute('y2', y2);
-  } else {
-    this.closingLines[mode].setAttribute('display', 'none');
-  }
-}
-
-
-private refreshDrawingZone() {
-  var shift: Axes<number> = {
-    top: [],
-    bottom: [],
-    left: [],
-    right: []
-  };
-
-  var levels: Axes<number> = {
-    top: [],
-    bottom: [],
-    left: [],
-    right: []
-  };
-console.log( this.getDrawingWidth( true ) );
-
-  // Apply to top and bottom
-  this._applyToAxes(
-    function (axis: any, position: AxisPosition) {
-      if (!axis.isShown()) {
-        axis.hideGroup();
-        return;
-      } else {
-        axis.showGroup();
-      }
-
-      if (axis.floating) {
-        return;
-      }
-
-      var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
-      axis.setLevel(level);
-
-      shift[position][level] = Math.max(
-        axis.getAxisPosition(),
-        shift[position][level] || 0
-      );
-    },
-    false,
-    true,
-    false
-  );
-
-  var shiftTop = shift.top.reduce(function (prev, curr) {
-    return prev + curr;
-  }, 0);
-
-  var shiftBottom = shift.bottom.reduce(function (prev, curr) {
-    return prev + curr;
-  }, 0);
-
-  this.drawingSpaceHeight = this.getDrawingHeight() - shiftTop - shiftBottom;
-
-  [shift.top, shift.bottom].map(function (arr) {
-    arr.reduce(function (prev, current, index) {
-      arr[index] = prev + current;
-      return prev + current;
-    }, 0);
-  });
-  // Apply to top and bottom
-  this._applyToAxes(
-    function (axis: any, position: AxisPosition) {
-      if (!axis.isShown() || axis.floating) {
-        return;
-      }
-
-      axis.setShift(shift[position][axis.getLevel()]);
-    },
-    false,
-    true,
-    false
-  );
-
-  // Applied to left and right
-  this._applyToAxes(
-     (axis: any, position: AxisPosition) => {
-      if (!axis.isShown()) {
-        axis.hideGroup();
-        // Don't return here. We need to go through the draw method as the axis must be assigned minPx and maxPx values.
-        // This is because some series can still be visible although the axis isn't.
-      } else {
-        axis.showGroup();
-      }
-      axis.setMinPx(shiftTop);
-      axis.setMaxPx(this.getDrawingHeight(true) - shiftBottom);
-
-      if (axis.floating) {
-        return;
-      }
-
-      // First we need to draw it in order to determine the width to allocate
-      // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
-
-      // Let's not draw dependant axes yet
-      let drawn = !axis.linkedToAxis ? axis.draw() : 0;
-
-      if (!axis.isShown()) {
-        return;
-      }
-      // Get axis position gives the extra shift that is common
-      var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
-      axis.setLevel(level);
-
-      if (axis.options.forcedWidth) {
-        shift[position][level] = axis.options.forcedWidth;
-      } else {
-        shift[position][level] = Math.max(drawn, shift[position][level] || 0);
-
-        if (level < shift[position].length - 1) {
-          shift[position][level] += 10;
+        if (!axisInstance.hasOwnProperty('y')) {
+          throw "Axis does not exist for axis y";
         }
-      }
-    },
-    false,
-    false,
-    true
-  );
+        inst = axisInstance.y;
+        break;
 
-  var shift2 = util.extend(true, {}, shift);
-
-  // Applied to left and right
-  this._applyToAxes(
-    function (axis: any, position: AxisPosition) {
-      if (!axis.isShown() || axis.floating) {
+      default:
         return;
+    }
+
+    num = num || 0;
+
+    if (typeof num == 'object') {
+      options = num;
+      num = 0;
+    }
+
+    if (!this.axis[pos as AxisPosition][num]) {
+      // @ts-ignore
+      this.axis[pos as AxisPosition][num] = new inst(this, pos, options);
+      this.axis[pos as AxisPosition][num]!.init(this, options);
+    }
+
+    return this.axis[pos][num];
+  }
+
+  private _closeLine(mode: AxisPosition, x1: number, x2: number, y1: number, y2: number) {
+    if (this.options.close === false) {
+      return;
+    }
+
+    var l = 0;
+
+    this.axis[mode].map(function (g) {
+      if (g.isDisplayed() && !g.floating) {
+        l++;
       }
+    });
 
-      shift2[position][axis.getLevel()] = Math.max(
-        shift[position][axis.getLevel()],
-        axis.equalizePosition(shift[position][axis.getLevel()])
-      );
-    },
-    false,
-    false,
-    true
-  );
+    if ((this.options.close === true || this.options.close[mode]) && l == 0) {
+      this.closingLines[mode].setAttribute('display', 'block');
+      this.closingLines[mode].setAttribute('x1', x1);
+      this.closingLines[mode].setAttribute('x2', x2);
+      this.closingLines[mode].setAttribute('y1', y1);
+      this.closingLines[mode].setAttribute('y2', y2);
+    } else {
+      this.closingLines[mode].setAttribute('display', 'none');
+    }
+  }
 
-  shift = shift2;
 
-  var shiftLeft = shift.left.reduce(function (prev, curr) {
-    return prev + curr;
-  }, 0);
+  private refreshDrawingZone() {
+    var shift: Axes<number> = {
+      top: [],
+      bottom: [],
+      left: [],
+      right: []
+    };
 
-  var shiftRight = shift.right.reduce(function (prev, curr) {
-    return prev + curr;
-  }, 0);
+    var levels: Axes<number> = {
+      top: [],
+      bottom: [],
+      left: [],
+      right: []
+    };
+    console.log(this.getDrawingWidth(true));
 
-  this.drawingSpaceWidth = this.getDrawingWidth() - shiftLeft - shiftRight;
+    // Apply to top and bottom
+    this._applyToAxes(
+      function (axis: any, position: AxisPosition) {
+        if (!axis.isShown()) {
+          axis.hideGroup();
+          return;
+        } else {
+          axis.showGroup();
+        }
 
-  [shift.left, shift.right].forEach(function (arr) {
-    arr.reduce(function (prev, current, index) {
-      arr[index] = prev + current;
-      return prev + current;
+        if (axis.floating) {
+          return;
+        }
+
+        var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
+        axis.setLevel(level);
+
+        shift[position][level] = Math.max(
+          axis.getAxisPosition(),
+          shift[position][level] || 0
+        );
+      },
+      false,
+      true,
+      false
+    );
+
+    var shiftTop = shift.top.reduce(function (prev, curr) {
+      return prev + curr;
     }, 0);
-  });
 
-  // Apply to left and right
-  this._applyToAxes(
-    (axis: any, position: AxisPosition) => {
-      if (!axis.isShown() || axis.floating) {
-        return;
-      }
-      axis.setShift(shift[position][axis.getLevel()]);
-    },
-    false,
-    false,
-    true
-  );
+    var shiftBottom = shift.bottom.reduce(function (prev, curr) {
+      return prev + curr;
+    }, 0);
 
-  // Apply to top and bottom
-  this._applyToAxes(
-     (axis: any, position: AxisPosition)  => {
-      if (!axis.isShown()) {
-        //      return;
-      }
+    this.drawingSpaceHeight = this.getDrawingHeight() - shiftTop - shiftBottom;
 
-      axis.setMinPx(shiftLeft);
-      axis.setMaxPx(this.getDrawingWidth(true) - shiftRight);
+    [shift.top, shift.bottom].map(function (arr) {
+      arr.reduce(function (prev, current, index) {
+        arr[index] = prev + current;
+        return prev + current;
+      }, 0);
+    });
+    // Apply to top and bottom
+    this._applyToAxes(
+      function (axis: any, position: AxisPosition) {
+        if (!axis.isShown() || axis.floating) {
+          return;
+        }
 
-      if (axis.floating) {
-        return;
-      }
+        axis.setShift(shift[position][axis.getLevel()]);
+      },
+      false,
+      true,
+      false
+    );
 
-      if (!axis.linkedToAxis) {
-        axis.draw();
-      }
-    },
-    false,
-    true,
-    false
-  );
+    // Applied to left and right
+    this._applyToAxes(
+      (axis: any, position: AxisPosition) => {
+        if (!axis.isShown()) {
+          axis.hideGroup();
+          // Don't return here. We need to go through the draw method as the axis must be assigned minPx and maxPx values.
+          // This is because some series can still be visible although the axis isn't.
+        } else {
+          axis.showGroup();
+        }
+        axis.setMinPx(shiftTop);
+        axis.setMaxPx(this.getDrawingHeight(true) - shiftBottom);
 
-  // Floating axes
-  this._applyToAxes(
-    function (axis: any, pos: AxisPosition) {
-      if (!axis.floating) {
-        return;
-      }
+        if (axis.floating) {
+          return;
+        }
 
-      var floatingAxis = axis.getFloatingAxis();
-      var floatingValue = axis.getFloatingValue();
-      var floatingPx = floatingAxis.getPx(floatingValue);
+        // First we need to draw it in order to determine the width to allocate
+        // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-      axis.setShift(floatingPx);
+        // Let's not draw dependant axes yet
+        let drawn = !axis.linkedToAxis ? axis.draw() : 0;
 
-      if (!axis.linkedToAxis) {
-        axis.draw();
-      }
-    },
-    false,
-    true,
-    true
-  );
+        if (!axis.isShown()) {
+          return;
+        }
+        // Get axis position gives the extra shift that is common
+        var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
+        axis.setLevel(level);
 
-  this._closeLine(
-    'right',
-    this.getDrawingWidth(true),
-    this.getDrawingWidth(true),
-    shiftTop,
-    this.getDrawingHeight(true) - shiftBottom
-  );
-  this._closeLine(
-    'left',
-    0,
-    0,
-    shiftTop,
-    this.getDrawingHeight(true) - shiftBottom
-  );
-  this._closeLine(
-    'top',
-    shiftLeft,
-    this.getDrawingWidth(true) - shiftRight,
-    0,
-    0
-  );
-  this._closeLine(
-    'bottom',
-    shiftLeft,
-    this.getDrawingWidth(true) - shiftRight,
-    this.getDrawingHeight(true) - shiftBottom,
-    this.getDrawingHeight(true) - shiftBottom
-  );
+        if (axis.options.forcedWidth) {
+          shift[position][level] = axis.options.forcedWidth;
+        } else {
+          shift[position][level] = Math.max(drawn, shift[position][level] || 0);
 
-  this.clipRect.setAttribute('y', shiftTop.toString());
-  this.clipRect.setAttribute('x', shiftLeft.toString());
-  this.clipRect.setAttribute(
-    'width',
-    ( this.getDrawingWidth() - shiftLeft - shiftRight ).toString()
-  );
-  this.clipRect.setAttribute(
-    'height',
-    ( this.getDrawingHeight() - shiftTop - shiftBottom ).toString()
-  );
+          if (level < shift[position].length - 1) {
+            shift[position][level] += 10;
+          }
+        }
+      },
+      false,
+      false,
+      true
+    );
 
-  this.rectEvent.setAttribute('y', shiftTop + this.getPaddingTop());
-  this.rectEvent.setAttribute('x', shiftLeft + this.getPaddingLeft());
+    var shift2 = util.extend(true, {}, shift);
 
-  this.rectEvent.setAttribute('width', this.drawingSpaceWidth);
-  this.rectEvent.setAttribute('height', this.drawingSpaceHeight);
+    // Applied to left and right
+    this._applyToAxes(
+      function (axis: any, position: AxisPosition) {
+        if (!axis.isShown() || axis.floating) {
+          return;
+        }
 
-  this.drawingSpaceMinX = shiftLeft + this.getPaddingLeft(); // + "px";
-  this.drawingSpaceMinY = shiftTop + this.getPaddingTop(); // + "px";
-  this.drawingSpaceMaxX =
-    this.getDrawingWidth() - shiftRight + this.getPaddingLeft(); // + "px";
-  this.drawingSpaceMaxY =
-    this.getDrawingHeight() - shiftBottom + this.getPaddingTop(); //  + "px";
+        shift2[position][axis.getLevel()] = Math.max(
+          shift[position][axis.getLevel()],
+          axis.equalizePosition(shift[position][axis.getLevel()])
+        );
+      },
+      false,
+      false,
+      true
+    );
 
-  // Apply to top and bottom
-  this._applyToAxes(
-    function (axis: any, position: AxisPosition) {
-      if (!axis.isShown()) {
-        return;
-      }
+    shift = shift2;
 
-      axis.drawLines();
-    },
-    false,
-    true,
-    true
-  );
+    var shiftLeft = shift.left.reduce(function (prev, curr) {
+      return prev + curr;
+    }, 0);
 
-  /**
-    this.shapeZoneRect.setAttribute('x', shift[1]);
-    this.shapeZoneRect.setAttribute('y', shift[2]);
-    this.shapeZoneRect.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
-    this.shapeZoneRect.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
-  */
-  //this.shift = shift;
-  this.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
-}
+    var shiftRight = shift.right.reduce(function (prev, curr) {
+      return prev + curr;
+    }, 0);
+
+    this.drawingSpaceWidth = this.getDrawingWidth() - shiftLeft - shiftRight;
+
+    [shift.left, shift.right].forEach(function (arr) {
+      arr.reduce(function (prev, current, index) {
+        arr[index] = prev + current;
+        return prev + current;
+      }, 0);
+    });
+
+    // Apply to left and right
+    this._applyToAxes(
+      (axis: any, position: AxisPosition) => {
+        if (!axis.isShown() || axis.floating) {
+          return;
+        }
+        axis.setShift(shift[position][axis.getLevel()]);
+      },
+      false,
+      false,
+      true
+    );
+
+    // Apply to top and bottom
+    this._applyToAxes(
+      (axis: any, position: AxisPosition) => {
+        if (!axis.isShown()) {
+          //      return;
+        }
+
+        axis.setMinPx(shiftLeft);
+        axis.setMaxPx(this.getDrawingWidth(true) - shiftRight);
+
+        if (axis.floating) {
+          return;
+        }
+
+        if (!axis.linkedToAxis) {
+          axis.draw();
+        }
+      },
+      false,
+      true,
+      false
+    );
+
+    // Floating axes
+    this._applyToAxes(
+      function (axis: any, pos: AxisPosition) {
+        if (!axis.floating) {
+          return;
+        }
+
+        var floatingAxis = axis.getFloatingAxis();
+        var floatingValue = axis.getFloatingValue();
+        var floatingPx = floatingAxis.getPx(floatingValue);
+
+        axis.setShift(floatingPx);
+
+        if (!axis.linkedToAxis) {
+          axis.draw();
+        }
+      },
+      false,
+      true,
+      true
+    );
+
+    this._closeLine(
+      'right',
+      this.getDrawingWidth(true),
+      this.getDrawingWidth(true),
+      shiftTop,
+      this.getDrawingHeight(true) - shiftBottom
+    );
+    this._closeLine(
+      'left',
+      0,
+      0,
+      shiftTop,
+      this.getDrawingHeight(true) - shiftBottom
+    );
+    this._closeLine(
+      'top',
+      shiftLeft,
+      this.getDrawingWidth(true) - shiftRight,
+      0,
+      0
+    );
+    this._closeLine(
+      'bottom',
+      shiftLeft,
+      this.getDrawingWidth(true) - shiftRight,
+      this.getDrawingHeight(true) - shiftBottom,
+      this.getDrawingHeight(true) - shiftBottom
+    );
+
+    this.clipRect.setAttribute('y', shiftTop.toString());
+    this.clipRect.setAttribute('x', shiftLeft.toString());
+    this.clipRect.setAttribute(
+      'width',
+      (this.getDrawingWidth() - shiftLeft - shiftRight).toString()
+    );
+    this.clipRect.setAttribute(
+      'height',
+      (this.getDrawingHeight() - shiftTop - shiftBottom).toString()
+    );
+
+    this.rectEvent.setAttribute('y', shiftTop + this.getPaddingTop());
+    this.rectEvent.setAttribute('x', shiftLeft + this.getPaddingLeft());
+
+    this.rectEvent.setAttribute('width', this.drawingSpaceWidth);
+    this.rectEvent.setAttribute('height', this.drawingSpaceHeight);
+
+    this.drawingSpaceMinX = shiftLeft + this.getPaddingLeft(); // + "px";
+    this.drawingSpaceMinY = shiftTop + this.getPaddingTop(); // + "px";
+    this.drawingSpaceMaxX =
+      this.getDrawingWidth() - shiftRight + this.getPaddingLeft(); // + "px";
+    this.drawingSpaceMaxY =
+      this.getDrawingHeight() - shiftBottom + this.getPaddingTop(); //  + "px";
+
+    // Apply to top and bottom
+    this._applyToAxes(
+      function (axis: any, position: AxisPosition) {
+        if (!axis.isShown()) {
+          return;
+        }
+
+        axis.drawLines();
+      },
+      false,
+      true,
+      true
+    );
+
+    /**
+      this.shapeZoneRect.setAttribute('x', shift[1]);
+      this.shapeZoneRect.setAttribute('y', shift[2]);
+      this.shapeZoneRect.setAttribute('width', this.getDrawingWidth() - shift[2] - shift[3]);
+      this.shapeZoneRect.setAttribute('height', this.getDrawingHeight() - shift[1] - shift[0]);
+    */
+    //this.shift = shift;
+    this.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
+  }
 
 
 
@@ -3415,7 +3415,7 @@ console.log( this.getDrawingWidth( true ) );
    * @see Graph.registerConstructor
    * @static
    */
-  static getConstructor(constructorKey: constructorKey_t): _constructor  {
+  static getConstructor(constructorKey: constructorKey_t): _constructor {
     if (!Graph._constructors.has(constructorKey)) {
       throw new Error(`Constructor "${constructorKey}" doesn't exist`)
     }
@@ -3423,8 +3423,8 @@ console.log( this.getDrawingWidth( true ) );
     return Graph._constructors.get(constructorKey)!;
   }
 
-  getConstructor( constructorKey: constructorKey_t ): _constructor {
-    return Graph.getConstructor( constructorKey );
+  getConstructor(constructorKey: constructorKey_t): _constructor {
+    return Graph.getConstructor(constructorKey);
   }
 
   static newWaveform() {
@@ -3446,7 +3446,7 @@ console.log( this.getDrawingWidth( true ) );
 
   static _styles: Map<string, SerieStyle> = new Map()
   static saveStyle(styleName: string, json: SerieStyle) {
-    Graph._styles.set( styleName, json );
+    Graph._styles.set(styleName, json);
   }
 
   static getStyle(styleName: string) {
@@ -3567,7 +3567,7 @@ function checkKeyActions(graph: Graph, e: any, parameters: any, methodName: any)
 }
 
 
-function _handleMouseDown(graph: Graph, x:number, y: number, e: any) {
+function _handleMouseDown(graph: Graph, x: number, y: number, e: any) {
   var self = graph;
 
   if (graph.forcedPlugin) {
@@ -3781,7 +3781,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
   // End takes care of the tracking line
 
   if (graph.options.mouseMoveData) {
-    const results: {[x: string ]: any } = {};
+    const results: { [x: string]: any } = {};
 
     for (let i = 0; i < graph.series.length; i++) {
       let serie = graph.series[i];
@@ -4019,7 +4019,7 @@ function _handleMouseUp(graph: Graph, x: number, y: number, e: MouseEvent) {
     return;
   }
 
-  if( graph.activePlugin ) 
+  if (graph.activePlugin)
     graph._pluginExecute(graph.activePlugin, 'onMouseUp', [graph, x, y, e]);
   graph.activePlugin = undefined;
 }
@@ -4035,7 +4035,7 @@ function _handleClick(graph: Graph, x: number, y: number, e: MouseEvent) {
     !graph.prevent(false) &&
     graph.options.shapesUnselectOnClick
   ) {
-    graph.unselectShapes( false );
+    graph.unselectShapes(false);
   }
 }
 

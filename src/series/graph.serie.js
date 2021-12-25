@@ -1,20 +1,16 @@
-// @ts-nocheck
 import Graph, { ns } from '../graph.core';
 // @ts-ignore
 import * as util from '../graph.util.js';
 // @ts-ignore
-import EventMixing from '../mixins/graph.mixin.event_graph.js';
+import { EventEmitter } from '../mixins/graph.mixin.event';
 // @ts-ignore
 import { Waveform } from '../util/waveform';
 const defaultOptions = {
     redrawShapesAfterDraw: false
 };
-/**
- * Serie class to be extended
- * @static
- */
-class Serie {
+class Serie extends EventEmitter {
     constructor(graph, name, options = {}) {
+        super();
         this.shown = true;
         this.selected = false;
         this.waveform = undefined;
@@ -33,7 +29,9 @@ class Serie {
         return options;
     }
     postInit() { }
-    draw() { }
+    draw(force) {
+        throw new Error("Method draw must be implemented");
+    }
     beforeDraw() { }
     afterDraw() {
         if (this.options.redrawShapesAfterDraw) {
@@ -49,12 +47,8 @@ class Serie {
      * @param {(Object|Array|Array[])} data - The data of the serie
      * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
      * @param{String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
-     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
-     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
-     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
-     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
-     */
-    setData(data, oneDimensional, type) {
+    */
+    setData(data) {
         if (data instanceof Waveform) {
             return this.setWaveform(data);
         }
@@ -272,11 +266,14 @@ class Serie {
             this.setYAxis(this.graph.getYAxis());
         }
         // After axes have been assigned, the graph axes should update their min/max
-        this.graph.updateDataMinMaxAxes();
+        this.graph.updateDataMinMaxAxes(false);
         return this;
     }
+    /**
+     * @alias autoAxis
+     */
     autoAxes() {
-        return this.autoAxis(...arguments);
+        return this.autoAxis();
     }
     /**
      * Assigns an x axis to the serie
@@ -294,7 +291,7 @@ class Serie {
         else {
             this.xaxis = axis;
         }
-        this.graph.updateDataMinMaxAxes();
+        this.graph.updateDataMinMaxAxes(false);
         return this;
     }
     /**
@@ -313,7 +310,7 @@ class Serie {
         else {
             this.yaxis = axis;
         }
-        this.graph.updateDataMinMaxAxes();
+        this.graph.updateDataMinMaxAxes(false);
         return this;
     }
     /**
@@ -329,7 +326,7 @@ class Serie {
                 this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
             }
         }
-        this.graph.updateDataMinMaxAxes();
+        this.graph.updateDataMinMaxAxes(false);
         return this;
     }
     /**
@@ -393,7 +390,7 @@ class Serie {
         }
         this.waveform = waveform;
         this.dataHasChanged();
-        this.graph.updateDataMinMaxAxes();
+        this.graph.updateDataMinMaxAxes(false);
         return this;
     }
     /**
@@ -405,10 +402,10 @@ class Serie {
         if (!this.lineForLegend) {
             var line = document.createElementNS(this.graph.ns, 'line');
             this.applyLineStyle(line);
-            line.setAttribute('x1', 5);
-            line.setAttribute('x2', 25);
-            line.setAttribute('y1', 0);
-            line.setAttribute('y2', 0);
+            line.setAttribute('x1', "5");
+            line.setAttribute('x2', "25");
+            line.setAttribute('y1', "0");
+            line.setAttribute('y2', "0");
             line.setAttribute('cursor', 'pointer');
             this.lineForLegend = line;
         }
@@ -432,7 +429,7 @@ class Serie {
     ;
     getStyle(styleName) {
         if (!this.styles[styleName]) {
-            return this.graph.constructor.getStyle(styleName);
+            return Graph.getStyle(styleName);
         }
         return this._buildStyle(styleName);
     }
@@ -610,7 +607,7 @@ class Serie {
             }
         }
         else {
-            this._changedStyles[selectionType || 'unselected'] = true;
+            this._changedStyles[selectionType ? selectionType : 'unselected'] = true;
         }
         this.graph.requireLegendUpdate();
         return this;
@@ -790,5 +787,4 @@ class Serie {
         return this.waveform.hasErrorBars();
     }
 }
-EventMixing(Serie, 'serie');
 export default Serie;

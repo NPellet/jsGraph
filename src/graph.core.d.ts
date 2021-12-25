@@ -431,7 +431,7 @@ declare class Graph {
      * @return {Graph} The current graph instance
      */
     setBackgroundColor(color: string): this;
-    getAxisState(): Record<AxisPosition, [number, number][]>;
+    getAxisState(): Axes<[number, number]>;
     setAxisState(state: Axes<[Number, Number]>): void;
     saveAxisState(savedName: string): this;
     recallAxisState(savedName: string): this;
@@ -485,7 +485,7 @@ declare class Graph {
      * @returns {Axis[]} The list of axes linked to the axis passed as parameter
      */
     findAxesLinkedTo(axis: any): any[];
-    _axisHasChanged(): void;
+    _axisHasChanged(axis: any): void;
     /**
      * Creates a new serie.
      * If the a serie with the same name exists, returns this serie with update options.

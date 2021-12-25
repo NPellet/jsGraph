@@ -1,10 +1,7 @@
+import { EventEmitter } from '../mixins/graph.mixin.event';
 import { SerieOptions, SerieStyle } from '../../types/series';
 import { Waveform } from '../util/waveform';
-/**
- * Serie class to be extended
- * @static
- */
-declare class Serie {
+declare class Serie extends EventEmitter {
     options: SerieOptions;
     private graph;
     private name;
@@ -12,6 +9,7 @@ declare class Serie {
     protected symbolLegendContainer: SVGElement;
     private _activeStyleName;
     private _unselectedStyleName;
+    private _changedStyles;
     protected minX: number;
     protected maxX: number;
     protected minY: number;
@@ -24,7 +22,7 @@ declare class Serie {
     init(): void;
     extendOptions<T extends SerieOptions>(options: T): T;
     postInit(): void;
-    draw(): void;
+    draw(force: boolean): void;
     beforeDraw(): void;
     afterDraw(): void;
     /**
@@ -33,12 +31,8 @@ declare class Serie {
      * @param {(Object|Array|Array[])} data - The data of the serie
      * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
      * @param{String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
-     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
-     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
-     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
-     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
-     */
-    setData(data: any, oneDimensional: any, type: any): this;
+    */
+    setData(data: Waveform): this;
     _addData(type: any, howmany: any): any[];
     /**
      * Removes all the data from the serie, without redrawing
@@ -64,27 +58,27 @@ declare class Serie {
      * @memberof Serie
      * @example serie.setOption('selectableOnClick', true );
      */
-    setOption(name: any, value: any): void;
+    setOption<T extends keyof SerieOptions>(name: T, value: SerieOptions[T]): void;
     /**
      * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
      * @return {Serie} The current serie instance
      * @memberof Serie
      */
-    kill(noLegendUpdate: any): this;
+    kill(noLegendUpdate: boolean): this;
     /**
      * Hides the serie
      * @memberof Serie
      * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
      * @returns {Serie} The current serie
      */
-    hide(hideShapes?: any, mute?: boolean): this;
+    hide(hideShapes?: boolean, mute?: boolean): this;
     /**
      * Shows the serie
      * @memberof Serie
      * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
      * @returns {Serie} The current serie
      */
-    show(showShapes?: any, mute?: boolean): this;
+    show(showShapes?: boolean, mute?: boolean): this;
     hideImpl(): void;
     showImpl(): void;
     /**
@@ -139,6 +133,9 @@ declare class Serie {
      * @returns {Serie} The current serie
      */
     autoAxis(): this;
+    /**
+     * @alias autoAxis
+     */
     autoAxes(): this;
     /**
      * Assigns an x axis to the serie
@@ -209,7 +206,7 @@ declare class Serie {
     getStyle(styleName: any): any;
     getRawStyles(): {
         [x: string]: {
-            base: string;
+            base?: string;
             data: SerieStyle;
         };
     };
@@ -252,7 +249,7 @@ declare class Serie {
      * @returns {String} The label or, alternatively - the name of the serie
      * @memberof Serie
      */
-    getLabel(): any;
+    getLabel(): string;
     /**
      * Sets the label of the serie. Note that this does not automatically updates the legend
      * @param {String} label - The new label of the serie
@@ -271,12 +268,12 @@ declare class Serie {
      * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
      * @memberof Serie
      */
-    getFlip(): any;
+    getFlip(): boolean;
     /**
      * @alias Serie#getFlip
      * @memberof Serie
      */
-    isFlipped(): any;
+    isFlipped(): boolean;
     /**
      * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
      * @memberof Serie
@@ -289,14 +286,14 @@ declare class Serie {
      * @memberof Serie
      * @returns {Nunber} The index of the layer into which the serie will be drawn
      */
-    getLayer(): any;
+    getLayer(): number;
     /**
      * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
      * @param {String} selectionType - The selection for which the style may have changed
      * @returns {Serie} The current serie
      * @memberof Serie
      */
-    styleHasChanged(selectionType?: string | boolean): this;
+    styleHasChanged(selectionType?: string | false): this;
     /**
      * Checks if the style has changed for a selection type
      * @param {String} selectionType - The selection for which the style may have changed
@@ -310,7 +307,7 @@ declare class Serie {
      * @returns {Serie} The current serie
      * @memberof Serie
      */
-    dataHasChanged(arg: any): this;
+    dataHasChanged(arg?: any): this;
     /**
      * Checks if the data has changed
      * @returns {Boolean} <code>true</code> if the data has changed

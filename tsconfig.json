@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES6",
-        "lib": [ "es5", "dom" ],
+        "lib": [ "es2015", "dom" ],
         "esModuleInterop": true,
         // Ensure that .d.ts files are created by tsc, but not .js files
         "declaration": true,

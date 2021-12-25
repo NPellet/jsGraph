@@ -1,4 +1,4 @@
-import Axis from './graph.axis.js';
+import Axis from './graph.axis';
 
 /**
  * Generic constructor of a y axis
@@ -65,15 +65,15 @@ class AxisY extends Axis {
    */
   getMaxSizeTick() {
     // Gives an extra margin of 5px
-    return this.longestTick && this.longestTick[0] ?
-      this.longestTick[0].getComputedTextLength() + 5 :
-      0; //(this.left ? 10 : 0);
+    return this.longestTick && this.longestTick[0]
+      ? this.longestTick[0].getComputedTextLength() + 5
+      : 0; //(this.left ? 10 : 0);
   }
 
   draw() {
-    this.tickMargin = this.left ?
-      -5 - this.tickPx1 * this.tickScaling[1] :
-      2 - this.tickPx1 * this.tickScaling[1];
+    this.tickMargin = this.left
+      ? -5 - this.tickPx1 * this.tickScaling[1]
+      : 2 - this.tickPx1 * this.tickScaling[1];
     var tickWidth = super.draw(...arguments);
     tickWidth += this.getAdditionalWidth();
     this.drawSpecifics(tickWidth);
@@ -108,11 +108,11 @@ class AxisY extends Axis {
     tick = this.nextTick(level, (tick) => {
       tick.setAttribute(
         'x1',
-        (this.left ? 1 : -1) * this.tickPx1 * this.tickScaling[level]
+        (this.left ? 1 : -1) * this.tickPx1 * this.tickScaling[level],
       );
       tick.setAttribute(
         'x2',
-        (this.left ? 1 : -1) * this.tickPx2 * this.tickScaling[level]
+        (this.left ? 1 : -1) * this.tickPx2 * this.tickScaling[level],
       );
 
       if (level == 1) {
@@ -132,7 +132,7 @@ class AxisY extends Axis {
       tickLabel = this.nextTickLabel((tickLabel) => {
         tickLabel.setAttribute(
           'x',
-          this.tickMargin + this.options.tickLabelOffset
+          this.tickMargin + this.options.tickLabelOffset,
         );
         if (this.getTicksLabelColor() !== 'black') {
           tickLabel.setAttribute('fill', this.getTicksLabelColor());
@@ -168,8 +168,9 @@ class AxisY extends Axis {
   placeLabel(y) {
     this.label.setAttribute(
       'transform',
-      `translate(${y}, ${Math.abs(this.getMaxPx() + this.getMinPx()) /
-      2}) rotate(-90)`
+      `translate(${y}, ${
+        Math.abs(this.getMaxPx() + this.getMinPx()) / 2
+      }) rotate(-90)`,
     );
   }
 
@@ -199,14 +200,16 @@ class AxisY extends Axis {
 
     var span = this.getSpan();
     this.line.setAttribute(
-      'marker-start', !this.options.splitMarks || span[0] == 0 ?
-      '' :
-      `url(#verticalsplit_${this.graph.getId()})`
+      'marker-start',
+      !this.options.splitMarks || span[0] == 0
+        ? ''
+        : `url(#verticalsplit_${this.graph.getId()})`,
     );
     this.line.setAttribute(
-      'marker-end', !this.options.splitMarks || span[1] == 1 ?
-      '' :
-      `url(#verticalsplit_${this.graph.getId()})`
+      'marker-end',
+      !this.options.splitMarks || span[1] == 1
+        ? ''
+        : `url(#verticalsplit_${this.graph.getId()})`,
     );
   }
 
@@ -221,11 +224,11 @@ class AxisY extends Axis {
     }
 
     let xshift = this.shift;
-    xshift = this.floating ?
-      xshift :
-      this.isLeft() ?
-        xshift :
-        this.graph.getWidth() -
+    xshift = this.floating
+      ? xshift
+      : this.isLeft()
+      ? xshift
+      : this.graph.getWidth() -
         this.graph.getPaddingRight() -
         this.graph.getPaddingLeft() -
         xshift;
@@ -345,7 +348,8 @@ class AxisY extends Axis {
         continue;
       }
 
-      if (!(this.graph.series[i].getXAxis() == axis) ||
+      if (
+        !(this.graph.series[i].getXAxis() == axis) ||
         this.graph.series[i].getYAxis() !== this
       ) {
         continue;

@@ -1,7 +1,194 @@
 import Graph from './graph.core';
 import * as util from './graph.util.js';
-import EventMixin from './mixins/graph.mixin.event_graph.js';
+import { EventEmitter } from './mixins/graph.mixin.event.js';
+import { extend } from 'lodash'
+import Serie from './series/graph.serie'
+import assert from 'assert';
 
+export enum TickPosition {
+  OUTSIDE = "outside",
+  INSIDE = "inside",
+  CENTERED = "centered"
+}
+
+type TickPosition_t = 1 | 2 | 3 | "centered" | "outside" | "inside" | TickPosition
+
+/**
+ * @member name     : Name of the axis, can be reference later
+ * @member label    : Displayed label
+ * @member display  : Whether or not the axis is displayed
+ * @member hideWhenNoSeriesShown  : Whether or not the axis should be displayed along with its bound series
+ * @member flipped  : Flips the axis direction (min->max ==> max->min)
+ * @member axisDataSpacing :  Additional spacing between the min/max of the data and the automatically calculated min/max of the graph. Expressed as a fraction of the total span. Does not apply to a zoomed axes, or when forced boundaries are in place
+ * @member axisDataSpacing.min: Spacing towards the data min
+ * @member axisDataSpacing.max: Spacing towards the data max
+ * @member primaryGrid  : Whether or not the primary grid should be displayed
+ * @member secondaryGrid : Whether or not the secondary grid should be displayed
+ * 
+ * @member hideTicks: Do not show ticks, nor any tick labels
+ * @member tickLabels: Whether or not to show the tick labels (does not affect the ticks themselves)
+ * @member tickPosition : Position of the ticks with respect to the axis line
+ * @member nbTicksPrimary : Approximate number of primary ticks. This is only an indication for the axis and is not enforced
+ * @member primaryTickUnit : Forces the spacing between two ticks (in axis unit, not px units)
+ * @member maxPrimaryTickUnit : Gives a maximum boundary to the distance between two ticks (in axis units, not px units)
+ * @member minPrimaryTickUnit : Gives a minimum boundary to the distance between two ticks (in axis units, not px units)
+ * @member nbTicksSecondary : Number of secondary ticks to be displayed between two primary ticks,
+ 
+ * @member ticklabelratio : Scaled the tick label content by a multiplicator
+ * @member exponentialFactor: Scales the tick values by 10^factor. Works on top of ticklabelratio (i.e. they both sum up)
+ * @member shiftToZero: Whether or not the axis should be shifted down by its min values (putting effectively its minimum at 0)
+
+ * @member logScale: Display the axis as a logarithmic scale
+ * @member forcedMin: Forces the minimum boundary of the axis (may still be zoomed). Use false to toggle off
+ * @member forcedMax: Forces the maximum boundary of the axis (may still be zoomed). Use false to toggle off
+ * @member highestMax: Sets the highest maximum value the axis can take
+ * @member lowestMin: Sets the highest maximum value the axis can take
+ * 
+ * @member lineAt: Shows a perpendicular line at the given value (in axis unit). Useful for example to show the axis lines at x=0 or y=0
+ *
+ *
+ * @member primaryGridWidth: Width of the lines making the primary grid
+ * @member primaryGridColor: Color of the primary grid lines (e.g. "red", or #ff0000")
+ * @member primaryGridDasharray: Dasharray of the grid (see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray)
+ * @member primaryGridOpacity: Opacity of the primary grid lines
+ * @member primaryTicksColor: Color of the primary ticks (e.g. "red", or #ff0000")
+ * 
+ * @member secondaryGridWidth: Width of the lines making the secondary grid
+ * @member secondaryGridColor: Color of the secondary grid lines (e.g. "red", or #ff0000")
+ * @member secondaryGridDasharray: Dasharray of the grid (see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray)
+ * @member secondaryGridOpacity: Opacity of the secondary grid lines
+ * @member secondaryTicksColor: Color of the secondary ticks (e.g. "red", or #ff0000")
+ *
+ * @member span: Restrict the axis displayed span (in the px dimension), as a function of the total height. Values are given as a ratio
+ * @member marginMin: Margin below the axis (adds a whitespace below the min span value)
+ * @member marginMax: Margin above the axis (adds a whitespace above the max span value)
+ *
+ * @member scientificScale: Turns on/off scientific scaling. Data is scaled to scientific units and 10^X is displayed in the axis label
+ * @member scientificScaleExponent: Forces X, when scientificScale is true (see scientificScale)
+ * @member engineeringScale: Forces X to be a multiple of 3, when scientificScale is true (see scientificScale)
+ *
+ * @member unit: Sets the unit of the axis
+ * @member unitWrapperBefore: Shows this sequence of character before the unit (e.g. "(")
+ * @member unitWrapperAfter: Shows this sequence of character after the unit (e.g. ")")
+ * @member unitInTicks: Show the axis unit in the dicks
+ * @member unitDecade: Instead of showing 10^x in the axis label, converts it to an SI multiple (f, p, n, u, m, k, M, G, T) and display the letter together with the unit
+ *
+ *
+ * @member tickLabelOffset: Use this value to adjust the spacing between the tick value and the label
+ *
+ * @member currentAxisMin: Current min value of the axis (use this to reload a zoomed value from a saved state)
+ * @member currentAxisMax: Current max value of the axis (use this to reload a zoomed value from a saved state)
+ *
+ * @member useKatexForLabel: Use a katex render to show the axis label
+ * @member tickLabelRotation: Rotate the labels by a certain amount angle (in degrees)
+ *
+ *
+ * @member formatTickLabel: Customisation function that takes a label value (in axis unit) and returns the value to be displayed
+ * @member labelFont: Font-family used for the label
+ * @member axisColor: Color of the main axis line
+ * @member labelColor: Color of the axis label
+ * @member ticksLabelColor: Color of the ticks label
+   
+ */
+type GraphAxisOptions = {
+
+  name: string,   // Name of the axis, can be referenced later
+  label: string,  // Displayed label
+
+  display: boolean, // Whether or not the axis is displayed
+  hideWhenNoSeriesShown: boolean, // Whether or to hide / show the axis when its series are hidden / shown
+
+  flipped: boolean, // Flips the axis direction
+
+  axisDataSpacing: {
+    min: number,
+    max: number
+  },
+
+  primaryGrid: boolean,
+  secondaryGrid: boolean,
+
+  tickPosition: TickPosition_t,
+
+  nbTicksPrimary: number,
+  primaryTickUnit?: undefined | number,
+  maxPrimaryTickUnit?: undefined | number,
+  minPrimaryTickUnit?: undefined | number,
+
+
+  nbTicksSecondary: number,
+  ticklabelratio: number,
+  exponentialFactor: number,
+  exponentialLabelFactor: number,
+  logScale: boolean,
+  forcedMin: false | number,
+  forcedMax: false | number,
+
+  lineAt: number | false,
+  unitModification: string | false,
+
+  hideTicks: boolean,
+
+  primaryGridWidth: number,
+  primaryGridColor: string,
+  primaryGridDasharray: string,
+  primaryGridOpacity: number,
+  primaryTicksColor: string,
+
+  secondaryGridWidth: number,
+  secondaryGridColor: string,
+  secondaryGridDasharray: string,
+  secondaryGridOpacity: number,
+  secondaryTicksColor: string,
+
+  shiftToZero: boolean,
+  tickLabels: boolean,
+
+  span: [number, number],
+  marginMin: number,
+  marginMax: number,
+
+
+  scientificScale: boolean,
+  scientificScaleExponent: boolean,
+  engineeringScale: boolean,
+
+  unitInTicks: boolean,
+  unit: false | string,
+  unitWrapperBefore: false | string,
+  unitWrapperAfter: false | string,
+
+
+  tickLabelOffset: number,
+
+  highestMax: number,
+  lowestMin: number,
+
+  labelValue: string,
+
+  adaptTo: false | {
+    axis: Axis,
+    thisValue: number,
+    foreignValue: number,
+    preference: "min" | "max"
+  };
+
+  currentAxisMin: number,
+  currentAxisMax: number,
+
+  useKatexForLabel: boolean,
+  unitDecade: boolean,
+
+
+  tickLabelRotation?: number,
+
+  formatTickLabel?: Function,
+
+  labelFont?: string,
+  axisColor?: string,
+  labelColor?: string,
+  ticksLabelColor?: string
+}
 /**
  * Default graph parameters
  * @name AxisOptionsDefault
@@ -25,7 +212,14 @@ import EventMixin from './mixins/graph.mixin.event_graph.js';
  * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
  * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
  */
-const defaults = {
+const defaults: GraphAxisOptions = {
+  label: "",
+  hideTicks: false,
+  adaptTo: false,
+  currentAxisMax: 0,
+  currentAxisMin: 0,
+  useKatexForLabel: false,
+  unitDecade: false,
 
   name: undefined,
 
@@ -78,10 +272,7 @@ const defaults = {
   unitWrapperBefore: '',
   unitWrapperAfter: '',
 
-
   tickLabelOffset: 0,
-
-  useKatexForLabel: false,
 
   highestMax: undefined,
   lowestMin: undefined,
@@ -97,30 +288,96 @@ const defaults = {
  * myAxis.prototype = new Graph.getConstructor("axis");
  * graph.setBottomAxis( new myAxis( { } ) );
  */
-class Axis {
+
+const unitModificationTimeTicks = [
+  [1, [1, 2, 5, 10, 20, 30]],
+  [60, [1, 2, 5, 10, 20, 30]],
+  [3600, [1, 2, 6, 12]],
+  [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]
+];
+
+const tickScaling = {
+  1: 3,
+  2: 2,
+  3: 1,
+  4: 0.5
+};
+
+type TickLevel<T> = {
+  1: T,
+  2: T
+};
+
+interface Axis {
+  addLabel: (args: any) => SVGElement;
+  setMinMaxFlipped: () => void;
+
+}
+abstract class Axis extends EventEmitter implements Axis {
+
+  private graph: Graph;
+  private options: GraphAxisOptions;
+  private group: SVGElement;
+  private rectEvent: SVGElement;
+  private _lines: Array<SVGElement>;
+  private line: SVGElement;
+  private groupTicks: SVGElement;
+  private groupTickLabels: SVGElement
+  private hasChanged: boolean;
+  private label: SVGElement;
+  private labelTspan: SVGElement;
+  private preunit: string;
+  private unitTspan: SVGElement;
+  private expTspan: SVGElement;
+  private expTspanExp: SVGElement;
+
+  private gridLinePath: { primary: string, secondary: string };
+  private gridPrimary: SVGElement;
+  private gridSecondary: SVGElement;
+  private groupSeries: SVGElement;
+  private widthHeightTick: number;
+  private _hidden: boolean;
+
+  private ticks: TickLevel<Array<SVGElement>>;
+  private currentTick: TickLevel<number>
+  private lastCurrentTick: TickLevel<number>
+  private labels: Array<SVGElement>;
+
+  private cachedInterval: number;
+
+
+  private ticksLabels: Array<SVGTextElement>
+  private series: Array<Serie>;
+  private _zoomed: any;
+  private floating: boolean;
+  private floatingAxis: Axis;
+  private floatingValue: number;
+  private minPx: number;
+  private maxPx: any;
+  private minPxFlipped: number;
+  private maxPxFlipped: number;
+  private dataMin: number;
+  private dataMax: number;
+  private mouseVal: number;
+  private _zoomLocked: any;
 
   constructor() {
-
+    super();
   }
 
-  init(graph, options, overwriteoptions) {
+  init(graph: Graph, options: Partial<GraphAxisOptions>) {
 
-    this.unitModificationTimeTicks = [
-      [1, [1, 2, 5, 10, 20, 30]],
-      [60, [1, 2, 5, 10, 20, 30]],
-      [3600, [1, 2, 6, 12]],
-      [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]
-    ];
 
     this.graph = graph;
-    this.options = util.extend(true, {}, defaults, overwriteoptions, options);
+    this.options = extend(true, {}, defaults, options);
 
-    this.group = document.createElementNS(this.graph.ns, 'g');
+    this.group = document.createElementNS(this.graph.ns, 'g') as SVGElement;
     this.hasChanged = true;
 
-    this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
+    this.rectEvent = document.createElementNS(this.graph.ns, 'rect') as SVGElement;
     this.rectEvent.setAttribute('pointer-events', 'fill');
     this.rectEvent.setAttribute('fill', 'transparent');
+
     this.group.appendChild(this.rectEvent);
 
     this.graph.axisGroup.appendChild(this.group); // Adds to the main axiszone
@@ -128,33 +385,33 @@ class Axis {
     // Lines at a certain value
     this._lines = [];
 
-    this.line = document.createElementNS(this.graph.ns, 'line');
+    this.line = document.createElementNS(this.graph.ns, 'line') as SVGElement;
     this.line.setAttribute('stroke', 'black');
     this.line.setAttribute('shape-rendering', 'crispEdges');
     this.line.setAttribute('stroke-linecap', 'square');
-    this.groupTicks = document.createElementNS(this.graph.ns, 'g');
-    this.groupTickLabels = document.createElementNS(this.graph.ns, 'g');
+    this.groupTicks = document.createElementNS(this.graph.ns, 'g') as SVGElement;
+    this.groupTickLabels = document.createElementNS(this.graph.ns, 'g') as SVGElement;
 
     this.group.appendChild(this.groupTicks);
     this.group.appendChild(this.groupTickLabels);
     this.group.appendChild(this.line);
 
-    this.label = document.createElementNS(this.graph.ns, 'text');
+    this.label = document.createElementNS(this.graph.ns, 'text') as SVGElement;
 
-    this.labelTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the main label
+    this.labelTspan = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the main label
     this.preunit = ''; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
-    this.unitTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the unit
-    this.expTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the exponent (x10)
-    this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan'); // Contains the exponent value
+    this.unitTspan = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the unit
+    this.expTspan = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the exponent (x10)
+    this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the exponent value
 
-    this.label.appendChild(this.labelTspan);
+    this.label.appendChild(this.labelTspan) as SVGElement;
     //this.label.appendChild( this.preunitTspan );
     this.label.appendChild(this.unitTspan);
     this.label.appendChild(this.expTspan);
     this.label.appendChild(this.expTspanExp);
 
-    this.expTspan.setAttribute('dx', 6);
-    this.expTspanExp.setAttribute('dy', -5);
+    this.expTspan.setAttribute('dx', "6");
+    this.expTspanExp.setAttribute('dy', "-5");
     this.expTspanExp.setAttribute('font-size', '0.8em');
 
     this.label.setAttribute('text-anchor', 'middle');
@@ -166,8 +423,8 @@ class Axis {
       secondary: ''
     };
 
-    this.gridPrimary = document.createElementNS(this.graph.ns, 'path');
-    this.gridSecondary = document.createElementNS(this.graph.ns, 'path');
+    this.gridPrimary = document.createElementNS(this.graph.ns, 'path') as SVGElement;
+    this.gridSecondary = document.createElementNS(this.graph.ns, 'path') as SVGElement;
 
     this.graph.groupPrimaryGrids.appendChild(this.gridPrimary);
     this.graph.groupSecondaryGrids.appendChild(this.gridSecondary);
@@ -176,35 +433,28 @@ class Axis {
 
     this.group.appendChild(this.label);
 
-    this.groupSeries = document.createElementNS(this.graph.ns, 'g');
+    this.groupSeries = document.createElementNS(this.graph.ns, 'g') as SVGElement;
     this.group.appendChild(this.groupSeries);
 
     this.widthHeightTick = 0;
 
-    this.ticks = {};
+    this.ticks = { 1: [], 2: [] };
     this.ticksLabels = [];
-    this.tickScaling = {
-      1: 3,
-      2: 2,
-      3: 1,
-      4: 0.5
-    };
 
-    this.currentTick = {};
-    this.lastCurrentTick = {};
+
+    this.currentTick = { 1: 0, 2: 0 };
+    this.lastCurrentTick = { 1: 0, 2: 0 };
 
     this.series = [];
-    this.totalDelta = 0;
-    this.currentAction = false;
 
     this.group.addEventListener('mousemove', (e) => {
       e.preventDefault();
       var coords = this.graph._getXY(e);
       this.handleMouseMoveLocal(coords.x, coords.y, e);
 
-      for (var i = 0, l = this.series.length; i < l; i++) {
-        this.series[i].handleMouseMove(false, true);
-      }
+      /* for (var i = 0, l = this.series.length; i < l; i++) {
+         this.series[i].handleMouseMove(false, true);
+       }*/
     });
 
     this.labels = [];
@@ -222,14 +472,14 @@ class Axis {
         this.clip.appendChild( this.clipRect );
         this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
     */
-    this.gridPrimary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
-    this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph._creation})`);
+    this.gridPrimary.setAttribute('clip-path', `url(#_clipplot${this.graph.uid})`);
+    this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph.uid})`);
     this.graph._axisHasChanged(this);
 
     this.cache();
   }
 
-  handleMouseMoveLocal() { }
+  handleMouseMoveLocal(x: number, y: number, e: MouseEvent) { }
 
   /**
    * Hides the axis
@@ -278,8 +528,7 @@ class Axis {
   }
 
   isShown() {
-
-    return this.isDisplayed(...arguments);
+    return this.isDisplayed();
   }
 
   hideGroup() {
@@ -406,7 +655,7 @@ class Axis {
    * @return {Axis} The current axis
    * @example graph.getYAxis().setFloat( graph.getBottomAxis(), 0 ); // Alignes the y axis with the origin of the bottom axis
    */
-  setFloating(axis, value) {
+  setFloating(axis: Axis, value: number) {
 
     this.floating = true;
     this.floatingAxis = axis;
@@ -435,18 +684,18 @@ class Axis {
    * Sets the axis data spacing
    * @memberof Axis
    * @see AxisOptionsDefault
-   * @param {Number} min - The spacing at the axis min value
-   * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
+   * @param min - The spacing at the axis min value
+   * @param max = min - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
    * @return {Axis} The current axis
    */
-  setAxisDataSpacing(val1, val2) {
+  setAxisDataSpacing(val1: number, val2?: number) {
     this.options.axisDataSpacing.min = val1;
     this.options.axisDataSpacing.max = val2 || val1;
     return this;
   }
 
-  dataSpacing() {
-    return this.setAxisDataSpacing(...arguments);
+  dataSpacing(val1: number, val2?: number) {
+    return this.setAxisDataSpacing(val1, val2);
   }
 
   /**
@@ -456,7 +705,7 @@ class Axis {
    * @param {Number} min - The spacing at the axis min value
    * @return {Axis} The current axis
    */
-  setAxisDataSpacingMin(val) {
+  setAxisDataSpacingMin(val: number) {
     this.options.axisDataSpacing.min = val;
   }
 
@@ -467,11 +716,11 @@ class Axis {
    * @param {Number} max - The spacing at the axis max value
    * @return {Axis} The current axis
    */
-  setAxisDataSpacingMax(val) {
+  setAxisDataSpacingMax(val: number) {
     this.options.axisDataSpacing.max = val;
   }
 
-  setMinPx(px) {
+  setMinPx(px: number) {
 
     this.minPx = px;
     this.setMinMaxFlipped();
@@ -527,7 +776,7 @@ class Axis {
     return this.options.forcedMax !== false ? this.options.forcedMax : (!isNaN(this.options.highestMax) ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax);
   }
 
-  setMinValueData(min) {
+  setMinValueData(min: number) {
     this.dataMin = min;
 
     // 25.10.2017. This is to help in the case there's no autoscaling
@@ -538,7 +787,7 @@ class Axis {
     }
   }
 
-  setMaxValueData(max) {
+  setMaxValueData(max: number) {
     this.dataMax = max;
 
     // 25.10.2017. This is to help in the case there's no autoscaling
@@ -685,7 +934,9 @@ class Axis {
     }
 
     this._doZoomVal(
-      ((this.getCurrentMax() - baseline) * (1 + delta)) + baseline, ((this.getCurrentMin() - baseline) * (1 + delta)) + baseline
+      ((this.getCurrentMax() - baseline) * (1 + delta)) + baseline,
+      ((this.getCurrentMin() - baseline) * (1 + delta)) + baseline,
+      false
     );
 
     this.graph.draw();
@@ -842,7 +1093,7 @@ class Axis {
           this.decimals = -decimals;
 
           var possibleTicks = [1, 2, 5, 10];
-          var closest = false;
+          var closest: boolean | number = false;
           for (let i = possibleTicks.length - 1; i >= 0; i--) {
             if (!closest || (Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural))) {
               closest = possibleTicks[i];
@@ -855,7 +1106,7 @@ class Axis {
               13'453 (4) (1.345) => 1
               0.0000341 (-5) (3.41) => 5
           */
-
+          assert(closest);
           // Let's scale it back
           var unitPerTickCorrect = closest * Math.pow(10, decimals);
 
@@ -879,7 +1130,7 @@ class Axis {
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  setMinMaxToFitSeries(noNotify) {
+  setMinMaxToFitSeries(noNotify: boolean = false) {
 
     if (this.options.logScale) {
 
@@ -964,7 +1215,7 @@ class Axis {
    * @memberof Axis
    * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
    */
-  getCurrentInterval() {
+  getCurrentInterval(): number {
     return this.cachedInterval;
   }
 
@@ -972,7 +1223,7 @@ class Axis {
    * @memberof Axis
    * @return {Number} The current minimum value of the axis
    */
-  getCurrentMin() {
+  getCurrentMin(): number {
     return this.cachedCurrentMin;
   }
 
@@ -980,7 +1231,7 @@ class Axis {
    * @memberof Axis
    * @return {Number} The current maximum value of the axis
    */
-  getCurrentMax() {
+  getCurrentMax(): number {
     return this.cachedCurrentMax;
   }
 
@@ -1100,6 +1351,7 @@ class Axis {
     // var visible;
 
     //    this.drawInit();
+    let widthHeight: number = 0;
 
     if (this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined) {
       this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
@@ -1159,7 +1411,7 @@ class Axis {
       if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
 
         this.preunit = letter;
-        this.unitTspan.setAttribute('dx', 0);
+        this.unitTspan.setAttribute('dx', "0");
 
       } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent)) {
 
@@ -1189,7 +1441,7 @@ class Axis {
       this.writeUnit();
 
     } else {
-      let string = this.getLabel() ;
+      let string = this.getLabel();
       /*,
               domEl;*/
 
@@ -1198,7 +1450,7 @@ class Axis {
         string += letter;
         this.preunitTspan.innerHTML = letter;
         this.preunitTspan.setAttribute('display', 'visible');
-        this.unitTspan.setAttribute('dx', 0);
+        this.unitTspan.setAttribute('dx', "0");
 
         string += ` ${letter} ${this.options.unit}`;
 
@@ -1221,20 +1473,20 @@ class Axis {
       if (this.linkedToAxis) { // px defined, linked to another axis
 
         this.linkedToAxis.deltaPx = 10;
-        var widthHeight = this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
+        widthHeight = this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
 
       } else if (!this.options.logScale) {
         // So the setting is: How many ticks in total ? Then we have to separate it
 
-        var widthHeight = this.drawLinearTicksWrapper(widthPx, valrange);
+        widthHeight = this.drawLinearTicksWrapper(widthPx, valrange);
 
       } else {
 
-        var widthHeight = this.drawLogTicks();
+        widthHeight = this.drawLogTicks();
 
       }
     } else {
-      var widthHeight = 0;
+      widthHeight = 0;
     }
 
     this.removeUselessTicks();
@@ -1289,7 +1541,7 @@ class Axis {
     if (this.options.unit) {
 
       this.unitTspan.setAttribute('display', 'visible');
-      this.unitTspan.setAttribute('dx', 5);
+      this.unitTspan.setAttribute('dx', "5");
 
       //6.10.2018: This was incompatible with the fact that there can be a unit + a *10^x factor, when setUnitDecate( false ) is called (which is also the default behaviour)
       // We should check if this creates other issues.
@@ -1405,7 +1657,7 @@ class Axis {
     return this;
   }
 
-  
+
   setTickLabelRotation(angle) {
     this.options.tickLabelRotation = angle;
     return this;
@@ -1524,7 +1776,7 @@ class Axis {
 
     if (this.currentTickLabel >= this.ticksLabels.length) {
 
-      var tickLabel = document.createElementNS(this.graph.ns, 'text');
+      var tickLabel = document.createElementNS(this.graph.ns, 'text') as SVGTextElement;
       this.groupTickLabels.appendChild(tickLabel);
       this.ticksLabels.push(tickLabel);
       callback(tickLabel);
@@ -1660,7 +1912,7 @@ class Axis {
     return this.widthHeightTick;
   }
 
-  drawTickWrapper(value, label, level, options) {
+  drawTickWrapper(value: number, label: boolean, level: 1 | 2 | 3, options?: any) {
 
     //var pos = this.getPos( value );
 
@@ -1692,7 +1944,7 @@ class Axis {
 
   }
 
-  drawLinkedToAxisTicksWrapper(widthPx, valrange) {
+  drawLinkedToAxisTicksWrapper(widthPx: number, valrange): number {
 
     var opts = this.linkedToAxis,
       px = 0,
@@ -1729,8 +1981,8 @@ class Axis {
       if (delta2 > opts.deltaPx) {
         opts.deltaPx = delta2;
         //     this.drawInit();
-        this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
-        return;
+        return this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
+
       }
 
       px += opts.deltaPx;
@@ -1751,7 +2003,7 @@ class Axis {
   /**
    * @alias Axis~getPos
    */
-  getPx(value) {
+  getPx(value: number) {
     //      if(this.getMaxPx() == undefined)
     //        console.log(this);
     //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -1769,9 +2021,7 @@ class Axis {
       if (value < 0)
         return;
 
-      var value = ((Math.log(value) - Math.log(this.getCurrentMin())) / (Math.log(this.getCurrentMax()) - Math.log(this.getCurrentMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
-
-      return value;
+      return ((Math.log(value) - Math.log(this.getCurrentMin())) / (Math.log(this.getCurrentMax()) - Math.log(this.getCurrentMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
     }
   }
 
@@ -1794,7 +2044,7 @@ class Axis {
    * @memberof Axis
    * @return {Number} The axis value corresponding to the pixel position
    */
-  getVal(px) {
+  getVal(px: number): number {
 
     if (!this.options.logScale) {
 
@@ -1828,7 +2078,7 @@ class Axis {
     return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
   }
 
-  setFormatTickLabel( method ) {
+  setFormatTickLabel(method) {
     this.options.formatTickLabel = method;
     return this;
   }
@@ -1839,12 +2089,12 @@ class Axis {
       value /= Math.pow(10, this.scientificExponent);
       return value.toFixed(1);
 
-    } else if( this.options.formatTickLabel ) {
+    } else if (this.options.formatTickLabel) {
 
-      return this.options.formatTickLabel( value );
+      return this.options.formatTickLabel(value);
 
     } else {
-      
+
       value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
       if (this.options.shiftToZero) {
         value -= this.dataMin;
@@ -1936,7 +2186,7 @@ class Axis {
 
       case 'time': // val must be in seconds => transform in hours / days / months
         var max = this.getModifiedValue(this.getMaxValue()),
-          units = [
+          units: Array<[number, string]> = [
             [60, 'min'],
             [3600, 'h'],
             [3600 * 24, 'd']
@@ -2029,7 +2279,7 @@ class Axis {
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  setLabel(label) {
+  setLabel(label: string) {
     this.options.label = label;
     return this;
   }
@@ -2080,11 +2330,11 @@ class Axis {
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  setTickPosition(pos) {
+  setTickPosition(pos: 1 | 2 | 3 | "outside" | "centered" | "inside" | TickPosition) {
     switch (pos) {
       case 3:
       case 'outside':
-      case Graph.TICKS_OUTSIDE:
+      case TickPosition.OUTSIDE:
         {
           pos = 3;
           break;
@@ -2092,7 +2342,7 @@ class Axis {
 
       case 2:
       case 'centered':
-      case Graph.TICKS_CENTERED:
+      case TickPosition.CENTERED:
         {
           pos = 2;
           break;
@@ -2100,7 +2350,7 @@ class Axis {
 
       case 1:
       case 'inside':
-      case Graph.TICKS_INSIDE:
+      case TickPosition.INSIDE:
       default:
         {
           pos = 1;
@@ -2220,14 +2470,14 @@ class Axis {
    * @alias Axis#gridsOff
    */
   turnGridsOff() {
-    return this.gridsOff(...arguments);
+    return this.gridsOff();
   }
 
   /**
    * @alias Axis#gridsOn
    */
   turnGridsOn() {
-    return this.gridsOn(...arguments);
+    return this.gridsOn();
   }
 
   /**
@@ -2555,7 +2805,7 @@ class Axis {
 
     if (options.overwrite || !options.exponential) {
 
-      dom.textContent = options.overwrite || this.valueToText(val);
+      dom.textContent = options.overwrite || this.valueToText(val, false);
 
     } else {
       var log = Math.round(Math.log(val) / Math.log(10));
@@ -2563,9 +2813,9 @@ class Axis {
 
       dom.textContent = (unit != 1) ? `${unit}x10` : '10';
       var tspan = document.createElementNS(this.graph.ns, 'tspan');
-      tspan.textContent = log;
+      tspan.textContent = String(log);
       tspan.setAttribute('font-size', '0.7em');
-      tspan.setAttribute('dy', -5);
+      tspan.setAttribute('dy', "-5");
       dom.appendChild(tspan);
     }
 
@@ -2740,5 +2990,4 @@ Axis.prototype.getValue = Axis.prototype.getVal;
  */
 Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 
-EventMixin(Axis, "axis");
 export default Axis;

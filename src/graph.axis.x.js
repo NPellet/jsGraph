@@ -1,4 +1,4 @@
-import Axis from './graph.axis.js';
+import Axis from './graph.axis';
 
 /**
  * Generic constructor of a y axis
@@ -62,18 +62,24 @@ class AxisX extends Axis {
    */
   setShift(shift) {
     this.shift = shift;
-    if (shift === undefined || isNaN(shift) || !this.graph.getDrawingHeight() || isNaN(this.graph.getDrawingHeight())) {
+    if (
+      shift === undefined ||
+      isNaN(shift) ||
+      !this.graph.getDrawingHeight() ||
+      isNaN(this.graph.getDrawingHeight())
+    ) {
       return;
     }
 
     this.group.setAttribute(
       'transform',
-      `translate(0 ${this.floating
-        ? this.getShift()
-        : this.top
+      `translate(0 ${
+        this.floating
+          ? this.getShift()
+          : this.top
           ? this.shift
           : this.graph.getDrawingHeight() - this.shift
-      })`
+      })`,
     );
   }
 
@@ -93,8 +99,8 @@ class AxisX extends Axis {
    *  @param {Number} forcedPos - Forces the position of the tick (for axis dependency)
    */
   drawTick(value, level, options, forcedPos) {
-
-    var self = this, val;
+    var self = this,
+      val;
 
     val = forcedPos || this.getPos(value);
 
@@ -105,11 +111,11 @@ class AxisX extends Axis {
     var tick = this.nextTick(level, (tick) => {
       tick.setAttribute(
         'y1',
-        (self.top ? 1 : -1) * self.tickPx1 * self.tickScaling[level]
+        (self.top ? 1 : -1) * self.tickPx1 * self.tickScaling[level],
       );
       tick.setAttribute(
         'y2',
-        (self.top ? 1 : -1) * self.tickPx2 * self.tickScaling[level]
+        (self.top ? 1 : -1) * self.tickPx2 * self.tickScaling[level],
       );
 
       if (level == 1) {
@@ -124,38 +130,39 @@ class AxisX extends Axis {
     tick.setAttribute('x2', val);
     this.nextGridLine(level == 1, val, val, 0, this.graph.getDrawingHeight());
 
-    const yCoord =  (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + this.options.tickLabelOffset;
+    const yCoord =
+      (self.top ? -1 : 1) *
+        ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) +
+      this.options.tickLabelOffset;
 
     //  this.groupTicks.appendChild( tick );
     if (level == 1 && this.options.tickLabels) {
       var tickLabel = this.nextTickLabel((tickLabel) => {
-        tickLabel.setAttribute(
-          'y',
-          yCoord
-        );
+        tickLabel.setAttribute('y', yCoord);
         tickLabel.setAttribute('text-anchor', 'middle');
         if (self.getTicksLabelColor() !== 'black') {
           tickLabel.setAttribute('fill', self.getTicksLabelColor());
         }
-
-     
       });
 
       tickLabel.setAttribute('x', val);
 
-      if( this.options.tickLabelRotation ) {
-
-        if( this.options.tickLabelRotation < 0 ) {
+      if (this.options.tickLabelRotation) {
+        if (this.options.tickLabelRotation < 0) {
           tickLabel.setAttribute('text-anchor', 'end');
         } else {
           tickLabel.setAttribute('text-anchor', 'start');
         }
-        
+
         tickLabel.setAttribute('dominant-baseline', 'middle');
-        tickLabel.setAttribute('transform', `translate( ${val}, ${yCoord} ) rotate(${this.options.tickLabelRotation}) translate( ${-val}, ${-yCoord} )`);
+        tickLabel.setAttribute(
+          'transform',
+          `translate( ${val}, ${yCoord} ) rotate(${
+            this.options.tickLabelRotation
+          }) translate( ${-val}, ${-yCoord} )`,
+        );
       } else {
         tickLabel.setAttribute('dominant-baseline', 'hanging');
-
       }
       this.setTickContent(tickLabel, value, options);
     }
@@ -179,13 +186,13 @@ class AxisX extends Axis {
     this.label.setAttribute('style', 'display: initial;');
     this.label.setAttribute(
       'x',
-      Math.abs(this.getMaxPx() + this.getMinPx()) / 2
+      Math.abs(this.getMaxPx() + this.getMinPx()) / 2,
     );
     this.label.setAttribute(
       'y',
       (this.top ? -1 : 1) *
-      ((this.options.tickPosition == 1 ? 10 : 25) +
-        this.graph.options.fontSize)
+        ((this.options.tickPosition == 1 ? 10 : 25) +
+          this.graph.options.fontSize),
     );
     this.labelTspan.textContent = this.getLabel();
   }
@@ -227,14 +234,16 @@ class AxisX extends Axis {
 
     var span = this.getSpan();
     this.line.setAttribute(
-      'marker-start', !this.options.splitMarks || span[0] == 0 ?
-      '' :
-      `url(#horionzalsplit_${this.graph.getId()})`
+      'marker-start',
+      !this.options.splitMarks || span[0] == 0
+        ? ''
+        : `url(#horionzalsplit_${this.graph.getId()})`,
     );
     this.line.setAttribute(
-      'marker-end', !this.options.splitMarks || span[1] == 1 ?
-      '' :
-      `url(#horionzalsplit_${this.graph.getId()})`
+      'marker-end',
+      !this.options.splitMarks || span[1] == 1
+        ? ''
+        : `url(#horionzalsplit_${this.graph.getId()})`,
     );
   }
 

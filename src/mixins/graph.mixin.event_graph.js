@@ -1,7 +1,8 @@
 import {
   EventMixin,
   trigger
-} from './graph.mixin.event.js';
+} from './graph.mixin.event';
+
 let ExtendedEventMixin = (manglingName) => {
 
   return Object.assign({}, EventMixin, {

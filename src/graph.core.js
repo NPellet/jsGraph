@@ -1191,7 +1191,7 @@ class Graph {
         }, {}, axis instanceof this.getConstructor('graph.axis.x'), axis instanceof this.getConstructor('graph.axis.y'));
         return axes;
     }
-    _axisHasChanged() {
+    _axisHasChanged(axis) {
         this._axesHaveChanged = true;
     }
     /**
@@ -1979,8 +1979,8 @@ class Graph {
         if (!this.width || !this.height) {
             return;
         }
-        this.getDrawingWidth();
-        this.getDrawingHeight();
+        this.getDrawingWidth(false);
+        this.getDrawingHeight(false);
         this.sizeSet = true;
         this.dom.setAttribute('width', this.width);
         this.dom.setAttribute('height', this.height);
@@ -2410,8 +2410,7 @@ class Graph {
             left: [],
             right: []
         };
-        console.log('refresh it');
-        console.log('sdfdsf');
+        console.log(this.getDrawingWidth(true));
         // Apply to top and bottom
         this._applyToAxes(function (axis, position) {
             if (!axis.isShown()) {
