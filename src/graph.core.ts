@@ -23,6 +23,15 @@ type constructorKey_t = string | SERIE_TYPE
 
 type serieIndex_t = string | number | (() => string | Serie);
 
+const TOP = 0b00000001;
+const BOTTOM = 0b00000010;
+
+const LEFT = 0b00000100;
+const RIGHT = 0b00001000;
+
+const TOP_BOTTOM = TOP | BOTTOM;
+const LEFT_RIGHT = LEFT | RIGHT;
+
 enum AxisPositionE {
   TOP = "top",
   BOTTOM = "bottom",
@@ -234,10 +243,7 @@ class Graph extends EventEmitter {
 
   vertLineArrow: SVGMarkerElement;
 
-  static SERIE_BAR: any;
-  static SERIE_LINE_COLORED: any;
-  static SERIE_SCATTER: any;
-  static SERIE_LINE: any;
+
   defs: SVGDefsElement;
   //shift: { top: any[]; bottom: any[]; left: any[]; right: any[]; };
   _trackingLegend: any;
@@ -1323,7 +1329,7 @@ class Graph extends EventEmitter {
    * @return {Graph} The current graph instance
    */
   autoscaleAxes() {
-    this._applyToAxes('setMinMaxToFitSeries', null, true, true);
+    this._applyToAxes('setMinMaxToFitSeries', null, TOP_BOTTOM & LEFT_RIGHT);
 
     //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
     // X is not always ascending...
@@ -1375,8 +1381,7 @@ class Graph extends EventEmitter {
         axis.gridsOff();
       },
       undefined,
-      true,
-      true
+      TOP_BOTTOM | LEFT_RIGHT
     );
   }
   gridsOn() {
@@ -1385,8 +1390,7 @@ class Graph extends EventEmitter {
         axis.gridsOn();
       },
       undefined,
-      true,
-      true
+      TOP_BOTTOM | LEFT_RIGHT
     );
   }
 
@@ -1613,23 +1617,27 @@ class Graph extends EventEmitter {
    * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
    * @param {Boolean} leftright=false - True to apply to function to left and right axes
    */
-  _applyToAxes(func: any, params: any, tb = false, lr = false) {
+  _applyToAxes(func: any, params: any, positions: number) {
     var ax: Array<AxisPosition> = [],
       i = 0,
       l;
-
-    if (tb || tb == undefined) {
-      ax.push('top');
-      ax.push('bottom');
-    }
-    if (lr || lr == undefined) {
-      ax.push('left');
-      ax.push('right');
+    // console.log(positions, TOP, LEFT, RIGHT, BOTTOM, positions & TOP, positions & LEFT, positions & RIGHT, positions & BOTTOM)
+    if (positions & TOP) {
+      this._applyToAxis(typeof func).call(this, "top", func, params);
     }
 
-    for (l = ax.length; i < l; i++) {
-      this._applyToAxis(typeof func).call(this, ax[i], func, params);
+    if (positions & BOTTOM) {
+      this._applyToAxis(typeof func).call(this, "bottom", func, params);
     }
+
+    if (positions & LEFT) {
+      this._applyToAxis(typeof func).call(this, "left", func, params);
+    }
+
+    if (positions & RIGHT) {
+      this._applyToAxis(typeof func).call(this, "right", func, params);
+    }
+
   }
 
   /**
@@ -1645,9 +1653,9 @@ class Graph extends EventEmitter {
         if (a.linkedToAxis && a.linkedToAxis.axis == axis) {
           axes.push(a);
         }
-      }, {},
-      axis instanceof this.getConstructor('graph.axis.x'),
-      axis instanceof this.getConstructor('graph.axis.y')
+      },
+      {},
+      ((axis instanceof this.getConstructor('graph.axis.x')) ? TOP_BOTTOM : 0x00) | ((axis instanceof this.getConstructor('graph.axis.y')) ? LEFT_RIGHT : 0x00),
     );
 
     return axes;
@@ -1673,7 +1681,6 @@ class Graph extends EventEmitter {
       type = options;
       options = {};
     }
-
     if (!type) {
       type = SERIE_TYPE.LINE;
     }
@@ -2990,7 +2997,7 @@ class Graph extends EventEmitter {
       let data = [];
 
       switch (serie.getType()) {
-        case Graph.SERIE_LINE:
+        case SERIE_TYPE.LINE:
           for (var i = 0; i < serie.data.length; i++) {
             for (var j = 0; j < serie.data[i].length - 1; j += 2) {
               data.push(
@@ -3005,7 +3012,7 @@ class Graph extends EventEmitter {
           }
           break;
 
-        case Graph.SERIE_SCATTER:
+        case SERIE_TYPE.SCATTER:
           for (var j = 0; j < serie.data.length - 1; j += 2) {
             data.push(
               serie.data[
@@ -3028,7 +3035,7 @@ class Graph extends EventEmitter {
         let style = [];
         let linestyle = [];
 
-        if (serie.getType() == Graph.SERIE_LINE) {
+        if (serie.getType() == SERIE_TYPE.LINE) {
           for (var stylename in serie.styles) {
             linestyle.push({
               styleName: stylename,
@@ -3215,8 +3222,7 @@ class Graph extends EventEmitter {
         );
       },
       false,
-      true,
-      false
+      TOP_BOTTOM
     );
 
     var shiftTop = shift.top.reduce(function (prev, curr) {
@@ -3246,8 +3252,7 @@ class Graph extends EventEmitter {
         axis.setShift(shift[position][axis.getLevel()]);
       },
       false,
-      true,
-      false
+      TOP_BOTTOM
     );
 
     // Applied to left and right
@@ -3290,8 +3295,7 @@ class Graph extends EventEmitter {
         }
       },
       false,
-      false,
-      true
+      LEFT_RIGHT
     );
 
     var shift2 = util.extend(true, {}, shift);
@@ -3309,8 +3313,7 @@ class Graph extends EventEmitter {
         );
       },
       false,
-      false,
-      true
+      LEFT_RIGHT
     );
 
     shift = shift2;
@@ -3341,8 +3344,7 @@ class Graph extends EventEmitter {
         axis.setShift(shift[position][axis.getLevel()]);
       },
       false,
-      false,
-      true
+      LEFT_RIGHT
     );
 
     // Apply to top and bottom
@@ -3364,8 +3366,7 @@ class Graph extends EventEmitter {
         }
       },
       false,
-      true,
-      false
+      TOP_BOTTOM
     );
 
     // Floating axes
@@ -3386,8 +3387,7 @@ class Graph extends EventEmitter {
         }
       },
       false,
-      true,
-      true
+      TOP_BOTTOM | LEFT_RIGHT
     );
 
     this._closeLine(
@@ -3453,8 +3453,7 @@ class Graph extends EventEmitter {
         axis.drawLines();
       },
       false,
-      true,
-      true
+      TOP_BOTTOM | LEFT_RIGHT
     );
 
     /**
@@ -3686,14 +3685,12 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
   graph._applyToAxes(
     'handleMouseMove',
     [x - graph.options.paddingLeft, e],
-    true,
-    false
+    TOP_BOTTOM
   );
   graph._applyToAxes(
     'handleMouseMove',
     [y - graph.options.paddingTop, e],
-    false,
-    true
+    LEFT_RIGHT
   );
 
   if (!graph.activePlugin) {

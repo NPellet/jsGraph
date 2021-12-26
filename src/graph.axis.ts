@@ -1,7 +1,7 @@
 import Graph from './graph.core';
 import * as util from './graph.util.js';
 import { EventEmitter } from './mixins/graph.mixin.event.js';
-import { extend } from 'lodash'
+import { cloneDeep, extend } from 'lodash'
 import Serie from './series/graph.serie'
 //import assert from 'assert';
 
@@ -348,7 +348,7 @@ abstract class Axis extends EventEmitter implements Axis {
   init(graph: Graph, options: Partial<GraphAxisOptions>) {
 
     this.graph = graph;
-    this.options = extend(true, {}, defaults, options);
+    this.options = extend(cloneDeep(defaults), options);
 
     this.group = document.createElementNS(this.graph.ns, 'g') as SVGElement;
     this.hasChanged = true;

@@ -16,8 +16,7 @@ import SerieHistogram from './series/graph.serie.histogram';
 import SerieLine from './series/graph.serie.line';
 // @ts-ignore
 import SerieLine3D from './series/graph.serie.line.3d.js';
-// @ts-ignore
-import SerieBar from './series/graph.serie.bar.js';
+import SerieBar from './series/graph.serie.bar';
 // @ts-ignore
 import SerieBox from './series/graph.serie.box.js';
 // @ts-ignore

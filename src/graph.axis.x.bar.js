@@ -25,7 +25,6 @@ class AxisXBar extends AxisX {
     var self = this,
       tickLabel,
       elements = this._barCategories;
-
     if (!this.series || this.series.length == 0) {
       this.autoSeries();
     }
@@ -46,7 +45,6 @@ class AxisXBar extends AxisX {
     }
 
     // this.drawInit();
-
     //var widthPerElement = width / elements.length;
     for (var i = 0; i <= elements.length; i++) {
       this.drawTick(i / elements.length, 2);

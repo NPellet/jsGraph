@@ -408,9 +408,9 @@ class AxisY extends Axis {
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
   }
 
-  getZProj(zValue) {
-    return zValue * this.graph.options.zAxis.shiftY;
-  }
+  /* getZProj(zValue) {
+     return zValue * this.graph.options.zAxis.shiftY;
+   }*/
 }
 
 export default AxisY;

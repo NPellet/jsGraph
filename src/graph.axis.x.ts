@@ -306,10 +306,10 @@ class AxisX extends Axis {
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
   }
-
-  getZProj(zValue) {
-    return zValue * this.graph.options.zAxis.shiftX;
-  }
+  /*
+    getZProj(zValue) {
+      return zValue * this.graph.options.zAxis.shiftX;
+    }*/
 }
 
 export default AxisX;

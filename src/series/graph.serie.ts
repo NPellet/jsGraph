@@ -613,6 +613,13 @@ class Serie extends EventEmitter {
     this.computedStyle[this.getActiveStyle()] = this.getStyle(this.getActiveStyle());
   }
 
+  protected recomputeActiveStyleIfNeeded() {
+    if (this.hasStyleChanged(this.getActiveStyle())) {
+      this.computeActiveStyle();
+      this.updateStyle();
+    }
+  }
+
   getComputedStyle(style = this.getActiveStyle()) {
     return this.computedStyle[style];
   }
@@ -622,13 +629,12 @@ class Serie extends EventEmitter {
   }
 
   private _buildStyle(styleName: string) {
-    let base = this.styles[styleName].base;
-
+    let base: string | undefined = this.styles[styleName].base;
     if (base == styleName) {
-      base = null;
+      base = undefined;
     }
 
-    if (!base) {
+    if (base === undefined) {
       return util.extend(true, {}, this.styles[styleName].data);
     } else {
       return util.extend(true, {}, this.getStyle(base), this.styles[styleName].data);

@@ -423,10 +423,8 @@ class SerieLine extends SerieScatter implements SerieInterface {
       this.toggleMarker(i.split(','), false, false);
     }
     //this.applyLineStyle(this.getSymbolForLegend());
-    if (this.hasStyleChanged(this.getActiveStyle())) {
-      this.computeActiveStyle();
-      this.updateStyle();
-    }
+
+    this.recomputeActiveStyleIfNeeded();
 
     this.dataHasChanged(false);
     super.afterDraw();
@@ -825,7 +823,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * Reapply the current style to the serie lines elements. Mostly used internally
    * @memberof SerieLine
    */
-  applyLineStyles() {
+  protected applyLineStyles() {
     for (var i = 0; i < this.lines.length; i++) {
       this.applyLineStyle(this.lines[i]);
     }
@@ -835,7 +833,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieLine
    */
-  applyLineStyle(line) {
+  protected applyLineStyle(line) {
 
     line.setAttribute('stroke', this.getLineColor());
     line.setAttribute('stroke-width', this.getLineWidth());
