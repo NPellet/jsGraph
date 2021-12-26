@@ -12,7 +12,7 @@ import { Waveform, WaveformHash } from './util/waveform';
 // @ts-ignore
 import { SerieStyle, SERIE_DEFAULT_STYLE, SERIE_TYPE } from '../types/series';
 import Serie from './series/graph.serie.js';
-import { uniq } from 'lodash';
+import { cloneDeep, extend, uniq } from 'lodash';
 
 export const __VERSION__ = "0.0.1"
 export const ns = 'http://www.w3.org/2000/svg';
@@ -21,6 +21,7 @@ export const nsxlink = 'http://www.w3.org/1999/xlink';
 type _constructor = { new(...args: any): any }
 type constructorKey_t = string | SERIE_TYPE
 
+type serieIndex_t = string | number | (() => string | Serie);
 
 enum AxisPositionE {
   TOP = "top",
@@ -40,38 +41,94 @@ export type trackingMode = {
   },
   enable?: boolean,
   noLine?: boolean,
-  trackingLineShapeOptions?: any
+  trackingLineShapeOptions?: any,
+  serieShape?: any,
+  textMethod?: (input: any, _: undefined, posXPx: number | undefined, posYPx: number | undefined) => string,
+  snapToSerie?: serieIndex_t
 }
 
 
 type AxisPosition = "top" | "bottom" | "left" | "right";
+type MouseAction = {
+  plugin?: string,
+  shift?: boolean,
+  ctrl?: boolean,
+  options?: any,
+  callback?: Function,
+  series: Array<any> | "all"
+};
+
+type KeyAction = {
+  plugin?: string,
+  options?: any,
+  callback?: Function,
+  removeSelectedShape?: boolean,
+  keepInDom?: boolean
+}
 
 
 /**
- * Default graph parameters
- * @name Graph~GraphOptionsDefault
- * @name GraphOptions
- * @object
- * @static
+ * Graph options
  * @memberof Graph
- * @prop {String} title - Title of the graph
- * @prop {Number} paddingTop - The top padding
- * @prop {Number} paddingLeft - The left padding
- * @prop {Number} paddingRight - The right padding
- * @prop {Number} paddingBottom - The bottom padding
- * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
- * @prop {Number} fontSize - The basic text size of the graphs
- * @prop {Number} fontFamily - The basic font family. Should be installed on the computer of the user
- * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
- * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
- * @prop {Object.<String,Object>} mouseActions - Alias of pluginActions
- * @prop {Object.<String,Object>} keyActions - Defines what happens when keys are pressed
- * @prop {Object} wheel - Define the mouse wheel action
- * @prop {Object} dblclick - Define the double click action
- * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
- * @prop {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
+ * @member {String} title - Title of the graph
+ * @member {Number} paddingTop - The top padding
+ * @member {Number} paddingLeft - The left padding
+ * @member {Number} paddingRight - The right padding
+ * @member {Number} paddingBottom - The bottom padding
+ * @member {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+ * @member {Number} fontSize - The basic text size of the graphs
+ * @member {Number} fontFamily - The basic font family. Should be installed on the computer of the user
+ * @member {Object.<String,Object>} plugins - A list of plugins to import with their options
+ * @member {Object.<String,Object>} pluginAction - The default key combination to access those actions
+ * @member {Object.<String,Object>} mouseActions - Alias of pluginActions
+ * @member {Object.<String,Object>} keyActions - Defines what happens when keys are pressed
+ * @member {Object} wheel - Define the mouse wheel action
+ * @member {Object} dblclick - Define the double click action
+ * @member {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
+ * @member {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
  */
-const GraphOptionsDefault = {
+export type GraphOptions = {
+  title: string,
+  paddingTop: number,
+  paddingBottom: number,
+  paddingLeft: number,
+  paddingRight: number,
+  padding?: number,
+  fontSize: number,
+  fontFamily: string,
+  plugins: {
+    [pluginName: string]: any
+  },
+  mouseActions: Array<MouseAction>,
+  keyActions: Array<KeyAction>,
+  wheel: any,
+  dblclick: any,
+
+  shapesUnselectOnClick: boolean,
+  shapesUniqueSelection: boolean,
+
+  close: boolean | {
+    left: boolean,
+    right: boolean,
+    top: boolean,
+    bottom: boolean
+  },
+
+  axes: Axes<any>,
+  closeColor: string,
+
+  titleFontSize?: number,
+  titleFontColor?: string,
+  titleFontFamily?: string,
+
+  onContextMenuListen?: Function,
+  handleMouseLeave?: Function,
+  trackingLine?: trackingMode,
+
+  mouseMoveData: Function
+}
+
+const GraphOptionsDefault: Partial<GraphOptions> = {
   title: '',
 
   paddingTop: 30,
@@ -92,7 +149,6 @@ const GraphOptionsDefault = {
   fontFamily: 'Myriad Pro, Helvetica, Arial',
 
   plugins: {},
-  pluginAction: {},
   mouseActions: [],
   keyActions: [],
   wheel: {},
@@ -106,6 +162,7 @@ const GraphOptionsDefault = {
 type AxesPos = "top" | "bottom" | "left" | "right";
 type Axes<T> = Record<AxesPos, Array<T>>
 
+const DefaultAxes = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: [] };
 /**
  * Entry class of jsGraph that creates a new graph.
  * @tutorial basic
@@ -117,7 +174,7 @@ class Graph extends EventEmitter {
 
   public uid: string = util.guid();
   private wrapper: HTMLElement | undefined;
-  public options: any;
+  public options: GraphOptions;
   private prevented: boolean = false;
   protected axis: Axes<any>;
   private shapes: Array<any>;
@@ -197,26 +254,31 @@ class Graph extends EventEmitter {
    * @example var graph = new Graph("someDomID");
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    */
-
-
   constructor();
-  constructor(options: any);
-  constructor(options: any, axes: Axes<any>);
-  constructor(wrapper?: HTMLElement, options?: any, axes: Axes<any> = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: [] }) {
+  constructor(options: Partial<GraphOptions>);
+  constructor(options: Partial<GraphOptions>, axes: Axes<any>);
+  constructor(wrapper?: HTMLElement | string | undefined, options?: Partial<GraphOptions>, axes?: Axes<any>);
+  constructor(wrapper?: HTMLElement | string | Partial<GraphOptions> | undefined, options?: Partial<GraphOptions> | Axes<any>, axes?: Axes<any>) {
 
     super();
 
     this.ns = ns;
     this.nsxlink = nsxlink;
 
-    if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
+    if (typeof wrapper !== "string" && wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
       // Wrapper is options
       options = wrapper;
       wrapper = undefined;
+    } else {
+      options = options as Partial<GraphOptions>;
+      axes = axes as Axes<any>;
+
     }
 
+    const _wrapper = wrapper as HTMLElement | string | undefined;
+
     if (!options) {
-      options = {};
+      options = extend(cloneDeep(GraphOptionsDefault), options);
     }
 
     if (!options.axes) {
@@ -243,8 +305,8 @@ class Graph extends EventEmitter {
     this.groupEvent = document.createElementNS(ns, 'g');
 
 
-    if (wrapper) {
-      this.setWrapper(wrapper);
+    if (_wrapper) {
+      this.setWrapper(_wrapper);
     }
 
 
@@ -259,9 +321,9 @@ class Graph extends EventEmitter {
     this.shapesLocked = false;
     this.plugins = {};
 
-    for (var i in this.options.pluginAction) {
-      this.options.pluginAction.plugin = i;
-      this.options.mouseActions.push(this.options.pluginAction);
+    // @ts-ignore
+    if (this.options.pluginAction) {
+      console.warn("Plugin action is deprecated (and ignored). Please use mouseActions instead");
     }
 
     this.selectedShapes = [];
@@ -350,7 +412,7 @@ class Graph extends EventEmitter {
     this.domTitle = document.createElementNS(ns, 'text');
     this.setTitle(this.options.title);
     if (this.options.titleFontSize) {
-      this.setTitleFontSize(this.options.titleFontSize);
+      this.setTitleFontSize(String(this.options.titleFontSize));
     }
     if (this.options.titleFontColor) {
       this.setTitleFontSize(this.options.titleFontColor);
@@ -1634,13 +1696,17 @@ class Graph extends EventEmitter {
    * @param {(String|Number)} name - The name or the index of the serie
    * @returns {Serie}
    */
-  getSerie(name: string | number | Function) {
+  getSerie(name: serieIndex_t) {
     if (typeof name == 'number') {
       return this.series[name] || false;
     }
 
     if (typeof name == 'function') {
-      name = name();
+      const serie = name();
+      if (serie instanceof Serie) {
+        return serie;
+      }
+      name = serie;
     }
 
     var i = 0,
@@ -2467,63 +2533,63 @@ class Graph extends EventEmitter {
 
     this.legend.requireDelayedUpdate();
   }
-
-  orthogonalProjectionSetup() {
-    this.options.zAxis = util.extend(true, {
-      maxZ: 10,
-      minZ: 0,
-      shiftX: -25,
-      shiftY: -15,
-      xAxis: this.getXAxis(),
-      yAxis: this.getYAxis()
-    });
-  }
-
-  orthogonalProjectionUpdate() {
-    if (!this.zAxis) {
-      this.zAxis = {
-        g: document.createElementNS(ns, 'g'),
-        l: document.createElementNS(ns, 'line')
-      };
-
-      this.zAxis.g.appendChild(this.zAxis.l);
-      this.groupGrids.appendChild(this.zAxis.g);
+  /*
+    orthogonalProjectionSetup() {
+      this.options.zAxis = util.extend(true, {
+        maxZ: 10,
+        minZ: 0,
+        shiftX: -25,
+        shiftY: -15,
+        xAxis: this.getXAxis(),
+        yAxis: this.getYAxis()
+      });
     }
-
-    let refAxisX = this.options.zAxis.xAxis;
-    let refAxisY = this.options.zAxis.yAxis;
-
-    var x0 = refAxisX.getMinPx();
-    var y0 = refAxisY.getMinPx();
-
-    var dx = refAxisX.getZProj(this.options.zAxis.maxZ);
-    var dy = refAxisY.getZProj(this.options.zAxis.maxZ);
-
-    this.zAxis.l.setAttribute('stroke', 'black');
-    this.zAxis.l.setAttribute('x1', x0);
-    this.zAxis.l.setAttribute('x2', x0 + dx);
-    this.zAxis.l.setAttribute('y1', y0);
-    this.zAxis.l.setAttribute('y2', y0 + dy);
-
-    this.updateDataMinMaxAxes(true);
-
-    var sort = this.series.map((serie) => {
-      return [serie.getZPos(), serie];
-    });
-
-    sort.sort((sa, sb) => {
-      return sb[0] - sa[0];
-    });
-
-    let i = 0;
-    sort.forEach((s) => {
-      s[1].setLayer(i);
-      this.appendSerieToDom(s[1]);
-      i++;
-    });
-
-    this.drawSeries(true);
-  }
+  
+    orthogonalProjectionUpdate() {
+      if (!this.zAxis) {
+        this.zAxis = {
+          g: document.createElementNS(ns, 'g'),
+          l: document.createElementNS(ns, 'line')
+        };
+  
+        this.zAxis.g.appendChild(this.zAxis.l);
+        this.groupGrids.appendChild(this.zAxis.g);
+      }
+  
+      let refAxisX = this.options.zAxis.xAxis;
+      let refAxisY = this.options.zAxis.yAxis;
+  
+      var x0 = refAxisX.getMinPx();
+      var y0 = refAxisY.getMinPx();
+  
+      var dx = refAxisX.getZProj(this.options.zAxis.maxZ);
+      var dy = refAxisY.getZProj(this.options.zAxis.maxZ);
+  
+      this.zAxis.l.setAttribute('stroke', 'black');
+      this.zAxis.l.setAttribute('x1', x0);
+      this.zAxis.l.setAttribute('x2', x0 + dx);
+      this.zAxis.l.setAttribute('y1', y0);
+      this.zAxis.l.setAttribute('y2', y0 + dy);
+  
+      this.updateDataMinMaxAxes(true);
+  
+      var sort = this.series.map((serie) => {
+        return [serie.getZPos(), serie];
+      });
+  
+      sort.sort((sa, sb) => {
+        return sb[0] - sa[0];
+      });
+  
+      let i = 0;
+      sort.forEach((s) => {
+        s[1].setLayer(i);
+        this.appendSerieToDom(s[1]);
+        i++;
+      });
+  
+      this.drawSeries(true);
+    }*/
 
   /**
    * Kills the graph
@@ -2741,6 +2807,10 @@ class Graph extends EventEmitter {
     serie.options.tracking = Object.assign({}, options);
 
     if (!serie.trackingShape) {
+
+      // We need to calculate the style before getting the fill color
+      serie.computeActiveStyle();
+
       serie.trackingShape = this.newShape(
         serieShape.shape, {
         ...serieShape,
@@ -3635,7 +3705,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         graph.options.trackingLine.mode == 'common' &&
         graph.options.trackingLine.snapToSerie
       ) {
-        var snapToSerie = graph.options.trackingLine.snapToSerie;
+        var snapToSerie = graph.getSerie(graph.options.trackingLine.snapToSerie);
         index = snapToSerie.handleMouseMove(false, true);
 
         if (graph.trackingLineShape) {
@@ -3678,7 +3748,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         }
         graph._trackingLegend = _trackingLegendSerie(
           graph,
-          series,
+          series.map(s => { return { serie: s, closestPoint: undefined } }),
           xOverwritePx,
           y,
           graph._trackingLegend/*,
@@ -3691,7 +3761,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         // Series looping
 
         const output: Array<{ serie: any, closestPoint: any }> = [];
-        graph.options.trackingLine.series.forEach((serie: any) => {
+        graph.options.trackingLine.series.forEach((serie: Serie) => {
           //        const index = serie.handleMouseMove( false, true );
           //console.log( index );
 
@@ -3713,8 +3783,8 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
             serie._trackingLegend = _trackingLegendSerie(
               graph,
               [],
-              false,
-              false,
+              undefined,
+              undefined,
               serie._trackingLegend
             );
           }
@@ -3727,8 +3797,8 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
                 serie._trackingLegend = _trackingLegendSerie(
                   graph,
                   [],
-                  false,
-                  false,
+                  undefined,
+                  undefined,
                   serie._trackingLegend
                 );
               }
@@ -3781,8 +3851,8 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
           graph._trackingLegend = _trackingLegendSerie(
             graph,
             [],
-            false,
-            false,
+            undefined,
+            undefined,
             graph._trackingLegend
           );
         }
@@ -3887,9 +3957,9 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
  */
 var _trackingLegendSerie = function (
   graph: Graph,
-  seriesOutput: any,
-  posXPx: any,
-  posYPx: any,
+  seriesOutput: Array<{ serie: any, closestPoint: any }>,
+  posXPx: number,
+  posYPx: number,
   legend: any
 ) {
   const textMethod =
@@ -3915,9 +3985,7 @@ var _trackingLegendSerie = function (
     }
 
     legend.style.display = 'block';
-    var txt = textMethod(seriesOutput, undefined, posXPx, posYPx);
-
-    legend.innerHTML = txt;
+    legend.innerHTML = textMethod(seriesOutput, undefined, posXPx, posYPx);
 
     //legend.innerHTML = textMethod( output, xValue, x, y );
   }
@@ -3968,8 +4036,8 @@ function _makeTrackingLegend(graph: Graph) {
   var group: HTMLDivElement = document.createElement('div');
   group.setAttribute('class', 'trackingLegend');
   group.style.position = 'absolute';
-  group.style.borderRadius = '4px';
-  group.style.boxShadow = '1px 1px 3px 0px rgba(100,100,100,0.6)';
+  group.style.borderRadius = '1px';
+  //group.style.boxShadow = '1px 1px 3px 0px rgba(100,100,100,0.6)';
   group.style.border = '2px solid #333333';
   group.style.backgroundColor = 'rgba(255, 255, 255, 0.5 )';
   group.style.pointerEvents = 'none';
