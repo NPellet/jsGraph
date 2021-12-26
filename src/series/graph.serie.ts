@@ -336,6 +336,7 @@ class Serie extends EventEmitter {
   }
 
   _checkY(val) {
+
     this.minY = Math.min(this.minY, val);
     this.maxY = Math.max(this.maxY, val);
   }

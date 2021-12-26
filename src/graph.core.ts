@@ -13,6 +13,7 @@ import { Waveform, WaveformHash } from './util/waveform';
 import { SerieStyle, SERIE_DEFAULT_STYLE, SERIE_TYPE } from '../types/series';
 import Serie from './series/graph.serie.js';
 import { cloneDeep, extend, uniq } from 'lodash';
+import Axis from './graph.axis.js';
 
 export const __VERSION__ = "0.0.1"
 export const ns = 'http://www.w3.org/2000/svg';
@@ -1507,22 +1508,17 @@ class Graph extends EventEmitter {
    * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
    * @returns {Number} The minimimum or maximum of the axis based on its series
    */
-  getBoundaryAxisFromSeries(axis: any, minmax: "min" | "max", usingZValues: boolean) {
+  getBoundaryAxisFromSeries(axis: Axis, minmax: "min" | "max", usingZValues: boolean) {
     var min = minmax == 'min',
-      val,
       func = axis.isX() ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
       func2use = func[min ? 0 : 1],
       infinity2use = min ? +Infinity : -Infinity,
       serie,
-      series,
-      serieValue,
-      i,
-      l;
+      serieValue;
 
-    val = infinity2use;
-    series = this.getSeriesFromAxis(axis);
-
-    for (i = 0, l = series.length; i < l; i++) {
+    let val = infinity2use;
+    const series = this.getSeriesFromAxis(axis);
+    for (let i = 0, l = series.length; i < l; i++) {
       serie = series[i];
 
       if (!serie.isShown()) {
@@ -1544,8 +1540,8 @@ class Graph extends EventEmitter {
    *  @param {Axis} axis - The axis to which the series belong
    *  @returns {Serie[]} An array containing the list of series that belong to the axis
    */
-  getSeriesFromAxis(axis: any) {
-    var series = [],
+  getSeriesFromAxis(axis: Axis) {
+    var series: Array<Serie> = [],
       i = this.series.length - 1;
 
     for (; i >= 0; i--) {
@@ -1587,7 +1583,6 @@ class Graph extends EventEmitter {
           'max',
           usingZValues
         );
-
         if (isFinite(max)) {
           axis.setMaxValueData(max);
         }

@@ -1,10 +1,4 @@
-import {
-  extend,
-  guid,
-  throwError,
-  emptyDom
-}
-from '../graph.util.js';
+import { extend, guid, throwError, emptyDom } from '../graph.util.js';
 
 import Serie from './graph.serie';
 
@@ -13,7 +7,6 @@ const defaultOptions = {
   maxBoxWidth: 20,
 
   defaultStyle: {
-
     meanLineColor: 'rgb( 100, 0, 0 )',
     meanLineWidth: 2,
 
@@ -34,8 +27,8 @@ const defaultOptions = {
     outlierLineWidth: 1,
     outlierLineColor: 'rgb( 255, 255, 255 )',
     outlierFillColor: 'rgb( 0, 0, 0 )',
-    outlierFillOpacity: 1
-  }
+    outlierFillOpacity: 1,
+  },
 };
 
 /**
@@ -45,19 +38,22 @@ const defaultOptions = {
  * @see Graph#newSerie
  */
 class SerieBox extends Serie {
-  constructor( graph, name, options, defaultInherited = {} ) {
+  constructor(graph, name, options, defaultInherited = {}) {
+    super(
+      graph,
+      name,
+      options,
+      extend(true, {}, defaultOptions, defaultInherited),
+    );
 
-    super( graph, name, options, extend( true, {}, defaultOptions, defaultInherited ) );
-
-    this.pathDom = document.createElementNS( this.graph.ns, 'path' );
-    this.groupMain.appendChild( this.pathDom );
+    this.pathDom = document.createElementNS(this.graph.ns, 'path');
+    this.groupMain.appendChild(this.pathDom);
 
     // Creates an empty style variable
     this.styles = {};
 
     // Unselected style
     this.styles.unselected = this.options.defaultStyle;
-
   }
 
   /**
@@ -66,95 +62,88 @@ class SerieBox extends Serie {
    *  @example serie.setData( [ { x: 'cat', Q2: valMean, Q1: valBoxMin, Q3: valBoxMax, whiskers: [ val1, val2 ], outliers: [ ...yList ] } ] );
    *  @return {SerieBar} The current serie instance
    */
-  setData( data, noRescale ) {
-
+  setData(data, noRescale) {
     this.data = data;
 
-    if ( !Array.isArray( data ) ) {
+    if (!Array.isArray(data)) {
       return;
     }
 
     let axisref, axisval, methodref, methodval, blnX;
-
-    if ( this.options.orientation == 'y' ) {
+    console.log(this.options);
+    if (this.options.orientation == 'y') {
       axisref = this.getXAxis();
       axisval = this.getYAxis();
-      methodref = this._checkX.bind( this );
-      methodval = this._checkY.bind( this );
+      methodref = this._checkX.bind(this);
+      methodval = this._checkY.bind(this);
       blnX = true;
 
-      this.minY = data[ 0 ].Q2;
-      this.maxY = data[ 0 ].Q2;
-      this.maxX = data[ 0 ].x;
-      this.minX = data[ 0 ].x;
-
+      this.minY = data[0].Q2;
+      this.maxY = data[0].Q2;
+      this.maxX = data[0].x;
+      this.minX = data[0].x;
     } else {
       axisref = this.getYAxis();
       axisval = this.getXAxis();
-      methodref = this._checkY.bind( this );
-      methodval = this._checkX.bind( this );
+      methodref = this._checkY.bind(this);
+      methodval = this._checkX.bind(this);
       blnX = false;
 
-      this.minX = data[ 0 ].Q2;
-      this.maxX = data[ 0 ].Q2;
-      this.maxY = data[ 0 ].y;
-      this.minY = data[ 0 ].y;
-
+      this.minX = data[0].Q2;
+      this.maxX = data[0].Q2;
+      this.maxY = data[0].y;
+      this.minY = data[0].y;
+    }
+    console.log(this.minY, this.maxY);
+    if (noRescale) {
+      methodref = function () {};
+      methodval = function () {};
     }
 
-    if ( noRescale ) {
-      methodref = function() {};
-      methodval = function() {};
+    if (!axisref || !axisval) {
+      throwError(
+        'Error in setting data of the box serie. The X and Y axes must be set beforehand',
+      );
     }
 
-    if ( !axisref || !axisval ) {
-      throwError( 'Error in setting data of the box serie. The X and Y axes must be set beforehand' );
-    }
-
-    for ( var i in this.data ) {
-
-      if ( blnX ) {
-        methodref( this.data[ i ].x );
-        this.data[ i ].pos = this.data[ i ].x;
+    for (var i in this.data) {
+      if (blnX) {
+        methodref(this.data[i].x);
+        this.data[i].pos = this.data[i].x;
       } else {
-        methodref( this.data[ i ].y );
-        this.data[ i ].pos = this.data[ i ].y;
+        methodref(this.data[i].y);
+        this.data[i].pos = this.data[i].y;
       }
 
-      if ( this.data[ i ].Q3 ) {
-        methodval( this.data[ i ].Q3 );
+      if (this.data[i].Q3) {
+        methodval(this.data[i].Q3);
       }
 
-      if ( this.data[ i ].Q1 ) {
-        methodval( this.data[ i ].Q1 );
+      if (this.data[i].Q1) {
+        methodval(this.data[i].Q1);
       }
 
-      if ( this.data[ i ].whiskers ) {
-
-        if ( Array.isArray( this.data[ i ].whiskers ) ) {
-
-          if ( this.data[ i ].whiskers.length > 0 ) {
-
-            methodval( this.data[ i ].whiskers[ 0 ] );
+      if (this.data[i].whiskers) {
+        if (Array.isArray(this.data[i].whiskers)) {
+          if (this.data[i].whiskers.length > 0) {
+            methodval(this.data[i].whiskers[0]);
           }
 
-          if ( this.data[ i ].whiskers.length > 1 ) {
-            methodval( this.data[ i ].whiskers[ 1 ] );
+          if (this.data[i].whiskers.length > 1) {
+            methodval(this.data[i].whiskers[1]);
           }
-
         } else {
-          methodval( this.data[ i ].whiskers );
-          this.data[ i ].whiskers = [ this.data[ i ].whiskers ];
+          methodval(this.data[i].whiskers);
+          this.data[i].whiskers = [this.data[i].whiskers];
         }
-
       } else {
-        this.data[ i ].whiskers = [];
+        this.data[i].whiskers = [];
       }
 
-      if ( Array.isArray( this.data[ i ].outliers ) ) {
-        this.data[ i ].outliers.map( ( val ) => methodval( val ) );
+      if (Array.isArray(this.data[i].outliers)) {
+        this.data[i].outliers.map((val) => methodval(val));
       } else {
-        this.data[ i ].outliers = [];
+        this.data[i].outliers = [];
       }
     }
 
@@ -164,20 +153,25 @@ class SerieBox extends Serie {
     return this;
   }
 
-  _style( type, styleValue, selectionType = 'unselected', applyToSelected = false ) {
-    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ][ type ] = styleValue;
+  _style(
+    type,
+    styleValue,
+    selectionType = 'unselected',
+    applyToSelected = false,
+  ) {
+    this.styles[selectionType] = this.styles[selectionType] || {};
+    this.styles[selectionType][type] = styleValue;
 
-    if ( applyToSelected ) {
-      this._set( type, styleValue, 'selected' );
+    if (applyToSelected) {
+      this._set(type, styleValue, 'selected');
     }
 
-    this.styleHasChanged( selectionType );
+    this.styleHasChanged(selectionType);
     return this;
   }
 
-  _gstyle( type, selectionType ) {
-    return this.getStyle( selectionType )[ type ];
+  _gstyle(type, selectionType) {
+    return this.getStyle(selectionType)[type];
   }
 
   /**
@@ -185,9 +179,8 @@ class SerieBox extends Serie {
    *  @param {String} [ selectionType = "unselected" ] - The selection type
    *  @returns {Object} The selection object
    */
-  getStyle( selectionType = 'unselected' ) {
-
-    return this.styles[ selectionType ] || {};
+  getStyle(selectionType = 'unselected') {
+    return this.styles[selectionType] || {};
   }
 
   /**
@@ -196,7 +189,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setMeanLineColor() {
-    return this._style( 'meanLineColor', ...arguments );
+    return this._style('meanLineColor', ...arguments);
   }
 
   /**
@@ -204,12 +197,17 @@ class SerieBox extends Serie {
    * @return {String} The mean line color
    */
   getMeanLineColor() {
-    return this._gstyle( 'meanLineColor', ...arguments );
+    return this._gstyle('meanLineColor', ...arguments);
   }
 
-  setStyle( style, selectionType = 'unselected' ) {
-    this.styles[ selectionType ] = extend( {}, this.default().defaultStyle, this.styles.unselected, style );
-    this.styleHasChanged( selectionType );
+  setStyle(style, selectionType = 'unselected') {
+    this.styles[selectionType] = extend(
+      {},
+      this.default().defaultStyle,
+      this.styles.unselected,
+      style,
+    );
+    this.styleHasChanged(selectionType);
   }
 
   /**
@@ -218,7 +216,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setMeanLineWidth() {
-    return this._style( 'meanLineWidth', ...arguments );
+    return this._style('meanLineWidth', ...arguments);
   }
 
   /**
@@ -226,7 +224,7 @@ class SerieBox extends Serie {
    * @return {Number} The mean line width
    */
   getMeanLineWidth() {
-    return this._gstyle( 'meanLineWidth', ...arguments );
+    return this._gstyle('meanLineWidth', ...arguments);
   }
 
   /**
@@ -235,7 +233,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxAboveLineColor() {
-    return this._style( 'boxAboveLineColor', ...arguments );
+    return this._style('boxAboveLineColor', ...arguments);
   }
 
   /**
@@ -243,7 +241,7 @@ class SerieBox extends Serie {
    * @return {String} The line color of the box above the median
    */
   getBoxAboveLineColor() {
-    return this._gstyle( 'boxAboveLineColor', ...arguments );
+    return this._gstyle('boxAboveLineColor', ...arguments);
   }
 
   /**
@@ -252,7 +250,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxBelowLineColor() {
-    return this._style( 'boxBelowLineColor', ...arguments );
+    return this._style('boxBelowLineColor', ...arguments);
   }
 
   /**
@@ -260,7 +258,7 @@ class SerieBox extends Serie {
    * @return {String} The line color of the box below the median
    */
   getBoxBelowLineColor() {
-    return this._gstyle( 'boxBelowLineColor', ...arguments );
+    return this._gstyle('boxBelowLineColor', ...arguments);
   }
 
   /**
@@ -269,7 +267,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxAboveLineWidth() {
-    return this._style( 'boxAboveLineWidth', ...arguments );
+    return this._style('boxAboveLineWidth', ...arguments);
   }
 
   /**
@@ -277,7 +275,7 @@ class SerieBox extends Serie {
    * @return {Number} The line width of the box above the median
    */
   getBoxAboveLineWidth() {
-    return this._gstyle( 'boxAboveLineWidth', ...arguments );
+    return this._gstyle('boxAboveLineWidth', ...arguments);
   }
 
   /**
@@ -286,7 +284,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxBelowLineWidth() {
-    return this._style( 'boxBelowLineWidth', ...arguments );
+    return this._style('boxBelowLineWidth', ...arguments);
   }
 
   /**
@@ -294,7 +292,7 @@ class SerieBox extends Serie {
    * @return {Number} The line width of the box below the median
    */
   getBoxBelowLineWidth() {
-    return this._gstyle( 'boxBelowLineWidth', ...arguments );
+    return this._gstyle('boxBelowLineWidth', ...arguments);
   }
 
   /**
@@ -303,7 +301,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxAboveFillColor() {
-    return this._style( 'boxAboveFillColor', ...arguments );
+    return this._style('boxAboveFillColor', ...arguments);
   }
 
   /**
@@ -311,7 +309,7 @@ class SerieBox extends Serie {
    * @return {String} The fill color of the box above the median
    */
   getBoxAboveFillColor() {
-    return this._gstyle( 'boxAboveFillColor', ...arguments );
+    return this._gstyle('boxAboveFillColor', ...arguments);
   }
 
   /**
@@ -320,7 +318,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxBelowFillColor() {
-    return this._style( 'boxBelowFillColor', ...arguments );
+    return this._style('boxBelowFillColor', ...arguments);
   }
 
   /**
@@ -328,7 +326,7 @@ class SerieBox extends Serie {
    * @return {String} The fill color of the box below the median
    */
   getBoxBelowFillColor() {
-    return this._gstyle( 'boxBelowFillColor', ...arguments );
+    return this._gstyle('boxBelowFillColor', ...arguments);
   }
 
   /**
@@ -337,7 +335,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxAboveFillOpacity() {
-    return this._style( 'boxAboveFillOpacity', ...arguments );
+    return this._style('boxAboveFillOpacity', ...arguments);
   }
 
   /**
@@ -345,7 +343,7 @@ class SerieBox extends Serie {
    * @return {Number} The fill opacity of the box above the median
    */
   getBoxAboveFillOpacity() {
-    return this._gstyle( 'boxAboveFillOpacity', ...arguments );
+    return this._gstyle('boxAboveFillOpacity', ...arguments);
   }
 
   /**
@@ -354,7 +352,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBoxBelowFillOpacity() {
-    return this._style( 'boxBelowFillOpacity', ...arguments );
+    return this._style('boxBelowFillOpacity', ...arguments);
   }
 
   /**
@@ -362,7 +360,7 @@ class SerieBox extends Serie {
    * @return {Number} The fill opacity of the box below the median
    */
   getBoxBelowFillOpacity() {
-    return this._gstyle( 'boxBelowFillOpacity', ...arguments );
+    return this._gstyle('boxBelowFillOpacity', ...arguments);
   }
 
   /**
@@ -371,7 +369,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBarAboveLineColor() {
-    return this._style( 'barAboveLineColor', ...arguments );
+    return this._style('barAboveLineColor', ...arguments);
   }
 
   /**
@@ -379,7 +377,7 @@ class SerieBox extends Serie {
    * @return {String} The line color of the whisker above the median
    */
   getBarAboveLineColor() {
-    return this._gstyle( 'barAboveLineColor', ...arguments );
+    return this._gstyle('barAboveLineColor', ...arguments);
   }
 
   /**
@@ -388,7 +386,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBarBelowLineColor() {
-    return this._style( 'barBelowLineColor', ...arguments );
+    return this._style('barBelowLineColor', ...arguments);
   }
 
   /**
@@ -396,7 +394,7 @@ class SerieBox extends Serie {
    * @return {String} The line color of the whisker below the median
    */
   getBarBelowLineColor() {
-    return this._gstyle( 'barBelowLineColor', ...arguments );
+    return this._gstyle('barBelowLineColor', ...arguments);
   }
 
   /**
@@ -405,7 +403,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBarAboveLineWidth() {
-    return this._style( 'barAboveLineWidth', ...arguments );
+    return this._style('barAboveLineWidth', ...arguments);
   }
 
   /**
@@ -413,7 +411,7 @@ class SerieBox extends Serie {
    * @return {Number} The line width of the whisker above the median
    */
   getBarAboveLineWidth() {
-    return this._gstyle( 'barAboveLineWidth', ...arguments );
+    return this._gstyle('barAboveLineWidth', ...arguments);
   }
 
   /**
@@ -422,7 +420,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setBarBelowLineWidth() {
-    return this._style( 'barBelowLineWidth', ...arguments );
+    return this._style('barBelowLineWidth', ...arguments);
   }
 
   /**
@@ -430,7 +428,7 @@ class SerieBox extends Serie {
    * @return {Number} The line width of the whisker below the median
    */
   getBarBelowLineWidth() {
-    return this._gstyle( 'barBelowLineWidth', ...arguments );
+    return this._gstyle('barBelowLineWidth', ...arguments);
   }
 
   /**
@@ -439,7 +437,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setOutlierLineColor() {
-    return this._style( 'outlierLineColor', ...arguments );
+    return this._style('outlierLineColor', ...arguments);
   }
 
   /**
@@ -447,7 +445,7 @@ class SerieBox extends Serie {
    * @return {String} The line color of the outliers
    */
   getOutlierLineColor() {
-    return this._gstyle( 'outlierLineColor', ...arguments );
+    return this._gstyle('outlierLineColor', ...arguments);
   }
 
   /**
@@ -456,7 +454,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setOutlierLineWidth() {
-    return this._style( 'outlierLineWidth', ...arguments );
+    return this._style('outlierLineWidth', ...arguments);
   }
 
   /**
@@ -464,7 +462,7 @@ class SerieBox extends Serie {
    * @return {Number} The line width of the outliers
    */
   getOutlierLineWidth() {
-    return this._gstyle( 'outlierLineWidth', ...arguments );
+    return this._gstyle('outlierLineWidth', ...arguments);
   }
 
   /**
@@ -473,7 +471,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setOutlierFillColor() {
-    return this._style( 'outlierFillColor', ...arguments );
+    return this._style('outlierFillColor', ...arguments);
   }
 
   /**
@@ -481,7 +479,7 @@ class SerieBox extends Serie {
    * @return {String} The fill color of the outliers
    */
   getOutlierFillColor() {
-    return this._gstyle( 'outlierFillColor', ...arguments );
+    return this._gstyle('outlierFillColor', ...arguments);
   }
 
   /**
@@ -490,7 +488,7 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   setOutlierFillOpacity() {
-    return this._style( 'outlierFillOpacity', ...arguments );
+    return this._style('outlierFillOpacity', ...arguments);
   }
 
   /**
@@ -498,7 +496,7 @@ class SerieBox extends Serie {
    * @return {Number} The fill opacity of the outliers
    */
   getOutlierFillOpacity() {
-    return this._gstyle( 'outlierFillOpacity', ...arguments );
+    return this._gstyle('outlierFillOpacity', ...arguments);
   }
 
   /**
@@ -506,69 +504,79 @@ class SerieBox extends Serie {
    *  @returns {SerieBox} The current serie instance
    */
   applyLineStyles() {
-    this.applyLineStyle( this.pathDom );
+    this.applyLineStyle(this.pathDom);
   }
 
   /**
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieBar
    */
-  applyLineStyle( line ) {
-
-    line.setAttribute( 'stroke', this.getLineColor() );
-    line.setAttribute( 'stroke-width', this.getLineWidth() );
-    line.removeAttribute( 'stroke-dasharray' );
-    line.setAttribute( 'fill', this.getFillColor() );
-    line.setAttribute( 'fill-opacity', this.getFillOpacity() || 1 );
+  applyLineStyle(line) {
+    line.setAttribute('stroke', this.getLineColor());
+    line.setAttribute('stroke-width', this.getLineWidth());
+    line.removeAttribute('stroke-dasharray');
+    line.setAttribute('fill', this.getFillColor());
+    line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
   }
 
   draw() {
-
-    if ( !this.data ) {
+    if (!this.data) {
       return;
     }
 
     let position;
-    let axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
-    let axis2 = this.options.orientation == 'y' ? this.getXAxis() : this.getYAxis();
+    let axis =
+      this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
+    let axis2 =
+      this.options.orientation == 'y' ? this.getXAxis() : this.getYAxis();
     let boxOtherDimension; // width or height of the box
     let useCategories = false;
-    let mean, boxAbove, boxBelow, barAbove, barBelow, outliers, posAbove, posBelow;
+    let mean,
+      boxAbove,
+      boxBelow,
+      barAbove,
+      barBelow,
+      outliers,
+      posAbove,
+      posBelow;
     let categoryNumber;
 
-    emptyDom( this.groupMain );
+    emptyDom(this.groupMain);
 
-    if ( axis2.getType() == 'category' ) {
-
-      boxOtherDimension = axis2.getRelPx( 0.8 / ( this.nbCategories ) );
+    if (axis2.getType() == 'category') {
+      boxOtherDimension = axis2.getRelPx(0.8 / this.nbCategories);
       useCategories = true;
-
     } else {
       // Get all the spacing and determine the smallest one
       boxOtherDimension = this.options.maxBoxWidth;
-      for ( var i = 0, l = this.data.length; i < l - 1; i++ ) {
-
-        boxOtherDimension = Math.max( 5, Math.min( boxOtherDimension, Math.abs( axis2.getPx( this.data[ i + 1 ].x ) - axis2.getPx( this.data[ i ].x ) ) ) );
+      for (var i = 0, l = this.data.length; i < l - 1; i++) {
+        boxOtherDimension = Math.max(
+          5,
+          Math.min(
+            boxOtherDimension,
+            Math.abs(
+              axis2.getPx(this.data[i + 1].x) - axis2.getPx(this.data[i].x),
+            ),
+          ),
+        );
       }
-
     }
 
-    for ( var i = 0, l = this.data.length; i < l; i++ ) {
+    for (var i = 0, l = this.data.length; i < l; i++) {
+      if (axis2.getType() == 'category') {
+        let cat =
+          this.options.orientation == 'y' ? this.data[i].x : this.data[i].y;
 
-      if ( axis2.getType() == 'category' ) {
+        if (!this.categoryIndices.hasOwnProperty(cat)) {
+          if (Array.isArray(this._linkedToScatterSeries)) {
+            for (let scatter_serie of this._linkedToScatterSeries) {
+              if (scatter_serie.categoryIndices.hasOwnProperty(cat)) {
+                position = [
+                  axis2.getPos(scatter_serie.categoryIndices[cat]) +
+                    (1.2 * boxOtherDimension) / 2,
+                ];
 
-        let cat = this.options.orientation == 'y' ? this.data[ i ].x : this.data[ i ].y;
-
-        if ( !this.categoryIndices.hasOwnProperty( cat ) ) {
-
-          if ( Array.isArray( this._linkedToScatterSeries ) ) {
-            for ( let scatter_serie of this._linkedToScatterSeries ) {
-
-              if ( scatter_serie.categoryIndices.hasOwnProperty( cat ) ) {
-
-                position = [ axis2.getPos( scatter_serie.categoryIndices[ cat ] ) + 1.2 * boxOtherDimension / 2 ];
-
-                if ( this.options.orientation == 'y' ) {
+                if (this.options.orientation == 'y') {
                   axis = scatter_serie.getYAxis();
                 } else {
                   axis = scatter_serie.getXAxis();
@@ -579,214 +587,202 @@ class SerieBox extends Serie {
             }
           }
         } else {
-
-          position = [ axis2.getPos( this.categoryIndices[ cat ] ) + 1.2 * boxOtherDimension / 2 ];
-
+          position = [
+            axis2.getPos(this.categoryIndices[cat]) +
+              (1.2 * boxOtherDimension) / 2,
+          ];
         }
-
       } else {
-
-        position = [ axis2.getPos( this.options.orientation == 'y' ? this.data[ i ].x : this.data[ i ].y ), boxOtherDimension ];
-
+        position = [
+          axis2.getPos(
+            this.options.orientation == 'y' ? this.data[i].x : this.data[i].y,
+          ),
+          boxOtherDimension,
+        ];
       }
 
-      mean = axis.getPos( this.data[ i ].Q2 );
-      boxAbove = axis.getPos( this.data[ i ].Q3 );
-      boxBelow = axis.getPos( this.data[ i ].Q1 );
+      mean = axis.getPos(this.data[i].Q2);
+      boxAbove = axis.getPos(this.data[i].Q3);
+      boxBelow = axis.getPos(this.data[i].Q1);
 
-      this.data[ i ].whiskers.map( ( val ) => {
-
-        if ( val < this.data[ i ].Q1 ) {
-          barBelow = axis.getPos( val );
+      this.data[i].whiskers.map((val) => {
+        if (val < this.data[i].Q1) {
+          barBelow = axis.getPos(val);
         } else {
-          barAbove = axis.getPos( val );
+          barAbove = axis.getPos(val);
         }
-      } );
+      });
 
-      outliers = this.data[ i ].outliers.map( ( val ) => axis.getPos( val ) );
+      outliers = this.data[i].outliers.map((val) => axis.getPos(val));
 
-      var lineMean = document.createElementNS( this.graph.ns, 'line' );
+      var lineMean = document.createElementNS(this.graph.ns, 'line');
 
-      this.applyMeanStyle( lineMean );
+      this.applyMeanStyle(lineMean);
 
-      var rectAbove = document.createElementNS( this.graph.ns, 'rect' );
-      var rectBelow = document.createElementNS( this.graph.ns, 'rect' );
+      var rectAbove = document.createElementNS(this.graph.ns, 'rect');
+      var rectBelow = document.createElementNS(this.graph.ns, 'rect');
 
-      if ( this.options.orientation == 'y' ) {
+      if (this.options.orientation == 'y') {
+        rectAbove.setAttribute('width', boxOtherDimension);
+        rectAbove.setAttribute('x', position[0] - boxOtherDimension / 2);
 
-        rectAbove.setAttribute( 'width', boxOtherDimension );
-        rectAbove.setAttribute( 'x', position[ 0 ] - boxOtherDimension / 2 );
+        rectBelow.setAttribute('width', boxOtherDimension);
+        rectBelow.setAttribute('x', position[0] - boxOtherDimension / 2);
 
-        rectBelow.setAttribute( 'width', boxOtherDimension );
-        rectBelow.setAttribute( 'x', position[ 0 ] - boxOtherDimension / 2 );
-
-        lineMean.setAttribute( 'x1', position[ 0 ] - boxOtherDimension / 2 );
-        lineMean.setAttribute( 'x2', position[ 0 ] + boxOtherDimension / 2 );
-        lineMean.setAttribute( 'y1', mean );
-        lineMean.setAttribute( 'y2', mean );
-
+        lineMean.setAttribute('x1', position[0] - boxOtherDimension / 2);
+        lineMean.setAttribute('x2', position[0] + boxOtherDimension / 2);
+        lineMean.setAttribute('y1', mean);
+        lineMean.setAttribute('y2', mean);
       } else {
+        rectAbove.setAttribute('height', boxOtherDimension);
+        rectAbove.setAttribute('y', position[0] - boxOtherDimension / 2);
 
-        rectAbove.setAttribute( 'height', boxOtherDimension );
-        rectAbove.setAttribute( 'y', position[ 0 ] - boxOtherDimension / 2 );
+        rectBelow.setAttribute('height', boxOtherDimension);
+        rectBelow.setAttribute('y', position[0] - boxOtherDimension / 2);
 
-        rectBelow.setAttribute( 'height', boxOtherDimension );
-        rectBelow.setAttribute( 'y', position[ 0 ] - boxOtherDimension / 2 );
-
-        lineMean.setAttribute( 'y1', position[ 0 ] - boxOtherDimension / 2 );
-        lineMean.setAttribute( 'y2', position[ 0 ] + boxOtherDimension / 2 );
-        lineMean.setAttribute( 'x1', mean );
-        lineMean.setAttribute( 'x2', mean );
+        lineMean.setAttribute('y1', position[0] - boxOtherDimension / 2);
+        lineMean.setAttribute('y2', position[0] + boxOtherDimension / 2);
+        lineMean.setAttribute('x1', mean);
+        lineMean.setAttribute('x2', mean);
       }
 
-      this.boxPos( rectAbove, mean, boxAbove, this.options.orientation == 'x' );
-      this.boxPos( rectBelow, mean, boxBelow, this.options.orientation == 'x' );
+      this.boxPos(rectAbove, mean, boxAbove, this.options.orientation == 'x');
+      this.boxPos(rectBelow, mean, boxBelow, this.options.orientation == 'x');
 
-      this.applyBoxStyle( rectAbove, rectBelow );
+      this.applyBoxStyle(rectAbove, rectBelow);
 
-      var whiskerAbove = document.createElementNS( this.graph.ns, 'line' );
-      var whiskerBelow = document.createElementNS( this.graph.ns, 'line' );
+      var whiskerAbove = document.createElementNS(this.graph.ns, 'line');
+      var whiskerBelow = document.createElementNS(this.graph.ns, 'line');
 
-      if ( this.options.orientation == 'y' ) {
-
-        if ( barAbove !== undefined ) {
-          whiskerAbove.setAttribute( 'y1', boxAbove );
-          whiskerAbove.setAttribute( 'y2', barAbove );
-          whiskerAbove.setAttribute( 'x1', position[ 0 ] );
-          whiskerAbove.setAttribute( 'x2', position[ 0 ] );
+      if (this.options.orientation == 'y') {
+        if (barAbove !== undefined) {
+          whiskerAbove.setAttribute('y1', boxAbove);
+          whiskerAbove.setAttribute('y2', barAbove);
+          whiskerAbove.setAttribute('x1', position[0]);
+          whiskerAbove.setAttribute('x2', position[0]);
         }
 
-        if ( barBelow !== undefined ) {
-          whiskerBelow.setAttribute( 'y1', boxBelow );
-          whiskerBelow.setAttribute( 'y2', barBelow );
-          whiskerBelow.setAttribute( 'x1', position[ 0 ] );
-          whiskerBelow.setAttribute( 'x2', position[ 0 ] );
+        if (barBelow !== undefined) {
+          whiskerBelow.setAttribute('y1', boxBelow);
+          whiskerBelow.setAttribute('y2', barBelow);
+          whiskerBelow.setAttribute('x1', position[0]);
+          whiskerBelow.setAttribute('x2', position[0]);
         }
-
       } else {
-
-        if ( barAbove !== undefined ) {
-          whiskerAbove.setAttribute( 'x1', boxAbove );
-          whiskerAbove.setAttribute( 'x2', barAbove );
-          whiskerAbove.setAttribute( 'y1', position[ 0 ] );
-          whiskerAbove.setAttribute( 'y2', position[ 0 ] );
+        if (barAbove !== undefined) {
+          whiskerAbove.setAttribute('x1', boxAbove);
+          whiskerAbove.setAttribute('x2', barAbove);
+          whiskerAbove.setAttribute('y1', position[0]);
+          whiskerAbove.setAttribute('y2', position[0]);
         }
 
-        if ( barBelow !== undefined ) {
-          whiskerBelow.setAttribute( 'x1', boxBelow );
-          whiskerBelow.setAttribute( 'x2', barBelow );
-          whiskerBelow.setAttribute( 'y1', position[ 0 ] );
-          whiskerBelow.setAttribute( 'y2', position[ 0 ] );
+        if (barBelow !== undefined) {
+          whiskerBelow.setAttribute('x1', boxBelow);
+          whiskerBelow.setAttribute('x2', barBelow);
+          whiskerBelow.setAttribute('y1', position[0]);
+          whiskerBelow.setAttribute('y2', position[0]);
         }
       }
 
-      outliers.map( ( outliervalue ) => {
+      outliers.map((outliervalue) => {
+        let outlier = document.createElementNS(this.graph.ns, 'circle');
 
-        let outlier = document.createElementNS( this.graph.ns, 'circle' );
+        outlier.setAttribute('r', 2);
 
-        outlier.setAttribute( 'r', 2 );
-
-        if ( this.options.orientation == 'y' ) {
-
-          outlier.setAttribute( 'cx', position[ 0 ] );
-          outlier.setAttribute( 'cy', outliervalue );
-
+        if (this.options.orientation == 'y') {
+          outlier.setAttribute('cx', position[0]);
+          outlier.setAttribute('cy', outliervalue);
         } else {
-
-          outlier.setAttribute( 'cy', position[ 0 ] );
-          outlier.setAttribute( 'cx', outliervalue );
+          outlier.setAttribute('cy', position[0]);
+          outlier.setAttribute('cx', outliervalue);
         }
 
-        this.setOutlierStyle( outlier );
+        this.setOutlierStyle(outlier);
 
-        this.groupMain.appendChild( outlier );
-      } );
+        this.groupMain.appendChild(outlier);
+      });
 
-      if ( barAbove !== undefined ) {
-        this.groupMain.appendChild( whiskerAbove );
+      if (barAbove !== undefined) {
+        this.groupMain.appendChild(whiskerAbove);
       }
 
-      if ( barBelow !== undefined ) {
-        this.groupMain.appendChild( whiskerBelow );
+      if (barBelow !== undefined) {
+        this.groupMain.appendChild(whiskerBelow);
       }
 
-      if ( boxAbove !== undefined ) {
-        this.groupMain.appendChild( rectAbove );
+      if (boxAbove !== undefined) {
+        this.groupMain.appendChild(rectAbove);
       }
 
-      if ( boxBelow !== undefined ) {
-        this.groupMain.appendChild( rectBelow );
+      if (boxBelow !== undefined) {
+        this.groupMain.appendChild(rectBelow);
       }
 
-      this.groupMain.appendChild( lineMean );
+      this.groupMain.appendChild(lineMean);
 
-      this.applyWhiskerStyle( whiskerAbove, whiskerBelow );
+      this.applyWhiskerStyle(whiskerAbove, whiskerBelow);
     }
   }
 
-  applyBoxStyle( above, below ) {
+  applyBoxStyle(above, below) {
+    above.setAttribute('stroke', this.getBoxAboveLineColor());
+    above.setAttribute('stroke-width', this.getBoxAboveLineWidth());
 
-    above.setAttribute( 'stroke', this.getBoxAboveLineColor() );
-    above.setAttribute( 'stroke-width', this.getBoxAboveLineWidth() );
-
-    if ( this.getBoxAboveFillColor() !== undefined ) {
-      above.setAttribute( 'fill', this.getBoxAboveFillColor() );
+    if (this.getBoxAboveFillColor() !== undefined) {
+      above.setAttribute('fill', this.getBoxAboveFillColor());
     }
-    if ( this.getBoxAboveFillOpacity() !== undefined ) {
-      above.setAttribute( 'fill-opacity', this.getBoxAboveFillOpacity() );
+    if (this.getBoxAboveFillOpacity() !== undefined) {
+      above.setAttribute('fill-opacity', this.getBoxAboveFillOpacity());
     }
 
-    below.setAttribute( 'stroke', this.getBoxBelowLineColor() );
-    below.setAttribute( 'stroke-width', this.getBoxBelowLineWidth() );
+    below.setAttribute('stroke', this.getBoxBelowLineColor());
+    below.setAttribute('stroke-width', this.getBoxBelowLineWidth());
 
-    if ( this.getBoxBelowFillColor() !== undefined ) {
-      below.setAttribute( 'fill', this.getBoxBelowFillColor() );
+    if (this.getBoxBelowFillColor() !== undefined) {
+      below.setAttribute('fill', this.getBoxBelowFillColor());
     }
-    if ( this.getBoxAboveFillOpacity() !== undefined ) {
-      below.setAttribute( 'fill-opacity', this.getBoxBelowFillOpacity() );
+    if (this.getBoxAboveFillOpacity() !== undefined) {
+      below.setAttribute('fill-opacity', this.getBoxBelowFillOpacity());
     }
   }
 
-  applyWhiskerStyle( above, below ) {
+  applyWhiskerStyle(above, below) {
+    above.setAttribute('stroke', this.getBarAboveLineColor());
+    above.setAttribute('stroke-width', this.getBarAboveLineWidth());
 
-    above.setAttribute( 'stroke', this.getBarAboveLineColor() );
-    above.setAttribute( 'stroke-width', this.getBarAboveLineWidth() );
-
-    below.setAttribute( 'stroke', this.getBarBelowLineColor() );
-    below.setAttribute( 'stroke-width', this.getBarBelowLineWidth() );
+    below.setAttribute('stroke', this.getBarBelowLineColor());
+    below.setAttribute('stroke-width', this.getBarBelowLineWidth());
   }
 
-  applyMeanStyle( line ) {
-
-    line.setAttribute( 'stroke', this.getMeanLineColor() );
-    line.setAttribute( 'stroke-width', this.getMeanLineWidth() );
+  applyMeanStyle(line) {
+    line.setAttribute('stroke', this.getMeanLineColor());
+    line.setAttribute('stroke-width', this.getMeanLineWidth());
   }
 
-  setOutlierStyle( outlier ) {
+  setOutlierStyle(outlier) {
+    outlier.setAttribute('stroke', this.getOutlierLineColor());
+    outlier.setAttribute('stroke-width', this.getOutlierLineWidth());
 
-    outlier.setAttribute( 'stroke', this.getOutlierLineColor() );
-    outlier.setAttribute( 'stroke-width', this.getOutlierLineWidth() );
-
-    if ( this.getBoxBelowFillColor() !== undefined ) {
-      outlier.setAttribute( 'fill', this.getOutlierFillColor() );
+    if (this.getBoxBelowFillColor() !== undefined) {
+      outlier.setAttribute('fill', this.getOutlierFillColor());
     }
-    if ( this.getBoxAboveFillOpacity() !== undefined ) {
-      outlier.setAttribute( 'fill-opacity', this.getOutlierFillOpacity() );
+    if (this.getBoxAboveFillOpacity() !== undefined) {
+      outlier.setAttribute('fill-opacity', this.getOutlierFillOpacity());
     }
   }
   /**
    * Returns the index of a category based on its name
    * @param {String} name - The name of the category
    */
-  getCategoryIndex( name ) {
-
-    if ( !this.categories ) {
-      throw new Error( 'No categories were defined. Probably axis.setSeries was not called' );
+  getCategoryIndex(name) {
+    if (!this.categories) {
+      throw new Error(
+        'No categories were defined. Probably axis.setSeries was not called',
+      );
     }
 
-    for ( var i = 0; i < this.categories.length; i++ ) {
-
-      if ( this.categories[ i ].name == name ) {
+    for (var i = 0; i < this.categories.length; i++) {
+      if (this.categories[i].name == name) {
         return i;
       }
     }
@@ -797,43 +793,36 @@ class SerieBox extends Serie {
   // Markers now allowed
   setMarkers() {}
 
-  boxPos( box, mean, extremity, blnX ) {
-
-    if ( mean > extremity ) {
-
-      box.setAttribute( blnX ? 'x' : 'y', extremity );
-      box.setAttribute( blnX ? 'width' : 'height', mean - extremity );
-
+  boxPos(box, mean, extremity, blnX) {
+    if (mean > extremity) {
+      box.setAttribute(blnX ? 'x' : 'y', extremity);
+      box.setAttribute(blnX ? 'width' : 'height', mean - extremity);
     } else {
-
-      box.setAttribute( blnX ? 'x' : 'y', mean );
-      box.setAttribute( blnX ? 'width' : 'height', extremity - mean );
+      box.setAttribute(blnX ? 'x' : 'y', mean);
+      box.setAttribute(blnX ? 'width' : 'height', extremity - mean);
     }
   }
 
   getUsedCategories() {
     let xymode = this.options.orientation == 'y' ? 'x' : 'y';
 
-    let categories = this.data.map( ( d ) => d[ xymode ] );
+    let categories = this.data.map((d) => d[xymode]);
 
-    if ( Array.isArray( this._linkedToScatterSeries ) ) {
-      this._linkedToScatterSeries.map( ( scatter_serie ) => {
-
-        scatter_serie.getUsedCategories().map( ( scatter_serie_cat ) => {
+    if (Array.isArray(this._linkedToScatterSeries)) {
+      this._linkedToScatterSeries.map((scatter_serie) => {
+        scatter_serie.getUsedCategories().map((scatter_serie_cat) => {
           let index;
-          if ( ( index = categories.indexOf( scatter_serie_cat ) ) > -1 ) {
-            categories.splice( index, 1 );
+          if ((index = categories.indexOf(scatter_serie_cat)) > -1) {
+            categories.splice(index, 1);
           }
-
-        } );
-      } );
-
+        });
+      });
     }
 
     return categories;
   }
 
-  linkToScatterSerie( ...series ) {
+  linkToScatterSerie(...series) {
     this._linkedToScatterSeries = series;
   }
 }

@@ -1325,7 +1325,7 @@ abstract class Axis extends EventEmitter implements Axis {
     return this.options.flipped;
   }
 
-  _draw() { // Redrawing of the axis
+  private _draw() { // Redrawing of the axis
 
     var self = this;
     // var visible;
@@ -1335,6 +1335,7 @@ abstract class Axis extends EventEmitter implements Axis {
     if (this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined) {
       this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
     }
+
     // this.cache();
 
     //   this.setSlaveAxesBoundaries();
