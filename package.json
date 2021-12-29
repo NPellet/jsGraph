@@ -1,7 +1,7 @@
 {
   "name": "node-jsgraph",
   "description": "library that can be used to render scientific data in the form of graphs and charts",
-  "version": "2.4.12",
+  "version": "2.4.13",
   "scripts": {
     "build": "npx webpack",
     "dev": "npx webpack --watch",
