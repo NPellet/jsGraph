@@ -1,3 +1,4 @@
+import { ns } from '../graph.core.js';
 import { extend, guid, throwError, emptyDom } from '../graph.util.js';
 
 import Serie from './graph.serie';
@@ -42,18 +43,15 @@ class SerieBox extends Serie {
     super(
       graph,
       name,
-      options,
-      extend(true, {}, defaultOptions, defaultInherited),
+      options
     );
 
-    this.pathDom = document.createElementNS(this.graph.ns, 'path');
+    this.extendStyle({
+      box: defaultOptions.defaultStyle
+    }, "unselected", null);
+
+    this.pathDom = document.createElementNS(ns, 'path');
     this.groupMain.appendChild(this.pathDom);
-
-    // Creates an empty style variable
-    this.styles = {};
-
-    // Unselected style
-    this.styles.unselected = this.options.defaultStyle;
   }
 
   /**
@@ -70,8 +68,7 @@ class SerieBox extends Serie {
     }
 
     let axisref, axisval, methodref, methodval, blnX;
-    console.log(this.options);
-    if (this.options.orientation == 'y') {
+    if (this.options.box_orientation == 'y') {
       axisref = this.getXAxis();
       axisval = this.getYAxis();
       methodref = this._checkX.bind(this);
@@ -94,10 +91,9 @@ class SerieBox extends Serie {
       this.maxY = data[0].y;
       this.minY = data[0].y;
     }
-    console.log(this.minY, this.maxY);
     if (noRescale) {
-      methodref = function () {};
-      methodval = function () {};
+      methodref = function () { };
+      methodval = function () { };
     }
 
     if (!axisref || !axisval) {
@@ -148,48 +144,41 @@ class SerieBox extends Serie {
     }
 
     this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
+    this.graph.updateDataMinMaxAxes(false);
 
     return this;
   }
 
   _style(
-    type,
-    styleValue,
-    selectionType = 'unselected',
-    applyToSelected = false,
+    type: string,
+    styleValue: any,
+    selectionType: string = 'unselected',
+    applyToSelected: boolean = false,
   ) {
-    this.styles[selectionType] = this.styles[selectionType] || {};
-    this.styles[selectionType][type] = styleValue;
 
+
+    let s = this.getRawBoxStyle(selectionType);
+    s[type] = styleValue;
     if (applyToSelected) {
-      this._set(type, styleValue, 'selected');
+      this._style(type, styleValue, "selected", false);
     }
 
     this.styleHasChanged(selectionType);
     return this;
   }
 
-  _gstyle(type, selectionType) {
-    return this.getStyle(selectionType)[type];
+  _gstyle(type: string) {
+    return this.getComputedStyle().box?.[type];
   }
 
-  /**
-   *  Retrives a selection object
-   *  @param {String} [ selectionType = "unselected" ] - The selection type
-   *  @returns {Object} The selection object
-   */
-  getStyle(selectionType = 'unselected') {
-    return this.styles[selectionType] || {};
-  }
 
   /**
    *  Sets the mean line color
    *  @param {String} color - The mean line color
    *  @returns {SerieBox} The current serie instance
    */
-  setMeanLineColor() {
-    return this._style('meanLineColor', ...arguments);
+  setMeanLineColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('meanLineColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -200,23 +189,14 @@ class SerieBox extends Serie {
     return this._gstyle('meanLineColor', ...arguments);
   }
 
-  setStyle(style, selectionType = 'unselected') {
-    this.styles[selectionType] = extend(
-      {},
-      this.default().defaultStyle,
-      this.styles.unselected,
-      style,
-    );
-    this.styleHasChanged(selectionType);
-  }
 
   /**
    *  Sets the mean line width
    *  @param {Number} width - The line width
    *  @returns {SerieBox} The current serie instance
    */
-  setMeanLineWidth() {
-    return this._style('meanLineWidth', ...arguments);
+  setMeanLineWidth(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('meanLineWidth', v, selectionType, applyToSelected);
   }
 
   /**
@@ -232,8 +212,8 @@ class SerieBox extends Serie {
    *  @param {Number} color - The color of the box above the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxAboveLineColor() {
-    return this._style('boxAboveLineColor', ...arguments);
+  setBoxAboveLineColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxAboveLineColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -249,8 +229,8 @@ class SerieBox extends Serie {
    *  @param {Number} color - The color of the box below the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxBelowLineColor() {
-    return this._style('boxBelowLineColor', ...arguments);
+  setBoxBelowLineColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxBelowLineColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -266,8 +246,8 @@ class SerieBox extends Serie {
    *  @param {Number} width - The contour width of the box above the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxAboveLineWidth() {
-    return this._style('boxAboveLineWidth', ...arguments);
+  setBoxAboveLineWidth(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxAboveLineWidth', v, selectionType, applyToSelected);
   }
 
   /**
@@ -283,8 +263,8 @@ class SerieBox extends Serie {
    *  @param {Number} width - The contour width of the box below the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxBelowLineWidth() {
-    return this._style('boxBelowLineWidth', ...arguments);
+  setBoxBelowLineWidth(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxBelowLineWidth', v, selectionType, applyToSelected);
   }
 
   /**
@@ -300,8 +280,8 @@ class SerieBox extends Serie {
    *  @param {String} color - The fill color of the box above the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxAboveFillColor() {
-    return this._style('boxAboveFillColor', ...arguments);
+  setBoxAboveFillColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxAboveFillColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -317,8 +297,8 @@ class SerieBox extends Serie {
    *  @param {String} color - The fill color of the box below the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxBelowFillColor() {
-    return this._style('boxBelowFillColor', ...arguments);
+  setBoxBelowFillColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxBelowFillColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -334,8 +314,8 @@ class SerieBox extends Serie {
    *  @param {Number} opacity - The fill opacity of the box above the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxAboveFillOpacity() {
-    return this._style('boxAboveFillOpacity', ...arguments);
+  setBoxAboveFillOpacity(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxAboveFillOpacity', v, selectionType, applyToSelected);
   }
 
   /**
@@ -351,8 +331,8 @@ class SerieBox extends Serie {
    *  @param {Number} opacity - The fill opacity of the box below the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBoxBelowFillOpacity() {
-    return this._style('boxBelowFillOpacity', ...arguments);
+  setBoxBelowFillOpacity(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('boxBelowFillOpacity', v, selectionType, applyToSelected);
   }
 
   /**
@@ -368,8 +348,8 @@ class SerieBox extends Serie {
    *  @param {String} color - The line color of the whisker above the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBarAboveLineColor() {
-    return this._style('barAboveLineColor', ...arguments);
+  setBarAboveLineColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('barAboveLineColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -385,8 +365,8 @@ class SerieBox extends Serie {
    *  @param {String} color - The line color of the whisker below the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBarBelowLineColor() {
-    return this._style('barBelowLineColor', ...arguments);
+  setBarBelowLineColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('barBelowLineColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -402,8 +382,8 @@ class SerieBox extends Serie {
    *  @param {Number} width - The line width of the whisker above the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBarAboveLineWidth() {
-    return this._style('barAboveLineWidth', ...arguments);
+  setBarAboveLineWidth(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('barAboveLineWidth', v, selectionType, applyToSelected);
   }
 
   /**
@@ -419,8 +399,8 @@ class SerieBox extends Serie {
    *  @param {Number} width - The line width of the whisker below the median
    *  @returns {SerieBox} The current serie instance
    */
-  setBarBelowLineWidth() {
-    return this._style('barBelowLineWidth', ...arguments);
+  setBarBelowLineWidth(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('barBelowLineWidth', v, selectionType, applyToSelected);
   }
 
   /**
@@ -436,8 +416,8 @@ class SerieBox extends Serie {
    *  @param {String} color - The outlier stroke color
    *  @returns {SerieBox} The current serie instance
    */
-  setOutlierLineColor() {
-    return this._style('outlierLineColor', ...arguments);
+  setOutlierLineColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('outlierLineColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -453,8 +433,8 @@ class SerieBox extends Serie {
    *  @param {Number} width - The outlier stroke width
    *  @returns {SerieBox} The current serie instance
    */
-  setOutlierLineWidth() {
-    return this._style('outlierLineWidth', ...arguments);
+  setOutlierLineWidth(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('outlierLineWidth', v, selectionType, applyToSelected);
   }
 
   /**
@@ -470,8 +450,8 @@ class SerieBox extends Serie {
    *  @param {String} color - The outlier fill color
    *  @returns {SerieBox} The current serie instance
    */
-  setOutlierFillColor() {
-    return this._style('outlierFillColor', ...arguments);
+  setOutlierFillColor(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('outlierFillColor', v, selectionType, applyToSelected);
   }
 
   /**
@@ -487,8 +467,8 @@ class SerieBox extends Serie {
    *  @param {Number} opacity - The outlier fill opacity
    *  @returns {SerieBox} The current serie instance
    */
-  setOutlierFillOpacity() {
-    return this._style('outlierFillOpacity', ...arguments);
+  setOutlierFillOpacity(v: any, selectionType: string, applyToSelected: boolean) {
+    return this._style('outlierFillOpacity', v, selectionType, applyToSelected);
   }
 
   /**
@@ -573,7 +553,7 @@ class SerieBox extends Serie {
               if (scatter_serie.categoryIndices.hasOwnProperty(cat)) {
                 position = [
                   axis2.getPos(scatter_serie.categoryIndices[cat]) +
-                    (1.2 * boxOtherDimension) / 2,
+                  (1.2 * boxOtherDimension) / 2,
                 ];
 
                 if (this.options.orientation == 'y') {
@@ -589,7 +569,7 @@ class SerieBox extends Serie {
         } else {
           position = [
             axis2.getPos(this.categoryIndices[cat]) +
-              (1.2 * boxOtherDimension) / 2,
+            (1.2 * boxOtherDimension) / 2,
           ];
         }
       } else {
@@ -791,7 +771,7 @@ class SerieBox extends Serie {
   }
 
   // Markers now allowed
-  setMarkers() {}
+  setMarkers() { }
 
   boxPos(box, mean, extremity, blnX) {
     if (mean > extremity) {

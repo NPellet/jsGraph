@@ -23,7 +23,7 @@ const defaultOptions: Partial<SerieOptions> = {
 class Serie extends EventEmitter {
 
   public options: SerieOptions
-  private graph: Graph
+  protected graph: Graph
   private name: string
   protected groupMain: SVGElement
   protected symbolLegendContainer: SVGElement

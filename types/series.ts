@@ -35,5 +35,7 @@ export type SerieOptions = {
     flip: boolean,
     layer: number,
 
-    tracking: any
+    tracking: any,
+
+    box_orientation: 'y' | 'x'
 }
