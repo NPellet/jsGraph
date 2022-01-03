@@ -17,8 +17,7 @@ import SerieLine from './series/graph.serie.line';
 // @ts-ignore
 import SerieLine3D from './series/graph.serie.line.3d.js';
 import SerieBar from './series/graph.serie.bar';
-// @ts-ignore
-import SerieBox from './series/graph.serie.box.js';
+import SerieBox from './series/graph.serie.box';
 // @ts-ignore
 import SerieLineColor from './series/graph.serie.line.colored.js';
 // @ts-ignore
