@@ -1,5 +1,5 @@
 
-
+// @ts-nocheck
 import Graph, { ns } from '../graph.core';
 
 // @ts-ignore
@@ -23,18 +23,18 @@ const defaultOptions: Partial<SerieOptions> = {
 class Serie extends EventEmitter {
 
   public options: SerieOptions
-  protected graph: Graph
+  protected graph: Graph | undefined;
   private name: string
   protected groupMain: SVGElement
   protected symbolLegendContainer: SVGElement
-  private _activeStyleName: string
-  private _unselectedStyleName: string;
-  private _changedStyles: { [x: string]: boolean }
+  private _activeStyleName: string = "unselected"
+  private _unselectedStyleName: string = "unselected";
+  private _changedStyles: { [x: string]: boolean } = {}
 
-  protected minX: number;
-  protected maxX: number;
-  protected minY: number;
-  protected maxY: number;
+  protected minX: number | undefined;
+  protected maxX: number | undefined;
+  protected minY: number | undefined;
+  protected maxY: number | undefined;
 
 
   private styles: {
@@ -48,7 +48,7 @@ class Serie extends EventEmitter {
   protected selected: boolean = false;
   protected waveform: Waveform | undefined = undefined;
 
-  constructor(graph, name, options = {}) {
+  constructor(graph: Graph, name: string, options: Partial<SerieOptions>) {
 
     super();
 
@@ -108,9 +108,6 @@ class Serie extends EventEmitter {
     throw 'Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class.';
   }
 
-  _addData(type, howmany) {
-    return [];
-  }
 
   /**
    * Removes all the data from the serie, without redrawing
@@ -135,8 +132,8 @@ class Serie extends EventEmitter {
    * @param {Object} options - The options of the serie
    * @memberof Serie
    */
-  setOptions(options) {
-    this.options = options || {};
+  setOptions(options: Partial<SerieOptions>) {
+    this.options = util.extend(options || {}, defaultOptions);
   }
 
   /**

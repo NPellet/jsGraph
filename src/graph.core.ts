@@ -14,6 +14,7 @@ import { SerieStyle, SERIE_DEFAULT_STYLE, SERIE_TYPE } from '../types/series';
 import Serie from './series/graph.serie.js';
 import { cloneDeep, extend, uniq } from 'lodash';
 import Axis from './graph.axis.js';
+import assert from 'assert';
 
 export const __VERSION__ = "0.0.1"
 export const ns = 'http://www.w3.org/2000/svg';
@@ -43,7 +44,7 @@ enum AxisPositionE {
 
 export type trackingMode = {
   mode: 'individual' | 'common',
-  series?: Array<string | Serie>,
+  series: Array<string | Serie>,
   legend?: boolean,
   legendType?: 'independent' | 'common',
   serieOptions?: {
@@ -132,6 +133,8 @@ export type GraphOptions = {
   titleFontFamily?: string,
 
   onContextMenuListen?: Function,
+  onSelectSerie?: Function,
+  onUnselectSerie?: Function,
   handleMouseLeave?: Function,
   trackingLine?: trackingMode,
 
@@ -340,7 +343,7 @@ class Graph extends EventEmitter {
     this._axesHaveChanged = true;
 
     if (
-      this.options.hasOwnProperty('padding') &&
+      this.options.padding &&
       util.isNumeric(this.options.padding)
     ) {
       this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
@@ -351,7 +354,8 @@ class Graph extends EventEmitter {
     // Load all axes
     if (options.axes) {
       for (var i in options.axes) {
-        for (var j = 0, l = options.axes[i].length; j < l; j++) {
+
+        for (var j = 0, l = options.axes[i as keyof Axes<any>].length; j < l; j++) {
           switch (i) {
             case 'top':
               this.getTopAxis(j, options.axes[i][j]);
@@ -746,7 +750,7 @@ class Graph extends EventEmitter {
    * @param value - New option value
    * @returns {Graph} - Graph instance
    */
-  setOption(name: string, val: any) {
+  setOption<T extends keyof GraphOptions>(name: T, val: GraphOptions[T]) {
     this.options[name] = val;
     return this;
   }
@@ -2475,8 +2479,7 @@ class Graph extends EventEmitter {
     return !!this.plugins[pluginName];
   }
 
-  triggerEvent(func: string, ...args: any[]) {
-
+  triggerEvent<T extends keyof GraphOptions>(func: T, ...args: any[]) {
     if (typeof this.options[func] == 'function') {
       return this.options[func].apply(this, args);
     }
@@ -2786,9 +2789,13 @@ class Graph extends EventEmitter {
     // Safeguard when claled externally
     if (!this.options.trackingLine) {
       this.trackingLine({
-        mode: 'individual'
+        mode: 'individual',
+        series: []
       });
     }
+
+    assert(this.options.trackingLine);
+
     this.options.trackingLine.series.push(serie)
     this.options.trackingLine.series = uniq(this.options.trackingLine.series);
 
@@ -3578,15 +3585,17 @@ function checkKeyActions(graph: Graph, e: any, parameters: any, methodName: any)
       // Is it a plugin ?
 
       if (
-        graph.forcedPlugin == keyComb[i].plugin ||
-        graph.isActionAllowed(e, keyComb[i])
+        keyComb[i].plugin && (
+          graph.forcedPlugin == keyComb[i].plugin ||
+          graph.isActionAllowed(e, keyComb[i]))
       ) {
         if (keyComb[i].options) {
           parameters.push(keyComb[i].options);
         }
-
-        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
-        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+        const plugin = keyComb[i].plugin
+        assert(plugin)
+        graph.activePlugin = plugin; // Lease the mouse action to the current action
+        graph._pluginExecute(plugin, methodName, parameters);
 
         e.preventDefault();
         e.stopPropagation();
@@ -3601,7 +3610,7 @@ function checkKeyActions(graph: Graph, e: any, parameters: any, methodName: any)
       e.preventDefault();
       e.stopPropagation();
 
-      keyComb[i].callback.apply(graph, parameters);
+      keyComb[i].callback?.apply(graph, parameters);
       return true;
     }
 
@@ -3753,9 +3762,14 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         // Series looping
 
         const output: Array<{ serie: any, closestPoint: any }> = [];
-        graph.options.trackingLine.series.forEach((serie: Serie) => {
+        graph.options.trackingLine.series.forEach((serie: (Serie | string)) => {
           //        const index = serie.handleMouseMove( false, true );
           //console.log( index );
+
+          if (typeof serie == "string") {
+            console.warn("Serie is a string");
+            return;
+          }
 
           if (!serie.options.tracking) {
             return;
@@ -3769,7 +3783,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
             serie.options.tracking.useAxis,
             true
           );
-
+          assert(graph.options.trackingLine)
           // When all legends are in common mode, let's make sure we remove the serie-specific legend
           if (graph.options.trackingLine.legendType == 'common') {
             serie._trackingLegend = _trackingLegendSerie(
@@ -3891,10 +3905,12 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
   for (i = 0, l = keyComb.length; i < l; i++) {
     if (keyComb[i].plugin) {
       // Is it a plugin ?
-
+      const plugin = keyComb[i].plugin
       if (
-        graph.forcedPlugin == keyComb[i].plugin ||
-        graph.isActionAllowed(e, keyComb[i])
+        plugin && (
+          graph.forcedPlugin == keyComb[i].plugin ||
+          graph.isActionAllowed(e, keyComb[i])
+        )
       ) {
         if (keyComb[i].options) {
           parameters.push(keyComb[i].options);
@@ -3906,7 +3922,7 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
           graph.activePlugin = keyComb[i].plugin;
         }
 
-        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+        graph._pluginExecute(plugin, methodName, parameters);
         executed = true;
         continue;
       }
@@ -3915,7 +3931,7 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
         parameters.push(keyComb[i].options);
       }
 
-      keyComb[i].callback.apply(graph, parameters);
+      keyComb[i].callback?.apply(graph, parameters);
       executed = true;
       continue;
     } else if (keyComb[i].series) {
@@ -3950,10 +3966,19 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
 var _trackingLegendSerie = function (
   graph: Graph,
   seriesOutput: Array<{ serie: any, closestPoint: any }>,
-  posXPx: number,
-  posYPx: number,
+  posXPx: number | undefined,
+  posYPx: number | undefined,
   legend: any
 ) {
+
+  if (!graph.options.trackingLine) {
+    return;
+  }
+
+  if (posXPx == undefined || posYPx == undefined) {
+    return;
+  }
+
   const textMethod =
     graph.options.trackingLine.textMethod || trackingLineDefaultTextMethod;
 

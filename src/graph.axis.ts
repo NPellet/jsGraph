@@ -1,6 +1,7 @@
+// @ts-nocheck
+
 import Graph from './graph.core';
-import * as util from './graph.util.js';
-import { EventEmitter } from './mixins/graph.mixin.event.js';
+import { EventEmitter } from './mixins/graph.mixin.event';
 import { cloneDeep, extend } from 'lodash'
 import Serie from './series/graph.serie'
 //import assert from 'assert';
@@ -92,7 +93,7 @@ type TickPosition_t = 1 | 2 | 3 | "centered" | "outside" | "inside" | TickPositi
  */
 export type GraphAxisOptions = {
 
-  name: string,   // Name of the axis, can be referenced later
+  name?: string,   // Name of the axis, can be referenced later
   label: string,  // Displayed label
 
   display: boolean, // Whether or not the axis is displayed
@@ -131,14 +132,14 @@ export type GraphAxisOptions = {
 
   primaryGridWidth: number,
   primaryGridColor: string,
-  primaryGridDasharray: string,
-  primaryGridOpacity: number,
+  primaryGridDasharray?: string,
+  primaryGridOpacity?: number,
   primaryTicksColor: string,
 
   secondaryGridWidth: number,
   secondaryGridColor: string,
-  secondaryGridDasharray: string,
-  secondaryGridOpacity: number,
+  secondaryGridDasharray?: string,
+  secondaryGridOpacity?: number,
   secondaryTicksColor: string,
 
   shiftToZero: boolean,
@@ -161,8 +162,8 @@ export type GraphAxisOptions = {
 
   tickLabelOffset: number,
 
-  highestMax: number,
-  lowestMin: number,
+  highestMax?: number,
+  lowestMin?: number,
 
   labelValue: string,
 
@@ -198,8 +199,6 @@ const defaults: GraphAxisOptions = {
   useKatexForLabel: false,
   unitDecade: false,
 
-  name: undefined,
-
   lineAt: false,
   display: true,
   flipped: false,
@@ -213,14 +212,10 @@ const defaults: GraphAxisOptions = {
 
   primaryGridWidth: 1,
   primaryGridColor: '#f0f0f0',
-  primaryGridDasharray: undefined,
-  primaryGridOpacity: undefined,
   primaryTicksColor: 'black',
 
   secondaryGridWidth: 1,
   secondaryGridColor: '#f0f0f0',
-  secondaryGridDasharray: undefined,
-  secondaryGridOpacity: undefined,
   secondaryTicksColor: 'black',
 
   hideWhenNoSeriesShown: false,
@@ -250,9 +245,6 @@ const defaults: GraphAxisOptions = {
   unitWrapperAfter: '',
 
   tickLabelOffset: 0,
-
-  highestMax: undefined,
-  lowestMin: undefined,
 
   labelValue: ''
 };

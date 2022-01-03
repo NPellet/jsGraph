@@ -16,7 +16,6 @@ axis.categories = [
   { title: 'Category 2', name: 'cat2' },
 ];
 
-console.log(graph);
 var wave1 = Graph.newWaveformHash({ cat1: 5, cat2: 12 });
 var wave2 = Graph.newWaveformHash({ cat1: 8, cat2: 10 });
 var errorWave2 = Graph.newWaveformHash({ cat1: 0.5, cat2: 3 });
