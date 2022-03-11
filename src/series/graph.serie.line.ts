@@ -7,7 +7,6 @@ import * as util from '../graph.util.js';
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js';
 import SerieScatter, { SerieScatterOptions } from './graph.serie.scatter';
 
-
 export enum Dasharray {
   PLAIN,
   DOTTED,
@@ -23,25 +22,23 @@ export enum Dasharray {
   DASHED_DOTTED,
 }
 
-export type Dash_t = Dasharray | string | Array<string>
-
+export type Dash_t = Dasharray | string | Array<string>;
 
 export type LineStyle = {
-  color: string,
-  width: number,
-  style: Dash_t
-}
+  color: string;
+  width: number;
+  style: Dash_t;
+};
 
 export interface SerieLineOptions extends SerieScatterOptions {
-  lineStyle?: LineStyle,
+  lineStyle?: LineStyle;
 
-  trackMouse?: boolean,
-  lineToZero?: boolean,
-  selectableOnClick?: boolean,
-  overflowX?: boolean,
-  overflowY?: boolean
+  trackMouse?: boolean;
+  lineToZero?: boolean;
+  selectableOnClick?: boolean;
+  overflowX?: boolean;
+  overflowY?: boolean;
 }
-
 
 const defaultOptions: SerieLineOptions = {
   markers: false,
@@ -49,16 +46,15 @@ const defaultOptions: SerieLineOptions = {
   lineStyle: {
     color: 'black',
     style: Dasharray.PLAIN,
-    width: 1
+    width: 1,
   },
 
   trackMouse: false,
   lineToZero: false,
   selectableOnClick: false,
   overflowX: false,
-  overflowY: false
+  overflowY: false,
 };
-
 
 /**
  * Serie line
@@ -67,13 +63,12 @@ const defaultOptions: SerieLineOptions = {
  * @extends Serie
  */
 class SerieLine extends SerieScatter implements SerieInterface {
-
   public options: SerieLineOptions;
 
   private _lineForLegend: SVGLineElement;
   private _degradationPx: number;
 
-  protected currentLine: string = "";
+  protected currentLine: string = '';
   protected counter: number = 0;
   protected lines: SVGPolylineElement[];
 
@@ -82,35 +77,41 @@ class SerieLine extends SerieScatter implements SerieInterface {
 
     this.init();
     // Unselected style
-    this.extendStyle({
-      line: {
-        color: this.options.lineStyle.color,
-        style: this.options.lineStyle.style,
-        width: this.options.lineStyle.width
+    this.extendStyle(
+      {
+        line: {
+          color: this.options.lineStyle.color,
+          style: this.options.lineStyle.style,
+          width: this.options.lineStyle.width,
+        },
       },
+      'unselected',
+      null,
+    );
 
-    }, "unselected", null);
-
-    this.extendStyle({
-      line: {
-        width: 3
-      }
-    }, "selected", "unselected");
+    this.extendStyle(
+      {
+        line: {
+          width: 3,
+        },
+      },
+      'selected',
+      'unselected',
+    );
 
     this.activateStyle('unselected');
     this.computeActiveStyle();
-
 
     this.data = [];
     this._isMinOrMax = {
       x: {
         min: false,
-        max: false
+        max: false,
       },
       y: {
         min: false,
-        max: false
-      }
+        max: false,
+      },
     };
 
     // Optimize is no markerPoints => save loops
@@ -121,7 +122,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
 
     if (!this.domMarker.style) {
       this.domMarker.style = {
-        cursor: 'pointer'
+        cursor: 'pointer',
       };
     } else {
       this.domMarker.style.cursor = 'pointer';
@@ -178,12 +179,14 @@ class SerieLine extends SerieScatter implements SerieInterface {
   }
 
   protected extendLineOptions<T extends SerieLineOptions>(options: T): T {
-    options = super.extendScatterOptions(util.extend(true, {}, defaultOptions, options))
+    options = super.extendScatterOptions(
+      util.extend(true, {}, defaultOptions, options),
+    );
     return options;
   }
 
   public getType() {
-    return SERIE_TYPE.LINE
+    return SERIE_TYPE.LINE;
   }
 
   applyStyle() {
@@ -192,7 +195,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
     super.applyStyle();
   }
 
-  onMouseWheel() { }
+  onMouseWheel() {}
 
   /**
    * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
@@ -237,7 +240,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * @memberof SerieLine
    */
   unselect() {
-
     super.unselect();
     return this.select('unselected');
   }
@@ -254,10 +256,10 @@ class SerieLine extends SerieScatter implements SerieInterface {
       var line = document.createElementNS(ns, 'line');
       this.applyLineStyle(line);
 
-      line.setAttribute('x1', "5");
-      line.setAttribute('x2', "25");
-      line.setAttribute('y1', "0");
-      line.setAttribute('y2', "0");
+      line.setAttribute('x1', '5');
+      line.setAttribute('x2', '25');
+      line.setAttribute('y1', '0');
+      line.setAttribute('y2', '0');
       line.setAttribute('cursor', 'pointer');
       this._lineForLegend = line;
       container.appendChild(this._lineForLegend);
@@ -309,7 +311,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
           resampleToPx: this.degradationPx,
           xPosition: this.getXAxis().getPx.bind(this.getXAxis()),
           minX: this.getXAxis().getCurrentMin(),
-          maxX: this.getXAxis().getCurrentMax()
+          maxX: this.getXAxis().getCurrentMax(),
         });
 
         this._dataToUse = [this.waveform.getDataToUseFlat()];
@@ -339,7 +341,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
       this._dataToUse = this.data;
       this._xDataToUse = this.xData;
     }
-
     return true;
   }
 
@@ -352,7 +353,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
     if (!this._afterLinesGroup) {
       throw 'Could not find group after lines to insertion.';
     }
-
     this.groupMain.insertBefore(this.groupLines, this._afterLinesGroup);
     this._afterLinesGroup = false;
   }
@@ -396,7 +396,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
       this.lookForMinima = false;
 
       this.pos0 = this.getYAxis().getPos(
-        Math.max(0, this.getYAxis().getCurrentMin())
+        Math.max(0, this.getYAxis().getCurrentMin()),
       );
 
       if (this.hasErrors()) {
@@ -460,20 +460,16 @@ class SerieLine extends SerieScatter implements SerieInterface {
     let yshift = waveform.getShift(),
       yscale = waveform.getScale();
 
-    let pointOutside = false;
     let lastPointOutside = false;
-    let pointOnAxis;
-
-    let _monotoneous = this.isMonotoneous();
 
     this.currentLine = '';
-
 
     let { i, l } = this._getIterativeBounds(waveform, xMin, xMax);
 
     for (; i < l; i += 1) {
       x = waveform.getX(i, true);
       y = data[i] * yscale + yshift;
+
       if (x != x || y != y) {
         // NaN checks
         this._createLine();
@@ -490,6 +486,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
         lastX = x;
         lastY = y;
         lastPointOutside = true;
+
         continue;
       }
 
@@ -536,8 +533,16 @@ class SerieLine extends SerieScatter implements SerieInterface {
             lastX = x;
             lastY = y;
           } else {
-
-            let pointOnAxis = this.calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax);
+            let pointOnAxis = this.calculateAxisCrossing(
+              x,
+              y,
+              lastX,
+              lastY,
+              xMin,
+              xMax,
+              yMin,
+              yMax,
+            );
 
             if (pointOnAxis.length > 0) {
               if (!pointOutside) {
@@ -550,7 +555,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
                   pointOnAxis[0][1],
                   false,
                   false,
-                  false
+                  false,
                 );
                 this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
               } else if (!lastPointOutside) {
@@ -562,7 +567,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
                   pointOnAxis[0][1],
                   false,
                   false,
-                  false
+                  false,
                 );
               } else {
                 // No crossing: do nothing
@@ -576,7 +581,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
                     pointOnAxis[0][1],
                     false,
                     false,
-                    false
+                    false,
                   );
                   this._addPoint(
                     this.getX(pointOnAxis[1][0]),
@@ -585,7 +590,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
                     pointOnAxis[0][1],
                     false,
                     false,
-                    false
+                    false,
                   );
                 }
               }
@@ -604,7 +609,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
           continue;
         }
       }
-
       this._addPoint(xpx2, ypx2, x, y, i, false, true);
 
       //this.detectPeaks( x, y );
@@ -615,9 +619,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
       lastX = x;
       lastY = y;
     }
-
     this._createLine();
-
     if (this._tracker) {
       if (this._trackerDom) {
         this._trackerDom.remove();
@@ -650,7 +652,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
   }
 
   _getIterativeBounds(waveform, xMin, xMax) {
-
     let i = 0,
       l = waveform.getLength(),
       wL = l;
@@ -679,23 +680,23 @@ class SerieLine extends SerieScatter implements SerieInterface {
     return { i, l };
   }
 
-
   kill() {
     super.kill();
   }
 
   isPointOutside(x, y, xMin, xMax, yMin, yMax) {
     if (!this.isMonotoneous()) {
-      return (!this.options.overflowX && (x < xMin || x > xMax)) || (!this.options.overflowY && (y < yMin || y > yMax));
+      return (
+        (!this.options.overflowX && (x < xMin || x > xMax)) ||
+        (!this.options.overflowY && (y < yMin || y > yMax))
+      );
     } else {
       return !this.options.overflowY && (y < yMin || y > yMax);
     }
   }
 
-
   calculateAxisCrossing(x, y, lastX, lastY, xMin, xMax, yMin, yMax) {
     let pointOnAxis = [];
-
 
     // Y crossing
     let yLeftCrossingRatio = (x - xMin) / (x - lastX);
@@ -751,13 +752,11 @@ class SerieLine extends SerieScatter implements SerieInterface {
     return pointOnAxis;
   }
 
-
   _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
     /*if( ! this.currentLineId ) {
         throw "No current line"
       }* @memberof SerieLine
   */
-
     if (xpx !== xpx || ypx !== ypx) {
       return;
     }
@@ -812,10 +811,8 @@ class SerieLine extends SerieScatter implements SerieInterface {
     } else {
       line.setAttribute('d', this.currentLine);
     }
-
     this.currentLine = 'M ';
     this.counter = 0;
-
     return line;
   }
 
@@ -834,9 +831,8 @@ class SerieLine extends SerieScatter implements SerieInterface {
    * @memberof SerieLine
    */
   protected applyLineStyle(line) {
-
     line.setAttribute('stroke', this.getLineColor());
-    line.setAttribute('stroke-width', this.getLineWidth());
+    line.setAttribute('stroke-width', this.getLineWidth() || 1);
     if (this.getLineDashArray()) {
       line.setAttribute('stroke-dasharray', this.getLineDashArray());
     } else {
@@ -982,7 +978,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
       interpolatedY: intY,
 
       xClosest: value.xClosest,
-      yClosest: value.yClosest
+      yClosest: value.yClosest,
     };
   }
   /**
@@ -1073,7 +1069,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
     return min;
   }
 
-  getRawLineStyle(styleName = "unselected") {
+  getRawLineStyle(styleName = 'unselected') {
     let s = this.getRawStyle(styleName);
     if (!s.line) {
       s.line = {};
@@ -1084,7 +1080,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
     LINE STYLE * @memberof SerieLine
    */
   setLineStyle(number: Dash_t, selectionType = 'unselected', applyToSelected) {
-
     let s = this.getRawLineStyle(selectionType);
     s.style = number;
 
@@ -1105,10 +1100,9 @@ class SerieLine extends SerieScatter implements SerieInterface {
 
     if (Array.isArray(s)) {
       return s.join(', ');
-    } else if (typeof s == "string") {
+    } else if (typeof s == 'string') {
       return s;
     } else {
-
       switch (s) {
         case Dasharray.PLAIN:
           return '1, 1';
@@ -1144,7 +1138,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
           return '2 9';
           break;
         default:
-          return ""
+          return '';
       }
     }
   }
@@ -1153,7 +1147,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
    */
 
   setLineWidth(width, selectionType, applyToSelected) {
-
     let s = this.getRawLineStyle(selectionType);
     s.width = width;
     if (applyToSelected) {
@@ -1171,7 +1164,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
   /* LINE COLOR * @memberof SerieLine
    */
   setLineColor(color, selectionType, applyToSelected) {
-
     let s = this.getRawLineStyle(selectionType);
     s.color = color;
     if (applyToSelected) {
@@ -1189,7 +1181,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
   /* FILL COLOR * @memberof SerieLine
    */
   setFillColor(color, selectionType, applyToSelected) {
-
     let s = this.getRawLineStyle(selectionType);
     s.fillColor = color;
     if (applyToSelected) {
@@ -1199,8 +1190,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
     this.styleHasChanged(selectionType);
     return this;
   }
-
-
 
   getFillColor() {
     return this.getComputedStyle().line?.fillColor;
@@ -1242,7 +1231,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
     withinPxX: number = 0,
     withinPxY: number = 0,
     useAxis: boolean = false,
-    usePx: boolean = true
+    usePx: boolean = true,
   ) {
     // For the scatter serie it's pretty simple. No interpolation. We look at the point directly
 
@@ -1259,7 +1248,7 @@ class SerieLine extends SerieScatter implements SerieInterface {
       yMaxDistance: yValAllowed,
       axisRef: useAxis,
       scaleX: !usePx ? 1 : 1 / this.getXAxis().getRelVal(1),
-      scaleY: !usePx ? 1 : 1 / this.getYAxis().getRelVal(1)
+      scaleY: !usePx ? 1 : 1 / this.getYAxis().getRelVal(1),
     });
     if (isNaN(closestPointIndex) || closestPointIndex === false) {
       return false;
@@ -1282,7 +1271,6 @@ class SerieLine extends SerieScatter implements SerieInterface {
       return false;
     }
     const dataOutput = {
-
       indexBefore: closestPointIndex,
       indexAfter: closestPointIndex,
 
@@ -1292,11 +1280,10 @@ class SerieLine extends SerieScatter implements SerieInterface {
       interpolatedY: this.waveform.getY(closestPointIndex),
 
       xClosest: this.waveform.getX(closestPointIndex),
-      yClosest: this.waveform.getY(closestPointIndex)
+      yClosest: this.waveform.getY(closestPointIndex),
     };
 
     if (this.waveform.isMonotoneous()) {
-
       let xBefore = this.waveform.getX(closestPointIndex);
       let xAfter = this.waveform.getX(closestPointIndex);
       let yBefore = this.waveform.getY(closestPointIndex);

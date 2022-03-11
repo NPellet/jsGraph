@@ -1,4 +1,3 @@
-
 // @ts-ignore
 import GraphPosition from './graph.position.js';
 // @ts-ignore
@@ -16,12 +15,12 @@ import { cloneDeep, extend, uniq } from 'lodash';
 import Axis from './graph.axis.js';
 import assert from 'assert';
 
-export const __VERSION__ = "0.0.1"
+export const __VERSION__ = '0.0.1';
 export const ns = 'http://www.w3.org/2000/svg';
 export const nsxlink = 'http://www.w3.org/1999/xlink';
 
-type _constructor = { new(...args: any): any }
-type constructorKey_t = string | SERIE_TYPE
+type _constructor = { new (...args: any): any };
+type constructorKey_t = string | SERIE_TYPE;
 
 type serieIndex_t = string | number | (() => string | Serie);
 
@@ -35,48 +34,50 @@ const TOP_BOTTOM = TOP | BOTTOM;
 const LEFT_RIGHT = LEFT | RIGHT;
 
 enum AxisPositionE {
-  TOP = "top",
-  BOTTOM = "bottom",
-  LEFT = "left",
-  RIGHT = "right"
+  TOP = 'top',
+  BOTTOM = 'bottom',
+  LEFT = 'left',
+  RIGHT = 'right',
 }
-
 
 export type trackingMode = {
-  mode: 'individual' | 'common',
-  series: Array<string | Serie>,
-  legend?: boolean,
-  legendType?: 'independent' | 'common',
+  mode: 'individual' | 'common';
+  series: Array<string | Serie>;
+  legend?: boolean;
+  legendType?: 'independent' | 'common';
   serieOptions?: {
-    withinPx: number
-  },
-  enable?: boolean,
-  noLine?: boolean,
-  trackingLineShapeOptions?: any,
-  serieShape?: any,
-  textMethod?: (input: any, _: undefined, posXPx: number | undefined, posYPx: number | undefined) => string,
-  snapToSerie?: serieIndex_t
-}
+    withinPx: number;
+  };
+  enable?: boolean;
+  noLine?: boolean;
+  trackingLineShapeOptions?: any;
+  serieShape?: any;
+  textMethod?: (
+    input: any,
+    _: undefined,
+    posXPx: number | undefined,
+    posYPx: number | undefined,
+  ) => string;
+  snapToSerie?: serieIndex_t;
+};
 
-
-type AxisPosition = "top" | "bottom" | "left" | "right";
+type AxisPosition = 'top' | 'bottom' | 'left' | 'right';
 type MouseAction = {
-  plugin?: string,
-  shift?: boolean,
-  ctrl?: boolean,
-  options?: any,
-  callback?: Function,
-  series: Array<any> | "all"
+  plugin?: string;
+  shift?: boolean;
+  ctrl?: boolean;
+  options?: any;
+  callback?: Function;
+  series: Array<any> | 'all';
 };
 
 type KeyAction = {
-  plugin?: string,
-  options?: any,
-  callback?: Function,
-  removeSelectedShape?: boolean,
-  keepInDom?: boolean
-}
-
+  plugin?: string;
+  options?: any;
+  callback?: Function;
+  removeSelectedShape?: boolean;
+  keepInDom?: boolean;
+};
 
 /**
  * Graph options
@@ -99,47 +100,49 @@ type KeyAction = {
  * @member {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
  */
 export type GraphOptions = {
-  title: string,
-  paddingTop: number,
-  paddingBottom: number,
-  paddingLeft: number,
-  paddingRight: number,
-  padding?: number,
-  fontSize: number,
-  fontFamily: string,
+  title: string;
+  paddingTop: number;
+  paddingBottom: number;
+  paddingLeft: number;
+  paddingRight: number;
+  padding?: number;
+  fontSize: number;
+  fontFamily: string;
   plugins: {
-    [pluginName: string]: any
-  },
-  mouseActions: Array<MouseAction>,
-  keyActions: Array<KeyAction>,
-  wheel: any,
-  dblclick: any,
+    [pluginName: string]: any;
+  };
+  mouseActions: Array<MouseAction>;
+  keyActions: Array<KeyAction>;
+  wheel: any;
+  dblclick: any;
 
-  shapesUnselectOnClick: boolean,
-  shapesUniqueSelection: boolean,
+  shapesUnselectOnClick: boolean;
+  shapesUniqueSelection: boolean;
 
-  close: boolean | {
-    left: boolean,
-    right: boolean,
-    top: boolean,
-    bottom: boolean
-  },
+  close:
+    | boolean
+    | {
+        left: boolean;
+        right: boolean;
+        top: boolean;
+        bottom: boolean;
+      };
 
-  axes: Axes<any>,
-  closeColor: string,
+  axes: Axes<any>;
+  closeColor: string;
 
-  titleFontSize?: number,
-  titleFontColor?: string,
-  titleFontFamily?: string,
+  titleFontSize?: number;
+  titleFontColor?: string;
+  titleFontFamily?: string;
 
-  onContextMenuListen?: Function,
-  onSelectSerie?: Function,
-  onUnselectSerie?: Function,
-  handleMouseLeave?: Function,
-  trackingLine?: trackingMode,
+  onContextMenuListen?: Function;
+  onSelectSerie?: Function;
+  onUnselectSerie?: Function;
+  handleMouseLeave?: Function;
+  trackingLine?: trackingMode;
 
-  mouseMoveData: Function
-}
+  mouseMoveData: Function;
+};
 
 const GraphOptionsDefault: Partial<GraphOptions> = {
   title: '',
@@ -153,7 +156,7 @@ const GraphOptionsDefault: Partial<GraphOptions> = {
     left: true,
     right: true,
     top: true,
-    bottom: true
+    bottom: true,
   },
 
   closeColor: 'black',
@@ -168,21 +171,24 @@ const GraphOptionsDefault: Partial<GraphOptions> = {
   dblclick: {},
 
   shapesUnselectOnClick: true,
-  shapesUniqueSelection: true
+  shapesUniqueSelection: true,
 };
 
+type AxesPos = 'top' | 'bottom' | 'left' | 'right';
+type Axes<T> = Record<AxesPos, Array<T>>;
 
-type AxesPos = "top" | "bottom" | "left" | "right";
-type Axes<T> = Record<AxesPos, Array<T>>
-
-const DefaultAxes = { [AxisPositionE.TOP]: [], [AxisPositionE.BOTTOM]: [], [AxisPositionE.LEFT]: [], [AxisPositionE.RIGHT]: [] };
+const DefaultAxes = {
+  [AxisPositionE.TOP]: [],
+  [AxisPositionE.BOTTOM]: [],
+  [AxisPositionE.LEFT]: [],
+  [AxisPositionE.RIGHT]: [],
+};
 /**
  * Entry class of jsGraph that creates a new graph.
  * @tutorial basic
  */
 class Graph extends EventEmitter {
-
-  public ns: string
+  public ns: string;
   public nsxlink: string;
 
   public uid: string = util.guid();
@@ -247,7 +253,6 @@ class Graph extends EventEmitter {
 
   vertLineArrow: SVGMarkerElement;
 
-
   defs: SVGDefsElement;
   //shift: { top: any[]; bottom: any[]; left: any[]; right: any[]; };
   _trackingLegend: any;
@@ -267,22 +272,32 @@ class Graph extends EventEmitter {
   constructor();
   constructor(options: Partial<GraphOptions>);
   constructor(options: Partial<GraphOptions>, axes: Axes<any>);
-  constructor(wrapper?: HTMLElement | string | undefined, options?: Partial<GraphOptions>, axes?: Axes<any>);
-  constructor(wrapper?: HTMLElement | string | Partial<GraphOptions> | undefined, options?: Partial<GraphOptions> | Axes<any>, axes?: Axes<any>) {
-
+  constructor(
+    wrapper?: HTMLElement | string | undefined,
+    options?: Partial<GraphOptions>,
+    axes?: Axes<any>,
+  );
+  constructor(
+    wrapper?: HTMLElement | string | Partial<GraphOptions> | undefined,
+    options?: Partial<GraphOptions> | Axes<any>,
+    axes?: Axes<any>,
+  ) {
     super();
 
     this.ns = ns;
     this.nsxlink = nsxlink;
 
-    if (typeof wrapper !== "string" && wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
+    if (
+      typeof wrapper !== 'string' &&
+      wrapper === Object(wrapper) &&
+      !(wrapper instanceof HTMLElement)
+    ) {
       // Wrapper is options
       options = wrapper;
       wrapper = undefined;
     } else {
       options = options as Partial<GraphOptions>;
       axes = axes as Axes<any>;
-
     }
 
     const _wrapper = wrapper as HTMLElement | string | undefined;
@@ -294,7 +309,6 @@ class Graph extends EventEmitter {
     if (!options.axes) {
       options.axes = axes;
     }
-
 
     /**
      * @object
@@ -310,21 +324,18 @@ class Graph extends EventEmitter {
 
     // doDom is a private method. We bind it to this thanks to ES6 features
 
-
     this.dom = document.createElementNS(ns, 'svg');
     this.groupEvent = document.createElementNS(ns, 'g');
-
 
     if (_wrapper) {
       this.setWrapper(_wrapper);
     }
 
-
     this.axis = {
       [AxisPositionE.LEFT]: [],
       [AxisPositionE.TOP]: [],
       [AxisPositionE.BOTTOM]: [],
-      [AxisPositionE.RIGHT]: []
+      [AxisPositionE.RIGHT]: [],
     };
 
     this.shapes = [];
@@ -333,7 +344,9 @@ class Graph extends EventEmitter {
 
     // @ts-ignore
     if (this.options.pluginAction) {
-      console.warn("Plugin action is deprecated (and ignored). Please use mouseActions instead");
+      console.warn(
+        'Plugin action is deprecated (and ignored). Please use mouseActions instead',
+      );
     }
 
     this.selectedShapes = [];
@@ -342,11 +355,12 @@ class Graph extends EventEmitter {
     //this._dom = wrapper;
     this._axesHaveChanged = true;
 
-    if (
-      this.options.padding &&
-      util.isNumeric(this.options.padding)
-    ) {
-      this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
+    if (this.options.padding && util.isNumeric(this.options.padding)) {
+      this.options.paddingTop =
+        this.options.paddingBottom =
+        this.options.paddingLeft =
+        this.options.paddingRight =
+          this.options.padding;
     }
 
     this.currentAction = false;
@@ -354,8 +368,11 @@ class Graph extends EventEmitter {
     // Load all axes
     if (options.axes) {
       for (var i in options.axes) {
-
-        for (var j = 0, l = options.axes[i as keyof Axes<any>].length; j < l; j++) {
+        for (
+          var j = 0, l = options.axes[i as keyof Axes<any>].length;
+          j < l;
+          j++
+        ) {
           switch (i) {
             case 'top':
               this.getTopAxis(j, options.axes[i][j]);
@@ -380,28 +397,23 @@ class Graph extends EventEmitter {
 
     this._pluginsInit();
 
-
-
-
-
-
     // Create SVG element, set the NS
     this.dom.setAttributeNS(
       'http://www.w3.org/2000/xmlns/',
       'xmlns:xlink',
-      'http://www.w3.org/1999/xlink'
+      'http://www.w3.org/1999/xlink',
     );
     //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
     util.setAttributeTo(this.dom, {
       xmlns: ns,
       'font-family': this.options.fontFamily,
-      'font-size': this.options.fontSize
+      'font-size': this.options.fontSize,
     });
 
     try {
       util.setAttributeTo(this.dom, {
         // eslint-disable-next-line no-undef
-        'data-jsgraph-version': __VERSION__
+        'data-jsgraph-version': __VERSION__,
       });
     } catch (e) {
       // ignore
@@ -413,7 +425,7 @@ class Graph extends EventEmitter {
     this.rectEvent = document.createElementNS(ns, 'rect');
     util.setAttributeTo(this.rectEvent, {
       'pointer-events': 'fill',
-      fill: 'transparent'
+      fill: 'transparent',
     });
     this.groupEvent.appendChild(this.rectEvent);
 
@@ -434,7 +446,7 @@ class Graph extends EventEmitter {
 
     util.setAttributeTo(this.domTitle, {
       'text-anchor': 'middle',
-      y: 20
+      y: 20,
     });
     this.groupEvent.appendChild(this.domTitle);
     //
@@ -455,7 +467,10 @@ class Graph extends EventEmitter {
     this.groupGrids = document.createElementNS(ns, 'g');
 
     // With the z stacking, this should probably be removed
-    this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this.uid + ')');
+    this.groupGrids.setAttribute(
+      'clip-path',
+      'url(#_clipplot' + this.uid + ')',
+    );
 
     this.groupPrimaryGrids = document.createElementNS(ns, 'g');
     this.groupSecondaryGrids = document.createElementNS(ns, 'g');
@@ -509,7 +524,7 @@ class Graph extends EventEmitter {
     this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
     this.markerHorizontalSplit.setAttribute(
       'id',
-      `horionzalsplit_${this.getId()}`
+      `horionzalsplit_${this.getId()}`,
     );
     this.markerHorizontalSplit.setAttribute('refX', '3');
     this.markerHorizontalSplit.setAttribute('refY', '4');
@@ -532,7 +547,10 @@ class Graph extends EventEmitter {
     // Vertical split marker for axis
     this.markerVerticalSplit = document.createElementNS(ns, 'marker');
     this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
-    this.markerVerticalSplit.setAttribute('id', `verticalsplit_${this.getId()}`);
+    this.markerVerticalSplit.setAttribute(
+      'id',
+      `verticalsplit_${this.getId()}`,
+    );
     this.markerVerticalSplit.setAttribute('refX', '4');
     this.markerVerticalSplit.setAttribute('refY', '3');
     this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
@@ -576,12 +594,9 @@ class Graph extends EventEmitter {
     this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this.uid + ')');
 
     this.bypassHandleMouse = false;
-
-
   }
 
   setWrapper(wrapper: HTMLElement | string) {
-
     if (typeof wrapper == 'string') {
       wrapper = document.getElementById(wrapper) as HTMLElement;
     }
@@ -618,14 +633,12 @@ class Graph extends EventEmitter {
     this._registerEvents();
   }
 
-
   private _registerEvents() {
-
     if (!this.wrapper) {
       throw 'No wrapper exists. Cannot register the events.';
     }
 
-    this.dom.setAttribute('tabindex', "0");
+    this.dom.setAttribute('tabindex', '0');
 
     this.dom.addEventListener('keydown', (e: KeyboardEvent) => {
       _handleKey(this, e, 'keydown');
@@ -739,7 +752,7 @@ class Graph extends EventEmitter {
    */
   getWrapper(): HTMLElement {
     if (!this.wrapper) {
-      throw "Wrapper does not exist";
+      throw 'Wrapper does not exist';
     }
     return this.wrapper;
   }
@@ -811,7 +824,6 @@ class Graph extends EventEmitter {
     if (!this.width || !this.height) {
       return false;
     }
-
 
     if (!this.sizeSet) {
       this._resize();
@@ -1061,7 +1073,10 @@ class Graph extends EventEmitter {
    * @param {Object} [ options={} ] - The options to pass to the axis constructor
    */
   getXAxis(index: number = 0, options = {}) {
-    if (this.axis[AxisPositionE.TOP].length > 0 && this.axis[AxisPositionE.BOTTOM].length == 0) {
+    if (
+      this.axis[AxisPositionE.TOP].length > 0 &&
+      this.axis[AxisPositionE.BOTTOM].length == 0
+    ) {
       return this.getTopAxis(index, options);
     }
 
@@ -1075,7 +1090,10 @@ class Graph extends EventEmitter {
    * @param {Object} [ options={} ] - The options to pass to the axis constructor
    */
   getYAxis(index: number = 0, options = {}) {
-    if (this.axis[AxisPositionE.RIGHT].length > 0 && this.axis[AxisPositionE.LEFT].length == 0) {
+    if (
+      this.axis[AxisPositionE.RIGHT].length > 0 &&
+      this.axis[AxisPositionE.LEFT].length == 0
+    ) {
       return this.getRightAxis(index, options);
     }
 
@@ -1334,7 +1352,7 @@ class Graph extends EventEmitter {
    * @return {Graph} The current graph instance
    */
   autoscaleAxes() {
-    this._applyToAxes('setMinMaxToFitSeries', null, TOP_BOTTOM & LEFT_RIGHT);
+    this._applyToAxes('setMinMaxToFitSeries', null, TOP_BOTTOM | LEFT_RIGHT);
 
     //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
     // X is not always ascending...
@@ -1386,7 +1404,7 @@ class Graph extends EventEmitter {
         axis.gridsOff();
       },
       undefined,
-      TOP_BOTTOM | LEFT_RIGHT
+      TOP_BOTTOM | LEFT_RIGHT,
     );
   }
   gridsOn() {
@@ -1395,7 +1413,7 @@ class Graph extends EventEmitter {
         axis.gridsOn();
       },
       undefined,
-      TOP_BOTTOM | LEFT_RIGHT
+      TOP_BOTTOM | LEFT_RIGHT,
     );
   }
 
@@ -1410,22 +1428,19 @@ class Graph extends EventEmitter {
   }
 
   getAxisState() {
-
     var state: Axes<[number, number]> = {
       [AxisPositionE.TOP]: [],
       [AxisPositionE.BOTTOM]: [],
       [AxisPositionE.LEFT]: [],
-      [AxisPositionE.RIGHT]: []
+      [AxisPositionE.RIGHT]: [],
     };
 
     for (let key in AxisPositionE) {
-
       // @ts-ignore
       const a = this.axis[key];
       const out: Array<[number, number]> = a.map(function (axis: any) {
         return [axis.getCurrentMin(), axis.getCurrentMax()];
       });
-
 
       // @ts-ignore
       state[key] = out;
@@ -1489,7 +1504,7 @@ class Graph extends EventEmitter {
 
       default:
         throw new Error(
-          'You must either execute a function or provide a string that registers a function'
+          'You must either execute a function or provide a string that registers a function',
         );
     }
   }
@@ -1512,7 +1527,11 @@ class Graph extends EventEmitter {
    * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
    * @returns {Number} The minimimum or maximum of the axis based on its series
    */
-  getBoundaryAxisFromSeries(axis: Axis, minmax: "min" | "max", usingZValues: boolean) {
+  getBoundaryAxisFromSeries(
+    axis: Axis,
+    minmax: 'min' | 'max',
+    usingZValues: boolean,
+  ) {
     var min = minmax == 'min',
       func = axis.isX() ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
       func2use = func[min ? 0 : 1],
@@ -1532,7 +1551,7 @@ class Graph extends EventEmitter {
       serieValue = serie[func2use](usingZValues);
       val = Math[minmax](
         isNaN(val) ? infinity2use : val,
-        isNaN(serieValue) ? infinity2use : serieValue
+        isNaN(serieValue) ? infinity2use : serieValue,
       );
     }
 
@@ -1576,17 +1595,8 @@ class Graph extends EventEmitter {
       for (i = this.axis[j2].length - 1; i >= 0; i--) {
         axis = this.axis[j2][i];
 
-
-        let min = this.getBoundaryAxis(
-          this.axis[j2][i],
-          'min',
-          usingZValues
-        );
-        let max = this.getBoundaryAxis(
-          this.axis[j2][i],
-          'max',
-          usingZValues
-        );
+        let min = this.getBoundaryAxis(this.axis[j2][i], 'min', usingZValues);
+        let max = this.getBoundaryAxis(this.axis[j2][i], 'max', usingZValues);
         if (isFinite(max)) {
           axis.setMaxValueData(max);
         }
@@ -1613,8 +1623,7 @@ class Graph extends EventEmitter {
    * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
    * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
    * @param params - Extra parameters to pass to the function
-   * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
-   * @param {Boolean} leftright=false - True to apply to function to left and right axes
+   * @param {Boolean} positions = false - TOPBOTTOM, LEFTRIGHT or TOPBOTTOM | LEFTRIGHT
    */
   _applyToAxes(func: any, params: any, positions: number) {
     var ax: Array<AxisPosition> = [],
@@ -1622,21 +1631,20 @@ class Graph extends EventEmitter {
       l;
     // console.log(positions, TOP, LEFT, RIGHT, BOTTOM, positions & TOP, positions & LEFT, positions & RIGHT, positions & BOTTOM)
     if (positions & TOP) {
-      this._applyToAxis(typeof func).call(this, "top", func, params);
+      this._applyToAxis(typeof func).call(this, 'top', func, params);
     }
 
     if (positions & BOTTOM) {
-      this._applyToAxis(typeof func).call(this, "bottom", func, params);
+      this._applyToAxis(typeof func).call(this, 'bottom', func, params);
     }
 
     if (positions & LEFT) {
-      this._applyToAxis(typeof func).call(this, "left", func, params);
+      this._applyToAxis(typeof func).call(this, 'left', func, params);
     }
 
     if (positions & RIGHT) {
-      this._applyToAxis(typeof func).call(this, "right", func, params);
+      this._applyToAxis(typeof func).call(this, 'right', func, params);
     }
-
   }
 
   /**
@@ -1654,7 +1662,12 @@ class Graph extends EventEmitter {
         }
       },
       {},
-      ((axis instanceof this.getConstructor('graph.axis.x')) ? TOP_BOTTOM : 0x00) | ((axis instanceof this.getConstructor('graph.axis.y')) ? LEFT_RIGHT : 0x00),
+      (axis instanceof this.getConstructor('graph.axis.x')
+        ? TOP_BOTTOM
+        : 0x00) |
+        (axis instanceof this.getConstructor('graph.axis.y')
+          ? LEFT_RIGHT
+          : 0x00),
     );
 
     return axes;
@@ -1835,7 +1848,6 @@ class Graph extends EventEmitter {
    * @param {String} selectName="selected" - The name of the selection
    */
   selectSerie(serie: any, selectName: string) {
-
     if (!(typeof serie == 'object')) {
       serie = this.getSerie(serie);
     }
@@ -1892,7 +1904,6 @@ class Graph extends EventEmitter {
     return shapes;
   }
 
-
   makeToolbar(toolbarData: any) {
     var _c = this.getConstructor('graph.toolbar');
     return (this.toolbar = new _c(this, toolbarData));
@@ -1914,7 +1925,12 @@ class Graph extends EventEmitter {
    * @returns {Shape} The created shape
    * @see Graph#getConstructor
    */
-  newShape(shapeType: string, shapeData: any, mute = false, shapeProperties: { simplified?: any } = {}) {
+  newShape(
+    shapeType: string,
+    shapeData: any,
+    mute = false,
+    shapeProperties: { simplified?: any } = {},
+  ) {
     this.prevent(false);
 
     if (!mute) {
@@ -1960,7 +1976,7 @@ class Graph extends EventEmitter {
     shape.init(
       this,
       shapeProperties,
-      shapeProperties ? shapeProperties.simplified : false
+      shapeProperties ? shapeProperties.simplified : false,
     );
 
     if (shapeData.props !== undefined) {
@@ -2030,12 +2046,11 @@ class Graph extends EventEmitter {
       shapeData.transforms !== undefined &&
       Array.isArray(shapeData.transforms)
     ) {
-      shapeData.transforms.forEach(({
-        type,
-        value
-      }: { type: string, value: string }) => {
-        shape.addTransform(type, value);
-      });
+      shapeData.transforms.forEach(
+        ({ type, value }: { type: string; value: string }) => {
+          shape.addTransform(type, value);
+        },
+      );
     }
 
     if (shapeData.highlightOnMouseOver !== undefined) {
@@ -2066,11 +2081,11 @@ class Graph extends EventEmitter {
         shape.setLabelAnchor(shapeData.label[i].anchor || 'start', i);
         shape.setLabelBackgroundColor(
           shapeData.label[i].backgroundColor || 'transparent',
-          i
+          i,
         );
         shape.setLabelBackgroundOpacity(
           shapeData.label[i].backgroundOpacity || 1,
-          i
+          i,
         );
       }
     }
@@ -2218,7 +2233,6 @@ class Graph extends EventEmitter {
   }
 
   appendShapeToDom(shape: any) {
-
     if (!this.wrapper) {
       return;
     }
@@ -2227,12 +2241,11 @@ class Graph extends EventEmitter {
     }
 
     this.getLayer(shape.getLayer(), 'shape').appendChild(
-      shape.simplified ? shape._dom : shape.group
+      shape.simplified ? shape._dom : shape.group,
     );
   }
 
   removeShapeFromDom(shape: any) {
-
     if (!this.wrapper) {
       return;
     }
@@ -2273,12 +2286,12 @@ class Graph extends EventEmitter {
       if (!prevLayer) {
         this.plotGroup.insertBefore(
           this.layers[layer][0],
-          this.plotGroup.firstChild
+          this.plotGroup.firstChild,
         );
       } else if (prevLayer.nextSibling) {
         this.plotGroup.insertBefore(
           this.layers[layer][0],
-          prevLayer.nextSibling
+          prevLayer.nextSibling,
         );
       } else {
         this.plotGroup.appendChild(this.layers[layer][0]);
@@ -2337,9 +2350,9 @@ class Graph extends EventEmitter {
 
     if (
       action.enabled &&
-      (typeof action.enabled == 'function' ?
-        !action.enabled(this) :
-        !action.enabled)
+      (typeof action.enabled == 'function'
+        ? !action.enabled(this)
+        : !action.enabled)
     ) {
       return;
     }
@@ -2358,10 +2371,13 @@ class Graph extends EventEmitter {
           up: 33,
           down: 34,
           left: 37,
-          right: 39
+          right: 39,
         };
 
-        if (Object.keys(keyCheck).includes(action.key) && keyCheck[action.key as keyof typeof keyCheck] !== e.keyCode) {
+        if (
+          Object.keys(keyCheck).includes(action.key) &&
+          keyCheck[action.key as keyof typeof keyCheck] !== e.keyCode
+        ) {
           return;
         }
       }
@@ -2449,7 +2465,7 @@ class Graph extends EventEmitter {
 
         util.mapEventEmission(
           this.plugins[pluginName].options,
-          this.plugins[pluginName]
+          this.plugins[pluginName],
         );
         this.plugins[pluginName].init(this, pluginOptions);
       } else {
@@ -2468,7 +2484,7 @@ class Graph extends EventEmitter {
 
     if (!plugin) {
       return util.throwError(
-        `Plugin "${pluginName}" has not been loaded or properly registered`
+        `Plugin "${pluginName}" has not been loaded or properly registered`,
       );
     }
 
@@ -2499,7 +2515,7 @@ class Graph extends EventEmitter {
       this.legend = new constructor(this, options);
     } else {
       return util.throwError(
-        'Graph legend is not available as it has not been registered'
+        'Graph legend is not available as it has not been registered',
       );
     }
 
@@ -2600,7 +2616,6 @@ class Graph extends EventEmitter {
    * Kills the graph
    **/
   kill() {
-
     if (this.wrapper) {
       this.wrapper.removeChild(this.dom);
     }
@@ -2644,7 +2659,7 @@ class Graph extends EventEmitter {
 
     return {
       x: x,
-      y: y
+      y: y,
     };
   }
   _resize() {
@@ -2670,8 +2685,7 @@ class Graph extends EventEmitter {
 
   updateGraphingZone() {
     util.setAttributeTo(this.graphingZone, {
-      transform: `translate(${this.options.paddingLeft}, ${this.options.paddingTop
-        })`
+      transform: `translate(${this.options.paddingLeft}, ${this.options.paddingTop})`,
     });
 
     this._sizeChanged = true;
@@ -2762,19 +2776,21 @@ class Graph extends EventEmitter {
         this.trackingLineShape = this.newShape(
           'line',
           util.extend(
-            true, {
-            position: [{
-              y: 'min'
-            },
+            true,
             {
-              y: 'max'
-            }
-            ],
-            stroke: 'black',
-            layer: -1
-          },
-            options.trackingLineShapeOptions
-          )
+              position: [
+                {
+                  y: 'min',
+                },
+                {
+                  y: 'max',
+                },
+              ],
+              stroke: 'black',
+              layer: -1,
+            },
+            options.trackingLineShapeOptions,
+          ),
         );
       }
 
@@ -2790,50 +2806,47 @@ class Graph extends EventEmitter {
     if (!this.options.trackingLine) {
       this.trackingLine({
         mode: 'individual',
-        series: []
+        series: [],
       });
     }
 
     assert(this.options.trackingLine);
 
-    this.options.trackingLine.series.push(serie)
+    this.options.trackingLine.series.push(serie);
     this.options.trackingLine.series = uniq(this.options.trackingLine.series);
-
 
     let serieShape;
     if (this.options.trackingLine.serieShape) {
       serieShape = this.options.trackingLine.serieShape;
     } else {
-
       serieShape = {
         shape: 'ellipse',
         properties: {
           rx: [`${serie.getLineWidth() * 3}px`],
-          ry: [`${serie.getLineWidth() * 3}px`]
-        }
+          ry: [`${serie.getLineWidth() * 3}px`],
+        },
       };
     }
     serie.options.tracking = Object.assign({}, options);
 
     if (!serie.trackingShape) {
-
       // We need to calculate the style before getting the fill color
       serie.computeActiveStyle();
 
       serie.trackingShape = this.newShape(
-        serieShape.shape, {
-        ...serieShape,
-        fillColor: serie.getLineColor(),
-        strokeColor: 'White',
-        strokeWidth: serie.getLineWidth()
-      },
+        serieShape.shape,
+        {
+          ...serieShape,
+          fillColor: serie.getLineColor(),
+          strokeColor: 'White',
+          strokeWidth: serie.getLineWidth(),
+        },
         true,
-        serieShape.properties
+        serieShape.properties,
       )
         .setSerie(serie)
         .forceParentDom(serie.groupMain)
         .draw();
-
     }
     /*
       serie.serie.trackingShape.show();
@@ -2946,13 +2959,12 @@ class Graph extends EventEmitter {
 
     let axesPositions = ['top', 'bottom', 'left', 'right'];
     let axesExport: Array<any> = [];
-    let allaxes: { x: Array<any>, y: Array<any> } = {
+    let allaxes: { x: Array<any>; y: Array<any> } = {
       x: [],
-      y: []
+      y: [],
     };
 
     for (let pos in this.axis) {
-
       axesExport = axesExport.concat(
         this.axis[pos as AxisPosition].map((axis) => {
           return {
@@ -2961,11 +2973,10 @@ class Graph extends EventEmitter {
             unit: axis.options.unit,
             min: axis.options.forcedMin,
             max: axis.options.forcedMax,
-            flip: axis.options.flipped
+            flip: axis.options.flipped,
           };
-        })
+        }),
       );
-
 
       if (pos == 'top' || pos == 'bottom') {
         allaxes.x = allaxes.x.concat(this.axis[pos as AxisPosition]);
@@ -3004,11 +3015,11 @@ class Graph extends EventEmitter {
             for (var j = 0; j < serie.data[i].length - 1; j += 2) {
               data.push(
                 serie.data[i][
-                j +
-                ((x && serie.isFlipped()) || (!x && !serie.isFlipped()) ?
-                  1 :
-                  0)
-                ]
+                  j +
+                    ((x && serie.isFlipped()) || (!x && !serie.isFlipped())
+                      ? 1
+                      : 0)
+                ],
               );
             }
           }
@@ -3018,11 +3029,11 @@ class Graph extends EventEmitter {
           for (var j = 0; j < serie.data.length - 1; j += 2) {
             data.push(
               serie.data[
-              j +
-              ((x && serie.isFlipped()) || (!x && !serie.isFlipped()) ?
-                1 :
-                0)
-              ]
+                j +
+                  ((x && serie.isFlipped()) || (!x && !serie.isFlipped())
+                    ? 1
+                    : 0)
+              ],
             );
           }
 
@@ -3043,12 +3054,12 @@ class Graph extends EventEmitter {
               styleName: stylename,
               color: serie.styles[stylename].lineColor,
               lineWidth: serie.styles[stylename].lineWidth,
-              lineStyle: serie.styles[stylename].lineStyle
+              lineStyle: serie.styles[stylename].lineStyle,
             });
 
             let styleObj = {
               styleName: stylename,
-              styles: []
+              styles: [],
             };
             style.push(styleObj);
 
@@ -3060,9 +3071,9 @@ class Graph extends EventEmitter {
                   lineWidth: markers.strokeWidth,
                   lineColor: markers.strokeColor,
                   color: markers.fillColor,
-                  points: markers.points
+                  points: markers.points,
                 };
-              })
+              }),
             );
           }
         }
@@ -3076,18 +3087,13 @@ class Graph extends EventEmitter {
           xAxis: allaxes.x.indexOf(serie.getXAxis()),
           yAxis: allaxes.y.indexOf(serie.getYAxis()),
           style: style,
-          lineStyle: linestyle
+          lineStyle: linestyle,
         };
-      })
+      }),
     );
 
     return schema;
   }
-
-
-
-
-
 
   private _getAxis(num: number, options: any, pos: AxisPosition) {
     var options = options || {};
@@ -3096,18 +3102,18 @@ class Graph extends EventEmitter {
     var _availableAxes = {
       def: {
         x: this.getConstructor('graph.axis.x'),
-        y: this.getConstructor('graph.axis.y')
+        y: this.getConstructor('graph.axis.y'),
       },
 
       time: {
         x: this.getConstructor('graph.axis.x.time'),
-        y: undefined
+        y: undefined,
       },
 
       bar: {
         x: this.getConstructor('graph.axis.x.bar'),
-        y: undefined
-      }
+        y: undefined,
+      },
     };
 
     let axisInstance;
@@ -3119,7 +3125,6 @@ class Graph extends EventEmitter {
       case 'bar':
         axisInstance = _availableAxes.bar;
         break;
-
 
       default:
         axisInstance = _availableAxes.def;
@@ -3134,9 +3139,8 @@ class Graph extends EventEmitter {
 
       case 'left':
       case 'right':
-
         if (!axisInstance.hasOwnProperty('y')) {
-          throw "Axis does not exist for axis y";
+          throw 'Axis does not exist for axis y';
         }
         inst = axisInstance.y;
         break;
@@ -3161,7 +3165,13 @@ class Graph extends EventEmitter {
     return this.axis[pos][num];
   }
 
-  private _closeLine(mode: AxisPosition, x1: number, x2: number, y1: number, y2: number) {
+  private _closeLine(
+    mode: AxisPosition,
+    x1: number,
+    x2: number,
+    y1: number,
+    y2: number,
+  ) {
     if (this.options.close === false) {
       return;
     }
@@ -3185,20 +3195,19 @@ class Graph extends EventEmitter {
     }
   }
 
-
   private refreshDrawingZone() {
     var shift: Axes<number> = {
       top: [],
       bottom: [],
       left: [],
-      right: []
+      right: [],
     };
 
     var levels: Axes<number> = {
       top: [],
       bottom: [],
       left: [],
-      right: []
+      right: [],
     };
 
     // Apply to top and bottom
@@ -3220,11 +3229,11 @@ class Graph extends EventEmitter {
 
         shift[position][level] = Math.max(
           axis.getAxisPosition(),
-          shift[position][level] || 0
+          shift[position][level] || 0,
         );
       },
       false,
-      TOP_BOTTOM
+      TOP_BOTTOM,
     );
 
     var shiftTop = shift.top.reduce(function (prev, curr) {
@@ -3235,7 +3244,8 @@ class Graph extends EventEmitter {
       return prev + curr;
     }, 0);
 
-    this.drawingSpaceHeight = this.getDrawingHeight(false) - shiftTop - shiftBottom;
+    this.drawingSpaceHeight =
+      this.getDrawingHeight(false) - shiftTop - shiftBottom;
 
     [shift.top, shift.bottom].map(function (arr) {
       arr.reduce(function (prev, current, index) {
@@ -3254,7 +3264,7 @@ class Graph extends EventEmitter {
         axis.setShift(shift[position][axis.getLevel()]);
       },
       false,
-      TOP_BOTTOM
+      TOP_BOTTOM,
     );
 
     // Applied to left and right
@@ -3297,7 +3307,7 @@ class Graph extends EventEmitter {
         }
       },
       false,
-      LEFT_RIGHT
+      LEFT_RIGHT,
     );
 
     var shift2 = util.extend(true, {}, shift);
@@ -3311,11 +3321,11 @@ class Graph extends EventEmitter {
 
         shift2[position][axis.getLevel()] = Math.max(
           shift[position][axis.getLevel()],
-          axis.equalizePosition(shift[position][axis.getLevel()])
+          axis.equalizePosition(shift[position][axis.getLevel()]),
         );
       },
       false,
-      LEFT_RIGHT
+      LEFT_RIGHT,
     );
 
     shift = shift2;
@@ -3346,7 +3356,7 @@ class Graph extends EventEmitter {
         axis.setShift(shift[position][axis.getLevel()]);
       },
       false,
-      LEFT_RIGHT
+      LEFT_RIGHT,
     );
 
     // Apply to top and bottom
@@ -3368,7 +3378,7 @@ class Graph extends EventEmitter {
         }
       },
       false,
-      TOP_BOTTOM
+      TOP_BOTTOM,
     );
 
     // Floating axes
@@ -3389,7 +3399,7 @@ class Graph extends EventEmitter {
         }
       },
       false,
-      TOP_BOTTOM | LEFT_RIGHT
+      TOP_BOTTOM | LEFT_RIGHT,
     );
 
     this._closeLine(
@@ -3397,39 +3407,39 @@ class Graph extends EventEmitter {
       this.getDrawingWidth(true),
       this.getDrawingWidth(true),
       shiftTop,
-      this.getDrawingHeight(true) - shiftBottom
+      this.getDrawingHeight(true) - shiftBottom,
     );
     this._closeLine(
       'left',
       0,
       0,
       shiftTop,
-      this.getDrawingHeight(true) - shiftBottom
+      this.getDrawingHeight(true) - shiftBottom,
     );
     this._closeLine(
       'top',
       shiftLeft,
       this.getDrawingWidth(true) - shiftRight,
       0,
-      0
+      0,
     );
     this._closeLine(
       'bottom',
       shiftLeft,
       this.getDrawingWidth(true) - shiftRight,
       this.getDrawingHeight(true) - shiftBottom,
-      this.getDrawingHeight(true) - shiftBottom
+      this.getDrawingHeight(true) - shiftBottom,
     );
 
     this.clipRect.setAttribute('y', shiftTop.toString());
     this.clipRect.setAttribute('x', shiftLeft.toString());
     this.clipRect.setAttribute(
       'width',
-      (this.getDrawingWidth() - shiftLeft - shiftRight).toString()
+      (this.getDrawingWidth() - shiftLeft - shiftRight).toString(),
     );
     this.clipRect.setAttribute(
       'height',
-      (this.getDrawingHeight() - shiftTop - shiftBottom).toString()
+      (this.getDrawingHeight() - shiftTop - shiftBottom).toString(),
     );
 
     this.rectEvent.setAttribute('y', shiftTop + this.getPaddingTop());
@@ -3455,7 +3465,7 @@ class Graph extends EventEmitter {
         axis.drawLines();
       },
       false,
-      TOP_BOTTOM | LEFT_RIGHT
+      TOP_BOTTOM | LEFT_RIGHT,
     );
 
     /**
@@ -3468,10 +3478,6 @@ class Graph extends EventEmitter {
     this.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
   }
 
-
-
-
-
   /**
    * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
    * @param {String} constructorName - The name of the constructor
@@ -3482,7 +3488,10 @@ class Graph extends EventEmitter {
 
   static _constructors: Map<constructorKey_t, _constructor> = new Map();
 
-  static registerConstructor(constructorKey: constructorKey_t, constructor: _constructor) {
+  static registerConstructor(
+    constructorKey: constructorKey_t,
+    constructor: _constructor,
+  ) {
     if (Graph._constructors.has(constructorKey)) {
       return util.throwError(`Constructor ${constructorKey} already exists.`);
     }
@@ -3500,7 +3509,7 @@ class Graph extends EventEmitter {
    */
   static getConstructor(constructorKey: constructorKey_t): _constructor {
     if (!Graph._constructors.has(constructorKey)) {
-      throw new Error(`Constructor "${constructorKey}" doesn't exist`)
+      throw new Error(`Constructor "${constructorKey}" doesn't exist`);
     }
 
     return Graph._constructors.get(constructorKey)!;
@@ -3526,8 +3535,7 @@ class Graph extends EventEmitter {
     return new WaveformHash(...arguments);
   }
 
-
-  static _styles: Map<string, SerieStyle> = new Map()
+  static _styles: Map<string, SerieStyle> = new Map();
   static saveStyle(styleName: string, json: SerieStyle) {
     Graph._styles.set(styleName, json);
   }
@@ -3536,7 +3544,6 @@ class Graph extends EventEmitter {
     return Graph._styles.get(styleName) || SERIE_DEFAULT_STYLE;
   }
 }
-
 
 function getAxisLevelFromSpan(span: any, level: any) {
   for (var i = 0, l = level.length; i < l; i++) {
@@ -3562,7 +3569,6 @@ function getAxisLevelFromSpan(span: any, level: any) {
   return level.length - 1;
 }
 
-
 function _handleKey(graph: Graph, event: any, type: any) {
   var self = graph;
   if (graph.forcedPlugin) {
@@ -3575,7 +3581,12 @@ function _handleKey(graph: Graph, event: any, type: any) {
 }
 
 // Similar to checkMouseActions
-function checkKeyActions(graph: Graph, e: any, parameters: any, methodName: any) {
+function checkKeyActions(
+  graph: Graph,
+  e: any,
+  parameters: any,
+  methodName: any,
+) {
   var keyComb = graph.options.keyActions,
     i: number,
     l: number;
@@ -3585,15 +3596,15 @@ function checkKeyActions(graph: Graph, e: any, parameters: any, methodName: any)
       // Is it a plugin ?
 
       if (
-        keyComb[i].plugin && (
-          graph.forcedPlugin == keyComb[i].plugin ||
+        keyComb[i].plugin &&
+        (graph.forcedPlugin == keyComb[i].plugin ||
           graph.isActionAllowed(e, keyComb[i]))
       ) {
         if (keyComb[i].options) {
           parameters.push(keyComb[i].options);
         }
-        const plugin = keyComb[i].plugin
-        assert(plugin)
+        const plugin = keyComb[i].plugin;
+        assert(plugin);
         graph.activePlugin = plugin; // Lease the mouse action to the current action
         graph._pluginExecute(plugin, methodName, parameters);
 
@@ -3651,7 +3662,6 @@ function checkKeyActions(graph: Graph, e: any, parameters: any, methodName: any)
   return false;
 }
 
-
 function _handleMouseDown(graph: Graph, x: number, y: number, e: any) {
   var self = graph;
 
@@ -3689,12 +3699,12 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
   graph._applyToAxes(
     'handleMouseMove',
     [x - graph.options.paddingLeft, e],
-    TOP_BOTTOM
+    TOP_BOTTOM,
   );
   graph._applyToAxes(
     'handleMouseMove',
     [y - graph.options.paddingTop, e],
-    LEFT_RIGHT
+    LEFT_RIGHT,
   );
 
   if (!graph.activePlugin) {
@@ -3706,7 +3716,9 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         graph.options.trackingLine.mode == 'common' &&
         graph.options.trackingLine.snapToSerie
       ) {
-        var snapToSerie = graph.getSerie(graph.options.trackingLine.snapToSerie);
+        var snapToSerie = graph.getSerie(
+          graph.options.trackingLine.snapToSerie,
+        );
         index = snapToSerie.handleMouseMove(false, true);
 
         if (graph.trackingLineShape) {
@@ -3749,25 +3761,27 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         }
         graph._trackingLegend = _trackingLegendSerie(
           graph,
-          series.map(s => { return { serie: s, closestPoint: undefined } }),
+          series.map((s) => {
+            return { serie: s, closestPoint: undefined };
+          }),
           xOverwritePx,
           y,
-          graph._trackingLegend/*,
+          graph._trackingLegend /*,
           graph.options.trackingLine.textMethod ?
             graph.options.trackingLine.textMethod :
             trackingLineDefaultTextMethod,
-          xRef*/
+          xRef*/,
         );
       } else if (graph.options.trackingLine.mode == 'individual') {
         // Series looping
 
-        const output: Array<{ serie: any, closestPoint: any }> = [];
-        graph.options.trackingLine.series.forEach((serie: (Serie | string)) => {
+        const output: Array<{ serie: any; closestPoint: any }> = [];
+        graph.options.trackingLine.series.forEach((serie: Serie | string) => {
           //        const index = serie.handleMouseMove( false, true );
           //console.log( index );
 
-          if (typeof serie == "string") {
-            console.warn("Serie is a string");
+          if (typeof serie == 'string') {
+            console.warn('Serie is a string');
             return;
           }
 
@@ -3781,9 +3795,9 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
             serie.options.tracking.withinPx,
             serie.options.tracking.withinPx,
             serie.options.tracking.useAxis,
-            true
+            true,
           );
-          assert(graph.options.trackingLine)
+          assert(graph.options.trackingLine);
           // When all legends are in common mode, let's make sure we remove the serie-specific legend
           if (graph.options.trackingLine.legendType == 'common') {
             serie._trackingLegend = _trackingLegendSerie(
@@ -3791,7 +3805,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
               [],
               undefined,
               undefined,
-              serie._trackingLegend
+              serie._trackingLegend,
             );
           }
           // What happens if there is no point ?
@@ -3805,7 +3819,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
                   [],
                   undefined,
                   undefined,
-                  serie._trackingLegend
+                  serie._trackingLegend,
                 );
               }
             }
@@ -3816,7 +3830,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
 
               serie.trackingShape.setPosition({
                 x: closestPoint.xClosest,
-                y: closestPoint.yClosest
+                y: closestPoint.yClosest,
               });
 
               serie.trackingShape.redraw();
@@ -3825,13 +3839,15 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
               if (graph.options.trackingLine.legendType == 'independent') {
                 serie._trackingLegend = _trackingLegendSerie(
                   graph,
-                  [{
-                    serie: serie,
-                    closestPoint: closestPoint
-                  }],
+                  [
+                    {
+                      serie: serie,
+                      closestPoint: closestPoint,
+                    },
+                  ],
                   x,
                   y,
-                  serie._trackingLegend
+                  serie._trackingLegend,
                 );
               }
               serie.emit('track', e, closestPoint);
@@ -3841,7 +3857,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
           if (closestPoint)
             output.push({
               serie: serie,
-              closestPoint: closestPoint
+              closestPoint: closestPoint,
             });
         });
 
@@ -3851,7 +3867,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
             output,
             x,
             y,
-            graph._trackingLegend
+            graph._trackingLegend,
           );
         } else {
           graph._trackingLegend = _trackingLegendSerie(
@@ -3859,7 +3875,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
             [],
             undefined,
             undefined,
-            graph._trackingLegend
+            graph._trackingLegend,
           );
         }
       }
@@ -3882,7 +3898,7 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
         serie.options.tracking.withinPxX || 0,
         serie.options.tracking.withinPxY || 0,
         serie.options.tracking.useAxis,
-        true
+        true,
       );
     }
 
@@ -3896,7 +3912,12 @@ function _handleMouseMove(graph: Graph, x: number, y: number, e: any) {
   checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
 }
 
-function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: string) {
+function checkMouseActions(
+  graph: Graph,
+  e: any,
+  parameters: any,
+  methodName: string,
+) {
   var keyComb = graph.options.mouseActions,
     i,
     l,
@@ -3905,12 +3926,11 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
   for (i = 0, l = keyComb.length; i < l; i++) {
     if (keyComb[i].plugin) {
       // Is it a plugin ?
-      const plugin = keyComb[i].plugin
+      const plugin = keyComb[i].plugin;
       if (
-        plugin && (
-          graph.forcedPlugin == keyComb[i].plugin ||
-          graph.isActionAllowed(e, keyComb[i])
-        )
+        plugin &&
+        (graph.forcedPlugin == keyComb[i].plugin ||
+          graph.isActionAllowed(e, keyComb[i]))
       ) {
         if (keyComb[i].options) {
           parameters.push(keyComb[i].options);
@@ -3941,7 +3961,7 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
       } else if (!Array.isArray(keyComb[i].series)) {
         series = [series];
       } else {
-        throw "Not implemented"
+        throw 'Not implemented';
       }
 
       if (keyComb[i].options) {
@@ -3965,12 +3985,11 @@ function checkMouseActions(graph: Graph, e: any, parameters: any, methodName: st
  */
 var _trackingLegendSerie = function (
   graph: Graph,
-  seriesOutput: Array<{ serie: any, closestPoint: any }>,
+  seriesOutput: Array<{ serie: any; closestPoint: any }>,
   posXPx: number | undefined,
   posYPx: number | undefined,
-  legend: any
+  legend: any,
 ) {
-
   if (!graph.options.trackingLine) {
     return;
   }
@@ -4010,16 +4029,22 @@ var _trackingLegendSerie = function (
   return legend;
 };
 
-var forceTrackingLegendMode = function (graph: Graph, legend: any, toX: number, toY: number, skip: boolean) {
+var forceTrackingLegendMode = function (
+  graph: Graph,
+  legend: any,
+  toX: number,
+  toY: number,
+  skip: boolean,
+) {
   var start = Date.now(),
     h = legend.offsetHeight,
     startX = parseInt(legend.style.marginLeft.replace('px', '') || 0, 10),
     startY = parseInt(legend.style.marginTop.replace('px', '') || 0, 10);
 
   toX =
-    toX > graph.getWidth() / 2 ?
-      toX - (toX % 10) - 20 - legend.offsetWidth :
-      toX - (toX % 10) + 30;
+    toX > graph.getWidth() / 2
+      ? toX - (toX % 10) - 20 - legend.offsetWidth
+      : toX - (toX % 10) + 30;
   toY = toY - (toY % 10) + h / 2;
 
   if (skip) {
@@ -4135,8 +4160,13 @@ function _handleClick(graph: Graph, x: number, y: number, e: MouseEvent) {
   }
 }
 
-
-function _handleMouseWheel(graph: Graph, delta: number, coordX: number, coordY: number, e: WheelEvent) {
+function _handleMouseWheel(
+  graph: Graph,
+  delta: number,
+  coordX: number,
+  coordY: number,
+  e: WheelEvent,
+) {
   if (checkMouseActions(graph, e, [delta, e, coordX, coordY], 'onMouseWheel')) {
     e.preventDefault();
     e.stopPropagation();

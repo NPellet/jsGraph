@@ -2,17 +2,24 @@
 
 import Graph from './graph.core';
 import { EventEmitter } from './mixins/graph.mixin.event';
-import { cloneDeep, extend } from 'lodash'
-import Serie from './series/graph.serie'
+import { cloneDeep, extend } from 'lodash';
+import Serie from './series/graph.serie';
 //import assert from 'assert';
 
 export enum TickPosition {
-  OUTSIDE = "outside",
-  INSIDE = "inside",
-  CENTERED = "centered"
+  OUTSIDE = 'outside',
+  INSIDE = 'inside',
+  CENTERED = 'centered',
 }
 
-type TickPosition_t = 1 | 2 | 3 | "centered" | "outside" | "inside" | TickPosition
+type TickPosition_t =
+  | 1
+  | 2
+  | 3
+  | 'centered'
+  | 'outside'
+  | 'inside'
+  | TickPosition;
 
 /**
  * @member name     : Name of the axis, can be reference later
@@ -92,108 +99,104 @@ type TickPosition_t = 1 | 2 | 3 | "centered" | "outside" | "inside" | TickPositi
    
  */
 export type GraphAxisOptions = {
+  name?: string; // Name of the axis, can be referenced later
+  label: string; // Displayed label
 
-  name?: string,   // Name of the axis, can be referenced later
-  label: string,  // Displayed label
+  display: boolean; // Whether or not the axis is displayed
+  hideWhenNoSeriesShown: boolean; // Whether or to hide / show the axis when its series are hidden / shown
 
-  display: boolean, // Whether or not the axis is displayed
-  hideWhenNoSeriesShown: boolean, // Whether or to hide / show the axis when its series are hidden / shown
-
-  flipped: boolean, // Flips the axis direction
+  flipped: boolean; // Flips the axis direction
 
   axisDataSpacing: {
-    min: number,
-    max: number
-  },
-
-  primaryGrid: boolean,
-  secondaryGrid: boolean,
-
-  tickPosition: TickPosition_t,
-
-  nbTicksPrimary: number,
-  primaryTickUnit?: undefined | number,
-  maxPrimaryTickUnit?: undefined | number,
-  minPrimaryTickUnit?: undefined | number,
-
-
-  nbTicksSecondary: number,
-  ticklabelratio: number,
-  exponentialFactor: number,
-  exponentialLabelFactor: number,
-  logScale: boolean,
-  forcedMin: false | number,
-  forcedMax: false | number,
-
-  lineAt: number | false,
-  unitModification: string | false,
-
-  hideTicks: boolean,
-
-  primaryGridWidth: number,
-  primaryGridColor: string,
-  primaryGridDasharray?: string,
-  primaryGridOpacity?: number,
-  primaryTicksColor: string,
-
-  secondaryGridWidth: number,
-  secondaryGridColor: string,
-  secondaryGridDasharray?: string,
-  secondaryGridOpacity?: number,
-  secondaryTicksColor: string,
-
-  shiftToZero: boolean,
-  tickLabels: boolean,
-
-  span: [number, number],
-  marginMin: number,
-  marginMax: number,
-
-
-  scientificScale: boolean,
-  scientificScaleExponent: boolean,
-  engineeringScale: boolean,
-
-  unitInTicks: boolean,
-  unit: false | string,
-  unitWrapperBefore: false | string,
-  unitWrapperAfter: false | string,
-
-
-  tickLabelOffset: number,
-
-  highestMax?: number,
-  lowestMin?: number,
-
-  labelValue: string,
-
-  adaptTo: false | {
-    axis: Axis,
-    thisValue: number,
-    foreignValue: number,
-    preference: "min" | "max"
+    min: number;
+    max: number;
   };
 
-  currentAxisMin?: number,
-  currentAxisMax?: number,
+  primaryGrid: boolean;
+  secondaryGrid: boolean;
 
-  useKatexForLabel: boolean,
-  unitDecade: boolean,
+  tickPosition: TickPosition_t;
 
+  nbTicksPrimary: number;
+  primaryTickUnit?: undefined | number;
+  maxPrimaryTickUnit?: undefined | number;
+  minPrimaryTickUnit?: undefined | number;
 
-  tickLabelRotation?: number,
+  nbTicksSecondary: number;
+  ticklabelratio: number;
+  exponentialFactor: number;
+  exponentialLabelFactor: number;
+  logScale: boolean;
+  forcedMin: false | number;
+  forcedMax: false | number;
 
-  formatTickLabel?: Function,
+  lineAt: number | false;
+  unitModification: string | false;
 
-  labelFont?: string,
-  axisColor?: string,
-  labelColor?: string,
-  ticksLabelColor?: string
-}
+  hideTicks: boolean;
 
+  primaryGridWidth: number;
+  primaryGridColor: string;
+  primaryGridDasharray?: string;
+  primaryGridOpacity?: number;
+  primaryTicksColor: string;
+
+  secondaryGridWidth: number;
+  secondaryGridColor: string;
+  secondaryGridDasharray?: string;
+  secondaryGridOpacity?: number;
+  secondaryTicksColor: string;
+
+  shiftToZero: boolean;
+  tickLabels: boolean;
+
+  span: [number, number];
+  marginMin: number;
+  marginMax: number;
+
+  scientificScale: boolean;
+  scientificScaleExponent: boolean;
+  engineeringScale: boolean;
+
+  unitInTicks: boolean;
+  unit: false | string;
+  unitWrapperBefore: false | string;
+  unitWrapperAfter: false | string;
+
+  tickLabelOffset: number;
+
+  highestMax?: number;
+  lowestMin?: number;
+
+  labelValue: string;
+
+  adaptTo:
+    | false
+    | {
+        axis: Axis;
+        thisValue: number;
+        foreignValue: number;
+        preference: 'min' | 'max';
+      };
+
+  currentAxisMin?: number;
+  currentAxisMax?: number;
+
+  useKatexForLabel: boolean;
+  unitDecade: boolean;
+
+  tickLabelRotation?: number;
+
+  formatTickLabel?: Function;
+
+  labelFont?: string;
+  axisColor?: string;
+  labelColor?: string;
+  ticksLabelColor?: string;
+};
 
 const defaults: GraphAxisOptions = {
-  label: "",
+  label: '',
   hideTicks: false,
   adaptTo: false,
   useKatexForLabel: false,
@@ -204,7 +207,7 @@ const defaults: GraphAxisOptions = {
   flipped: false,
   axisDataSpacing: {
     min: 0.1,
-    max: 0.1
+    max: 0.1,
   },
   unitModification: false,
   primaryGrid: true,
@@ -246,37 +249,34 @@ const defaults: GraphAxisOptions = {
 
   tickLabelOffset: 0,
 
-  labelValue: ''
+  labelValue: '',
 };
 
 const unitModificationTimeTicks = [
   [1, [1, 2, 5, 10, 20, 30]],
   [60, [1, 2, 5, 10, 20, 30]],
   [3600, [1, 2, 6, 12]],
-  [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]]
+  [3600 * 24, [1, 2, 3, 4, 5, 10, 20, 40]],
 ];
 
 export const tickScaling = {
   1: 3,
   2: 2,
   3: 1,
-  4: 0.5
+  4: 0.5,
 };
 
 type TickLevel<T> = {
-  1: T,
-  2: T
+  1: T;
+  2: T;
 };
 
 interface Axis {
   addLabel: (args: any) => SVGElement;
   setMinMaxFlipped(): void;
-
 }
 
-
 abstract class Axis extends EventEmitter implements Axis {
-
   protected graph: Graph;
   protected options: GraphAxisOptions;
 
@@ -285,7 +285,7 @@ abstract class Axis extends EventEmitter implements Axis {
   private _lines: Array<SVGElement>;
   protected line: SVGElement;
   private groupTicks: SVGElement;
-  private groupTickLabels: SVGElement
+  private groupTickLabels: SVGElement;
   private hasChanged: boolean;
   protected label: SVGElement;
   protected labelTspan: SVGElement;
@@ -294,7 +294,7 @@ abstract class Axis extends EventEmitter implements Axis {
   protected expTspan: SVGElement;
   protected expTspanExp: SVGElement;
 
-  private gridLinePath: { primary: string, secondary: string };
+  private gridLinePath: { primary: string; secondary: string };
   private gridPrimary: SVGElement;
   private gridSecondary: SVGElement;
   private groupSeries: SVGElement;
@@ -302,14 +302,13 @@ abstract class Axis extends EventEmitter implements Axis {
   private _hidden: boolean;
 
   private ticks: TickLevel<Array<SVGElement>>;
-  private currentTick: TickLevel<number>
-  private lastCurrentTick: TickLevel<number>
+  private currentTick: TickLevel<number>;
+  private lastCurrentTick: TickLevel<number>;
   private labels: Array<SVGElement>;
 
   private cachedInterval: number;
 
-
-  private ticksLabels: Array<SVGTextElement>
+  private ticksLabels: Array<SVGTextElement>;
   private series: Array<Serie>;
   private _zoomed: any;
   protected floating: boolean;
@@ -324,9 +323,8 @@ abstract class Axis extends EventEmitter implements Axis {
   protected mouseVal: number;
   private _zoomLocked: any;
 
-
   /**
-   * Axis constructor. 
+   * Axis constructor.
    * @class Axis
    * @static
    * @example function myAxis() {};
@@ -338,14 +336,16 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   init(graph: Graph, options: Partial<GraphAxisOptions>) {
-
     this.graph = graph;
     this.options = extend(cloneDeep(defaults), options);
 
     this.group = document.createElementNS(this.graph.ns, 'g') as SVGElement;
     this.hasChanged = true;
 
-    this.rectEvent = document.createElementNS(this.graph.ns, 'rect') as SVGElement;
+    this.rectEvent = document.createElementNS(
+      this.graph.ns,
+      'rect',
+    ) as SVGElement;
     this.rectEvent.setAttribute('pointer-events', 'fill');
     this.rectEvent.setAttribute('fill', 'transparent');
 
@@ -360,8 +360,14 @@ abstract class Axis extends EventEmitter implements Axis {
     this.line.setAttribute('stroke', 'black');
     this.line.setAttribute('shape-rendering', 'crispEdges');
     this.line.setAttribute('stroke-linecap', 'square');
-    this.groupTicks = document.createElementNS(this.graph.ns, 'g') as SVGElement;
-    this.groupTickLabels = document.createElementNS(this.graph.ns, 'g') as SVGElement;
+    this.groupTicks = document.createElementNS(
+      this.graph.ns,
+      'g',
+    ) as SVGElement;
+    this.groupTickLabels = document.createElementNS(
+      this.graph.ns,
+      'g',
+    ) as SVGElement;
 
     this.group.appendChild(this.groupTicks);
     this.group.appendChild(this.groupTickLabels);
@@ -369,19 +375,31 @@ abstract class Axis extends EventEmitter implements Axis {
 
     this.label = document.createElementNS(this.graph.ns, 'text') as SVGElement;
 
-    this.labelTspan = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the main label
+    this.labelTspan = document.createElementNS(
+      this.graph.ns,
+      'tspan',
+    ) as SVGElement; // Contains the main label
     this.preunit = ''; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
-    this.unitTspan = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the unit
-    this.expTspan = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the exponent (x10)
-    this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan') as SVGElement; // Contains the exponent value
+    this.unitTspan = document.createElementNS(
+      this.graph.ns,
+      'tspan',
+    ) as SVGElement; // Contains the unit
+    this.expTspan = document.createElementNS(
+      this.graph.ns,
+      'tspan',
+    ) as SVGElement; // Contains the exponent (x10)
+    this.expTspanExp = document.createElementNS(
+      this.graph.ns,
+      'tspan',
+    ) as SVGElement; // Contains the exponent value
 
     this.label.appendChild(this.labelTspan) as SVGElement;
     this.label.appendChild(this.unitTspan);
     this.label.appendChild(this.expTspan);
     this.label.appendChild(this.expTspanExp);
 
-    this.expTspan.setAttribute('dx', "6");
-    this.expTspanExp.setAttribute('dy', "-5");
+    this.expTspan.setAttribute('dx', '6');
+    this.expTspanExp.setAttribute('dy', '-5');
     this.expTspanExp.setAttribute('font-size', '0.8em');
 
     this.label.setAttribute('text-anchor', 'middle');
@@ -390,11 +408,17 @@ abstract class Axis extends EventEmitter implements Axis {
 
     this.gridLinePath = {
       primary: '',
-      secondary: ''
+      secondary: '',
     };
 
-    this.gridPrimary = document.createElementNS(this.graph.ns, 'path') as SVGElement;
-    this.gridSecondary = document.createElementNS(this.graph.ns, 'path') as SVGElement;
+    this.gridPrimary = document.createElementNS(
+      this.graph.ns,
+      'path',
+    ) as SVGElement;
+    this.gridSecondary = document.createElementNS(
+      this.graph.ns,
+      'path',
+    ) as SVGElement;
 
     this.graph.groupPrimaryGrids.appendChild(this.gridPrimary);
     this.graph.groupSecondaryGrids.appendChild(this.gridSecondary);
@@ -403,14 +427,16 @@ abstract class Axis extends EventEmitter implements Axis {
 
     this.group.appendChild(this.label);
 
-    this.groupSeries = document.createElementNS(this.graph.ns, 'g') as SVGElement;
+    this.groupSeries = document.createElementNS(
+      this.graph.ns,
+      'g',
+    ) as SVGElement;
     this.group.appendChild(this.groupSeries);
 
     this.widthHeightTick = 0;
 
     this.ticks = { 1: [], 2: [] };
     this.ticksLabels = [];
-
 
     this.currentTick = { 1: 0, 2: 0 };
     this.lastCurrentTick = { 1: 0, 2: 0 };
@@ -434,15 +460,20 @@ abstract class Axis extends EventEmitter implements Axis {
       this.addLabel(this.getVal(coords.x - this.graph.getPaddingLeft()));
     });
 
-
-    this.gridPrimary.setAttribute('clip-path', `url(#_clipplot${this.graph.uid})`);
-    this.gridSecondary.setAttribute('clip-path', `url(#_clipplot${this.graph.uid})`);
+    this.gridPrimary.setAttribute(
+      'clip-path',
+      `url(#_clipplot${this.graph.uid})`,
+    );
+    this.gridSecondary.setAttribute(
+      'clip-path',
+      `url(#_clipplot${this.graph.uid})`,
+    );
     this.graph._axisHasChanged(this);
 
     this.cache();
   }
 
-  handleMouseMoveLocal(x: number, y: number, e: MouseEvent) { }
+  handleMouseMoveLocal(x: number, y: number, e: MouseEvent) {}
 
   /**
    * Hides the axis
@@ -483,7 +514,6 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Boolean} A boolean indicating the displayed state of the axis
    */
   isDisplayed() {
-
     if (!this.options.hideWhenNoSeriesShown) {
       return this.options.display;
     }
@@ -544,7 +574,6 @@ abstract class Axis extends EventEmitter implements Axis {
    * @since 1.13.2
    */
   adaptTo(axis, thisValue, foreignValue, preference) {
-
     if (!axis) {
       this.options.adaptTo = false;
       return this;
@@ -554,7 +583,7 @@ abstract class Axis extends EventEmitter implements Axis {
       axis: axis,
       thisValue: thisValue,
       foreignValue: foreignValue,
-      preference: preference
+      preference: preference,
     };
 
     this.adapt();
@@ -569,7 +598,6 @@ abstract class Axis extends EventEmitter implements Axis {
    * @since 1.13.2
    */
   adapt() {
-
     if (!this.options.adaptTo) {
       return;
     }
@@ -577,39 +605,65 @@ abstract class Axis extends EventEmitter implements Axis {
     var axis = this.options.adaptTo.axis,
       current = this.options.adaptTo.thisValue,
       foreign = this.options.adaptTo.foreignValue;
-    if (axis.options.currentAxisMin === undefined || axis.options.currentAxisMax === undefined) {
+    if (
+      axis.options.currentAxisMin === undefined ||
+      axis.options.currentAxisMax === undefined
+    ) {
       axis.setMinMaxToFitSeries();
     }
-    if ((this.options.forcedMin !== false && this.options.forcedMax == false) || (this.options.adaptTo.preference !== 'max')) {
-
+    if (
+      (this.options.forcedMin !== false && this.options.forcedMax == false) ||
+      this.options.adaptTo.preference !== 'max'
+    ) {
       if (this.options.forcedMin !== false) {
         this.options.currentAxisMin = this.options.forcedMin;
       } else if (this._zoomed) {
         this.options.currentAxisMin = this.getCurrentMin();
       } else {
-        this.options.currentAxisMin = this.getMinValue() - (current - this.getMinValue()) * (this.options.axisDataSpacing.min * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()));
+        this.options.currentAxisMin =
+          this.getMinValue() -
+          (current - this.getMinValue()) *
+            ((this.options.axisDataSpacing.min *
+              (axis.getCurrentMax() - axis.getCurrentMin())) /
+              (foreign - axis.getCurrentMin()));
       }
 
-      var use = this.options.forcedMin !== false ? this.options.forcedMin : this.options.currentAxisMin;
-      this.options.currentAxisMax = (current - use) * (axis.getCurrentMax() - axis.getCurrentMin()) / (foreign - axis.getCurrentMin()) + use;
-
+      var use =
+        this.options.forcedMin !== false
+          ? this.options.forcedMin
+          : this.options.currentAxisMin;
+      this.options.currentAxisMax =
+        ((current - use) * (axis.getCurrentMax() - axis.getCurrentMin())) /
+          (foreign - axis.getCurrentMin()) +
+        use;
     } else {
-
       if (this.options.forcedMax !== false) {
         this.options.currentAxisMax = this.options.forcedMax;
       } else if (this._zoomed) {
         this.options.currentAxisMax = this.getCurrentMax();
       } else {
-        this.options.currentAxisMax = this.getMaxValue() + (this.getMaxValue() - current) * (this.options.axisDataSpacing.max * (axis.getCurrentMax() - axis.getCurrentMin()) / (axis.getCurrentMax() - foreign));
+        this.options.currentAxisMax =
+          this.getMaxValue() +
+          (this.getMaxValue() - current) *
+            ((this.options.axisDataSpacing.max *
+              (axis.getCurrentMax() - axis.getCurrentMin())) /
+              (axis.getCurrentMax() - foreign));
       }
 
       if (this.options.currentAxisMax == current) {
-        this.options.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
+        this.options.currentAxisMax +=
+          this.options.axisDataSpacing.max * this.getInterval();
       }
 
-      var use = this.options.forcedMax !== false ? this.options.forcedMax : this.options.currentAxisMax;
+      var use =
+        this.options.forcedMax !== false
+          ? this.options.forcedMax
+          : this.options.currentAxisMax;
 
-      this.options.currentAxisMin = (current - use) * (axis.getCurrentMin() - axis.getCurrentMax()) / (foreign - axis.getCurrentMax()) + use;
+      this.options.currentAxisMin =
+        ((current - use) * (axis.getCurrentMin() - axis.getCurrentMax())) /
+          (foreign - axis.getCurrentMax()) +
+        use;
     }
 
     this.graph._axisHasChanged(this);
@@ -626,7 +680,6 @@ abstract class Axis extends EventEmitter implements Axis {
    * @example graph.getYAxis().setFloat( graph.getBottomAxis(), 0 ); // Alignes the y axis with the origin of the bottom axis
    */
   setFloating(axis: Axis, value: number) {
-
     this.floating = true;
     this.floatingAxis = axis;
     this.floatingValue = value;
@@ -691,13 +744,11 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   setMinPx(px: number) {
-
     this.minPx = px;
     this.setMinMaxFlipped();
   }
 
   setMaxPx(px) {
-
     this.maxPx = px;
     this.setMinMaxFlipped();
   }
@@ -734,7 +785,11 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Number} The minimum possible value of the axis
    */
   getMinValue() {
-    return this.options.forcedMin !== false ? this.options.forcedMin : (!isNaN(this.options.lowestMin) ? Math.max(this.options.lowestMin, this.dataMin) : this.dataMin);
+    return this.options.forcedMin !== false
+      ? this.options.forcedMin
+      : !isNaN(this.options.lowestMin)
+      ? Math.max(this.options.lowestMin, this.dataMin)
+      : this.dataMin;
   }
 
   /**
@@ -743,7 +798,11 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Number} The maximum possible value of the axis
    */
   getMaxValue() {
-    return this.options.forcedMax !== false ? this.options.forcedMax : (!isNaN(this.options.highestMax) ? Math.min(this.options.highestMax, this.dataMax) : this.dataMax);
+    return this.options.forcedMax !== false
+      ? this.options.forcedMax
+      : !isNaN(this.options.highestMax)
+      ? Math.min(this.options.highestMax, this.dataMax)
+      : this.dataMax;
   }
 
   setMinValueData(min: number) {
@@ -753,7 +812,6 @@ abstract class Axis extends EventEmitter implements Axis {
     if (isNaN(this.getCurrentMin())) {
       //this.setCurrentMin( this.getMinValue() );
       //this.cache();
-
     }
   }
 
@@ -765,7 +823,6 @@ abstract class Axis extends EventEmitter implements Axis {
     if (isNaN(this.getCurrentMax())) {
       //     this.setCurrentMax( this.getMaxValue() );
       //this.cache();
-
     }
   }
 
@@ -892,7 +949,6 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   handleMouseWheel(delta, e, baseline) {
-
     delta = Math.min(0.2, Math.max(-0.2, delta));
 
     if (baseline == 'min') {
@@ -904,14 +960,13 @@ abstract class Axis extends EventEmitter implements Axis {
     }
 
     this._doZoomVal(
-      ((this.getCurrentMax() - baseline) * (1 + delta)) + baseline,
-      ((this.getCurrentMin() - baseline) * (1 + delta)) + baseline,
-      false
+      (this.getCurrentMax() - baseline) * (1 + delta) + baseline,
+      (this.getCurrentMin() - baseline) * (1 + delta) + baseline,
+      false,
     );
 
     this.graph.draw();
     //	this.graph.drawSeries(true);
-
   }
 
   set zoomLock(bln) {
@@ -938,7 +993,6 @@ abstract class Axis extends EventEmitter implements Axis {
    * graph.draw();
    */
   zoom(val1, val2, forceLock) {
-
     if (!forceLock && this.zoomLock) {
       return;
     }
@@ -947,12 +1001,10 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   _doZoomVal(val1, val2, mute) {
-
     return this._doZoom(this.getPx(val1), this.getPx(val2), val1, val2, mute);
   }
 
   _doZoom(px1, px2, val1, val2, mute) {
-
     //if(this.options.display || 1 == 1) {
     var val1 = val1 !== undefined ? val1 : this.getVal(px1);
     var val2 = val2 !== undefined ? val2 : this.getVal(px2);
@@ -972,7 +1024,11 @@ abstract class Axis extends EventEmitter implements Axis {
 
     // New method
     if (!mute) {
-      this.emit('zoom', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
+      this.emit('zoom', [
+        this.options.currentAxisMin,
+        this.options.currentAxisMax,
+        this,
+      ]);
     }
 
     return this;
@@ -991,7 +1047,6 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   getUnitPerTick(px, nbTick, valrange) {
-
     var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
     if (!nbTick) {
       nbTick = px / 10;
@@ -1003,94 +1058,102 @@ abstract class Axis extends EventEmitter implements Axis {
     // Say, we have 0.0004 unit per tick
     var unitPerTick = valrange / nbTick;
     switch (this.options.unitModification) {
-
       case 'time':
       case 'time:min.sec':
-      case 'time:min_dec':
-
-        {
-
-          //const max = this.getModifiedValue( this.getMaxValue() );/*,
-          /*units = [
+      case 'time:min_dec': {
+        //const max = this.getModifiedValue( this.getMaxValue() );/*,
+        /*units = [
             [ 60, 'min' ],
             [ 3600, 'h' ],
             [ 3600 * 24, 'd' ]
           ];*/
 
-          let i, l, k, m;
-          let breaked = false;
-          for (i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
-            for (k = 0, m = this.unitModificationTimeTicks[i][1].length; k < m; k++) {
-              if (unitPerTick < this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k]) {
-                breaked = true;
-                break;
-              }
-            }
-            if (breaked) {
+        let i, l, k, m;
+        let breaked = false;
+        for (i = 0, l = this.unitModificationTimeTicks.length; i < l; i++) {
+          for (
+            k = 0, m = this.unitModificationTimeTicks[i][1].length;
+            k < m;
+            k++
+          ) {
+            if (
+              unitPerTick <
+              this.unitModificationTimeTicks[i][0] *
+                this.unitModificationTimeTicks[i][1][k]
+            ) {
+              breaked = true;
               break;
             }
           }
-
-          //i and k contain the good variable;
-          if (i !== this.unitModificationTimeTicks.length) {
-            unitPerTickCorrect = this.unitModificationTimeTicks[i][0] * this.unitModificationTimeTicks[i][1][k];
-          } else {
-            unitPerTickCorrect = 1;
+          if (breaked) {
+            break;
           }
-
-          break;
         }
 
-      default:
-        {
+        //i and k contain the good variable;
+        if (i !== this.unitModificationTimeTicks.length) {
+          unitPerTickCorrect =
+            this.unitModificationTimeTicks[i][0] *
+            this.unitModificationTimeTicks[i][1][k];
+        } else {
+          unitPerTickCorrect = 1;
+        }
 
-          // We take the log
-          var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
-          /*
+        break;
+      }
+
+      default: {
+        // We take the log
+        var decimals = Math.floor(Math.log(unitPerTick) / Math.log(10));
+        /*
             Example:
               13'453 => Math.log10() = 4.12 => 4
               0.0000341 => Math.log10() = -4.46 => -5
           */
 
-          var numberToNatural = unitPerTick * Math.pow(10, -decimals);
+        var numberToNatural = unitPerTick * Math.pow(10, -decimals);
 
-          /*
+        /*
             Example:
               13'453 (4) => 1.345
               0.0000341 (-5) => 3.41
           */
 
-          this.decimals = -decimals;
+        this.decimals = -decimals;
 
-          var possibleTicks = [1, 2, 5, 10];
-          var closest: boolean | number = false;
-          for (let i = possibleTicks.length - 1; i >= 0; i--) {
-            if (!closest || (Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural))) {
-              closest = possibleTicks[i];
-            }
+        var possibleTicks = [1, 2, 5, 10];
+        var closest: boolean | number = false;
+        for (let i = possibleTicks.length - 1; i >= 0; i--) {
+          if (
+            !closest ||
+            Math.abs(possibleTicks[i] - numberToNatural) <
+              Math.abs(closest - numberToNatural)
+          ) {
+            closest = possibleTicks[i];
           }
+        }
 
-          // Ok now closest is the number of unit per tick in the natural number
-          /*
+        // Ok now closest is the number of unit per tick in the natural number
+        /*
             Example:
               13'453 (4) (1.345) => 1
               0.0000341 (-5) (3.41) => 5
           */
-          // assert(closest);
+        // assert(closest);
 
-          if (closest === false) {
-            throw new Error("");
-          }
-          // Let's scale it back
-          var unitPerTickCorrect = closest * Math.pow(10, decimals);
+        if (closest === false) {
+          throw new Error('');
+        }
+        // Let's scale it back
+        var unitPerTickCorrect = closest * Math.pow(10, decimals);
 
-          /*
+        /*
             Example:
               13'453 (4) (1.345) (1) => 10'000
               0.0000341 (-5) (3.41) (5) => 0.00005
           */
-          break;
-        }
+        break;
+      }
     }
 
     var nbTicks = valrange / unitPerTickCorrect;
@@ -1105,15 +1168,13 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Axis} The current axis
    */
   setMinMaxToFitSeries(noNotify: boolean = false) {
+    console.log(this);
     if (this.options.logScale) {
-
       this.setCurrentMin(Math.max(1e-50, this.getMinValue() * 0.9));
       this.setCurrentMax(Math.max(1e-50, this.getMaxValue() * 1.1));
       //this.options.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
       //this.options.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
-
     } else {
-
       this.setCurrentMax(this.getMaxValue());
 
       //this.options.currentAxisMin = this.getMinValue();
@@ -1121,14 +1182,15 @@ abstract class Axis extends EventEmitter implements Axis {
 
       this.setCurrentMin(this.getDefaultMin());
       this.setCurrentMax(this.getDefaultMax());
-
     }
 
-    if (isNaN(this.options.currentAxisMin) || isNaN(this.options.currentAxisMax)) {
+    if (
+      isNaN(this.options.currentAxisMin) ||
+      isNaN(this.options.currentAxisMax)
+    ) {
       this.options.currentAxisMax = undefined;
       this.options.currentAxisMin = undefined;
     }
-
 
     this._zoomed = false;
 
@@ -1142,7 +1204,11 @@ abstract class Axis extends EventEmitter implements Axis {
       this.graph._axisHasChanged(this);
     }
 
-    this.emit('zoomOutFull', [this.options.currentAxisMin, this.options.currentAxisMax, this]);
+    this.emit('zoomOutFull', [
+      this.options.currentAxisMin,
+      this.options.currentAxisMax,
+      this,
+    ]);
 
     return this;
   }
@@ -1150,13 +1216,12 @@ abstract class Axis extends EventEmitter implements Axis {
   getDefaultMin() {
     var interval = this.getInterval();
 
-
     const minValue = this.getMinValue();
     //this.options.currentAxisMin = this.getMinValue();
     //this.options.currentAxisMax = this.getMaxValue();
 
     if (this.getForcedMin() === false) {
-      return minValue - (this.options.axisDataSpacing.min * interval);
+      return minValue - this.options.axisDataSpacing.min * interval;
     } else {
       return minValue;
     }
@@ -1165,14 +1230,12 @@ abstract class Axis extends EventEmitter implements Axis {
   getDefaultMax() {
     var interval = this.getInterval();
 
-
     const maxValue = this.getMaxValue();
 
     if (this.getForcedMax() === false) {
-
-      return maxValue + (this.options.axisDataSpacing.max * interval);
+      return maxValue + this.options.axisDataSpacing.max * interval;
     } else {
-      return maxValue
+      return maxValue;
     }
   }
   /**
@@ -1212,7 +1275,12 @@ abstract class Axis extends EventEmitter implements Axis {
    * @memberof Axis
    */
   cacheCurrentMin() {
-    this.cachedCurrentMin = this.options.currentAxisMin == this.options.currentAxisMax ? (this.options.logScale ? this.options.currentAxisMin / 10 : this.options.currentAxisMin - 1) : this.options.currentAxisMin;
+    this.cachedCurrentMin =
+      this.options.currentAxisMin == this.options.currentAxisMax
+        ? this.options.logScale
+          ? this.options.currentAxisMin / 10
+          : this.options.currentAxisMin - 1
+        : this.options.currentAxisMin;
   }
 
   /**
@@ -1220,7 +1288,12 @@ abstract class Axis extends EventEmitter implements Axis {
    * @memberof Axis
    */
   cacheCurrentMax() {
-    this.cachedCurrentMax = this.options.currentAxisMax == this.options.currentAxisMin ? (this.options.logScale ? this.options.currentAxisMax * 10 : this.options.currentAxisMax + 1) : this.options.currentAxisMax;
+    this.cachedCurrentMax =
+      this.options.currentAxisMax == this.options.currentAxisMin
+        ? this.options.logScale
+          ? this.options.currentAxisMax * 10
+          : this.options.currentAxisMax + 1
+        : this.options.currentAxisMax;
   }
 
   /**
@@ -1244,8 +1317,13 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Axis} The current axis
    */
   setCurrentMin(val) {
-
-    if (val === undefined || (this.getForcedMin() !== false && (val < this.getForcedMin() || val < this.options.lowestMin || val === undefined))) {
+    if (
+      val === undefined ||
+      (this.getForcedMin() !== false &&
+        (val < this.getForcedMin() ||
+          val < this.options.lowestMin ||
+          val === undefined))
+    ) {
       val = this.getMinValue();
     }
     this.options.currentAxisMin = val;
@@ -1267,8 +1345,13 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Axis} The current axis
    */
   setCurrentMax(val) {
-
-    if (val === undefined || (this.getForcedMax() !== false && (val > this.getForcedMax() || val > this.options.highestMax || val === undefined))) {
+    if (
+      val === undefined ||
+      (this.getForcedMax() !== false &&
+        (val > this.getForcedMax() ||
+          val > this.options.highestMax ||
+          val === undefined))
+    ) {
       val = this.getMaxValue();
     }
 
@@ -1317,14 +1400,18 @@ abstract class Axis extends EventEmitter implements Axis {
     return this.options.flipped;
   }
 
-  private _draw() { // Redrawing of the axis
+  private _draw() {
+    // Redrawing of the axis
 
     var self = this;
     // var visible;
 
     //    this.drawInit();
     let widthHeight: number = 0;
-    if (this.options.currentAxisMin === undefined || this.options.currentAxisMax === undefined) {
+    if (
+      this.options.currentAxisMin === undefined ||
+      this.options.currentAxisMax === undefined
+    ) {
       this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
     }
 
@@ -1351,12 +1438,17 @@ abstract class Axis extends EventEmitter implements Axis {
     this.line.setAttribute('display', 'block');
 
     if (this.options.scientificScale == true) {
-
       if (this.options.scientificScaleExponent) {
-
         this.scientificExponent = this.options.scientificScaleExponent;
       } else {
-        this.scientificExponent = Math.floor(Math.log(Math.max(Math.abs(this.getCurrentMax()), Math.abs(this.getCurrentMin()))) / Math.log(10));
+        this.scientificExponent = Math.floor(
+          Math.log(
+            Math.max(
+              Math.abs(this.getCurrentMax()),
+              Math.abs(this.getCurrentMin()),
+            ),
+          ) / Math.log(10),
+        );
       }
     } else {
       this.scientificExponent = 0;
@@ -1378,16 +1470,25 @@ abstract class Axis extends EventEmitter implements Axis {
   */
     let letter;
     if (!this.options.useKatexForLabel || !this.graph.hasKatexRenderer()) {
-
-      if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
-
+      if (
+        this.options.unitDecade &&
+        this.options.unit &&
+        this.scientificExponent !== 0 &&
+        (this.scientificExponent = this.getEngineeringExponent(
+          this.scientificExponent,
+        )) &&
+        (letter = this.getExponentGreekLetter(this.scientificExponent))
+      ) {
         this.preunit = letter;
-        this.unitTspan.setAttribute('dx', "0");
-
-      } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent)) {
-
+        this.unitTspan.setAttribute('dx', '0');
+      } else if (
+        this.scientificExponent !== 0 &&
+        !isNaN(this.scientificExponent)
+      ) {
         if (this.options.engineeringScale) {
-          this.scientificExponent = this.getEngineeringExponent(this.scientificExponent);
+          this.scientificExponent = this.getEngineeringExponent(
+            this.scientificExponent,
+          );
         }
 
         this.preunit = '';
@@ -1397,9 +1498,7 @@ abstract class Axis extends EventEmitter implements Axis {
 
         this.expTspan.textContent = 'x10';
         this.expTspanExp.textContent = this.scientificExponent;
-
       } else {
-
         if (!this.options.unit) {
           this.unitTspan.setAttribute('display', 'none');
         }
@@ -1410,50 +1509,54 @@ abstract class Axis extends EventEmitter implements Axis {
       }
 
       this.writeUnit();
-
     } else {
       let string = this.getLabel();
       /*,
               domEl;*/
 
-      if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
-
+      if (
+        this.options.unitDecade &&
+        this.options.unit &&
+        this.scientificExponent !== 0 &&
+        (this.scientificExponent = this.getEngineeringExponent(
+          this.scientificExponent,
+        )) &&
+        (letter = this.getExponentGreekLetter(this.scientificExponent))
+      ) {
         string += letter;
         this.preunitTspan.innerHTML = letter;
         this.preunitTspan.setAttribute('display', 'visible');
-        this.unitTspan.setAttribute('dx', "0");
+        this.unitTspan.setAttribute('dx', '0');
 
         string += ` ${letter} ${this.options.unit}`;
-
-      } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent)) {
-
+      } else if (
+        this.scientificExponent !== 0 &&
+        !isNaN(this.scientificExponent)
+      ) {
         if (this.options.engineeringScale) {
-          this.scientificExponent = this.getEngineeringExponent(this.scientificExponent);
+          this.scientificExponent = this.getEngineeringExponent(
+            this.scientificExponent,
+          );
         }
         string += ` \\cdot 10^${this.scientificExponent} ${this.options.unit}`;
-
       }
 
       this.katexElement = this.graph.renderWithKatex(string, this.katexElement);
     }
     if (!this.options.hideTicks) {
-
       this.resetTicksLength();
 
-      if (this.linkedToAxis) { // px defined, linked to another axis
+      if (this.linkedToAxis) {
+        // px defined, linked to another axis
 
         this.linkedToAxis.deltaPx = 10;
         widthHeight = this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
-
       } else if (!this.options.logScale) {
         // So the setting is: How many ticks in total ? Then we have to separate it
 
         widthHeight = this.drawLinearTicksWrapper(widthPx, valrange);
-
       } else {
-
         widthHeight = this.drawLogTicks();
-
       }
     } else {
       widthHeight = 0;
@@ -1468,7 +1571,6 @@ abstract class Axis extends EventEmitter implements Axis {
     // Looks for axes linked to this current axis
     var axes = this.graph.findAxesLinkedTo(this);
     axes.forEach(function (axis) {
-
       if (!axis.linkedToAxis) {
         return;
       }
@@ -1476,7 +1578,6 @@ abstract class Axis extends EventEmitter implements Axis {
       axis.setMaxPx(self.getMaxPx());
 
       axis.draw();
-
     });
 
     /************************************/
@@ -1489,111 +1590,105 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   drawLines() {
-
     if (this.options.lineAt && Array.isArray(this.options.lineAt)) {
-
       this.options.lineAt.forEach((val, index) => {
-
-        if (!isNaN(val) && this.getCurrentMin() <= val && this.getCurrentMax() >= val) {
-
+        if (
+          !isNaN(val) &&
+          this.getCurrentMin() <= val &&
+          this.getCurrentMax() >= val
+        ) {
           this._lines[index] = this._drawLine(val, this._lines[index]);
-
         } else {
           this._hideLine(this._lines[index]);
         }
-
       });
     }
-
   }
 
   writeUnit() {
     if (this.options.unit) {
-
       this.unitTspan.setAttribute('display', 'visible');
-      this.unitTspan.setAttribute('dx', "5");
+      this.unitTspan.setAttribute('dx', '5');
 
       //6.10.2018: This was incompatible with the fact that there can be a unit + a *10^x factor, when setUnitDecate( false ) is called (which is also the default behaviour)
       // We should check if this creates other issues.
 
       //this.expTspan.setAttribute( 'display', 'none' );
       //this.expTspanExp.setAttribute( 'display', 'none' );
-      this.unitTspan.innerHTML = (this.options.unitWrapperBefore + this.preunit + this.options.unit + this.options.unitWrapperAfter).replace(/\^([-+0-9]*)(.*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan><tspan dy='5' font-size='1em'>$2</tspan>");
-
+      this.unitTspan.innerHTML = (
+        this.options.unitWrapperBefore +
+        this.preunit +
+        this.options.unit +
+        this.options.unitWrapperAfter
+      ).replace(
+        /\^([-+0-9]*)(.*)/g,
+        "<tspan dy='-5' font-size='0.7em'>$1</tspan><tspan dy='5' font-size='1em'>$2</tspan>",
+      );
     } else {
       this.unitTspan.setAttribute('display', 'none');
     }
   }
 
   getExponentGreekLetter(val) {
-
     switch (val) {
+      case 3: {
+        return 'k';
+      }
 
-      case 3:
-        {
-          return 'k';
-        }
-
-      case 6:
-        {
-          return 'M';
-        }
-      case 9:
-        {
-          return 'G';
-        }
-      case 12:
-        {
-          return 'T';
-        }
-      case 15:
-        {
-          return 'E';
-        }
-      case -3:
-        {
-          return 'm';
-        }
-      case -6:
-        {
-          return '&mu;';
-        }
-      case -9:
-        {
-          return 'n';
-        }
-      case -12:
-        {
-          return 'p';
-
-        }
-      case -15:
-        {
-          return 'f';
-        }
-      default:
-        {
-          return '';
-        }
+      case 6: {
+        return 'M';
+      }
+      case 9: {
+        return 'G';
+      }
+      case 12: {
+        return 'T';
+      }
+      case 15: {
+        return 'E';
+      }
+      case -3: {
+        return 'm';
+      }
+      case -6: {
+        return '&mu;';
+      }
+      case -9: {
+        return 'n';
+      }
+      case -12: {
+        return 'p';
+      }
+      case -15: {
+        return 'f';
+      }
+      default: {
+        return '';
+      }
     }
-
   }
 
   drawLinearTicksWrapper(widthPx, valrange) {
-
     let tickPrimaryUnit;
 
     if (this.options.primaryTickUnit) {
-
       tickPrimaryUnit = this.options.primaryTickUnit;
-
     } else {
+      tickPrimaryUnit = this.getUnitPerTick(
+        widthPx,
+        this.getNbTicksPrimary(),
+        valrange,
+      )[0];
 
-      tickPrimaryUnit = this.getUnitPerTick(widthPx, this.getNbTicksPrimary(), valrange)[0];
-
-      if (this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit) {
+      if (
+        this.options.maxPrimaryTickUnit &&
+        this.options.maxPrimaryTickUnit < tickPrimaryUnit
+      ) {
         tickPrimaryUnit = this.options.maxPrimaryTickUnit;
-      } else if (this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit) {
+      } else if (
+        this.options.minPrimaryTickUnit &&
+        this.options.minPrimaryTickUnit > tickPrimaryUnit
+      ) {
         tickPrimaryUnit = this.options.minPrimaryTickUnit;
       }
     }
@@ -1606,8 +1701,10 @@ abstract class Axis extends EventEmitter implements Axis {
   forcePrimaryTickUnit(primaryInterval) {
     this.options.primaryTickUnit = primaryInterval;
 
-    this.decimals = Math.max(0, Math.round(-Math.log(primaryInterval) / Math.log(10)));
-
+    this.decimals = Math.max(
+      0,
+      Math.round(-Math.log(primaryInterval) / Math.log(10)),
+    );
   }
 
   forcePrimaryTickUnitMax(value) {
@@ -1627,7 +1724,6 @@ abstract class Axis extends EventEmitter implements Axis {
     return this;
   }
 
-
   setTickLabelRotation(angle) {
     this.options.tickLabelRotation = angle;
     return this;
@@ -1638,7 +1734,6 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   draw() {
-
     this._widthLabels = 0;
     var drawn = this._draw();
     this._widthLabels += drawn;
@@ -1646,7 +1741,6 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   drawTicks(primary, secondary) {
-
     var unitPerTick = primary,
       min = this.getCurrentMin(),
       max = this.getCurrentMax(),
@@ -1661,26 +1755,29 @@ abstract class Axis extends EventEmitter implements Axis {
 
     this._secondaryTickIncrement = secondaryIncr;
 
-
-    incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil((this.dataMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
+    incrTick = this.options.shiftToZero
+      ? this.dataMin -
+        Math.ceil((this.dataMin - min) / unitPerTick) * unitPerTick
+      : Math.floor(min / unitPerTick) * unitPerTick;
     this.incrTick = primary;
     this.firstTick = incrTick;
 
     while (incrTick <= max) {
-
       loop++;
       if (loop > 1000) {
         break;
       }
 
       if (secondary) {
-
         subIncrTick = incrTick + secondaryIncr;
         this.subIncrTick = subIncrTick;
         //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
         var loop2 = 0;
 
-        while (subIncrTick < incrTick + unitPerTick && Math.abs(subIncrTick - (incrTick + unitPerTick)) > 1e-7) {
+        while (
+          subIncrTick < incrTick + unitPerTick &&
+          Math.abs(subIncrTick - (incrTick + unitPerTick)) > 1e-7
+        ) {
           loop2++;
           if (loop2 > 100) {
             break;
@@ -1691,7 +1788,11 @@ abstract class Axis extends EventEmitter implements Axis {
             continue;
           }
 
-          this.drawTickWrapper(subIncrTick, false, Math.abs(subIncrTick - incrTick - unitPerTick / 2) < 1e-4 ? 2 : 3);
+          this.drawTickWrapper(
+            subIncrTick,
+            false,
+            Math.abs(subIncrTick - incrTick - unitPerTick / 2) < 1e-4 ? 2 : 3,
+          );
 
           subIncrTick += secondaryIncr;
         }
@@ -1708,13 +1809,11 @@ abstract class Axis extends EventEmitter implements Axis {
 
     this.lastTick = incrTick;
 
-
     this.widthHeightTick = this.getMaxSizeTick();
     return this.widthHeightTick;
   }
 
   nextTick(level, callback) {
-
     this.ticks[level] = this.ticks[level] || [];
     this.lastCurrentTick[level] = this.lastCurrentTick[level] || 0;
     this.currentTick[level] = this.currentTick[level] || 0;
@@ -1739,14 +1838,15 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   nextTickLabel(callback) {
-
     this.ticksLabels = this.ticksLabels || [];
     this.lastCurrentTickLabel = this.lastCurrentTickLabel || 0;
     this.currentTickLabel = this.currentTickLabel || 0;
 
     if (this.currentTickLabel >= this.ticksLabels.length) {
-
-      var tickLabel = document.createElementNS(this.graph.ns, 'text') as SVGTextElement;
+      var tickLabel = document.createElementNS(
+        this.graph.ns,
+        'text',
+      ) as SVGTextElement;
       this.groupTickLabels.appendChild(tickLabel);
       this.ticksLabels.push(tickLabel);
       callback(tickLabel);
@@ -1764,9 +1864,7 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   removeUselessTicks() {
-
     for (var j in this.currentTick) {
-
       for (var i = this.currentTick[j]; i < this.ticks[j].length; i++) {
         this.ticks[j][i].setAttribute('display', 'none');
       }
@@ -1777,14 +1875,12 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   removeUselessTickLabels() {
-
     for (var i = this.currentTickLabel; i < this.ticksLabels.length; i++) {
       this.ticksLabels[i].setAttribute('display', 'none');
     }
 
     this.lastCurrentTickLabel = this.currentTickLabel;
     this.currentTickLabel = 0;
-
   }
   /*
     doGridLine() {
@@ -1794,26 +1890,43 @@ abstract class Axis extends EventEmitter implements Axis {
     };*/
 
   nextGridLine(primary, x1, x2, y1, y2) {
-
-    if (!((primary && this.options.primaryGrid) || (!primary && this.options.secondaryGrid))) {
+    if (
+      !(
+        (primary && this.options.primaryGrid) ||
+        (!primary && this.options.secondaryGrid)
+      )
+    ) {
       return;
     }
 
-    this.gridLinePath[primary ? 'primary' : 'secondary'] += `M ${x1} ${y1} L ${x2} ${y2}`;
+    this.gridLinePath[
+      primary ? 'primary' : 'secondary'
+    ] += `M ${x1} ${y1} L ${x2} ${y2}`;
   }
 
   setGridLineStyle(gridLine, primary) {
-
     gridLine.setAttribute('shape-rendering', 'crispEdges');
-    gridLine.setAttribute('stroke', primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor());
-    gridLine.setAttribute('stroke-width', primary ? this.getPrimaryGridWidth() : this.getSecondaryGridWidth());
-    gridLine.setAttribute('stroke-opacity', primary ? this.getPrimaryGridOpacity() : this.getSecondaryGridOpacity());
+    gridLine.setAttribute(
+      'stroke',
+      primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor(),
+    );
+    gridLine.setAttribute(
+      'stroke-width',
+      primary ? this.getPrimaryGridWidth() : this.getSecondaryGridWidth(),
+    );
+    gridLine.setAttribute(
+      'stroke-opacity',
+      primary ? this.getPrimaryGridOpacity() : this.getSecondaryGridOpacity(),
+    );
 
     var dasharray;
-    if ((dasharray = primary ? this.getPrimaryGridDasharray() : this.getSecondaryGridDasharray())) {
+    if (
+      (dasharray = primary
+        ? this.getPrimaryGridDasharray()
+        : this.getSecondaryGridDasharray())
+    ) {
       gridLine.setAttribute('stroke-dasharray', dasharray);
     }
-
   }
 
   setGridLinesStyle() {
@@ -1822,7 +1935,7 @@ abstract class Axis extends EventEmitter implements Axis {
     return this;
   }
 
-  resetTicksLength() { }
+  resetTicksLength() {}
 
   secondaryTicks() {
     return this.options.nbTicksSecondary;
@@ -1839,13 +1952,13 @@ abstract class Axis extends EventEmitter implements Axis {
     }
 
     if (Math.log(incr) - Math.log(max) > 20) {
-      max = Math.pow(10, (Math.log(incr) * 20));
+      max = Math.pow(10, Math.log(incr) * 20);
     }
 
     var optsMain = {
       fontSize: '1.0em',
       exponential: true,
-      overwrite: false
+      overwrite: false,
     };
 
     if (incr < 0) {
@@ -1856,22 +1969,19 @@ abstract class Axis extends EventEmitter implements Axis {
     var incr = 1,
       val;
     while ((val = incr * Math.pow(10, pow)) < max) {
-      if (incr == 1) { // Superior power
-        if (val > min)
-          this.drawTickWrapper(val, true, 1, optsMain);
+      if (incr == 1) {
+        // Superior power
+        if (val > min) this.drawTickWrapper(val, true, 1, optsMain);
       }
       if (incr == 10) {
         incr = 1;
         pow++;
       } else {
-
         if (incr != 1 && val > min) {
-
           this.drawTickWrapper(val, false, 2, {
             overwrite: '',
-            fontSize: '0.6em'
+            fontSize: '0.6em',
           });
-
         }
 
         incr++;
@@ -1882,8 +1992,12 @@ abstract class Axis extends EventEmitter implements Axis {
     return this.widthHeightTick;
   }
 
-  drawTickWrapper(value: number, label: boolean, level: 1 | 2 | 3, options?: any) {
-
+  drawTickWrapper(
+    value: number,
+    label: boolean,
+    level: 1 | 2 | 3,
+    options?: any,
+  ) {
     //var pos = this.getPos( value );
 
     this.drawTick(value, level, options);
@@ -1905,17 +2019,14 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Number} The width or height used by the axis (used internally)
    */
   linkToAxis(axis, scalingFunction, decimals) {
-
     this.linkedToAxis = {
       axis: axis,
       scalingFunction: scalingFunction,
-      decimals: decimals || 1
+      decimals: decimals || 1,
     };
-
   }
 
   drawLinkedToAxisTicksWrapper(widthPx: number, valrange): number {
-
     var opts = this.linkedToAxis,
       px = 0,
       val,
@@ -1931,7 +2042,6 @@ abstract class Axis extends EventEmitter implements Axis {
     }
 
     do {
-
       val = opts.scalingFunction(opts.axis.getVal(px + this.getMinPx()));
 
       if (opts.decimals) {
@@ -1952,11 +2062,9 @@ abstract class Axis extends EventEmitter implements Axis {
         opts.deltaPx = delta2;
         //     this.drawInit();
         return this.drawLinkedToAxisTicksWrapper(widthPx, valrange);
-
       }
 
       px += opts.deltaPx;
-
     } while (px < widthPx);
   }
 
@@ -1982,16 +2090,23 @@ abstract class Axis extends EventEmitter implements Axis {
     //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
 
     if (!this.options.logScale) {
-
-      return (value - this.getCurrentMin()) / (this.getCurrentInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+      return (
+        ((value - this.getCurrentMin()) / this.getCurrentInterval()) *
+          (this.getMaxPx() - this.getMinPx()) +
+        this.getMinPx()
+      );
     } else {
       // 0 if value = min
       // 1 if value = max
 
-      if (value < 0)
-        return;
+      if (value < 0) return;
 
-      return ((Math.log(value) - Math.log(this.getCurrentMin())) / (Math.log(this.getCurrentMax()) - Math.log(this.getCurrentMin()))) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
+      return (
+        ((Math.log(value) - Math.log(this.getCurrentMin())) /
+          (Math.log(this.getCurrentMax()) - Math.log(this.getCurrentMin()))) *
+          (this.getMaxPx() - this.getMinPx()) +
+        this.getMinPx()
+      );
     }
   }
 
@@ -2015,14 +2130,18 @@ abstract class Axis extends EventEmitter implements Axis {
    * @return {Number} The axis value corresponding to the pixel position
    */
   getVal(px: number): number {
-
     if (!this.options.logScale) {
-
-      return (px - this.getMinPx()) / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval() + this.getCurrentMin();
-
+      return (
+        ((px - this.getMinPx()) / (this.getMaxPx() - this.getMinPx())) *
+          this.getCurrentInterval() +
+        this.getCurrentMin()
+      );
     } else {
-
-      return Math.exp((px - this.getMinPx()) / (this.getMaxPx() - this.getMinPx()) * (Math.log(this.getCurrentMax()) - Math.log(this.getCurrentMin())) + Math.log(this.getCurrentMin()));
+      return Math.exp(
+        ((px - this.getMinPx()) / (this.getMaxPx() - this.getMinPx())) *
+          (Math.log(this.getCurrentMax()) - Math.log(this.getCurrentMin())) +
+          Math.log(this.getCurrentMin()),
+      );
     }
   }
 
@@ -2033,8 +2152,9 @@ abstract class Axis extends EventEmitter implements Axis {
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
    */
   getRelPx(delta) {
-
-    return (delta / this.getCurrentInterval()) * (this.getMaxPx() - this.getMinPx());
+    return (
+      (delta / this.getCurrentInterval()) * (this.getMaxPx() - this.getMinPx())
+    );
   }
 
   /**
@@ -2045,7 +2165,9 @@ abstract class Axis extends EventEmitter implements Axis {
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
    */
   getRelVal(px) {
-    return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
+    return (
+      (px / (this.getMaxPx() - this.getMinPx())) * this.getCurrentInterval()
+    );
   }
 
   setFormatTickLabel(method) {
@@ -2055,17 +2177,15 @@ abstract class Axis extends EventEmitter implements Axis {
 
   valueToText(value, forceDecimals) {
     if (this.scientificExponent) {
-
       value /= Math.pow(10, this.scientificExponent);
       return value.toFixed(1);
-
     } else if (this.options.formatTickLabel) {
-
       return this.options.formatTickLabel(value);
-
     } else {
-
-      value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
+      value =
+        value *
+        Math.pow(10, this.getExponentialFactor()) *
+        Math.pow(10, this.getExponentialLabelFactor());
       if (this.options.shiftToZero) {
         value -= this.dataMin;
       }
@@ -2077,7 +2197,10 @@ abstract class Axis extends EventEmitter implements Axis {
         return value;
       }
 
-      var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
+      var dec =
+        this.decimals -
+        this.getExponentialFactor() -
+        this.getExponentialLabelFactor();
 
       if (isNaN(value)) {
         return '';
@@ -2113,21 +2236,29 @@ abstract class Axis extends EventEmitter implements Axis {
    *  @see Axis#valueToText
    */
   valueToHtml(value, noScaling, noUnits, forceDecimals = 0) {
-
     var text = this.valueToText(value, forceDecimals);
     var letter;
 
-    if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
-
+    if (
+      this.options.unitDecade &&
+      this.options.unit &&
+      this.scientificExponent !== 0 &&
+      (this.scientificExponent = this.getEngineeringExponent(
+        this.scientificExponent,
+      )) &&
+      (letter = this.getExponentGreekLetter(this.scientificExponent))
+    ) {
       text += letter;
-
-    } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent) && !noScaling) {
+    } else if (
+      this.scientificExponent !== 0 &&
+      !isNaN(this.scientificExponent) &&
+      !noScaling
+    ) {
       text += 'x10';
       text += `<sup>${this.scientificExponent}</sup>`;
     }
 
     if (this.options.unit && !noUnits) {
-
       text += this.options.unit.replace(/\^([-+0-9]*)/g, '<sup>$1</sup>');
     }
 
@@ -2147,22 +2278,21 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   modifyUnit(value, mode) {
-
     var text = '';
     var incr = this.incrTick;
     var umin;
 
     switch (mode) {
-
       case 'time': // val must be in seconds => transform in hours / days / months
         var max = this.getModifiedValue(this.getMaxValue()),
           units: Array<[number, string]> = [
             [60, 'min'],
             [3600, 'h'],
-            [3600 * 24, 'd']
+            [3600 * 24, 'd'],
           ];
 
-        if (max < 3600) { // to minutes
+        if (max < 3600) {
+          // to minutes
           umin = 0;
         } else if (max < 3600 * 24) {
           umin = 1;
@@ -2181,8 +2311,8 @@ abstract class Axis extends EventEmitter implements Axis {
         // Addind lower unit for precision
         umin--;
         while (incr < 1 * units[umin + 1][0] && umin > -1) {
-
-          value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
+          value =
+            ((value - valueRounded) * units[umin + 1][0]) / units[umin][0];
           valueRounded = Math.round(value);
           text += ` ${valueRounded}${units[umin][1]}`;
           umin--;
@@ -2193,7 +2323,7 @@ abstract class Axis extends EventEmitter implements Axis {
       case 'time:min.sec':
         value = value / 60;
         var valueRounded = Math.floor(value);
-        var s = (`${Math.round((value - valueRounded) * 60)}`);
+        var s = `${Math.round((value - valueRounded) * 60)}`;
         s = s.length == 1 ? `0${s}` : s;
         text = `${valueRounded}:${s}`;
         break;
@@ -2201,7 +2331,7 @@ abstract class Axis extends EventEmitter implements Axis {
       case 'time:min_dec':
         value = value / 60;
         var valueRounded = Math.floor(value);
-        var s = (`${Math.round((value - valueRounded) * 100)}`);
+        var s = `${Math.round((value - valueRounded) * 100)}`;
         s = s.length == 1 ? `0${s}` : s;
         text = `${valueRounded}.${s}`;
         break;
@@ -2268,7 +2398,6 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   setSpan(_from, _to) {
-
     this.options.span = [_from, _to];
     return this;
   }
@@ -2300,32 +2429,31 @@ abstract class Axis extends EventEmitter implements Axis {
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  setTickPosition(pos: 1 | 2 | 3 | "outside" | "centered" | "inside" | TickPosition) {
+  setTickPosition(
+    pos: 1 | 2 | 3 | 'outside' | 'centered' | 'inside' | TickPosition,
+  ) {
     switch (pos) {
       case 3:
       case 'outside':
-      case TickPosition.OUTSIDE:
-        {
-          pos = 3;
-          break;
-        }
+      case TickPosition.OUTSIDE: {
+        pos = 3;
+        break;
+      }
 
       case 2:
       case 'centered':
-      case TickPosition.CENTERED:
-        {
-          pos = 2;
-          break;
-        }
+      case TickPosition.CENTERED: {
+        pos = 2;
+        break;
+      }
 
       case 1:
       case 'inside':
       case TickPosition.INSIDE:
-      default:
-        {
-          pos = 1;
-          break;
-        }
+      default: {
+        pos = 1;
+        break;
+      }
     }
 
     this.options.tickPosition = pos;
@@ -2774,18 +2902,16 @@ abstract class Axis extends EventEmitter implements Axis {
     }
 
     if (options.overwrite || !options.exponential) {
-
       dom.textContent = options.overwrite || this.valueToText(val, false);
-
     } else {
       var log = Math.round(Math.log(val) / Math.log(10));
       var unit = Math.floor(val * Math.pow(10, -log));
 
-      dom.textContent = (unit != 1) ? `${unit}x10` : '10';
+      dom.textContent = unit != 1 ? `${unit}x10` : '10';
       var tspan = document.createElementNS(this.graph.ns, 'tspan');
       tspan.textContent = String(log);
       tspan.setAttribute('font-size', '0.7em');
-      tspan.setAttribute('dy', "-5");
+      tspan.setAttribute('dy', '-5');
       dom.appendChild(tspan);
     }
 
@@ -2894,7 +3020,8 @@ abstract class Axis extends EventEmitter implements Axis {
    * @since 1.13.3
    * @see Axis#setScientific
    */
-  setEngineering(engineeringScaling) { //bool
+  setEngineering(engineeringScaling) {
+    //bool
     this.options.scientificScale = engineeringScaling;
     this.options.engineeringScale = engineeringScaling;
     return this;
@@ -2909,11 +3036,10 @@ abstract class Axis extends EventEmitter implements Axis {
    * @private
    */
   getEngineeringExponent(scientificExponent) {
-
     if (scientificExponent > 0) {
-      scientificExponent -= (scientificExponent % 3);
+      scientificExponent -= scientificExponent % 3;
     } else {
-      scientificExponent -= (3 - (-scientificExponent) % 3) % 3;
+      scientificExponent -= (3 - (-scientificExponent % 3)) % 3;
     }
 
     return scientificExponent;
@@ -2932,7 +3058,10 @@ abstract class Axis extends EventEmitter implements Axis {
   }
 
   isZoomed() {
-    return !(this.options.currentAxisMin == this.getMinValue() || this.options.currentAxisMax == this.getMaxValue());
+    return !(
+      this.options.currentAxisMin == this.getMinValue() ||
+      this.options.currentAxisMax == this.getMaxValue()
+    );
   }
 
   hasAxis() {
@@ -2947,7 +3076,6 @@ abstract class Axis extends EventEmitter implements Axis {
     this.options.useKatexForLabel = use;
     return this;
   }
-
 }
 
 /**
