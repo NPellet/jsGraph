@@ -34,7 +34,7 @@
     "lodash": "^4.17.21",
     "rollup-plugin-babel": "^4.4.0",
     "webpack": "^5.65.0",
-    "webpack-cli": "^4.6.0"
+    "webpack-cli": "^4.9.2"
   },
   "jest": {
     "testRegex": "/__tests__/.*$"
